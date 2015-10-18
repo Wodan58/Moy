@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Moy
 ---
 
@@ -19,7 +18,3 @@ In addition to these other packages, it is wise to install CMake. Then run:
 
 CMake -G "Unix Makefiles"
 make
-=======
-# Moy
-Joy1.01
->>>>>>> origin/master
