@@ -9,7 +9,7 @@ Changes
 -------
 
 Echo of input to output is not supported, because Lex does not register input lines.
-Error messages are limited to ``syntax error'', because of Yacc's limited support for error handling.
+Error messages are limited to "syntax error", because of Yacc's limited support for error handling.
 
 Installation
 ------------
@@ -17,4 +17,5 @@ Installation
 In addition to these other packages, it is wise to install CMake. Then run:
 
 CMake -G "Unix Makefiles"
+
 make
