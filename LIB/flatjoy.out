@@ -1,0 +1,38 @@
+usrlib  is loaded
+inilib  is loaded
+agglib  is loaded
+[]
+[[]]
+[]
+[2 3 + dup *]
+[[] [2] c [3] c [+] c [dup] c [*] c]
+[2 3 + dup *]
+25
+[[1 2 3] [dup *] map]
+[[] [] [1] c [2] c [3] c [] cons c [] [dup] c [*] c [] cons c [map] c]
+[[1 2 3] [dup *] map]
+[1 4 9]
+[[[1 2] [3 4] [5] []] [[dup *] map] map]
+[[] [] [] [1] c [2] c [] cons c [] [3] c [4] c [] cons c [] [5] c [] cons c [] [] cons c [] cons c [] [] [dup] c [*] c [] cons c [map] c [] cons c [map] c]
+[[[1 2] [3 4] [5] []] [[dup *] map] map]
+[[1 4] [9 16] [25] []]
+[]
+[[]]
+[]
+[2 3 + dup *]
+[[] [*] s [dup] s [+] s [3] s [2] s]
+[2 3 + dup *]
+25
+[[1 2 3] [dup *] map]
+[[] [map] s [] [*] s [dup] s swons [] [3] s [2] s [1] s swons]
+[[1 2 3] [dup *] map]
+[1 4 9]
+[[[1 2] [3 4] [5] []] [[dup *] map] map]
+[[] [map] s [] [map] s [] [*] s [dup] s swons swons [] [] swons [] [5] s swons [] [4] s [3] s swons [] [2] s [1] s swons swons]
+[[[1 2] [3 4] [5] []] [[dup *] map] map]
+[[1 4] [9 16] [25] []]
+[[] [c] s [] [map] s swons [c] s [cons] s [] swons [c] s [] [map] s swons [c] s [cons] s [] swons [c] s [] [*] s swons [c] s [] [dup] s swons [] swons [] swons [c] s [cons] s [] swons [c] s [cons] s [] swons [] swons [c] s [cons] s [] swons [c] s [] [5] s swons [] swons [c] s [cons] s [] swons [c] s [] [4] s swons [c] s [] [3] s swons [] swons [c] s [cons] s [] swons [c] s [] [2] s swons [c] s [] [1] s swons [] swons [] swons [] swons]
+[[] [] [] [1] c [2] c [] cons c [] [3] c [4] c [] cons c [] [5] c [] cons c [] [] cons c [] cons c [] [] [dup] c [*] c [] cons c [map] c [] cons c [map] c]
+[[[1 2] [3 4] [5] []] [[dup *] map] map]
+[[1 4] [9 16] [25] []]
+

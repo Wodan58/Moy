@@ -1,0 +1,10 @@
+2do
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+lexer.c
+moy.exe
+parse.c
+parse.h
+SCCS

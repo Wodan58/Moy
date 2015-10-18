@@ -1,0 +1,8 @@
+(*
+    Demo program.
+*)
+DEFINE fib == [small] [] [pred dup pred] [+] binrec.
+
+0 __settracegc.
+
+46 fib.

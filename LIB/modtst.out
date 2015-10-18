@@ -1,0 +1,30 @@
+usrlib  is loaded
+inilib  is loaded
+agglib  is loaded
+0
+1
+2
+3
+4
+5
+6
+run time error: definition needed for drei
+3
+50
+run time error: definition needed for thirty
+"ab"
+"ba"
+"abba"
+run time error: a needed for m1
+run time error: b needed for m1
+"AB"
+"BA"
+"ABBA"
+"CD"
+"ABC"
+"BCD"
+run time error: a needed for m2
+run time error: b needed for m2
+run time error: c needed for m2
+run time error: d needed for m2
+

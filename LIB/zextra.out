@@ -1,0 +1,21 @@
+usrlib  is loaded
+inilib  is loaded
+agglib  is loaded
+agglib  is already loaded
+seqlib  is loaded
+[2015 10 18 8 28 7 true 290 7]
+[34 115 101 113 108] ["unix"]
+[[-1 -2 -3] -4 [-5 -6]]
+55
+truefalse[1 2 3 4 5 6 7 8]
+120
+15
+[1 2 3 4 5]
+55
+[1 [4 9] [[[16]]] 25]
+0
+6
+5
+-1
+7
+
