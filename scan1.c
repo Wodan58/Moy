@@ -1,56 +1,44 @@
 /*
     module  : scan1.c
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "globals.h"
+#include "globals1.h"
 
 extern FILE *yyin;
 
-static struct {
-    FILE *fp;
-    char *name;
-} infile[INPSTACKMAX];
+static int ilevel;
+static FILE *infile[INPSTACKMAX];
 
-static int ilevel, get_from_stdin;
-
-PUBLIC void inilinebuffer(char *str)
+PUBLIC void inilinebuffer(void)
 {
-    infile[0].fp = yyin;
-    infile[0].name = str;
+    infile[0] = yyin;
 }
 
-PUBLIC int doinclude(char *filnam)
+PUBLIC void redirect(FILE *fp)
 {
     if (ilevel + 1 == INPSTACKMAX)
-	execerror("fewer include files", "include");
-    infile[ilevel].fp = yyin;
-    if ((yyin = fopen(filnam, "r")) != 0) {
-	infile[++ilevel].fp = yyin;
-	infile[ilevel].name = filnam;
-	return 1;
-    }
-    execerror("valid file name", "include");
-    return 0;
+	execerror("fewer include files", "redirect");
+    infile[++ilevel] = yyin = fp;
 }
 
-PUBLIC void redirect(FILE * fp)
+PUBLIC void doinclude(char *filnam)
 {
-    if (infile[ilevel].fp != fp && !get_from_stdin) {
-	get_from_stdin = fp == stdin;
-	if (++ilevel == INPSTACKMAX)
-	    execerror("fewer include files", "redirect");
-	infile[ilevel].fp = fp;
-	infile[ilevel].name = 0;
-    }
+    FILE *fp;
+
+    if ((fp = fopen(filnam, "r")) == 0)
+	execerror("valid file name", "include");
+    redirect(fp);
 }
 
 int yywrap()
 {
-    if (--ilevel < 0)
+    if (yyin != stdin)
+	fclose(yyin);
+    if (!ilevel)
 	return 1;
-    yyin = infile[ilevel].fp;
+    yyin = infile[--ilevel];
     return 0;
 }

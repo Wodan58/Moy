@@ -1,34 +1,28 @@
 /*
     module  : utils1.c
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <string.h>
 #include <gc.h>
-#include "globals.h"
+#include "globals1.h"
 
 PUBLIC void gc_(void)
 {
     GC_gcollect();
 }
 
-PUBLIC void memoryindex_(void)
-{
-    stk = INTEGER_NEWNODE(0L, stk);
-}
-
 PUBLIC void readfactor(void)
 {				/* read a JOY factor              */
-    long set = 0;
+    long_t set = 0;
 
     switch (sym) {
     case ATOM:
 	lookup();
-	if (location < firstlibra) {
-	    bucket.proc = location->u.proc;
-	    stk = newnode(LOC2INT(location), bucket, stk);
-	} else
+	if (location < firstlibra)
+	    stk = newnode(location - symtab, (Types) location->u.proc, stk);
+	else
 	    stk = USR_NEWNODE(location, stk);
 	return;
     case BOOLEAN_:
@@ -67,17 +61,17 @@ PUBLIC void readterm(void)
     do {
 	readfactor();
 	*cur = stk;
-	cur = &stk->next;
-	stk = stk->next;
+	 cur = &stk->next;
+	 stk = *cur;
+	*cur = 0;
     } while (getsym(), sym != ']');
-    *cur = 0;
 }
 
 PUBLIC void writefactor(Node * n, FILE * stm)
 {
     char *p;
     int i, j;
-    long set;
+    long_t set;
 
     if (n == NULL)
 	execerror("non-empty stack", "print");
@@ -86,7 +80,7 @@ PUBLIC void writefactor(Node * n, FILE * stm)
 	fprintf(stm, "%s", n->u.num ? "true" : "false");
 	return;
     case INTEGER_:
-	fprintf(stm, "%ld", n->u.num);
+	fprintf(stm, "%lld", (long long)n->u.num);
 	return;
     case FLOAT_:
 	fprintf(stm, "%g", n->u.dbl);
@@ -103,7 +97,7 @@ PUBLIC void writefactor(Node * n, FILE * stm)
 	printf("}");
 	break;
     case CHAR_:
-	fprintf(stm, "'%c", (char) n->u.num);
+	fprintf(stm, "'%c", (int) n->u.num);
 	return;
     case STRING_:
 	fputc('"', stm);
@@ -132,10 +126,10 @@ PUBLIC void writefactor(Node * n, FILE * stm)
 	else if (n->u.fil == stderr)
 	    fprintf(stm, "file:stderr");
 	else
-	    fprintf(stm, "file:%p", (void *) n->u.fil);
+	    fprintf(stm, "file:%p", n->u.fil);
 	return;
     default:
-	fprintf(stm, "%s", symtab[(int) n->op].name);
+	fprintf(stm, "%s", symtab[n->op].name);
 	return;
     }
 }

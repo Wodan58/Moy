@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <string.h>
@@ -12,7 +12,7 @@
 #define malloc  GC_malloc
 #define realloc GC_realloc
 #define free(X) ((X)?(X++):0)
-#include "globals.h"
+#include "globals1.h"
 
 #ifdef YYLMAX
 #undef YYLMAX
@@ -27,6 +27,7 @@ int yyerror(char *str)
     return 0;
 }
 
+#ifdef LEXDEBUG
 void allprint(int ch)
 {
     if (isprint(ch))
@@ -39,6 +40,7 @@ void sprint(char *str)
 {
     fprintf(yyout, "%s", str);
 }
+#endif
 
 int isatty(int num)
 {
@@ -70,13 +72,13 @@ comment		"(*"")"*([^*)]|[^*]")"|"*"[^)])*"*"*"*)"
 {character}	{ yylval.num = ChrVal(yytext + 1); return Char; }
 {integer}	|
 {octal}		|
-{hexal}		{ yylval.num = strtol(yytext, 0, 0); return Int; }
+{hexal}		{ yylval.num = strtoll(yytext, 0, 0); return Int; }
 {float}		{ yylval.dbl = atof(yytext); return Float; }
 {string}	{ yylval.str = StrVal(yytext + 1); return String; }
-{symbol}	{ yylval.str = GC_strdup(yytext); return Keyword(yytext); }
 {linecom}	|
 {comment}	|
 [ \t\n\r]+	;
-^\$.*		{ system(yytext + 1); }
-\.		return END;
+^\$.*		system(yytext + 1);
+\.		|
+{symbol}	return Keyword(yytext);
 .		return yytext[0];

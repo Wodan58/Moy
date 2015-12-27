@@ -1,22 +1,24 @@
 /*
     module  : joy.c
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <gc.h>
-#include "globals.h"
+#include "globals1.h"
+
+static int inside_module, inside_local, inside_global;
 
 static char *keyword[] = {
     "LIBRA", "DEFINE", "IN", "PUBLIC", "HIDE", "PRIVATE", "END", "MODULE",
-    "=="
+    "==", "."
 };
 
 static int value[] = {
     JPUBLIC, JPUBLIC, JPUBLIC, JPUBLIC, JPRIVATE, JPRIVATE, END, MODULE,
-    EQUAL
+    EQUAL, END
 };
 
 int Keyword(char *str)
@@ -24,8 +26,22 @@ int Keyword(char *str)
     int i;
 
     for (i = 0; i < (int) (sizeof(keyword) / sizeof(keyword[0])); i++)
-	if (!strcmp(str, keyword[i]))
+	if (!strcmp(str, keyword[i])) {
+	    if (i < 4) {
+		inside_global++;
+		inside_module = inside_local = 0;
+	    } else if (i == 6 || i == 9) {
+		if (inside_global)
+		    inside_global--;
+		inside_module = inside_local = 0;
+	    } else if (i < 6)
+		inside_local = 1;
+	    else if (i == 7)
+		inside_module = 1;
+	    inside_definition = inside_module || inside_global || inside_local;
 	    return value[i];
+	}
+    yylval.str = GC_strdup(str);
     return JSymbol;
 }
 

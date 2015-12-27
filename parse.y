@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <gc.h>
@@ -30,9 +30,22 @@ int yyerror(), yylex();
 %type <lis> opt_quot quot opt_term term list factor
 %type <ent> opt_module module opt_private private
 
+%{
+#ifdef BIT_32
+#define long_t	long
+#else
+#define long_t	long long
+#endif
+%}
+
 %union YYSTYPE {
-    long num;
-    long set;
+    int flag;
+    char dummy;
+    clock_t cur;
+    unsigned char ch;
+
+    long_t num;
+    long_t set;
     char *str;
     double dbl;
     FILE *fil;
@@ -42,7 +55,7 @@ int yyerror(), yylex();
 };
 
 %{
-#include "globals.h"
+#include "globals1.h"
 %}
 
 %%
@@ -107,14 +120,14 @@ quot : quot factor { $2->next = $1; $$ = $2; } | factor ;
 /*
     A factor is a constant, or a list, or a set.
 */
-factor  : JSymbol { YYSTYPE u; u.str = $1; $$ = newnode(JSymbol, u, 0); }
-	| Boolean { YYSTYPE u; u.num = $1; $$ = newnode(BOOLEAN_, u, 0); }
-	| Char { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u, 0); }
-	| Int { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u, 0); }
-	| Float { YYSTYPE u; u.dbl = $1; $$ = newnode(FLOAT_, u, 0); }
-	| String { YYSTYPE u; u.str = $1; $$ = newnode(STRING_, u, 0); }
-	| list { YYSTYPE u; u.lis = $1; $$ = newnode(LIST_, u, 0); }
-	| set { YYSTYPE u; u.num = $1; $$ = newnode(SET_, u, 0); }
+factor  : JSymbol { $$ = newnode(JSymbol, (Types) $1, 0); }
+	| Boolean { $$ = newnode(BOOLEAN_, (Types) $1, 0); }
+	| Char { $$ = newnode(CHAR_, (Types) $1, 0); }
+	| Int { $$ = newnode(INTEGER_, (Types) $1, 0); }
+	| Float { $$ = newnode(FLOAT_, (Types) $1, 0); }
+	| String { $$ = newnode(STRING_, (Types) $1, 0); }
+	| list { $$ = newnode(LIST_, (Types) $1, 0); }
+	| set { $$ = newnode(SET_, (Types) $1, 0); }
 	;
 
 list : '[' opt_quot ']' { $$ = $2; } ;

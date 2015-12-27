@@ -1,13 +1,13 @@
 /*
     module  : symbol.c
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <gc.h>
-#include "globals.h"
+#include "globals1.h"
 
 void HashValue(char *name)
 {
@@ -22,7 +22,7 @@ static void enterglobal(char *name)
     if (symtabindex - symtab >= SYMTABMAX)
 	execerror("index", "symbols");
     location = symtabindex++;
-    location->name = name;
+    location->name = GC_strdup(name);
     location->u.body = 0;	/* may be assigned in definition */
     location->is_unknown = 1;
     location->next = hashentry[hashvalue];
@@ -55,10 +55,8 @@ static void sym_module(char *module, char *member)
 	mod_fields = location->u.module_fields;
 	while (mod_fields && !namecmp(member, mod_fields->name))
 	    mod_fields = mod_fields->next;
-	if ((location = mod_fields) == 0) {
+	if ((location = mod_fields) == 0)
 	    execerror(member, module);	/* no such field in module */
-	    return;
-	}
 	if ((module = member) == 0)
 	    return;
 	member = splitname(module);
@@ -97,7 +95,7 @@ static void sym_lookup(char *name)
 
 void lookup(void)
 {
-    sym_lookup(GC_strdup(id));
+    sym_lookup(id);
 }
 
 static void detachatom(void)
@@ -125,7 +123,7 @@ Entry *enteratom(char *name, Node * body)
 	    if (symtabindex - symtab >= SYMTABMAX)
 		execerror("index", "symbols");
 	    location = symtabindex++;
-	    location->name = name;
+	    location->name = GC_strdup(name);
 	    location->u.body = 0;	/* may be assigned later */
 	}
 	location->is_local = 1;
@@ -145,9 +143,8 @@ Entry *initmod(char *name)
 {
     enteratom(name, 0);
     location->is_module = 1;
-    ++display_enter;
     ++display_lookup;
-    if (display_enter >= DISPLAYMAX)
+    if (++display_enter >= DISPLAYMAX)
 	execerror("index", "display");
     display[display_enter] = 0;
     return location;
@@ -157,8 +154,7 @@ void exitmod(Entry * sym)
 {
     if (!sym)
 	return;
-    sym->u.module_fields = display[display_enter];
-    --display_enter;
+    sym->u.module_fields = display[display_enter--];
     --display_lookup;
 }
 
@@ -168,13 +164,11 @@ Entry *initpriv(void)
 
     if (display_lookup > display_enter) {
 	prev = display[display_lookup];
-	++display_enter;
-	if (display_enter >= DISPLAYMAX)
+	if (++display_enter >= DISPLAYMAX)
 	    execerror("index", "display");
     } else {
-	++display_enter;
 	++display_lookup;
-	if (display_enter >= DISPLAYMAX)
+	if (++display_enter >= DISPLAYMAX)
 	    execerror("index", "display");
 	display[display_enter] = 0;
     }
@@ -196,10 +190,16 @@ void exitpriv(Entry * prev)
 
 Node *newnode(Operator op, YYSTYPE u, Node * next)
 {
-    Node *node = GC_malloc(sizeof(Node));
+    Node *node;
 
-    if (!node)
-	execerror("memory", "allocator");
+    if (inside_critical && crit_ptr > critical &&
+			   critical <= &critical[MEMORYMAX])
+	node = --crit_ptr;
+    else {
+	node = GC_malloc(sizeof(Node));
+	if (!node)
+	    execerror("memory", "allocator");
+    }
     if ((node->op = op) != JSymbol)
 	node->u = u;
     else {

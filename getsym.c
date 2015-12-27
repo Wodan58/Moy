@@ -1,11 +1,11 @@
 /*
     module  : getsym.c
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #include <stdio.h>
 #include <string.h>
-#include "globals.h"
+#include "globals1.h"
 
 int yylex();
 

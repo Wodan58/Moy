@@ -1,10 +1,10 @@
-2do
 CMakeCache.txt
 CMakeFiles
 Makefile
+SCCS
 cmake_install.cmake
+fib.joy
 lexer.c
 moy.exe
 parse.c
 parse.h
-SCCS

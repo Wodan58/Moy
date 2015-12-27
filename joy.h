@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.1
-    date    : 10/18/15
+    version : 1.2
+    date    : 12/27/15
 */
 #ifndef PARSER
 #include "parse.h"
@@ -15,7 +15,7 @@ struct Entry *initpriv(void);
 void stoppriv(void);
 void exitpriv(struct Entry * prev);
 struct Entry *enteratom(char *name, struct Node * body);
-struct Node *newnode(Operator op, YYSTYPE u, struct Node * next);
+struct Node *newnode(Operator op, Types u, struct Node * next);
 struct Node *reverse(struct Node * list);
 int Keyword(char *str);
 int ChrVal(char *str);
@@ -28,3 +28,5 @@ void exeterm(struct Node * n);
 void HashValue(char *name);
 void writestack(void);
 void writeln(void);
+
+void initmem(void);
