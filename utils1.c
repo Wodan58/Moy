@@ -86,15 +86,15 @@ PUBLIC void writefactor(Node * n, FILE * stm)
 	fprintf(stm, "%g", n->u.dbl);
 	return;
     case SET_:
-	printf("{");
+	fprintf(stm, "{");
 	for (set = n->u.set, i = 0, j = 1; i < SETSIZE; i++, j <<= 1)
 	    if (set & j) {
-		printf("%d", i);
+		fprintf(stm, "%d", i);
 		if ((set &= ~j) == 0)
 		    break;
-		printf(" ");
+		fprintf(stm, " ");
 	    }
-	printf("}");
+	fprintf(stm, "}");
 	break;
     case CHAR_:
 	fprintf(stm, "'%c", (int) n->u.num);
