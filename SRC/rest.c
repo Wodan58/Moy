@@ -1,5 +1,16 @@
+/*
+    module  : rest.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+rest  :  A  ->  R
+R is the non-empty aggregate A with its first member removed.
+*/
 /* rest.c */
-PRIVATE void rest_()
+PRIVATE void rest_(void)
 {
     ONEPARAM("rest");
     switch (stk->op) {
@@ -20,9 +31,9 @@ PRIVATE void rest_()
 	    char *str = stk->u.str;
 	    CHECKEMPTYSTRING(str, "rest");
 	    if (OUTSIDE)
-		stk->u.str = GC_strdup(++str);
+		stk->u.str = ++str;
 	    else
-		UNARY(STRING_NEWNODE, GC_strdup(++str));
+		UNARY(STRING_NEWNODE, ++str);
 	    break;
 	}
     case LIST_:

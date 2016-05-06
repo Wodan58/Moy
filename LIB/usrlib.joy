@@ -1,3 +1,8 @@
+#
+#   module  : usrlib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:  usrlib.joy  -  if it exists, then it is loaded by default *)
 
 LIBRA
@@ -61,13 +66,13 @@ END.						(* end HIDE and LIBRA *)
 "library"   "*.joy"  find-in.
 						etc *)
 
-"usrlib  is loaded\n"  putchars.
+%PUT usrlib  is loaded
 
 standard-setting.
 
-"inilib.joy" include.
+%INCLUDE inilib.joy
 				(* assuming inilib.joy was included:  *)
-"agglib" libload.
+%INCLUDE agglib.joy
 
 DEFINE verbose == true. (* Example of over-riding  inilib.joy *)
 

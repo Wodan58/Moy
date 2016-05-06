@@ -1,5 +1,16 @@
+/*
+    module  : swap.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+swap  :  X Y  ->  Y X
+Interchanges X and Y on top of the stack.
+*/
 /* swap.c */
-PRIVATE void swap_()
+PRIVATE void swap_(void)
 {
     Node temp, *node;
 
@@ -13,6 +24,6 @@ PRIVATE void swap_()
 	node->op = temp.op;
 	return;
     }
-    GBINARY(temp.op, temp.u);
-    GNULLARY(node->op, node->u);
+    GBINARY(temp.op, temp.u.ptr);
+    GNULLARY(node->op, node->u.ptr);
 }

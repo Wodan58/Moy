@@ -1,3 +1,10 @@
+/*
+    module  : makemanual.c
+    version : 1.1
+    date    : 04/23/16
+*/
+#include "interp.h"
+
 /* makemanual.c */
 #define PLAIN (style == 0)
 #define HTML  (style == 1)
@@ -5,7 +12,7 @@
 
 #define HEADER(N,NAME,HEAD)					\
     if (strcmp(N,NAME) == 0) {					\
-        printf("\n\n");						\
+	printf("\n\n");						\
 	if (HTML) printf("<DT><BR><B>");			\
 	if (LATEX) printf("\\item[--- \\BX{");			\
 	printf("%s",HEAD);					\

@@ -1,5 +1,16 @@
+/*
+    module  : size.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+size  :  A  ->  I
+Integer I is the number of elements of aggregate A.
+*/
 /* size.c */
-PRIVATE void size_()
+PRIVATE void size_(void)
 {
     size_t size = 0;
 

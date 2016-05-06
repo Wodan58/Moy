@@ -1,5 +1,10 @@
+/*
+    module  : inhas.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* inhas.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
 #ifdef CORRECT_INHAS_COMPARE
     int error;

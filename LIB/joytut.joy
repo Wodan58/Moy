@@ -1,6 +1,11 @@
+#
+#   module  : joytut.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:  joytut.joy *)
 
-"tutlib" libload.
+%INCLUDE tutlib.joy
 
 LIBRA
 

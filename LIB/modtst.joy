@@ -1,3 +1,10 @@
+#
+#   module  : modtst.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
+%INCLUDE inilib.joy
+
 2 setecho.
 1 setundeferror.
 DEFINE
@@ -55,13 +62,13 @@ MODULE m1
 	abba == ab ba concat
     END
 
-			# correct usage of fields:
-m1.ab .
-m1.ba .
-m1.abba .
-			# incorrect usage of fields:  no such field
-m1.a .
-m1.b .
+		# correct usage of fields:
+m1.ab.
+m1.ba.
+m1.abba.
+		# incorrect usage of fields:  no such field
+m1.a.
+m1.b.
 
 MODULE m2
     PRIVATE
@@ -78,17 +85,16 @@ MODULE m2
 	bcd == b cd concat
     END
 
-			# correct usage of fields:
-m2.ab .
-m2.ba .
-m2.abba .
-m2.cd .
-m2.abc .
-m2.bcd .
+		# correct usage of fields:
+m2.ab.
+m2.ba.
+m2.abba.
+m2.cd.
+m2.abc.
+m2.bcd.
 
-			# incorrect usage of fields:  no such field
-m2.a .
-m2.b .
-m2.c .
-m2.d .
-
+		# incorrect usage of fields:  no such field
+m2.a.
+m2.b.
+m2.c.
+m2.d.

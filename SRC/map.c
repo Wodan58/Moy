@@ -1,5 +1,17 @@
+/*
+    module  : map.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+map  :  A [P]  ->  B
+Executes P on each member of aggregate A,
+collects results in sametype aggregate B.
+*/
 /* map.c */
-PRIVATE void map_()
+PRIVATE void map_(void)
 {
     Node *prog, *cur = 0,
 	 *data, *root = 0,
@@ -18,18 +30,18 @@ PRIVATE void map_()
 	 {
 	    for (cur = data->u.lis; cur; cur = cur->next) {
 		stk = save;
-
 		inside_condition++;
 		DUPLICATE(cur);
 		exeterm(prog);
 		inside_condition--;
-
+#ifdef RUNTIME_CHECKS
 		if (!stk)
 		    execerror("non-empty stack", "map");
+#endif
 		if (!root)
-		    last = root = newnode(stk->op, stk->u, 0);
+		    last = root = newnode(stk->op, stk->u.ptr, 0);
 		else
-		    last = last->next = newnode(stk->op, stk->u, 0);
+		    last = last->next = newnode(stk->op, stk->u.ptr, 0);
 	    }
 	    stk = save;
 	    PUSH(LIST_, root);
@@ -37,19 +49,16 @@ PRIVATE void map_()
 	}
     case STRING_:
 	 {
-	    char *str, *result;
-	    result = GC_malloc(strlen(data->u.str) + 1);
-	    for (str = data->u.str; str && *str; str++) {
+	    char *str = data->u.str, *result;
+	    result = GC_strdup(str);
+	    for ( ; str && *str; str++) {
 		stk = save;
-
-		inside_critical++;
-		PUSH(CHAR_, *str);
+		CONDITION;
+		PUSH(CHAR_, (long_t)*str);
 		exeterm(prog);
 		num = stk->u.num;
-		if (--inside_critical == 0)
-		    tmp_release();
-
-		result[i++] = num;
+		RELEASE;
+		result[i++] = (char)num;
 	    }
 	    stk = save;
 	    PUSH(STRING_, result);
@@ -61,14 +70,11 @@ PRIVATE void map_()
 	    for (i = 0; i < SETSIZE; i++)
 		if (set & (1 << i)) {
 		    stk = save;
-
-		    inside_critical++;
-		    PUSH(INTEGER_, i);
+		    CONDITION;
+		    PUSH(INTEGER_, (long_t)i);
 		    exeterm(prog);
 		    num = stk->u.num;
-		    if (--inside_critical == 0)
-			tmp_release();
-
+		    RELEASE;
 		    result |= 1 << num;
 		}
 	    stk = save;

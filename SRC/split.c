@@ -1,5 +1,16 @@
+/*
+    module  : split.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+split  :  A [B]  ->  A1 A2
+Uses test B to split aggregate A into sametype aggregates A1 and A2.
+*/
 /* split.c */
-PRIVATE void split_()
+PRIVATE void split_(void)
 {
     int i, num;
     Operator op;
@@ -22,8 +33,6 @@ PRIVATE void split_()
     case LIST_:
 	list = stk->u.lis;
 	break;
-    default:
-	BADAGGREGATE("filter");
     }
     POP(stk);
     save = stk;
@@ -31,8 +40,7 @@ PRIVATE void split_()
     case SET_:
 	{
 	    long_t yes_set = 0, no_set = 0;
-
-	    inside_critical++;
+	    CONDITION;
 	    for (i = 0; i < SETSIZE; i++)
 		if (set & (1 << i)) {
 		    stk = INTEGER_NEWNODE(i, save);
@@ -42,9 +50,7 @@ PRIVATE void split_()
 		    else
 			no_set |= 1 << i;
 		}
-	    if (--inside_critical == 0)
-		tmp_release();
-
+	    RELEASE;
 	    stk = save;
 	    PUSH(SET_, yes_set);
 	    PUSH(SET_, no_set);
@@ -54,10 +60,9 @@ PRIVATE void split_()
 	{
 	    int yesptr = 0, noptr = 0;
 	    char *yesstring, *nostring;
-	    yesstring = GC_malloc(strlen(str) + 1);
-	    nostring = GC_malloc(strlen(str) + 1);
-
-	    inside_critical++;
+	    yesstring = GC_strdup(str);
+	    nostring = GC_strdup(str);
+	    CONDITION;
 	    for ( ; str && *str; str++) {
 		stk = CHAR_NEWNODE(*str, save);
 		exeterm(prog);
@@ -66,9 +71,7 @@ PRIVATE void split_()
 		else
 		    nostring[noptr++] = *str;
 	    }
-	    if (--inside_critical == 0)
-		tmp_release();
-
+	    RELEASE;
 	    yesstring[yesptr] = '\0';
 	    nostring[noptr] = '\0';
 	    stk = save;
@@ -79,28 +82,27 @@ PRIVATE void split_()
     case LIST_:
 	{
 	    for (cur = list; cur; cur = cur->next) {
-
-		inside_critical++;
-		stk = newnode(cur->op, cur->u, save);
+		CONDITION;
+		stk = newnode(cur->op, cur->u.ptr, save);
 		exeterm(prog);
 		num = stk->u.num;
-		if (--inside_critical == 0)
-		    tmp_release();
-
+		RELEASE;
 		if (num)
 		    if (!root)
-			last = root = newnode(cur->op, cur->u, 0);
+			last = root = newnode(cur->op, cur->u.ptr, 0);
 		    else
-			last = last->next = newnode(cur->op, cur->u, 0);
+			last = last->next = newnode(cur->op, cur->u.ptr, 0);
 		else if (!head)
-		    tail = head = newnode(cur->op, cur->u, 0);
+		    tail = head = newnode(cur->op, cur->u.ptr, 0);
 		else
-		    tail = tail->next = newnode(cur->op, cur->u, 0);
+		    tail = tail->next = newnode(cur->op, cur->u.ptr, 0);
 	    }
 	    stk = save;
 	    PUSH(LIST_, root);
 	    PUSH(LIST_, head);
 	    break;
 	}
+    default:
+	BADAGGREGATE("filter");
     }
 }

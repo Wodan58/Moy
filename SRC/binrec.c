@@ -1,3 +1,16 @@
+/*
+    module  : binrec.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+binrec  :  [P] [T] [R1] [R2]  ->  ...
+Executes P. If that yields true, executes T.
+Else uses R1 to produce two intermediates, recurses on both,
+then executes R2 to combine their results.
+*/
 /* binrec.c */
 PRIVATE void binrecaux(Node *first, Node *second, Node *third, Node *fourth)
 {
@@ -5,13 +18,10 @@ PRIVATE void binrecaux(Node *first, Node *second, Node *third, Node *fourth)
     Node *save, node;
 
     save = stk;
-
-    inside_critical++;
+    CONDITION;
     exeterm(first);
     num = stk->u.num;
-    if (--inside_critical == 0)
-	tmp_release();
-
+    RELEASE;
     stk = save;
     if (num)
 	exeterm(second);
@@ -26,7 +36,7 @@ PRIVATE void binrecaux(Node *first, Node *second, Node *third, Node *fourth)
     }
 }
 
-PRIVATE void binrec_()
+PRIVATE void binrec_(void)
 {
     Node *first, *second, *third, *fourth;
 

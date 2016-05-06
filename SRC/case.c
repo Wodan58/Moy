@@ -1,5 +1,16 @@
+/*
+    module  : case.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+case  :  X [..[X Y]..]  ->  Y i
+Indexing on the value of X, execute the matching Y.
+*/
 /* case.c */
-PRIVATE void case_()
+PRIVATE void case_(void)
 {
     Node *cur;
     int error;

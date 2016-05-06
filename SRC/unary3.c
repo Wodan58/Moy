@@ -1,5 +1,16 @@
+/*
+    module  : unary3.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+unary3  :  X1 X2 X3 [P]  ->  R1 R2 R3
+Executes P three times, with Xi, returns Ri (i = 1..3).
+*/
 /* unary3.c */
-PRIVATE void unary3_()
+PRIVATE void unary3_(void)
 {
     Node *prog, *first, *second, *save, *result[3];
 
@@ -12,7 +23,6 @@ PRIVATE void unary3_()
     first = stk;
     POP(stk);
     save = stk->next;
-
     inside_condition++;
     exeterm(prog);
     result[0] = stk;
@@ -23,9 +33,8 @@ PRIVATE void unary3_()
     stk = save;
     DUPLICATE(second);
     exeterm(prog);
-    result[2] = stk;
     inside_condition--;
-
+    result[2] = stk;
     stk = save;
     DUPLICATE(result[0]);
     DUPLICATE(result[1]);

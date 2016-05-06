@@ -1,32 +1,42 @@
+/*
+    module  : genrec.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+genrec  :  [B] [T] [R1] [R2]  ->  ...
+Executes B, if that yields true, executes T.
+Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
+*/
 /* genrec.c */
-PRIVATE void genrecaux()
+PRIVATE void genrecaux(void)
 {
     int num;
-    Node prog, *save;
+    Node buf, *prog, *save;
 
-    prog = *stk;
+    buf = *stk;
+    prog = &buf;
     POP(stk);
     save = stk;
-
-    inside_critical++;
-    exeterm(prog.u.lis->u.lis);
+    CONDITION;
+    exeterm(prog->u.lis->u.lis);
     num = stk->u.num;
-    if (--inside_critical == 0)
-	tmp_release();
-
+    RELEASE;
     stk = save;
     if (num)
-	exeterm(prog.u.lis->next->u.lis);
+	exeterm(prog->u.lis->next->u.lis);
     else {
-	exeterm(prog.u.lis->next->next->u.lis);
-	PUSH(LIST_, prog.u.lis);
+	exeterm(prog->u.lis->next->next->u.lis);
+	PUSH(LIST_, prog->u.lis);
 	PUSH(LIST_, ANON_FUNCT_NEWNODE(genrecaux, 0));
 	cons_();
-	exeterm(prog.u.lis->next->next->next);
+	exeterm(prog->u.lis->next->next->next);
     }
 }
 
-PRIVATE void genrec_()
+PRIVATE void genrec_(void)
 {
     FOURPARAMS("genrec");
     FOURQUOTES("genrec");

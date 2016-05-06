@@ -1,5 +1,16 @@
+/*
+    module  : trunc.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+trunc  :  F  ->  I
+I is an integer equal to the float F truncated toward zero.
+*/
 /* trunc.c */
-PRIVATE void trunc_()
+PRIVATE void trunc_(void)
 {
     ONEPARAM("trunc");
     FLOAT("trunc");

@@ -1,5 +1,16 @@
+/*
+    module  : helpdetail.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+helpdetail  :  [ S1 S2 .. ]  ->
+Gives brief help on each symbol S in the list.
+*/
 /* helpdetail.c */
-PRIVATE void helpdetail_()
+PRIVATE void helpdetail_(void)
 {
     Node *n;
 

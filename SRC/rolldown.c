@@ -1,5 +1,16 @@
+/*
+    module  : rolldown.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+rolldown  :  X Y Z  ->  Y Z X
+Moves Y and Z down, moves X up.
+*/
 /* rolldown.c */
-PRIVATE void rolldown_()
+PRIVATE void rolldown_(void)
 {
     Node temp, *node, *next;
 
@@ -17,7 +28,7 @@ PRIVATE void rolldown_()
 	return;
     }
     temp = *stk;
-    GTERNARY(node->op, node->u);
-    GNULLARY(temp.op, temp.u);
-    GNULLARY(next->op, next->u);
+    GTERNARY(node->op, node->u.ptr);
+    GNULLARY(temp.op, temp.u.ptr);
+    GNULLARY(next->op, next->u.ptr);
 }

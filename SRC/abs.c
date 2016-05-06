@@ -1,5 +1,17 @@
+/*
+    module  : abs.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+abs  :  N1  ->  N2
+Integer N2 is the absolute value (0,1,2..) of integer N1,
+or float N2 is the absolute value (0.0 ..) of float N1.
+*/
 /* abs.c */
-PRIVATE void abs_()
+PRIVATE void abs_(void)
 {
     ONEPARAM("abs");
     FLOAT("abs");

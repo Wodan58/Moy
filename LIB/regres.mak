@@ -1,53 +1,49 @@
-regres: gcd24_54 modtst test joytut jp-reprodtst mtrtst flatjoy jp-church reptst symtst jp-joytst plgtst lsptst laztst jp-nestrec grmtst zextra
-	rm -f joy.out
+regres: gcd24_54 modtst test tutinp jp-reprodtst mtrtst flatjoy jp-church reptst symtst jp-joytst plgtst lsptst laztst jp-nestrec grmtst
 
 gcd24_54:
-	../moy gcd 24 54 | diff -w - gcd.out
-
-joytut:
-	../moy $@.inp | diff -w - $@.out
-
-lsptst:
-	../moy $@.joy | diff -w - $@.out
-
-jp-joytst:
-	../moy $@.joy | diff -w - $@.out
-
-laztst:
-	../moy $@.joy | diff -w - $@.out
-
-grmtst:
-	../moy $@.joy | diff -w - $@.out
+        ..\moy gcd 24 54 | diff -w - gcd_.out
 
 modtst:
-	../moy $@.joy | diff -w - $@.out
-
-mtrtst:
-	../moy $@.joy | diff -w - $@.out
-
-plgtst:
-	../moy $@.joy | diff -w - $@.out
-
-symtst:
-	../moy $@.joy | diff -w - $@.out
+	-..\moy $@.joy | diff -w - $@_.out
 
 test:
-	../moy $@.joy | diff -w - $@.out
+	..\moy $@.joy | diff -w - $@_.out
 
-reptst:
-	../moy $@.joy | diff -w - $@.out
-
-jp-nestrec:
-	../moy $@.joy | diff -w - $@.out
+tutinp:
+	..\moy $@.joy | diff -w - $@_.out
 
 jp-reprodtst:
-	../moy $@.joy | diff -w - $@.out
+	..\moy $@.joy | diff -w - $@_.out
+
+mtrtst:
+	..\moy $@.joy | diff -w - $@_.out
 
 flatjoy:
-	../moy $@.joy | diff -w - $@.out
+	..\moy $@.joy | diff -w - $@_.out
 
 jp-church:
-	../moy $@.joy | diff -w - $@.out
+	..\moy $@.joy | diff -w - $@_.out
 
-zextra:
-	-../moy $@.joy | diff -w - $@.out
+reptst:
+	..\moy $@.joy | diff -w - $@_.out
+
+symtst:
+	..\moy $@.joy | diff -w - $@_.out
+
+jp-joytst:
+	..\moy $@.joy | diff -w - $@_.out
+
+plgtst:
+	..\moy $@.joy | diff -w - $@_.out
+
+lsptst:
+	..\moy $@.joy | diff -w - $@_.out
+
+laztst:
+	..\moy $@.joy | diff -w - $@_.out
+
+jp-nestrec:
+	..\moy $@.joy | diff -w - $@_.out
+
+grmtst:
+	..\moy $@.joy | diff -w - $@_.out

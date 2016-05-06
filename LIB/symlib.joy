@@ -1,6 +1,12 @@
+#
+#   module  : symlib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   symlib.joy *)
 
-    basic-libload.
+%INCLUDE seqlib.joy
+%INCLUDE numlib.joy
 
 LIBRA
 
@@ -67,7 +73,7 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists:
 	ifte;
     C2P ==
 	[ list ]
-	[ unswons 
+	[ unswons 
 	  [ [ [unops in]
 	      [first C2P] dip ]
 	    [ [[QUOTE] in]
@@ -79,7 +85,7 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists:
 	ifte;
     C2R ==
 	[ list ]
-	[ unswons 
+	[ unswons 
 	  [ [ [unops in]
 	      swap first C2R ]
 	    [ [[QUOTE] in]
@@ -309,6 +315,6 @@ END; # Floy translators
     SYMLIB == "symlib.joy - symbolic manipulation library\n".
 
 							(*  end LIBRA	*)
-"symlib  is loaded\n" putchars.
+%PUT symlib  is loaded
 
 (* END   symlib.joy *)

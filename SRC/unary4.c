@@ -1,5 +1,16 @@
+/*
+    module  : unary4.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+unary4  :  X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
+Executes P four times, with Xi, returns Ri (i = 1..4).
+*/
 /* unary4.c */
-PRIVATE void unary4_()
+PRIVATE void unary4_(void)
 {
     Node *prog, *first, *second, *third, *save, *result[4];
 
@@ -14,7 +25,6 @@ PRIVATE void unary4_()
     first = stk;
     POP(stk);
     save = stk->next;
-
     inside_condition++;
     exeterm(prog);
     result[0] = stk;
@@ -29,9 +39,8 @@ PRIVATE void unary4_()
     stk = save;
     DUPLICATE(third);
     exeterm(prog);
-    result[3] = stk;
     inside_condition--;
-
+    result[3] = stk;
     stk = save;
     DUPLICATE(result[0]);
     DUPLICATE(result[1]);

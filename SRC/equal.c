@@ -1,3 +1,14 @@
+/*
+    module  : equal.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+equal  :  T U  ->  B
+(Recursively) tests whether trees T and U are identical.
+*/
 /* equal.c */
 PRIVATE int equal_aux(Node *n1, Node *n2);
 
@@ -26,7 +37,7 @@ PRIVATE int equal_aux(Node *n1, Node *n2)
     return !Compare(n1, n2, &error) && !error;
 }
 
-PRIVATE void equal_()
+PRIVATE void equal_(void)
 {
     TWOPARAMS("equal");
     if (OUTSIDE) {

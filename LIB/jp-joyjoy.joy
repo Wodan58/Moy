@@ -1,3 +1,8 @@
+#
+#   module  : jp-joyjoy.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* File:  jp-joyjoy.joy
    Joy interpreters written in Joy
 *)

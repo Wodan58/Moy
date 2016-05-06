@@ -1,5 +1,16 @@
+/*
+    module  : small.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+small  :  X  ->  B
+Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
+*/
 /* small.c */
-PRIVATE void small_()
+PRIVATE void small_(void)
 {
     int small = 0;
 
@@ -10,7 +21,7 @@ PRIVATE void small_()
 	small = stk->u.num < 2;
 	break;
     case SET_:
-	if (stk->u.set == 0)
+	if (!stk->u.set)
 	    small = 1;
 	else {
 	    int i = 0;
@@ -20,10 +31,10 @@ PRIVATE void small_()
 	}
 	break;
     case STRING_:
-	small = !stk->u.str || stk->u.str[0] == '\0' || stk->u.str[1] == '\0';
+	small = !stk->u.str || !*stk->u.str || !stk->u.str[1];
 	break;
     case LIST_:
-	small = stk->u.lis == 0 || stk->u.lis->next == 0;
+	small = !stk->u.lis || !stk->u.lis->next;
 	break;
     default:
 	BADDATA("small");

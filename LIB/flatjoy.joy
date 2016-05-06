@@ -1,5 +1,12 @@
+#
+#   module  : flatjoy.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 0 __settracegc.
 2 setecho.
+
+%INCLUDE usrlib.joy
 
 DEFINE
 P0 == [];                                       # empty code
@@ -16,24 +23,24 @@ DEFINE
         ifte;
     j2f-forwards == [[]] swap [j2f-f] step.
 
-P0 .
-P0 j2f-forwards .
-P0 j2f-forwards i .
+P0.
+P0 j2f-forwards.
+P0 j2f-forwards i.
 
-P1 .
-P1 j2f-forwards .
-P1 j2f-forwards i .
-P1 j2f-forwards i i .
+P1.
+P1 j2f-forwards.
+P1 j2f-forwards i.
+P1 j2f-forwards i i.
 
-P2 .
-P2 j2f-forwards .
-P2 j2f-forwards i .
-P2 j2f-forwards i i .
+P2.
+P2 j2f-forwards.
+P2 j2f-forwards i.
+P2 j2f-forwards i i.
 
-P3 .
-P3 j2f-forwards .
-P3 j2f-forwards i .
-P3 j2f-forwards i i .
+P3.
+P3 j2f-forwards.
+P3 j2f-forwards i.
+P3 j2f-forwards i i.
 
 DEFINE
     s  ==  swoncat;
@@ -45,30 +52,30 @@ DEFINE
     j2f-reverse == [] swap [j2f-r] step [] swons.
 
 
-P0 .
-P0 j2f-reverse .
-P0 j2f-reverse i .
+P0.
+P0 j2f-reverse.
+P0 j2f-reverse i.
 
-P1 .
-P1 j2f-reverse .
-P1 j2f-reverse i .
-P1 j2f-reverse i i .
+P1.
+P1 j2f-reverse.
+P1 j2f-reverse i.
+P1 j2f-reverse i i.
 
-P2 .
-P2 j2f-reverse .
-P2 j2f-reverse i .
-P2 j2f-reverse i i .
+P2.
+P2 j2f-reverse.
+P2 j2f-reverse i.
+P2 j2f-reverse i i.
 
-P3 .
-P3 j2f-reverse .
-P3 j2f-reverse i .
-P3 j2f-reverse i i .
+P3.
+P3 j2f-reverse.
+P3 j2f-reverse i.
+P3 j2f-reverse i i.
 
                 # Double flattening - an exercise in Joy obfuscation:
-P3 j2f-forwards j2f-reverse .
+P3 j2f-forwards j2f-reverse.
                 # partial de-obfuscation  -  by Joy itself:
-P3 j2f-forwards j2f-reverse i .
+P3 j2f-forwards j2f-reverse i.
                 # full de-obfuscation  -  again by Joy:
-P3 j2f-forwards j2f-reverse i i .
+P3 j2f-forwards j2f-reverse i i.
                 # final run of de-obfuscated original:
-P3 j2f-forwards j2f-reverse i i i .
+P3 j2f-forwards j2f-reverse i i i.

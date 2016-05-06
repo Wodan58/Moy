@@ -1,5 +1,16 @@
+/*
+    module  : fgets.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+fgets  :  S  ->  S L
+L is the next available line (as a string) from stream S.
+*/
 /* fgets.c */
-PRIVATE void fgets_()
+PRIVATE void fgets_(void)
 {
     int length = 0;
     int size = INPLINEMAX;
@@ -14,5 +25,5 @@ PRIVATE void fgets_()
 	    break;
 	buf = GC_realloc(buf, size <<= 1);
     }
-    PUSH(STRING_, GC_strdup(buf));
+    PUSH(STRING_, buf);
 }

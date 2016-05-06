@@ -1,5 +1,16 @@
+/*
+    module  : while.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+while  :  [B] [D]  ->  ...
+While executing B yields true executes D.
+*/
 /* while.c */
-PRIVATE void while_()
+PRIVATE void while_(void)
 {
     int num;
     Node *body, *test, *save;
@@ -12,13 +23,10 @@ PRIVATE void while_()
     POP(stk);
     for (;;) {
 	save = stk;
-
-	inside_critical++;
+	CONDITION;
 	exeterm(test);
 	num = stk->u.num;
-	if (--inside_critical == 0)
-	    tmp_release();
-
+	RELEASE;
 	stk = save;
 	if (!num)
 	    return;

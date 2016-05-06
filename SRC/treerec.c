@@ -1,5 +1,16 @@
+/*
+    module  : treerec.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+treerec  :  T [O] [C]  ->  ...
+T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
+*/
 /* treerec.c */
-PRIVATE void treerecaux()
+PRIVATE void treerecaux(void)
 {
     Node *save;
 
@@ -14,7 +25,7 @@ PRIVATE void treerecaux()
     }
 }
 
-PRIVATE void treerec_()
+PRIVATE void treerec_(void)
 {
     THREEPARAMS("treerec");
     TWOQUOTES("treerec");

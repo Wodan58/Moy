@@ -2,15 +2,18 @@
 /*
     module  : parse.y
     version : 1.2
-    date    : 12/27/15
+    date    : 05/06/16
 */
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <gc.h>
-#define YYMALLOC  GC_malloc
-#define YYFREE(X) ((X)?X=0:0)
+
+#define YYMALLOC(x)	GC_malloc(x)
+#define YYFREE(x)	((x)?!(x):0)
 #define PARSER
 
-int yyerror(), yylex();
+int yyerror(char *str), yylex(void), yyparse(void);
 %}
 
 %token <str> JSymbol String
@@ -33,29 +36,30 @@ int yyerror(), yylex();
 %{
 #ifdef BIT_32
 #define long_t	long
-#else
+#define real_t	float
+#endif
+
+#ifdef BIT_64
 #define long_t	long long
+#define real_t	double
 #endif
 %}
 
 %union YYSTYPE {
-    int flag;
-    char dummy;
-    clock_t cur;
-    unsigned char ch;
-
     long_t num;
     long_t set;
+    void *ptr;
     char *str;
-    double dbl;
+    real_t dbl;
     FILE *fil;
     struct Node *lis;
     struct Entry *ent;
-    void (*proc) ();
+    void (*proc)(void);
 };
 
 %{
 #include "globals1.h"
+#include "compile.h"
 %}
 
 %%
@@ -65,9 +69,10 @@ int yyerror(), yylex();
 */
 script : cycle { writeln(); } ;
 
-cycle : cycle def_or_term END { writestack(); } | /* empty */ ;
+cycle : cycle def_or_term END { writestack(compiling); } | /* empty */ ;
 
-def_or_term : compound_def | opt_term { exeterm($1); } ;
+def_or_term : compound_def
+	    | opt_term { if (compiling) compile($1); else exeterm($1); } ;
 
 /*
     A compound definition is an optional module, followed by an optional
@@ -106,28 +111,29 @@ opt_definition : JSymbol EQUAL opt_quot
 /*
     A term is one or more factors.
 */
-opt_term : term { $$ = reverse($1); } ;
+opt_term : term { if (!compiling) $$ = reverse($1); } ;
 
 term : term factor { $2->next = $1; $$ = $2; } | factor ;
 
 /*
     A quotation is similar to a term.
 */
-opt_quot : quot { $$ = reverse($1); } | /* empty */ { $$ = 0; } ;
+opt_quot : quot { if (!compiling) $$ = reverse($1); }
+	 | /* empty */ { $$ = 0; } ;
 
 quot : quot factor { $2->next = $1; $$ = $2; } | factor ;
 
 /*
     A factor is a constant, or a list, or a set.
 */
-factor  : JSymbol { $$ = newnode(JSymbol, (Types) $1, 0); }
-	| Boolean { $$ = newnode(BOOLEAN_, (Types) $1, 0); }
-	| Char { $$ = newnode(CHAR_, (Types) $1, 0); }
-	| Int { $$ = newnode(INTEGER_, (Types) $1, 0); }
-	| Float { $$ = newnode(FLOAT_, (Types) $1, 0); }
-	| String { $$ = newnode(STRING_, (Types) $1, 0); }
-	| list { $$ = newnode(LIST_, (Types) $1, 0); }
-	| set { $$ = newnode(SET_, (Types) $1, 0); }
+factor  : JSymbol { $$ = newnode(JSymbol, $1, 0); }
+	| Boolean { $$ = newnode(BOOLEAN_, (void *)$1, 0); }
+	| Char { $$ = newnode(CHAR_, (void *)$1, 0); }
+	| Int { $$ = newnode(INTEGER_, (void *)$1, 0); }
+	| Float { $$ = dblnode($1, 0); }
+	| String { $$ = newnode(STRING_, $1, 0); }
+	| list { $$ = newnode(LIST_, $1, 0); }
+	| set { $$ = newnode(SET_, (void *)$1, 0); }
 	;
 
 list : '[' opt_quot ']' { $$ = $2; } ;

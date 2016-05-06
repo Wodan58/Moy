@@ -1,5 +1,16 @@
+/*
+    module  : filter.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+filter  :  A [B]  ->  A1
+Uses test B to filter aggregate A producing sametype aggregate A1.
+*/
 /* filter.c */
-PRIVATE void filter_()
+PRIVATE void filter_(void)
 {
     int i, num;
     Operator op;
@@ -23,8 +34,6 @@ PRIVATE void filter_()
     case LIST_:
 	list = stk->u.lis;
 	break;
-    default:
-	BADAGGREGATE("filter");
     }
     POP(stk);
     save = stk;
@@ -33,7 +42,7 @@ PRIVATE void filter_()
 	{
 	    long_t result = 0;
 
-	    inside_critical++;
+	    CONDITION;
 	    for (i = 0; i < SETSIZE; i++)
 		if (set & (1 << i)) {
 		    stk = INTEGER_NEWNODE(i, save);
@@ -41,27 +50,23 @@ PRIVATE void filter_()
 		    if (stk->u.num)
 			result |= 1 << i;
 		}
-	    if (--inside_critical == 0)
-		tmp_release();
-
+	    RELEASE;
 	    stk = save;
 	    PUSH(SET_, result);
 	    break;
 	}
     case STRING_:
 	{
-	    char *result = GC_malloc(strlen(str) + 1);
+	    char *result = GC_strdup(str);
 
-	    inside_critical++;
+	    CONDITION;
 	    for (i = 0; str && *str; str++) {
 		stk = CHAR_NEWNODE(*str, save);
 		exeterm(prog);
 		if (stk->u.num)
 		    result[i++] = *str;
 	    }
-	    if (--inside_critical == 0)
-		tmp_release();
-
+	    RELEASE;
 	    result[i] = '\0';
 	    stk = save;
 	    PUSH(STRING_, result);
@@ -70,24 +75,23 @@ PRIVATE void filter_()
     case LIST_:
 	{
 	    for (cur = list; cur; cur = cur->next) {
-
-		inside_critical++;
-		stk = newnode(cur->op, cur->u, save);
+		CONDITION;
+		stk = newnode(cur->op, cur->u.ptr, save);
 		exeterm(prog);
 		num = stk->u.num;
-		if (--inside_critical == 0)
-		    tmp_release();
-
+		RELEASE;
 		if (num) {
 		    if (!root)
-			last = root = newnode(cur->op, cur->u, 0);
+			last = root = newnode(cur->op, cur->u.ptr, 0);
 		    else
-			last = last->next = newnode(cur->op, cur->u, 0);
+			last = last->next = newnode(cur->op, cur->u.ptr, 0);
 		}
 	    }
 	    stk = save;
 	    PUSH(LIST_, root);
 	    break;
 	}
+    default:
+	BADAGGREGATE("filter");
     }
 }

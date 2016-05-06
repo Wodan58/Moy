@@ -1,5 +1,18 @@
+/*
+    module  : strtol.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+strtol  :  S I  ->  J
+String S is converted to the integer J using base I.
+If I = 0, assumes base 10,
+but leading "0" means base 8 and leading "0x" means base 16.
+*/
 /* strtol.c */
-PRIVATE void strtol_()
+PRIVATE void strtol_(void)
 {
     int base;
 

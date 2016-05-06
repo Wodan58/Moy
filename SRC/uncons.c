@@ -1,5 +1,16 @@
+/*
+    module  : uncons.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+uncons  :  A  ->  F R
+F and R are the first and the rest of non-empty aggregate A.
+*/
 /* uncons.c */
-PRIVATE void uncons_()
+PRIVATE void uncons_(void)
 {
     Node save;
 
@@ -29,7 +40,7 @@ PRIVATE void uncons_()
 		stk->op = CHAR_;
 	    } else
 		UNARY(CHAR_NEWNODE, *str);
-	    PUSH(STRING_, GC_strdup(++str));
+	    PUSH(STRING_, ++str);
 	    break;
 	}
     case LIST_:
@@ -39,7 +50,7 @@ PRIVATE void uncons_()
 	    stk->op = stk->u.lis->op;
 	    stk->u = stk->u.lis->u;
 	} else
-	    GUNARY(stk->u.lis->op, stk->u.lis->u);
+	    GUNARY(stk->u.lis->op, stk->u.lis->u.ptr);
 	PUSH(LIST_, save.u.lis->next);
 	return;
     default:

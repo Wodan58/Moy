@@ -1,5 +1,16 @@
+/*
+    module  : unswons.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+unswons  :  A  ->  R F
+R and F are the rest and the first of non-empty aggregate A.
+*/
 /* unswons.c */
-PRIVATE void unswons_()
+PRIVATE void unswons_(void)
 {
     Node save;
 
@@ -16,7 +27,7 @@ PRIVATE void unswons_()
 		stk->u.set = set & ~(1 << i);
 	    else
 		UNARY(SET_NEWNODE, set & ~(1 << i));
-	    PUSH(INTEGER_, i);
+	    PUSH(INTEGER_, (long_t)i);
 	    break;
 	}
     case STRING_:
@@ -26,8 +37,8 @@ PRIVATE void unswons_()
 	    if (OUTSIDE)
 		stk->u.str = str + 1;
 	    else
-		UNARY(STRING_NEWNODE, GC_strdup(str + 1));
-	    PUSH(CHAR_, (int) *str);
+		UNARY(STRING_NEWNODE, str + 1);
+	    PUSH(CHAR_, (long_t)*str);
 	    break;
 	}
     case LIST_:

@@ -1,3 +1,8 @@
+#
+#   module  : replib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   replib.joy *)
 
 LIBRA
@@ -96,6 +101,6 @@ END;     # MODULE rep
 
 END      # LIBRA
 
-"replib  is loaded\n" putchars.
+%PUT replib  is loaded
 
 (* END   replib.joy *)

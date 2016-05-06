@@ -1,5 +1,16 @@
+/*
+    module  : drop.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+drop  :  A N  ->  B
+Aggregate B is the result of deleting the first N elements of A.
+*/
 /* drop.c */
-PRIVATE void drop_()
+PRIVATE void drop_(void)
 {
     int n = stk->u.num;
 

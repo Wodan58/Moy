@@ -1,9 +1,19 @@
+#
+#   module  : plgtst.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   plgtst.joy *)
 
-"\ntesting the propositional logic library in file  plglib.joy\n\n" putchars.
+%PUT
+%PUT testing the propositional logic library in file  plglib.joy
+%PUT
 
 0 __settracegc.							(* R.W. *)
-"plglib" libload.
+
+%INCLUDE usrlib.joy
+%INCLUDE plglib.joy
+
 1 setecho.
 
 (* There are many notations. Begin using minimally bracketed infix:	*)

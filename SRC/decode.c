@@ -1,3 +1,10 @@
+/*
+    module  : decode.c
+    version : 1.1
+    date    : 04/23/16
+*/
+#include "interp.h"
+
 /* decode.c */
 PRIVATE void decode_time(struct tm *t)
 {

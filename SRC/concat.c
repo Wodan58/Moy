@@ -1,5 +1,16 @@
+/*
+    module  : concat.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+concat  :  S T  ->  U
+Sequence U is the concatenation of sequences S and T.
+*/
 /* concat.c */
-PRIVATE void concat_()
+PRIVATE void concat_(void)
 {
     Node *cur = 0;
     Node *root = 0;
@@ -39,9 +50,9 @@ PRIVATE void concat_()
 	}
 	for (cur = stk->next->u.lis; cur; cur = cur->next)
 	    if (!root)
-		last = root = newnode(cur->op, cur->u, 0);
+		last = root = newnode(cur->op, cur->u.ptr, 0);
 	    else
-		last = last->next = newnode(cur->op, cur->u, 0);
+		last = last->next = newnode(cur->op, cur->u.ptr, 0);
 	last->next = stk->u.lis;
 	if (OUTSIDE) {
 	    stk->next->u.lis = root;

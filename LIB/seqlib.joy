@@ -1,6 +1,9 @@
+#
+#   module  : seqlib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   seqlib.joy *)
-
-"agglib" libload.
 
 LIBRA
 
@@ -142,6 +145,6 @@ LIBRA
     SEQLIB == "seqlib.joy - sequence library, assumes agglib.joy\n".
 							(* end LIBRA *)
 
-"seqlib  is loaded\n" putchars.
+%PUT seqlib  is loaded
 
 (* END   seqlib.joy *)

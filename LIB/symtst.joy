@@ -1,8 +1,16 @@
+#
+#   module  : symtst.joy
+#   version : 1.2
+#   date    : 05/06/16
+#
 (* FILE:  symtst.joy *)
 
-"\nTesting the 12 translators in the library  symlib.joy\n" putchars. (* R.W. *)
+%PUT
+%PUT Testing the 12 translators in the library  symlib.joy
 
-"symlib" libload.
+%INCLUDE usrlib.joy
+%INCLUDE symlib.joy
+
 0 __settracegc.							(* R.W. *)
 1 setecho.
 

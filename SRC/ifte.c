@@ -1,5 +1,16 @@
+/*
+    module  : ifte.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+ifte  :  [B] [T] [F]  ->  ...
+Executes B. If that yields true, then executes T else executes F.
+*/
 /* ifte.c */
-PRIVATE void ifte_()
+PRIVATE void ifte_(void)
 {
     int num;
     Node *second, *first, *test, *save;
@@ -13,13 +24,10 @@ PRIVATE void ifte_()
     test = stk->u.lis;
     POP(stk);
     save = stk;
-
-    inside_critical++;
+    CONDITION;
     exeterm(test);
     num = stk->u.num;
-    if (--inside_critical == 0)
-	tmp_release();
-
+    RELEASE;
     stk = save;
     exeterm(num ? first : second);
 }

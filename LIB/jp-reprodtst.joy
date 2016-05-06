@@ -1,5 +1,10 @@
-"numlib" libload.
-"agglib" libload.
+#
+#   module  : jp-reprodtst.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
+%INCLUDE usrlib.joy
+%INCLUDE numlib.joy
 
 2 setecho.
 

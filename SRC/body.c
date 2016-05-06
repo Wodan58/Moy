@@ -1,5 +1,16 @@
+/*
+    module  : body.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+body  :  U  ->  [P]
+Quotation [P] is the body of user-defined symbol U.
+*/
 /* body.c */
-PRIVATE void body_()
+PRIVATE void body_(void)
 {
     ONEPARAM("body");
     USERDEF("body");

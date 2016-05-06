@@ -1,5 +1,10 @@
+/*
+    module  : ufloat.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* ufloat.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     ONEPARAM(NAME);
     FLOAT(NAME);

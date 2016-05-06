@@ -1,6 +1,12 @@
+#
+#   module  : lsplib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   lsplib.joy *)
 
-    basic-libload.
+%INCLUDE seqlib.joy
+%INCLUDE numlib.joy
 
 LIBRA
 
@@ -167,7 +173,7 @@ lisp ==
 	lib0						(* load lib0	*)
 	l-prompt putchars get
 	[ [ EXIT ] first equal not ]				(* R.W. *)
-	[ eval putln
+	[ eval putln 
 	  l-prompt putchars get ]
 	while
 	pop pop
@@ -177,6 +183,6 @@ lisp ==
 
 							(* end LIBRA	*)
 
-"lsplib  is loaded\n" putchars.
+%PUT lsplib  is loaded
 
 (* END   lsplib.joy *)

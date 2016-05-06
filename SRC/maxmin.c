@@ -1,12 +1,19 @@
+/*
+    module  : maxmin.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* maxmin.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     TWOPARAMS(NAME);
+#ifdef RUNTIME_CHECKS
     if ((((stk->op == FLOAT_ || stk->op == INTEGER_) &&
 	  (stk->next->op == FLOAT_ || stk->next->op == INTEGER_)) ||
 	  (stk->op == CHAR_ && stk->next->op == CHAR_)));
     else
 	execerror("two floats or numerics", NAME);
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl =

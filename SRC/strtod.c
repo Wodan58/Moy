@@ -1,5 +1,16 @@
+/*
+    module  : strtod.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+strtod  :  S  ->  R
+String S is converted to the float R.
+*/
 /* strtod.c */
-PRIVATE void strtod_()
+PRIVATE void strtod_(void)
 {
     ONEPARAM("strtod");
     STRING("strtod");

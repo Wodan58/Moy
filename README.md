@@ -7,14 +7,15 @@ This project depends on the [BDW garbage collector](https://github.com/ivmai/bdw
 Changes
 -------
 
-Echo of input to output is not supported, because Lex does not register input lines.
-Error messages are limited to "syntax error", because of Yacc's limited support for error handling.
+Echo of input to output is not supported.
+Error messages are limited to "syntax error".
+Each directory has a separate makefile.
 
 Installation
 ------------
 
 In addition to the BDW garbage collector, it is wise to install CMake. Then run:
 
-CMake -G "Unix Makefiles"
+CMake -G "Unix Makefiles" or CMake -G "NMake Makefiles"
 
 make

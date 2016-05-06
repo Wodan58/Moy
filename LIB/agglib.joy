@@ -1,3 +1,8 @@
+#
+#   module  : agglib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   agglib.joy *)
 
 LIBRA
@@ -20,7 +25,7 @@ LIBRA
     string2set == {} swap shunt;
     elements == {} swap [swons] step;
 (*
-    set2string == "" swap [chr swons] step;
+    set2string == "" swap [chr swons] step;
 *)
     set2string == "" [[chr] dip cons] foldr;
     shunt == [swons] step;
@@ -111,6 +116,6 @@ LIBRA
     AGGLIB == "agglib.joy - aggregate library\n".
 						(* end LIBRA *)
 
-"agglib  is loaded\n" putchars.
+%PUT agglib  is loaded
 
 (* END   agglib.joy *)

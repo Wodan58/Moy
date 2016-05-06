@@ -1,3 +1,10 @@
+/*
+    module  : inisym.c
+    version : 1.1
+    date    : 04/23/16
+*/
+#include "interp.h"
+
 /* inisym.c */
 PUBLIC void inisymboltable(void)
 {				/* initialise */

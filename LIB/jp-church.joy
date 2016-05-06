@@ -1,3 +1,10 @@
+#
+#   module  : jp-church.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
+%INCLUDE usrlib.joy
+
 0 __settracegc.							(* R.W. *)
 2 setecho.
 
@@ -50,7 +57,7 @@ Doublings [C2] [C3] Cadd.
 Doublings [C2] [C3] Cmul.
 Doublings [C2] [C3] Cpow.
 
-Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd .
+Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd.
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd
             3   succ    2   +      3   *     succ    2   +      = .
 
@@ -88,13 +95,13 @@ DEFINE
       [ [[[Q1 i]] dip [Qmul i] cons [cons] cons] dip i i ] cons cons.
 
 
-Peano Q2 Q3 Qadd i .
-Peano Q2 Q3 Qmul i .
-Peano Q2 Q3 Qpow i .
+Peano Q2 Q3 Qadd i.
+Peano Q2 Q3 Qmul i.
+Peano Q2 Q3 Qpow i.
 
-Q2 Q3 Qadd .
-Q2 Q3 Qmul .
-Q2 Q3 Qpow .
+Q2 Q3 Qadd.
+Q2 Q3 Qmul.
+Q2 Q3 Qpow.
 
 Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i.
 Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i
@@ -141,9 +148,9 @@ Boole [Cfalse] [Cfalse] Cand.
 DEFINE
     Ceq0  == [ [Ctrue] [pop [Cfalse]] ] dip i i.
 
-Boole [C0] Ceq0 .
-Boole [C1] Ceq0 .
-Boole [C2] Ceq0 .
+Boole [C0] Ceq0.
+Boole [C1] Ceq0.
+Boole [C2] Ceq0.
 Boole [[C0] Ceq0] [[[C2] Csucc] Ceq0] Cor.
 Boole [[C0] Ceq0] [[[C2] Csucc] Ceq0] Cand.
 
@@ -155,7 +162,7 @@ Peano  [[C1] Ceq0]  [C2]  [C3]  Cifte.
 Peano  [[[C0] Ceq0] Cnot]  [C2]  [C3]  Cifte.
 Peano  [[[C1] Ceq0] Cnot]  [C2]  [C3]  Cifte.
 
-	Peano [Ctrue ] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte.
+Peano [Ctrue ] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte.
 Peano [Ctrue ] [[Cfalse] [C0] [C1] Cifte] [[Cfalse] [C2] [C3] Cifte] Cifte.
 Peano [Cfalse] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte.
 Peano [Cfalse] [[Cfalse] [C0] [C1] Cifte] [[Cfalse] [C2] [C3] Cifte] Cifte.
@@ -203,7 +210,6 @@ Doublings [C2] [C3] Cadd.
 Doublings [C2] [C3] Cmul.
 Doublings [C2] [C3] Cpow.
 
-Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd .
+Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd.
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd
             3   succ    2   +      3   *     succ    2   +      = .
-

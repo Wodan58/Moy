@@ -1,11 +1,20 @@
+#
+#   module  : laztst.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:  laztst.joy *)
-"numlib" libload.						(* R.W. *)
 
-"\nTesting lazy lists in the library lazlib.joy\n" putchars.
+%INCLUDE usrlib.joy
+%INCLUDE numlib.joy
+
+%PUT
+%PUT Testing lazy lists in the library lazlib.joy
 
 0 __settracegc.							(* R.W. *)
-"lazlib" libload.
-"numlib" libload.
+
+%INCLUDE lazlib.joy
+
 2 setecho.
 
 	(* Some lazy lists defined in the library	*)
@@ -63,7 +72,7 @@ true [not] From-by  10 Take.
 
 	(* user constructed finite lazy lists		*)
 
-'0 '9 From-to .			(* digits 	*)
+'0 '9 From-to.				(* digits 	*)
 '0 '9  From-to  Third.
 '0 '9  From-to   9 Drop.
 '0 '9  From-to   9 Drop Null.
@@ -84,7 +93,7 @@ Naturals  [prime] Filter  [dup *] Map  10 Take.
 
 
 1000001 From.                       (*     naturals > 1 Million	*)
-1000001 From [prime] Filter.        (*       primes > 1 Million  *)
+1000001 From [prime] Filter.        (*       primes > 1 Million	*)
 1000001 From [prime] Filter Third.  (* third prime  > 1 Million	*)
 1000001 From [prime] Filter 50 Take.(* fifty primes > 1 Million	*)
 

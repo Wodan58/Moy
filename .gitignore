@@ -3,8 +3,7 @@ CMakeCache.txt
 CMakeFiles
 lexer.c
 Makefile
-moy.exe
+moy.*
 parse.c
 parse.h
-SCCS
-t.joy
+*.lib

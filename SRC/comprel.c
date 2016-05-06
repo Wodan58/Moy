@@ -1,5 +1,10 @@
+/*
+    module  : comprel.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* comprel.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     double cmp;
     int i, j, error, comp = 0;
@@ -28,7 +33,7 @@ PRIVATE void PROCEDURE()
     } else {
 	POP(stk);
 	POP(stk);
-	PUSH(CONSTRUCTOR, comp);
+	PUSH(CONSTRUCTOR, (long_t)comp);
     }
 }
 

@@ -1,40 +1,43 @@
+/*
+    module  : condlinrec.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+condlinrec  :  [ [C1] [C2] .. [D] ]  ->  ...
+Each [Ci] is of the form [[B] [T]] or [[B] [R1] [R2]].
+Tries each B. If that yields true and there is just a [T], executes T and exit.
+If there are [R1] and [R2], executes R1, recurses, executes R2.
+Subsequent case are ignored. If no B yields true, then [D] is used.
+It is then of the form [[T]] or [[R1] [R2]]. For the former, executes T.
+For the latter executes R1, recurses, executes R2.
+*/
 /* condlinrec.c */
 PRIVATE void condlinrecaux(Node *root)
 {
     int num = 0;
-    Node *save, *cur;
+    Node *cur, *save = stk;
 
-    cur = root;
-    save = stk;
-
-    inside_critical++;
-    while (cur && cur->next) {
+    CONDITION;
+    for (cur = root; cur && cur->next; cur = cur->next) {
 	stk = save;
 	exeterm(cur->u.lis->u.lis);
 	if ((num = stk->u.num) != 0)
 	    break;
-	cur = cur->next;
     }
-    if (--inside_critical == 0)
-	tmp_release();
-
+    RELEASE;
     stk = save;
-    if (num) {
-	exeterm(cur->u.lis->next->u.lis);
-	if (cur->u.lis->next->next) {
-	    condlinrecaux(root);
-	    exeterm(cur->u.lis->next->next->u.lis);
-	}
-    } else {
-	exeterm(cur->u.lis->u.lis);
-	if (cur->u.lis->next) {
-	    condlinrecaux(root);
-	    exeterm(cur->u.lis->next->u.lis);
-	}
+    cur = num ? cur->u.lis->next : cur->u.lis;
+    exeterm(cur->u.lis);
+    if ((cur = cur->next) != 0) {
+	condlinrecaux(root);
+	exeterm(cur->u.lis);
     }
 }
 
-PRIVATE void condlinrec_()
+PRIVATE void condlinrec_(void)
 {
     Node *list;
 

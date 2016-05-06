@@ -1,5 +1,16 @@
+/*
+    module  : not.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+not  :  X  ->  Y
+Y is the complement of set X, logical negation for truth values.
+*/
 /* not.c */
-PRIVATE void not_()
+PRIVATE void not_(void)
 {
     int num = 0;
 
@@ -24,8 +35,10 @@ PRIVATE void not_()
 	break;
     case FLOAT_:
 	num = !stk->u.dbl;
+	break;
     case FILE_:
 	num = !stk->u.fil;
+	break;
     default:
 	BADDATA("not");
     }

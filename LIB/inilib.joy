@@ -1,3 +1,8 @@
+#
+#   module  : inilib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   inilib.joy *)
 
 LIBRA
@@ -117,6 +122,6 @@ LIBRA
     INILIB == "inilib.joy - the initial library, assumed everywhere\n".
 							(* end LIBRA *)
 
-"inilib  is loaded\n" putchars.
+%PUT inilib  is loaded
 
 (* END   inilib.joy *)

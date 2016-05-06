@@ -1,5 +1,16 @@
+/*
+    module  : mul.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+*  :  I J  ->  K
+Integer K is the product of integers I and J.  Also supports float.
+*/
 /* mul.c */
-PRIVATE void mul_()
+PRIVATE void mul_(void)
 {
     TWOPARAMS("*");
     FLOAT2("*");

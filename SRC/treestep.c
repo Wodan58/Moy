@@ -1,3 +1,14 @@
+/*
+    module  : treestep.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+treestep  :  T [P]  ->  ...
+Recursively traverses leaves of tree T, executes P for each leaf.
+*/
 /* treestep.c */
 PRIVATE void treestepaux(Node *item, Node *prog)
 {
@@ -10,7 +21,7 @@ PRIVATE void treestepaux(Node *item, Node *prog)
 	treestepaux(cur, prog);
 }
 
-PRIVATE void treestep_()
+PRIVATE void treestep_(void)
 {
     Node *item, *prog;
 

@@ -1,5 +1,16 @@
+/*
+    module  : div.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+div  :  I J  ->  K L
+Integers K and L are the quotient and remainder of dividing I by J.
+*/
 /* div.c */
-PRIVATE void div_()
+PRIVATE void div_(void)
 {
 #ifdef BIT_32
     ldiv_t result;

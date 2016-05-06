@@ -1,11 +1,24 @@
+/*
+    module  : divide.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+/  :  I J  ->  K
+Integer K is the (rounded) ratio of integers I and J.  Also supports float.
+*/
 /* divide.c */
-PRIVATE void divide_()
+PRIVATE void divide_(void)
 {
     TWOPARAMS("/");
     FLOAT2("/");
-    if ((stk->op == FLOAT_ && stk->u.dbl == 0.0) ||
-	(stk->op == INTEGER_ && stk->u.num == 0))
+#ifdef RUNTIME_CHECKS
+    if ((stk->op == FLOAT_ && !stk->u.dbl) ||
+	(stk->op == INTEGER_ && !stk->u.num))
 	execerror("non-zero divisor", "/");
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl /= FLOATVAL;

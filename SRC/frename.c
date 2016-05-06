@@ -1,5 +1,17 @@
+/*
+    module  : frename.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+frename  :  P1 P2  ->  B
+The file system object with pathname P1 is renamed to P2.
+B is a boolean indicating success or failure.
+*/
 /* frename.c */
-PRIVATE void frename_()
+PRIVATE void frename_(void)
 {
     TWOPARAMS("frename");
     STRING("frename");

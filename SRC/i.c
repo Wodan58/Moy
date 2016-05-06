@@ -1,11 +1,22 @@
+/*
+    module  : i.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+i  :  [P]  ->  ...
+Executes P. So, [P] i  ==  P.
+*/
 /* i.c */
-PRIVATE void i_()
+PRIVATE void i_(void)
 {
-    Node *save;
+    Node *prog;
 
     ONEPARAM("i");
     ONEQUOTE("i");
-    save = stk;
+    prog = stk->u.lis;
     POP(stk);
-    exeterm(save->u.lis);
+    exeterm(prog);
 }

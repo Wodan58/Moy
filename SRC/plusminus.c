@@ -1,13 +1,20 @@
+/*
+    module  : plusminus.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* plusminus.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     TWOPARAMS(NAME);
+#ifdef RUNTIME_CHECKS
     if (((stk->op == FLOAT_ || stk->op == INTEGER_) &&
 	 (stk->next->op == FLOAT_ || stk->next->op == INTEGER_)) ||
 	 (stk->op == INTEGER_ && (stk->next->op == CHAR_
 			       || stk->next->op == INTEGER_)));
     else
 	execerror("two floats or numerics", NAME);
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl = stk->next->u.dbl OPER FLOATVAL;

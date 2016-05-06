@@ -1,5 +1,16 @@
+/*
+    module  : opcase.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+opcase  :  X [..[X Xs]..]  ->  X [Xs]
+Indexing on type of X, returns the list [Xs].
+*/
 /* opcase.c */
-PRIVATE void opcase_()
+PRIVATE void opcase_(void)
 {
     Node *cur;
 

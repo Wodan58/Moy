@@ -1,11 +1,18 @@
+/*
+    module  : of_at.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* of_at.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     int i;
 
     TWOPARAMS(NAME);
+#ifdef RUNTIME_CHECKS
     if (INDEX->op != INTEGER_ || INDEX->u.num < 0)
 	execerror("non-negative integer", NAME);
+#endif
     switch (AGGR->op) {
     case SET_:
 	{
@@ -51,7 +58,7 @@ PRIVATE void PROCEDURE()
 		stk->next->op = cur->op;
 		POP(stk);
 	    } else
-		GBINARY(cur->op, cur->u);
+		GBINARY(cur->op, cur->u.ptr);
 	    return;
 	}
     default:

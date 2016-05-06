@@ -1,6 +1,12 @@
+#
+#   module  : mtrlib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   mtrlib.joy *)
 
-"seqlib" libload  "numlib" libload.
+%INCLUDE seqlib.joy
+%INCLUDE numlib.joy
 
 LIBRA
 
@@ -109,6 +115,6 @@ m-print == putlist;
 						(* end LIBRA *)
 
 
-"mtrlib  is loaded\n" putchars.
+%PUT mtrlib  is loaded
 
 (* END   mtrlib.joy *)

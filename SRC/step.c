@@ -1,5 +1,17 @@
+/*
+    module  : step.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+step  :  A [P]  ->  ...
+Sequentially putting members of aggregate A onto stack,
+executes P for each member of A.
+*/
 /* step.c */
-PRIVATE void step_()
+PRIVATE void step_(void)
 {
     Node *prog, *data, *cur;
 
@@ -22,7 +34,7 @@ PRIVATE void step_()
 	 {
 	    char *str;
 	    for (str = data->u.str; str && *str; str++) {
-		PUSH(CHAR_, *str);
+		PUSH(CHAR_, (long_t)*str);
 		exeterm(prog);
 	    }
 	    break;

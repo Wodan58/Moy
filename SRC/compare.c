@@ -1,3 +1,10 @@
+/*
+    module  : compare.c
+    version : 1.1
+    date    : 04/23/16
+*/
+#include "interp.h"
+
 /* compare.c */
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {

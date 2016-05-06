@@ -1,13 +1,22 @@
+#
+#   module  : grmtst.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   grmtst.joy *)
 
-"\ntesting the grammar library in file  grmlib.joy\n\n" putchars.
+%PUT
+%PUT testing the grammar library in file  grmlib.joy
+%PUT
 
 (*
 DEFINE old_in == in;
            in == [[string] [pop false]] dip [old_in] cons ifte.
 *)
 
-"grmlib" libload.
+%INCLUDE usrlib.joy
+%INCLUDE grmlib.joy
+
 0 __settracegc.
 1 setecho.
 
@@ -119,8 +128,7 @@ DEFINE
 
 DEFINE
     string2charlist ==
-	[null]  [pop []]  [uncons]  [cons]  linrec.
-
+	 [null]  [pop []]  [uncons]  [cons]  linrec.
 
 "CNpApKpp"  string2charlist Polish prs-test.
 "CNpBpKpp"  string2charlist Polish prs-test.

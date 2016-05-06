@@ -1,7 +1,10 @@
-"inilib.joy" include.
-
-
-"numlib.joy" include.
+#
+#   module  : test.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
+%INCLUDE usrlib.joy
+%INCLUDE numlib.joy
 
 1001.1  cube-root.
 
@@ -10,4 +13,3 @@ argc.
 argv.
 
 quit.
-

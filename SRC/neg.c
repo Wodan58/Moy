@@ -1,5 +1,16 @@
+/*
+    module  : neg.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+neg  :  I  ->  J
+Integer J is the negative of integer I.  Also supports float.
+*/
 /* neg.c */
-PRIVATE void neg_()
+PRIVATE void neg_(void)
 {
     ONEPARAM("neg");
     FLOAT("neg");

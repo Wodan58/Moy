@@ -1,7 +1,18 @@
+/*
+    module  : times.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+times  :  N [P]  ->  ...
+N times executes P.
+*/
 /* times.c */
-PRIVATE void times_()
+PRIVATE void times_(void)
 {
-    int i, n;
+    int i, num;
     Node *prog;
 
     TWOPARAMS("times");
@@ -9,8 +20,8 @@ PRIVATE void times_()
     INTEGER2("times");
     prog = stk->u.lis;
     POP(stk);
-    n = stk->u.num;
+    num = stk->u.num;
     POP(stk);
-    for (i = 0; i < n; i++)
+    for (i = 0; i < num; i++)
 	exeterm(prog);
 }

@@ -1,51 +1,50 @@
 /*
     module  : main1.c
-    version : 1.2
-    date    : 12/27/15
+    version : 1.1
+    date    : 04/23/16
 */
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
+#include <io.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <setjmp.h>
 #include <time.h>
 #include <gc.h>
 #define ALLOC
 #include "globals1.h"
+#include "compile.h"
 
 extern FILE *yyin, *yyout;
 
 jmp_buf begin;
-
-PUBLIC void abortexecution_(void)
-{
-    longjmp(begin, 1);
-}
+int compiling;
 
 PUBLIC void execerror(char *message, char *op)
 {
-    printf("run time error: %s needed for %s\n", message, op);
-    abortexecution_();
-}
-
-PUBLIC void quit_(void)
-{
-    exit(0);
+    fprintf(stderr, "run time error: %s needed for %s\n", message, op);
+    longjmp(begin, 1);
 }
 
 int main(int argc, char **argv)
 {
-    FILE *fp;
+    int rv;
+    char *file;
 
     GC_init();
     initmem();
     g_argc = argc;
     g_argv = argv;
     yyin = stdin;
+    yyout = stdout;
     if (argc > 1) {
 	g_argc--;
 	g_argv++;
-	if ((yyin = fopen(argv[1], "r")) == 0) {
-	    printf("failed to open the file '%s'.\n", argv[1]);
+	compiling = !strcmp(argv[1], "-c");
+	file = argv[compiling ? 2 : 1];
+	if ((yyin = fopen(file, "r")) == 0) {
+	    fprintf(stderr, "failed to open the file '%s'.\n", file);
 	    exit(1);
 	}
     } else {
@@ -53,16 +52,19 @@ int main(int argc, char **argv)
 	printf("Copyright 2001 by Manfred von Thun\n");
     }
     inilinebuffer();
-    setbuf(yyout = stdout, 0);
+    setbuf(yyout, 0);
+    setmode(fileno(yyout), O_BINARY);
     startclock = clock();
     echoflag = INIECHOFLAG;
     tracegc = INITRACEGC;
     autoput = INIAUTOPUT;
     inisymboltable();
-    if ((fp = fopen("usrlib.joy", "r")) != 0) {
-	fclose(fp);
-	doinclude("usrlib.joy");
-    }
+    if (compiling)
+	initcompile();
     setjmp(begin);
-    return yyparse();
+    stk = &memory[MEMORYMAX];
+    rv = yyparse();
+    if (compiling)
+	exitcompile();
+    return rv;
 }

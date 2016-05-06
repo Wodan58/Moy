@@ -1,5 +1,10 @@
+/*
+    module  : bfloat.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* bfloat.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     TWOPARAMS(NAME);
     FLOAT2(NAME);

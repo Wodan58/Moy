@@ -1,5 +1,16 @@
+/*
+    module  : null.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+null  :  X  ->  B
+Tests for empty aggregate X or zero numeric.
+*/
 /* null.c */
-PRIVATE void null_()
+PRIVATE void null_(void)
 {
     int num = 0;
 

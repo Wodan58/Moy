@@ -1,5 +1,10 @@
+/*
+    module  : andorxor.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* andorxor.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     TWOPARAMS(NAME);
     SAME2TYPES(NAME);
@@ -9,7 +14,7 @@ PRIVATE void PROCEDURE()
 	    stk->next->u.set = stk->next->u.set OPER1 stk->u.set;
 	    POP(stk);
 	} else
-	    BINARY(SET_NEWNODE, (stk->next->u.set OPER1 stk->u.set));
+	    BINARY(SET_NEWNODE, stk->next->u.set OPER1 stk->u.set);
 	return;
     case BOOLEAN_:
     case CHAR_:
@@ -20,7 +25,7 @@ PRIVATE void PROCEDURE()
 	    stk->next->op = BOOLEAN_;
 	    POP(stk);
 	} else
-	    BINARY(BOOLEAN_NEWNODE, (stk->next->u.num OPER2 stk->u.num));
+	    BINARY(BOOLEAN_NEWNODE, stk->next->u.num OPER2 stk->u.num);
 	return;
     default:
 	BADDATA(NAME);

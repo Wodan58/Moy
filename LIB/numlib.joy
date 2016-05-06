@@ -1,3 +1,8 @@
+#
+#   module  : numlib.joy
+#   version : 1.2
+#   date    : 05/06/16
+#
 (* FILE:   numlib.joy *)
 
 LIBRA
@@ -93,7 +98,7 @@ LIBRA
 *)
     newton ==		(*  Usage: guess [F] newton		*)
 	dup deriv		(* guess [F] [D]		*)
-	[ pop i abs 0.0001 > ]	(* too big ?			*)
+	[ pop i abs 0.001 > ]	(* too big ? 			*)  (* R.W. *)
 	[ [dupd] dip      	(* guess guess [F] [D]		*)
 	  dup2			(* guess guess [F] [D] [F] [D]	*)
 	  [[cleave / - ] dip]
@@ -106,6 +111,6 @@ LIBRA
     NUMLIB == "numlib.joy - numerical library\n".
 						(* end LIBRA *)
 
-"numlib  is loaded\n" putchars.
+%PUT numlib  is loaded
 
 (* END   numlib.joy *)

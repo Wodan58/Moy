@@ -1,5 +1,10 @@
+/*
+    module  : someall.c
+    version : 1.2
+    date    : 05/06/16
+*/
 /* someall.c */
-PRIVATE void PROCEDURE()
+PRIVATE void PROCEDURE(void)
 {
     Operator op;
     char *str = 0;
@@ -21,12 +26,10 @@ PRIVATE void PROCEDURE()
     case LIST_:
 	list = stk->u.lis;
 	break;
-    default:
-	BADAGGREGATE(NAME);
     }
     POP(stk);
     save = stk;
-    inside_critical++;
+    CONDITION;
     switch (op) {
     case SET_:
 	{
@@ -55,7 +58,7 @@ PRIVATE void PROCEDURE()
     case LIST_:
 	{
 	    for (cur = list; cur; cur = cur->next) {
-		stk = newnode(cur->op, cur->u, save);
+		stk = newnode(cur->op, cur->u.ptr, save);
 		exeterm(prog);
 		if (stk->u.num != INITIAL) {
 		    result = 1 - INITIAL;
@@ -64,9 +67,10 @@ PRIVATE void PROCEDURE()
 	    }
 	    break;
 	}
+    default:
+	BADAGGREGATE(NAME);
     }
-    if (--inside_critical == 0)
-	tmp_release();
+    RELEASE;
     stk = save;
     PUSH(BOOLEAN_, result);
 }

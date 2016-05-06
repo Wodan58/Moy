@@ -1,5 +1,16 @@
+/*
+    module  : rollup.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+rollup  :  X Y Z  ->  Z X Y
+Moves X and Y up, moves Z down.
+*/
 /* rollup.c */
-PRIVATE void rollup_()
+PRIVATE void rollup_(void)
 {
     Node temp, *node, *next;
 
@@ -16,7 +27,7 @@ PRIVATE void rollup_()
 	next->op = temp.op;
 	return;
     }
-    GTERNARY(temp.op, temp.u);
-    GNULLARY(next->op, next->u);
-    GNULLARY(node->op, node->u);
+    GTERNARY(temp.op, temp.u.ptr);
+    GNULLARY(next->op, next->u.ptr);
+    GNULLARY(node->op, node->u.ptr);
 }

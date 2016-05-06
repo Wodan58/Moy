@@ -1,6 +1,11 @@
+#
+#   module  : plglib.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
 (* FILE:   plglib.joy *)
 
-    "symlib" libload.
+%INCLUDE symlib.joy
 
 LIBRA
 
@@ -345,6 +350,6 @@ END; (* HIDE, end of SEMANTIC TABLEAUX *)
     PLGLIB == "plglib.joy - propositional logic library\n".
 
 							(*  end LIBRA	*)
-"plglib  is loaded\n" putchars.
+%PUT plglib  is loaded
 
 (* END  plglib.joy *)

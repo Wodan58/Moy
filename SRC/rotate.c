@@ -1,5 +1,16 @@
+/*
+    module  : rotate.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+rotate  :  X Y Z  ->  Z Y X
+Interchanges X and Z.
+*/
 /* rotate.c */
-PRIVATE void rotate_()
+PRIVATE void rotate_(void)
 {
     Node temp, *node, *next;
 
@@ -14,7 +25,7 @@ PRIVATE void rotate_()
 	next->op = temp.op;
 	return;
     }
-    GTERNARY(temp.op, temp.u);
-    GNULLARY(node->op, node->u);
-    GNULLARY(next->op, next->u);
+    GTERNARY(temp.op, temp.u.ptr);
+    GNULLARY(node->op, node->u.ptr);
+    GNULLARY(next->op, next->u.ptr);
 }

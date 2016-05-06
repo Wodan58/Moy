@@ -1,3 +1,15 @@
+/*
+    module  : tailrec.c
+    version : 1.2
+    date    : 05/06/16
+*/
+#include "interp.h"
+
+/*
+tailrec  :  [P] [T] [R1]  ->  ...
+Executes P. If that yields true, executes T.
+Else executes R1, recurses.
+*/
 /* tailrec.c */
 PRIVATE void tailrecaux(Node *first, Node *second, Node *third)
 {
@@ -6,13 +18,10 @@ PRIVATE void tailrecaux(Node *first, Node *second, Node *third)
 
 tailrec:
     save = stk;
-
-    inside_critical++;
+    CONDITION;
     exeterm(first);
     num = stk->u.num;
-    if (--inside_critical == 0)
-	tmp_release();
-
+    RELEASE;
     stk = save;
     if (num)
 	exeterm(second);
@@ -22,7 +31,7 @@ tailrec:
     }
 }
 
-PRIVATE void tailrec_()
+PRIVATE void tailrec_(void)
 {
     Node *first, *second, *third;
 
