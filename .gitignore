@@ -7,3 +7,4 @@ moy.*
 parse.c
 parse.h
 *.lib
+*.a
