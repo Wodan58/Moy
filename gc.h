@@ -6,7 +6,7 @@
 void *GC_malloc(unsigned size);
 void GC_init(void);
 void GC_gcollect(void);
-char *GC_strdup(char *str);
+char *GC_strdup(const char *str);
 void *GC_realloc(void *ptr, unsigned size);
 void *GC_malloc_atomic(unsigned size);
 
