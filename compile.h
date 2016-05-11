@@ -1,8 +1,8 @@
 /*
- *  module  : %M%
- *  version : %I%
- *  date    : %G%
- */
+    module  : compile.h
+    version : 1.1
+    date    : 05/11/16
+*/
 /* compile.h */
 
 extern int compiling;
