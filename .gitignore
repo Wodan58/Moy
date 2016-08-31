@@ -5,7 +5,4 @@ Makefile
 lexer.c
 parse.c
 parse.h
-moy.*
-*.lib
-*.a
-bdwgc
+moy.exe

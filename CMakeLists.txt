@@ -11,7 +11,6 @@ add_custom_command(OUTPUT parse.h COMMAND ${BISON_EXECUTABLE} -doparse.c parse.y
 include_directories(.)
 add_definitions(-DBIT_32)
 add_executable(moy ${BISON_MyParser_OUTPUTS} main1.c compile.c)
-target_link_libraries(moy joy gc-lib)
+target_link_libraries(moy joy /usr/local/lib/libgc-lib.a)
 add_subdirectory(src)
 add_dependencies(joy parse_h)
-add_subdirectory(bdwgc)

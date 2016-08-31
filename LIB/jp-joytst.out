@@ -54,7 +54,7 @@ newline
 joy0l :
 '
  putch 
-"joy0l :" putchars 
+"joy0l :" putchars2
 joy0l :
 [putch] step joy0l :newline 
 joy0l :
@@ -70,7 +70,7 @@ newline
 joy0l :
 '
  putch 
-"joy0l :" putchars 
+"joy0l :" putchars2 
 joy0l :
 [putch] step joy0l :newline 
 joy0l :
@@ -82,7 +82,7 @@ newline
 joy0l :
 '
  putch 
-"joy0l :" putchars 
+"joy0l :" putchars2 
 joy0l :
 [putch] step joy0l :newline 
 joy0l :

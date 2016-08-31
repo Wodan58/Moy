@@ -158,10 +158,10 @@ PUBLIC void writeterm(Node *n, FILE *stm);
 
 #define USR_NEWNODE(u,r)	newnode(USR_, u, r)
 #define ANON_FUNCT_NEWNODE(u,r)	newnode(ANON_FUNCT_, u, r)
-#define BOOLEAN_NEWNODE(u,r)	newnode(BOOLEAN_, (void *)(u), r)
+#define BOOLEAN_NEWNODE(u,r)	newnode(BOOLEAN_, (void *)(long_t)(u), r)
 #define CHAR_NEWNODE(u,r)	newnode(CHAR_, (void *)(long_t)(u), r)
-#define INTEGER_NEWNODE(u,r)	newnode(INTEGER_, (void *)(u), r)
-#define SET_NEWNODE(u,r)	newnode(SET_, (void *)(u), r)
+#define INTEGER_NEWNODE(u,r)	newnode(INTEGER_, (void *)(long_t)(u), r)
+#define SET_NEWNODE(u,r)	newnode(SET_, (void *)(long_t)(u), r)
 #define STRING_NEWNODE(u,r)	newnode(STRING_, u, r)
 #define LIST_NEWNODE(u,r)	newnode(LIST_, u, r)
 #define FLOAT_NEWNODE(u,r)	dblnode(u, r)
@@ -186,7 +186,7 @@ do {								\
 do {								\
     Node my_node;						\
     my_node.op = type;						\
-    my_node.u.ptr = (void *)(value);				\
+    my_node.u.ptr = (void *)(long_t)(value);			\
     DUPLICATE(&my_node);					\
 } while (0)
 

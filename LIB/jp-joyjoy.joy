@@ -9,7 +9,7 @@
 
 LIBRA
 
-putchars == [putch] step;
+putchars2 == [putch] step;
 
 HIDE
   cr1  ==  pop  [joy] cons;
@@ -70,7 +70,7 @@ joy0  ==
 LIBRA 
 
 joy0s  ==  (* joy0 with short trace *)
-    newline "joy0s :" putchars newline
+    newline "joy0s :" putchars2 newline
     [ [ [ joy0s		body		joy0s	 ]
 	[ []				 	 ]
 	[ pop		pop		pop	 ]
@@ -85,7 +85,7 @@ joy0s  ==  (* joy0 with short trace *)
     step;
 
 joy0l  == (* joy0 with long trace *)
-    newline "joy0l :" putchars newline
+    newline "joy0l :" putchars2 newline
     [ dup put (* long trace *)
       [ [ joy0l		body		joy0l	 ]
 	[ []				 	 ]
