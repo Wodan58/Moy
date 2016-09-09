@@ -1,15 +1,12 @@
 /*
     module  : inhas.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 /* inhas.c */
 PRIVATE void PROCEDURE(void)
 {
-#ifdef CORRECT_INHAS_COMPARE
-    int error;
-#endif
-    int found = 0;
+    int error, found = 0;
 
     TWOPARAMS(NAME);
     switch (AGGR->op) {
@@ -27,12 +24,12 @@ PRIVATE void PROCEDURE(void)
     case LIST_:
 	{
 	    Node *cur = AGGR->u.lis;
-#ifdef CORRECT_INHAS_COMPARE
-	    while (cur && (Compare(cur, ELEM, &error) || error))
-#else
-	    while (cur && cur->u.num != ELEM->u.num)
-#endif
-		cur = cur->next;
+	    if (correct_inhas_compare)
+		while (cur && (Compare(cur, ELEM, &error) || error))
+		    cur = cur->next;
+	    else
+		while (cur && cur->u.num != ELEM->u.num)
+		    cur = cur->next;
 	    found = cur != 0;
 	    break;
 	}

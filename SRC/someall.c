@@ -1,7 +1,7 @@
 /*
     module  : someall.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 /* someall.c */
 PRIVATE void PROCEDURE(void)
@@ -33,7 +33,7 @@ PRIVATE void PROCEDURE(void)
     switch (op) {
     case SET_:
 	{
-	    for (i = 0; i < SETSIZE; i++)
+	    for (i = 0; i < _SETSIZE_; i++)
 		if (set & (1 << i)) {
 		    stk = INTEGER_NEWNODE(i, save);
 		    exeterm(prog);

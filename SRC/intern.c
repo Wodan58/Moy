@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -31,15 +31,8 @@ PRIVATE void intern_(void)
     HashValue(id);
     lookup();
     if (OUTSIDE) {
-	if (location < firstlibra) {
-	    stk->u.proc = location->u.proc;
-	    stk->op = location - symtab;
-	} else {
-	    stk->u.ent = location;
-	    stk->op = USR_;
-	}
-    } else if (location < firstlibra)
-	GUNARY(location - symtab, location->u.proc);
-    else
+	stk->u.ent = location;
+	stk->op = USR_;
+    } else
 	UNARY(USR_NEWNODE, location);
 }

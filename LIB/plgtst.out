@@ -1,15 +1,22 @@
+
+
+
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [windy]   F: [raining] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [q] 
   2 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [q] 
   2 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [q] 
   2 	T: [p]   F: [r] 
@@ -18,6 +25,7 @@
   5 	T: [q]   F: [p] 
   6 	T: [q]   F: [r] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [q] 
   2 	T: [p]   F: [r] 
@@ -32,47 +40,59 @@
   11 	T: [s]   F: [q] 
   12 	T: [s]   F: [r] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [q]   F: [p] 
   2 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [r q p]   F: [s] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [r p]   F: [q] 
   2 	T: [r q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [r p]   F: [s q] 
   2 	T: [s q]   F: [r p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [q]   F: [p] 
   2 	T: [q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [r p]   F: [s q] 
   2 	T: [s q]   F: [r p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [q]   F: [r p] 
   2 	T: [q]   F: [r p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [r q] 
   2 	T: [r q]   F: [p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [r q] 
   2 	T: [q]   F: [r p] 
 	tautology
+
 	not tautology, countermodel(s):
   1 	T: [p]   F: [q] 
   2 	T: [p]   F: [r] 
@@ -97,4 +117,3 @@ false
 false
 	not tautology, countermodel(s):
   1 	T: [CEO-sells-shares traders-conspire insider-trading]   F: [shares-drop sales-drop CEO-is-sacked CEO-resigns i-trade-exposed] 
-

@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -28,7 +28,7 @@ PRIVATE void helpdetail_(void)
 	    int op;
 	    if ((op = n->op) == BOOLEAN_)
 		op = n->u.num ? TRUE_ : FALSE_;
-	    if (op == INTEGER_ && n->u.num == MAXINT)
+	    if (op == INTEGER_ && n->u.num == _MAXINT_)
 		op = MAXINT_;
 	    printf("%s  :  %s.\n%s\n", optable[op].name,
 		   optable[op].messg1, optable[op].messg2);

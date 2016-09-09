@@ -1,7 +1,7 @@
 /*
     module  : of_at.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 /* of_at.c */
 PRIVATE void PROCEDURE(void)
@@ -18,7 +18,7 @@ PRIVATE void PROCEDURE(void)
 	{
 	    int indx = INDEX->u.num;
 	    CHECKEMPTYSET(AGGR->u.set, NAME);
-	    for (i = 0; i < SETSIZE; i++)
+	    for (i = 0; i < _SETSIZE_; i++)
 		if (AGGR->u.set & (1 << i)) {
 		    if (!indx) {
 			if (OUTSIDE) {

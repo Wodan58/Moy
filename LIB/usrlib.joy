@@ -4,9 +4,7 @@
 #   date    : 04/25/16
 #
 (* FILE:  usrlib.joy  -  if it exists, then it is loaded by default *)
-
 LIBRA
-
     RAWJOY1 == "the primitives of the Joy1 system\n";
     _usrlib == true;
 
@@ -14,7 +12,6 @@ LIBRA
     myname == "Abigail Aardvark";
     myphone == 12345678;
 						etc *)
-
 HIDE
     returned == "\007\nReturned to Joy\n" putchars
 IN

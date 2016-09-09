@@ -1,0 +1,95 @@
+#
+#   module  : %M%
+#   version : %I%
+#   date    : %G%
+#
+#	Procedure voor het toevoegen van een nieuwe builtin:
+#
+#	1. Maak een .c file met daarin de nieuwe builtin, bijv. casting.c
+#	2. Voeg de .o file toe aan de makefile, bijv. casting.o
+#	3. Voeg de nieuwe builtin toe aan builtin.h, bijv. void casting_();
+#	4. Voeg de builtin toe aan eval.c, bijv. _casting en "casting"
+#	5. Voeg de builtin toe aan optable.c, bijv. casting
+#
+DEBUG = -DBIT_32
+INCL  = -I..
+OPTIM = -O3 -ffast-math -mno-red-zone -fomit-frame-pointer
+WARN  = -Wall -Wextra -Werror
+ALIGN = -fno-align-functions -fno-align-loops -fno-align-jumps -fno-align-labels
+LINK  = -fno-asynchronous-unwind-tables -fno-builtin -fno-exceptions
+
+CC = gcc
+CFLAGS = $(DEBUG) $(INCL) $(OPTIM) $(WARN) $(ALIGN) $(LINK)
+
+JOY = libjoy.a
+
+LIB = $(JOY)(abs.o) $(JOY)(acos.o) $(JOY)(all.o) $(JOY)(and.o) $(JOY)(app1.o) \
+      $(JOY)(argc.o) $(JOY)(argv.o) $(JOY)(asin.o) $(JOY)(at.o) $(JOY)(atan.o) \
+      $(JOY)(atan2.o) $(JOY)(autoput.o) $(JOY)(binary.o) $(JOY)(binrec.o) \
+      $(JOY)(body.o) $(JOY)(branch.o) $(JOY)(case.o) $(JOY)(ceil.o) \
+      $(JOY)(char.o) $(JOY)(choice.o) $(JOY)(chr.o) $(JOY)(cleave.o) \
+      $(JOY)(clock.o) $(JOY)(compare.o) $(JOY)(compare2.o) $(JOY)(concat.o) \
+      $(JOY)(cond.o) $(JOY)(condlinrec.o) $(JOY)(condnestrec.o) $(JOY)(cons.o) \
+      $(JOY)(construct.o) $(JOY)(conts.o) $(JOY)(cos.o) $(JOY)(cosh.o) \
+      $(JOY)(decode.o) $(JOY)(dip.o) $(JOY)(div.o) $(JOY)(divide.o) \
+      $(JOY)(drop.o) $(JOY)(dump.o) $(JOY)(dup.o) $(JOY)(dupd.o) \
+      $(JOY)(echo.o) $(JOY)(enconcat.o) $(JOY)(eql.o) $(JOY)(equal.o) \
+      $(JOY)(exp.o) $(JOY)(false.o) $(JOY)(fclose.o) $(JOY)(feof.o) \
+      $(JOY)(ferror.o) $(JOY)(fflush.o) $(JOY)(fget.o) $(JOY)(fgetch.o) \
+      $(JOY)(fgets.o) $(JOY)(file.o) $(JOY)(filter.o) $(JOY)(first.o) \
+      $(JOY)(float.o) $(JOY)(floor.o) $(JOY)(round.o) $(JOY)(fold.o) \
+      $(JOY)(fopen.o) $(JOY)(format.o) $(JOY)(formatf.o) $(JOY)(fput.o) \
+      $(JOY)(fputch.o) $(JOY)(fputchars.o) $(JOY)(fread.o) $(JOY)(fremove.o) \
+      $(JOY)(frename.o) $(JOY)(filetime.o) $(JOY)(frexp.o) $(JOY)(fseek.o) \
+      $(JOY)(ftell.o) $(JOY)(fwrite.o) $(JOY)(genrec.o) $(JOY)(geql.o) \
+      $(JOY)(get.o) $(JOY)(getch.o) $(JOY)(getenv.o) $(JOY)(gmtime.o) \
+      $(JOY)(greater.o) $(JOY)(has.o) $(JOY)(help1.o) $(JOY)(help2.o) \
+      $(JOY)(helpdetail.o) $(JOY)(i.o) $(JOY)(id.o) $(JOY)(ifchar.o) \
+      $(JOY)(iffile.o) $(JOY)(iffloat.o) $(JOY)(ifinteger.o) $(JOY)(iflist.o) \
+      $(JOY)(iflogical.o) $(JOY)(ifset.o) $(JOY)(ifstring.o) $(JOY)(ifte.o) \
+      $(JOY)(in.o) $(JOY)(include.o) $(JOY)(infra.o) $(JOY)(inisym.o) \
+      $(JOY)(integer.o) $(JOY)(intern.o) $(JOY)(ldexp.o) $(JOY)(leaf.o) \
+      $(JOY)(leql.o) $(JOY)(less.o) $(JOY)(linrec.o) $(JOY)(list.o) \
+      $(JOY)(localtime.o) $(JOY)(log.o) $(JOY)(log10.o) $(JOY)(logical.o) \
+      $(JOY)(makemanual.o) $(JOY)(manual.o) $(JOY)(manual2.o) $(JOY)(map.o) \
+      $(JOY)(max.o) $(JOY)(maxint.o) $(JOY)(memoryindex.o) $(JOY)(memorymax.o) \
+      $(JOY)(min.o) $(JOY)(minus.o) $(JOY)(mktime.o) $(JOY)(modf.o) \
+      $(JOY)(mul.o) $(JOY)(name.o) $(JOY)(neg.o) $(JOY)(neql.o) $(JOY)(not.o) \
+      $(JOY)(null.o) $(JOY)(nullary.o) $(JOY)(of.o) $(JOY)(opcase.o) \
+      $(JOY)(opername.o) $(JOY)(or.o) $(JOY)(ord.o) $(JOY)(plus.o) \
+      $(JOY)(pop.o) $(JOY)(popd.o) $(JOY)(pow.o) $(JOY)(pred.o) \
+      $(JOY)(primrec.o) $(JOY)(put.o) $(JOY)(putch.o) $(JOY)(putchars.o) \
+      $(JOY)(rand.o) $(JOY)(rem.o) $(JOY)(rest.o) $(JOY)(rolldown.o) \
+      $(JOY)(rolldownd.o) $(JOY)(rollup.o) $(JOY)(rollupd.o) $(JOY)(rotate.o) \
+      $(JOY)(rotated.o) $(JOY)(sametype.o) $(JOY)(casting.o) $(JOY)(set.o) \
+      $(JOY)(setautoput.o) $(JOY)(setecho.o) $(JOY)(setsize.o) \
+      $(JOY)(settracegc.o) $(JOY)(setundeferror.o) $(JOY)(sign.o) \
+      $(JOY)(sin.o) $(JOY)(sinh.o) $(JOY)(size.o) $(JOY)(small.o) \
+      $(JOY)(some.o) $(JOY)(split.o) $(JOY)(sqrt.o) $(JOY)(srand.o) \
+      $(JOY)(stack.o) $(JOY)(stderr.o) $(JOY)(stdin.o) $(JOY)(stdout.o) \
+      $(JOY)(step.o) $(JOY)(strftime.o) $(JOY)(string.o) $(JOY)(strtod.o) \
+      $(JOY)(strtol.o) $(JOY)(succ.o) $(JOY)(swap.o) $(JOY)(swapd.o) \
+      $(JOY)(swons.o) $(JOY)(symtabindex.o) $(JOY)(symtabmax.o) \
+      $(JOY)(system.o) $(JOY)(tailrec.o) $(JOY)(take.o) $(JOY)(tan.o) \
+      $(JOY)(tanh.o) $(JOY)(ternary.o) $(JOY)(time.o) $(JOY)(times.o) \
+      $(JOY)(treegenrec.o) $(JOY)(treerec.o) $(JOY)(treestep.o) $(JOY)(true.o) \
+      $(JOY)(trunc.o) $(JOY)(unary.o) $(JOY)(unary2.o) $(JOY)(unary3.o) \
+      $(JOY)(unary4.o) $(JOY)(uncons.o) $(JOY)(undeferror.o) $(JOY)(undefs.o) \
+      $(JOY)(unstack.o) $(JOY)(unswons.o) $(JOY)(user.o) $(JOY)(while.o) \
+      $(JOY)(x.o) $(JOY)(xor.o) $(JOY)(exeterm.o) $(JOY)(app11.o) \
+      $(JOY)(app12.o) $(JOY)(optable.o) $(JOY)(lexer.o) $(JOY)(symbol.o) \
+      $(JOY)(utils1.o) $(JOY)(getsym.o) $(JOY)(joy.o) $(JOY)(scan1.o) \
+      $(JOY)(initmem.o) $(JOY)(quit.o)
+
+lib: $(LIB)
+	cp libjoy.a /usr/local/lib
+
+.l.c:
+	lex $<
+	mv lexyy.c $@
+
+.c.o:
+	$(CC) -o$@ $(CFLAGS) -c $<
+
+clean:
+	rm -f *.a

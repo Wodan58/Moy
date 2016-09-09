@@ -58,7 +58,7 @@ DEFINE
 [ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]   [i r-ack]  map  putln
 [ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]   [i r-ack]  map  putln
 [ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i r-ack]  map  putln
-[ [4 0]                               ]   [i r-ack]  map.
+[ [4 0]                               ]   [i r-ack]  map  putln.
 
 # In the Towers of Hanoi puzzle the disks have to be moved
 # in a particular order. Ignoring what the target peg is,
@@ -180,7 +180,7 @@ DEFINE ack == (* I:n I:m -> I:a *)
 [ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]   [i swap ack]  map  putln
 [ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]   [i swap ack]  map  putln
 [ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i swap ack]  map  putln
-[ [4 0]                               ]   [i swap ack]  map.
+[ [4 0]                               ]   [i swap ack]  map  putln.
 
 (*
 DEFINE

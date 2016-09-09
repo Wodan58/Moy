@@ -1,52 +1,16 @@
 /*
     module  : joy.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 09/09/16
 */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include <gc.h>
+#include "memory.h"
 #include "globals1.h"
 
-static int inside_module, inside_local, inside_global;
-
-static char *keyword[] = {
-    "LIBRA", "DEFINE", "IN", "PUBLIC", "HIDE", "PRIVATE", "END", "MODULE",
-    "==", "."
-};
-
-static int value[] = {
-    JPUBLIC, JPUBLIC, JPUBLIC, JPUBLIC, JPRIVATE, JPRIVATE, END, MODULE,
-    EQUAL, END
-};
-
-int Keyword(char *str)
-{
-    int i;
-
-    for (i = 0; i < (int) (sizeof(keyword) / sizeof(keyword[0])); i++)
-	if (!strcmp(str, keyword[i])) {
-	    if (i < 4) {
-		inside_global++;
-		inside_module = inside_local = 0;
-	    } else if (i == 6 || i == 9) {
-		if (inside_global)
-		    inside_global--;
-		inside_module = inside_local = 0;
-	    } else if (i < 6)
-		inside_local = 1;
-	    else if (i == 7)
-		inside_module = 1;
-	    inside_definition = inside_module || inside_global || inside_local;
-	    return value[i];
-	}
-    yylval.str = GC_strdup(str);
-    return JSymbol;
-}
-
-static int EscVal(char *str)
+int EscVal(char *str)
 {
     int i, num;
 
@@ -85,7 +49,7 @@ char *StrVal(char *str)
     int i = 0;
     char *buf;
 
-    buf = GC_strdup(str);
+    buf = strdup(str);
     while (*str != '"')
 	if (*str != '\\')
 	    buf[i++] = *str++;

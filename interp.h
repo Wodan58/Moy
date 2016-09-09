@@ -1,7 +1,7 @@
 /*
     module  : interp.h
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 09/09/16
 */
 #ifndef INTERP_H
 #define INTERP_H
@@ -12,6 +12,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <gc.h>
+#include "memory.h"
 #include "globals1.h"
 #endif

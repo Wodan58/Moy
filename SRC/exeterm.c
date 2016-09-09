@@ -1,7 +1,7 @@
 /*
     module  : exeterm.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -43,7 +43,7 @@ PUBLIC void printfactor(Node *n, FILE *stm)
 }
 #endif
 
-#ifdef TRACK_USED_SYMBOLS
+#ifdef TRACE
 static void report_symbols(void)
 {
     Entry *n;
@@ -66,7 +66,7 @@ static void report_stats(void)
 
 void exeterm(Node *n)
 {
-#ifdef TRACK_USED_SYMBOLS
+#ifdef TRACE
     static int first;
 
     if (!first) {
@@ -107,6 +107,8 @@ void exeterm(Node *n)
 	case LIST_:
 	    DUPLICATE(n);
 	    break;
+	case SYMBOL_:
+	    break;
 	case USR_:
 	    if (!n->u.ent->u.body && undeferror)
 		execerror("definition", n->u.ent->name);
@@ -118,7 +120,7 @@ void exeterm(Node *n)
 	    break;
 	default:
 	    (*n->u.proc) ();
-#ifdef TRACK_USED_SYMBOLS
+#ifdef TRACE
 	    symtab[(int) n->op].is_used = 1;
 #endif
 	    break;

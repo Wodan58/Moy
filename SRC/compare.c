@@ -1,7 +1,7 @@
 /*
     module  : compare.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -20,6 +20,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	case SET_:
 	    break;
+	case SYMBOL_:
 	case STRING_:
 	    return strcmp(first->u.ent->name, second->u.str);
 	case LIST_:
@@ -40,6 +41,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case CHAR_:
 	case INTEGER_:
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	case FLOAT_:
@@ -58,6 +60,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	    return first->u.num - second->u.num;
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	    break;
@@ -78,6 +81,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	    return first->u.num - second->u.num;
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	    break;
@@ -98,6 +102,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	    return first->u.num - second->u.num;
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	    break;
@@ -118,6 +123,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	    break;
 	case SET_:
 	    return first->u.set - second->u.set;
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	case FLOAT_:
@@ -126,6 +132,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	    break;
 	}
 	break;
+    case SYMBOL_:
     case STRING_:
 	switch (second->op) {
 	case USR_:
@@ -136,6 +143,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	case SET_:
 	    break;
+	case SYMBOL_:
 	case STRING_:
 	    return strcmp(first->u.str, second->u.str);
 	case LIST_:
@@ -154,6 +162,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case CHAR_:
 	case INTEGER_:
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	case FLOAT_:
@@ -172,6 +181,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	    return first->u.dbl - second->u.num;
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	    break;
@@ -190,6 +200,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case CHAR_:
 	case INTEGER_:
 	case SET_:
+	case SYMBOL_:
 	case STRING_:
 	case LIST_:
 	case FLOAT_:
@@ -210,6 +221,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case INTEGER_:
 	case SET_:
 	    break;
+	case SYMBOL_:
 	case STRING_:
 	    return strcmp(opername(first->op), second->u.str);
 	case LIST_:

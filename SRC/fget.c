@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -21,6 +21,6 @@ PRIVATE void fget_(void)
 #endif
     stm = stk->u.fil;
     redirect(stm);
-    getsym();
+    sym = yylex();
     readfactor();
 }

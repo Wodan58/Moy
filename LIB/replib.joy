@@ -1,7 +1,7 @@
 #
 #   module  : replib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 09/09/16
 #
 (* FILE:   replib.joy *)
 
@@ -93,7 +93,7 @@ PUBLIC
         [ifte] cons cons cons;          # [ .. .. .. ifte ]
 
     linear == [i] _expand;
-    binary == [dip swap i] _expand
+    binary2 == [dip swap i] _expand
 
 END;     # MODULE rep
 

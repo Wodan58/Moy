@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #ifndef PARSER
 #include "parse.h"
@@ -14,6 +14,7 @@ typedef YYSTYPE Types;
 int yyparse(void);
 
 /* symbol.c */
+PUBLIC void gc_(void);
 void HashValue(char *name);
 void lookup(void);
 struct Entry *enteratom(char *name, struct Node *body);
@@ -24,11 +25,12 @@ void stoppriv(void);
 void exitpriv(struct Entry *prev);
 struct Node *dblnode(double dbl, struct Node *next);
 struct Node *newnode(Operator op, void *ptr, struct Node *next);
-void concat(struct Node *node, struct Node *next);
+struct Node *concat(struct Node *node, struct Node *next);
 struct Node *copy(struct Node *node);
 struct Node *reverse(struct Node *cur);
 void writeln(void);
-void writestack(int compile);
+void writestack(void);
+void execute(struct Node *cur);
 
 /* joy.c */
 int Keyword(char *str);

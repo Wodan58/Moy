@@ -5,7 +5,7 @@
 #
 (* FILE:  symtst.joy *)
 
-%PUT
+%PUT .
 %PUT Testing the 12 translators in the library  symlib.joy
 
 %INCLUDE usrlib.joy
@@ -102,7 +102,7 @@ DEFINE
 [concat [cons 1 [QUOTE [2 3]]] [cons 4 [QUOTE [5 6]]]]	Cam2Inf.
  
 [map [QUOTE [1 2 3 4]] [QUOTE [fact]]]			Cam2Inf.
- 
+
 [filter [QUOTE [6 7 8 9]] [QUOTE [prime]]]		Cam2Inf.
  
 						(* Infix to Polish	*)

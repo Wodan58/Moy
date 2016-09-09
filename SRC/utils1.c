@@ -1,7 +1,7 @@
 /*
     module  : utils1.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -13,35 +13,24 @@ PUBLIC void readfactor(void)
     long_t set = 0;
 
     switch (sym) {
-    case ATOM:
-	lookup();
-	if (location < firstlibra)
-	    stk = newnode(location - symtab, location->u.proc, stk);
-	else
-	    stk = newnode(USR_, location, stk);
-	return;
-    case BOOLEAN_:
-    case INTEGER_:
-    case CHAR_:
-	bucket.num = num;
-    case STRING_:
-	stk = newnode(sym, bucket.ptr, stk);
-	return;
     case FLOAT_:
-	stk = dblnode(dbl, stk);
-	return;
+	stk = dblnode(yylval.dbl, stk);
+	break;
     case '{':
-	while (getsym(), sym != '}')
+	while ((sym = yylex()) != '}')
 	    if (sym == CHAR_ || sym == INTEGER_)
-		set |= 1 << num;
+		set |= 1 << yylval.num;
 	    else
 		execerror("numeric", "set");
 	stk = newnode(SET_, (void *)set, stk);
-	return;
+	break;
     case '[':
-	getsym();
+	sym = yylex();
 	readterm();
-	return;
+	break;
+    default:
+	stk = newnode(sym, yylval.ptr, stk);
+	break;
     }
 }
 
@@ -59,7 +48,7 @@ PUBLIC void readterm(void)
 	 cur = &stk->next;
 	 stk = *cur;
 	*cur = 0;
-    } while (getsym(), sym != ']');
+    } while ((sym = yylex()) != ']');
 }
 
 PUBLIC void writefactor(Node *n, FILE *stm)
@@ -71,18 +60,21 @@ PUBLIC void writefactor(Node *n, FILE *stm)
     if (!n || n == &memory[MEMORYMAX])
 	execerror("non-empty stack", "print");
     switch (n->op) {
+    case 0:
+    case 1:
+	break;
     case BOOLEAN_:
 	fprintf(stm, "%s", n->u.num ? "true" : "false");
-	return;
+	break;
     case INTEGER_:
 	fprintf(stm, "%lld", (long long)n->u.num);
-	return;
+	break;
     case FLOAT_:
 	fprintf(stm, "%g", n->u.dbl);
-	return;
+	break;
     case SET_:
 	fprintf(stm, "{");
-	for (set = n->u.set, i = 0, j = 1; i < SETSIZE; i++, j <<= 1)
+	for (set = n->u.set, i = 0, j = 1; i < _SETSIZE_; i++, j <<= 1)
 	    if (set & j) {
 		fprintf(stm, "%d", i);
 		if ((set &= ~j) == 0)
@@ -93,7 +85,7 @@ PUBLIC void writefactor(Node *n, FILE *stm)
 	break;
     case CHAR_:
 	fprintf(stm, "'%c", (int)n->u.num);
-	return;
+	break;
     case STRING_:
 	fputc('"', stm);
 	for (p = n->u.str; *p; p++) {
@@ -102,18 +94,15 @@ PUBLIC void writefactor(Node *n, FILE *stm)
 	    fputc(*p == '\n' ? 'n' : *p, stm);
 	}
 	fputc('"', stm);
-	return;
+	break;
     case LIST_:
 	fprintf(stm, "%s", "[");
 	writeterm(n->u.lis, stm);
 	fprintf(stm, "%s", "]");
-	return;
-    case SYMBOL_:
-	fprintf(stm, "%s", n->u.str);
-	return;
+	break;
     case USR_:
 	fprintf(stm, "%s", n->u.ent->name);
-	return;
+	break;
     case FILE_:
 	if (!n->u.fil)
 	    fprintf(stm, "file:NULL");
@@ -125,13 +114,16 @@ PUBLIC void writefactor(Node *n, FILE *stm)
 	    fprintf(stm, "file:stderr");
 	else
 	    fprintf(stm, "file:%p", n->u.fil);
-	return;
-    case JSymbol:
+	break;
+    case ANON_FUNCT_:
+	fprintf(stm, "%p", n->u.proc);
+	break;
+    case SYMBOL_:
 	fprintf(stm, "%s", n->u.str);
 	break;
     default:
-	fprintf(stm, "%s", symtab[n->op].name);
-	return;
+	fprintf(stm, "%s", opername(n->op));
+	break;
     }
 }
 

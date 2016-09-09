@@ -1,7 +1,7 @@
 #
 #   module  : reptst.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 09/09/16
 #
 (* FILE:   reptst.joy *)
 
@@ -214,7 +214,7 @@ nfib-fix.
 DEFINE
     fact-lin == [null] [pop 1] [dup pred] [*] rep.linear;
     length-lin == [null] [pop 0] [rest] [succ] rep.linear;
-    nfib-bin == [small] [pop 1] [pred dup pred] [+] rep.binary;
+    nfib-bin == [small] [pop 1] [pred dup pred] [+] rep.binary2;
 
     fact-fix == fact-lin rep.fix;
     length-fix-a == length-lin rep.fix-a;
@@ -226,10 +226,10 @@ DEFINE
 
 6 nfib-fix i pop.
 
-6 nfib-bin [] [[dup put] dip] rep.fix-i i newline pop.
+6 nfib-bin [] [[dup put] dip] rep.fix-i i newline pop. newline.
 
 DEFINE
-    qsort-bin == [small] [] [uncons [>] split] [enconcat] rep.binary;
+    qsort-bin == [small] [] [uncons [>] split] [enconcat] rep.binary2;
     qsort-fix-c == qsort-bin rep.fix-c;
     qtest == qsort-fix-c i state.
 

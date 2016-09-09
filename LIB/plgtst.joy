@@ -5,9 +5,9 @@
 #
 (* FILE:   plgtst.joy *)
 
-%PUT
+%PUT .
 %PUT testing the propositional logic library in file  plglib.joy
-%PUT
+%PUT .
 
 0 __settracegc.							(* R.W. *)
 

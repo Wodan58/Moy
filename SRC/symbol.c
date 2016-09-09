@@ -1,14 +1,15 @@
 /*
     module  : symbol.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include <gc.h>
+#include "memory.h"
 #include "globals1.h"
+#include "builtin.h"
 
 PUBLIC void gc_(void)
 {
@@ -28,7 +29,7 @@ static void enterglobal(char *name)
     if (symtabindex - symtab >= SYMTABMAX)
 	execerror("index", "symbols");
     location = symtabindex++;
-    location->name = GC_strdup(name);
+    location->name = strdup(name);
     location->u.body = 0;	/* may be assigned in definition */
     location->is_unknown = 1;
     location->next = hashentry[hashvalue];
@@ -78,8 +79,7 @@ static void sym_lookup(char *name)
 		return;		/* found in local table */
 	    }
 
-    for (location = hashentry[hashvalue]; location != symtab;
-	 location = location->next)
+    for (location = hashentry[hashvalue]; location; location = location->next)
 	if (!strcmp(name, location->name)) {
 	    sym_module(name, member);
 	    return;
@@ -97,8 +97,7 @@ static void detachatom(void)
 {
     Entry *cur, *prev;
 
-    for (prev = cur = hashentry[hashvalue]; cur != symtab;
-	 prev = cur, cur = cur->next)
+    for (prev = cur = hashentry[hashvalue]; cur; prev = cur, cur = cur->next)
 	if (cur == location) {
 	    if (prev == cur)
 		hashentry[hashvalue] = cur->next;
@@ -108,7 +107,7 @@ static void detachatom(void)
 	}
 }
 
-Entry *enteratom(char *name, Node * body)
+Entry *enteratom(char *name, Node *body)
 {
     sym_lookup(name);
     if (display_enter > 0) {
@@ -118,7 +117,7 @@ Entry *enteratom(char *name, Node * body)
 	    if (symtabindex - symtab >= SYMTABMAX)
 		execerror("index", "symbols");
 	    location = symtabindex++;
-	    location->name = GC_strdup(name);
+	    location->name = strdup(name);
 	    location->u.body = 0;	/* may be assigned later */
 	}
 	location->is_local = 1;
@@ -126,10 +125,12 @@ Entry *enteratom(char *name, Node * body)
 	display[display_enter] = location;
     }
     location->is_unknown = 0;
+#if 0
     if (location < firstlibra) {
 	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", name);
 	enterglobal(name);
     }
+#endif
     location->u.body = body;
     return location;
 }
@@ -145,7 +146,7 @@ Entry *initmod(char *name)
     return location;
 }
 
-void exitmod(Entry * sym)
+void exitmod(Entry *sym)
 {
     if (!sym)
 	return;
@@ -175,7 +176,7 @@ void stoppriv(void)
     --display_enter;
 }
 
-void exitpriv(Entry * prev)
+void exitpriv(Entry *prev)
 {
     if (!prev)
 	--display_lookup;
@@ -207,7 +208,7 @@ Node *dblnode(double dbl, Node *next)
 	critical <= &critical[MEMORYMAX])
 	node = --crit_ptr;
     else {
-	node = GC_malloc(sizeof(Node));
+	node = malloc(sizeof(Node));
 #ifdef STATS
 	count_nodes();
 #endif
@@ -228,34 +229,38 @@ Node *newnode(Operator op, void *ptr, Node *next)
 	critical <= &critical[MEMORYMAX])
 	node = --crit_ptr;
     else {
-	node = GC_malloc(sizeof(Node));
+	node = malloc(sizeof(Node));
 #ifdef STATS
 	count_nodes();
 #endif
 	if (!node)
 	    execerror("memory", "allocator");
     }
-    if ((node->op = op) != JSymbol)
-	node->u.ptr = ptr;
-    else {
+    if ((node->op = op) == SYMBOL_) {
+	node->op = USR_;
 	sym_lookup(ptr);
-	if (location >= firstlibra) {
-	    node->op = USR_;
-	    node->u.ent = location;
-	} else if (location) {
-	    node->op = location - symtab;
-	    node->u.proc = location->u.proc;
+	node->u.ent = location;
+    } else {
+	node->u.ptr = ptr;
+	if (op == Symbol && optable[0].proc == id_) {
+	    node->op = node->u.num - FALSE + FALSE_;
+	    node->u.proc = optable[node->op].proc;
 	}
     }
     node->next = next;
     return node;
 }
 
-void concat(Node *node, Node *next)
+Node *concat(Node *node, Node *next)
 {
-    while (node->next)
-	node = node->next;
-    node->next = next;
+    Node *cur = node;
+
+    if (node) {
+	while (node->next)
+	    node = node->next;
+	node->next = next;
+    }
+    return cur;
 }
 
 Node *copy(Node *node)
@@ -263,7 +268,7 @@ Node *copy(Node *node)
     Node *root = 0, **cur;
 
     for (cur = &root; node; node = node->next) {
-	*cur = GC_malloc(sizeof(Node));
+	*cur = malloc(sizeof(Node));
 	**cur = *node;
 	cur = &(*cur)->next;
 	*cur = 0;
@@ -286,29 +291,30 @@ Node *reverse(Node *cur)
 
 void writeln(void)
 {
-    putchar('\n');
+    if (!writeline)
+	putchar('\n');
     fflush(stdout);
+    writeline = 0;
 }
 
-void writestack(int compile)
+void writestack(void)
 {
-    Entry *sym;
-
-    if (compile) {
-	if (compile == 1)
-	    printf("writestack(0);\n");
-	for (sym = firstlibra; sym < symtabindex; sym++)
-	    if (sym->is_expanding == 1)
-		sym->is_expanding = 0;
-	return;
-    }
     if (stk == &memory[MEMORYMAX])
-	return;
-    if (autoput == 2)
+	;
+    else if (autoput == 2)
 	writeterm(stk, stdout);
     else if (autoput == 1) {
 	writefactor(stk, stdout);
 	POP(stk);
     }
     writeln();
+}
+
+/*
+   Interprete a term
+*/
+void execute(Node *cur)
+{
+    exeterm(cur);
+    writestack();
 }

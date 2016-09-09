@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -42,7 +42,7 @@ PRIVATE void primrec_(void)
     case SET_:
 	 {
 	    long_t set = data->u.set;
-	    for (i = 0; i < SETSIZE; i++)
+	    for (i = 0; i < _SETSIZE_; i++)
 		if (set & (1 << i)) {
 		    PUSH(INTEGER_, i);
 		    num++;

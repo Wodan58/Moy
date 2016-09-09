@@ -1,7 +1,7 @@
 /*
     module  : get.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #include "interp.h"
 
@@ -12,6 +12,6 @@ Reads a factor from input and pushes it onto stack.
 /* get.c */
 PRIVATE void get_(void)
 {
-    getsym();
+    sym = yylex();
     readfactor();
 }

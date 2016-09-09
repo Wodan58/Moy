@@ -1,11 +1,9 @@
 /*
     module  : globals1.h
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/09/16
 */
 #define RUNTIME_CHECKS
-/* #define CORRECT_INHAS_COMPARE */
-/* #define TRACK_USED_SYMBOLS */
 
     /* configure */
 #define INPSTACKMAX	10
@@ -21,8 +19,8 @@
 
     /* installation dependent */
 #ifdef BIT_32
-#define SETSIZE		32
-#define MAXINT		2147483647
+#define _SETSIZE_	32
+#define _MAXINT_	2147483647
 #ifndef long_t
 typedef long		long_t;
 #endif
@@ -32,8 +30,8 @@ typedef float		real_t;
 #endif
 
 #ifdef BIT_64
-#define SETSIZE		64
-#define MAXINT		9223372036854775807LL
+#define _SETSIZE_	64
+#define _MAXINT_	9223372036854775807LL
 #ifndef long_t
 typedef long long	long_t;
 #endif
@@ -45,21 +43,10 @@ typedef double		real_t;
     /* symbols from getsym */
 #define ILLEGAL_	0
 #define COPIED_		1
-#define SYMBOL_		1
-#define USR_		2
-#define ANON_FUNCT_	3
-#define BOOLEAN_	4
-#define CHAR_		5
-#define INTEGER_	6
-#define SET_		7
-#define STRING_		8
-#define LIST_		9
-#define FLOAT_		10
-#define FILE_		11
+
 #define FALSE_		12
 #define TRUE_		13
 #define MAXINT_		14
-#define ATOM		999	/* last legal factor begin */
 
 #define PRIVATE
 #define PUBLIC
@@ -69,19 +56,17 @@ typedef double		real_t;
 
 typedef struct Node {
     Types u;
-    Operator op, type;
+    Operator op;
     struct Node *next;
 } Node;
 
 typedef struct Entry {
-    char *name, *scram;
+    char *name;
+    short mark, uniq;
     unsigned char is_module;
     unsigned char is_local;
     unsigned char is_unknown;
-    unsigned char is_expanding;
-#ifdef TRACK_USED_SYMBOLS
     unsigned char is_used;
-#endif
     union {
 	Node *body;
 	struct Entry *module_fields;
@@ -92,34 +77,35 @@ typedef struct Entry {
 
 #ifdef ALLOC
 #define CLASS
+#define INIT(x)	x
 #else
 #define CLASS extern
+#define INIT(x)
 #endif
 
 CLASS int g_argc;
 CLASS char **g_argv;
-CLASS int echoflag;
-CLASS int autoput;
+CLASS int echoflag	INIT( = INIECHOFLAG );
+CLASS int autoput	INIT( = INIAUTOPUT );
+CLASS int tracegc	INIT( = INITRACEGC );
 CLASS int undeferror;
-CLASS int tracegc;
 CLASS int startclock;		/* main         */
 CLASS int ch;			/* scanner      */
 CLASS int sym;
-CLASS long_t num;
-CLASS double dbl;
 CLASS char id[ALEN];
 CLASS int hashvalue;
-CLASS Types bucket;		/* used by NEWNODE defines */
 CLASS int display_enter;
 CLASS int display_lookup;
 
+CLASS int writeline;
+CLASS int correct_inhas_compare;
 CLASS int inside_condition;
 CLASS int inside_critical;
 CLASS int inside_definition;
 
 CLASS Entry /* symbol table */
     symtab[SYMTABMAX], *hashentry[HASHSIZE],
-    *symtabindex, *display[DISPLAYMAX], *firstlibra, /* inioptable */
+    *symtabindex INIT( = symtab ), *display[DISPLAYMAX], /* *firstlibra, */
     *location; /* getsym */
 
 CLASS Node /* dynamic memory */
@@ -134,6 +120,7 @@ register Node *stk asm("bl");
 /* Public procedures: */
 
 /* interp1.c */
+PUBLIC void execute(Node *n);
 PUBLIC void exeterm(Node *n);
 PUBLIC void inisymboltable(void); /* initialise */
 PUBLIC char *opername(int o);
@@ -146,8 +133,10 @@ PUBLIC void execerror(char *message, char *op);
 PUBLIC void inilinebuffer(void);
 PUBLIC void redirect(FILE *fp);
 PUBLIC void include(char *filnam);
+int yywrap(void);
 
 /* getsym.c */
+PUBLIC int yylex(void);
 PUBLIC void getsym(void);
 
 /* utils1.c */
@@ -302,7 +291,7 @@ do {								\
 	execerror("internal list",NAME)
 #define CHECKSETMEMBER(NODE,NAME)				\
     if ((NODE->op != INTEGER_ && NODE->op != CHAR_) ||		\
-	NODE->u.num >= SETSIZE)					\
+	NODE->u.num >= _SETSIZE_)				\
 	execerror("small numeric",NAME)
 #define CHECKEMPTYSET(SET,NAME)					\
     if (SET == 0)						\

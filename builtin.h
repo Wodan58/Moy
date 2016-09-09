@@ -98,7 +98,7 @@ void filetime_(void);		// XXX
 void fput_(void);
 void fputch_(void);
 void fputchars_(void);
-void fputchars_(void);
+void fputchars_(void);		// fputstring
 void fseek_(void);
 void ftell_(void);
 void unstack_(void);
@@ -156,9 +156,9 @@ void unary_(void);
 void unary2_(void);
 void unary3_(void);
 void unary4_(void);
-void unary2_(void);
-void unary3_(void);
-void unary4_(void);
+void unary2_(void);		// app2
+void unary3_(void);		// app3
+void unary4_(void);		// app4
 void binary_(void);
 void ternary_(void);
 void cleave_(void);

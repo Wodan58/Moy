@@ -8,7 +8,7 @@
 %INCLUDE usrlib.joy
 %INCLUDE numlib.joy
 
-%PUT
+%PUT .
 %PUT Testing lazy lists in the library lazlib.joy
 
 0 __settracegc.							(* R.W. *)

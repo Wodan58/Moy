@@ -5,9 +5,9 @@
 #
 (* FILE:   grmtst.joy *)
 
-%PUT
+%PUT .
 %PUT testing the grammar library in file  grmlib.joy
-%PUT
+%PUT .
 
 (*
 DEFINE old_in == in;
