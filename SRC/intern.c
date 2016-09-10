@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 09/10/16
 */
 #include "interp.h"
 
@@ -15,6 +15,7 @@ PRIVATE void intern_(void)
 #ifdef RUNTIME_CHECKS
     char *ptr = 0;
 #endif
+    int i;
 
     ONEPARAM("intern");
     STRING("intern");
@@ -28,6 +29,15 @@ PRIVATE void intern_(void)
     if (!ptr || *ptr)
 	execerror("valid name", id);
 #endif
+    for (i = 0; optable[i].name; i++)
+	if (!strcmp(id, optable[i].name)) {
+	    if (OUTSIDE) {
+		stk->op = i;
+		stk->u.proc = optable[i].proc;
+	    } else
+		UNARY(ANON_FUNCT_NEWNODE, optable[i].proc);
+	    return;
+	}
     HashValue(id);
     lookup();
     if (OUTSIDE) {

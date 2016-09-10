@@ -1,4 +1,4 @@
-regres: gcd24_54 modtst test tutinp jp-reprodtst mtrtst flatjoy jp-church reptst symtst jp-joytst plgtst lsptst laztst jp-nestrec grmtst
+regres: gcd24_54 modtst test1 tutinp jp-reprodtst mtrtst flatjoy jp-church reptst symtst jp-joytst plgtst lsptst laztst jp-nestrec grmtst
 
 gcd24_54:
 	../moy gcd 24 54 | diff -w - gcd.out
@@ -6,7 +6,7 @@ gcd24_54:
 modtst:
 	-../moy $@.joy | diff -w - $@.out
 
-test:
+test1:
 	../moy $@.joy | diff -w - $@.out
 
 tutinp:

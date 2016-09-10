@@ -1,8 +1,8 @@
 %{
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : parse.y
+    version : 1.4
+    date    : 09/10/16
 */
 #include <stdio.h>
 #include <time.h>
