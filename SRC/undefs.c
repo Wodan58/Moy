@@ -1,7 +1,7 @@
 /*
     module  : undefs.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -17,6 +17,6 @@ PRIVATE void undefs_(void)
 
     while (--i != symtab)
 	if (i->name[0] && i->name[0] != '_' && !i->u.body)
-	    n = newnode(STRING_, i->name, n);
+	    n = heapnode(STRING_, i->name, n);
     PUSH(LIST_, n);
 }

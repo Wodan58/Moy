@@ -1,7 +1,7 @@
 /*
     module  : symbol.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.9
+    date    : 10/19/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -186,11 +186,21 @@ void exitpriv(Entry *prev)
 
 #ifdef STATS
 static double nodes;
+static Node *min_cond_ptr = &condition[MEMORYMAX],
+            *min_crit_ptr = &critical[MEMORYMAX];
 
 static void report_nodes(void)
 {
-    fprintf(stderr, "%d symbols used\n", symtabindex - firstlibra);
-    fprintf(stderr, "%.0f nodes allocated\n", nodes);
+    size_t cond, crit, stac;
+
+    fprintf(stderr, "%d symbols used\n", (int)(symtabindex - symtab));
+    fprintf(stderr, "%.0f memory nodes\n", nodes);
+    crit = min_crit_ptr - critical;
+    fprintf(stderr, "%d critical nodes\n", (int)(MEMORYMAX - crit));
+    cond = min_cond_ptr - condition;
+    fprintf(stderr, "%d condition nodes\n", (int)(MEMORYMAX - cond));
+    stac = min_stk_ptr - memory;
+    fprintf(stderr, "%d stack nodes\n", (int)(MEMORYMAX - stac));
 }
 
 static void count_nodes(void)
@@ -200,21 +210,46 @@ static void count_nodes(void)
 }
 #endif
 
+Node *getnode(int heap)
+{
+    Node *node = 0;
+
+#ifdef STATS
+    if (stk >= memory && stk <= &memory[MEMORYMAX])
+	if (min_stk_ptr > stk)
+	    min_stk_ptr = stk;
+#endif
+    if (!inside_definition) {
+	if (!heap && inside_condition && cond_ptr > condition) {
+	    node = --cond_ptr;
+#ifdef STATS
+	    if (min_cond_ptr > node)
+		min_cond_ptr = node;
+#endif
+	    return node;
+	}
+	if (crit_ptr > critical) {
+	    node = --crit_ptr;
+#ifdef STATS
+	    if (min_crit_ptr > node)
+		min_crit_ptr = node;
+#endif
+	    return node;
+	}
+    }
+    node = malloc(sizeof(Node));
+#ifdef STATS
+    count_nodes();
+#endif
+    if (!node)
+	execerror("memory", "allocator");
+    return node;
+}
+
 Node *dblnode(double dbl, Node *next)
 {
-    Node *node;
+    Node *node = getnode(0);
 
-    if (inside_critical && crit_ptr > critical &&
-	critical <= &critical[MEMORYMAX])
-	node = --crit_ptr;
-    else {
-	node = malloc(sizeof(Node));
-#ifdef STATS
-	count_nodes();
-#endif
-	if (!node)
-	    execerror("memory", "allocator");
-    }
     node->op = FLOAT_;
     node->u.dbl = dbl;
     node->next = next;
@@ -223,19 +258,8 @@ Node *dblnode(double dbl, Node *next)
 
 Node *newnode(Operator op, void *ptr, Node *next)
 {
-    Node *node;
+    Node *node = getnode(0);
 
-    if (inside_critical && crit_ptr > critical &&
-	critical <= &critical[MEMORYMAX])
-	node = --crit_ptr;
-    else {
-	node = malloc(sizeof(Node));
-#ifdef STATS
-	count_nodes();
-#endif
-	if (!node)
-	    execerror("memory", "allocator");
-    }
     if ((node->op = op) == SYMBOL_) {
 	node->op = USR_;
 	sym_lookup(ptr);
@@ -247,6 +271,16 @@ Node *newnode(Operator op, void *ptr, Node *next)
 	    node->u.proc = optable[node->op].proc;
 	}
     }
+    node->next = next;
+    return node;
+}
+
+Node *heapnode(Operator op, void *ptr, Node *next)
+{
+    Node *node = getnode(1);
+
+    node->op = op;
+    node->u.ptr = ptr;
     node->next = next;
     return node;
 }
@@ -291,23 +325,28 @@ Node *reverse(Node *cur)
 
 void writeln(void)
 {
-    if (!writeline)
-	putchar('\n');
+    putchar('\n');
     fflush(stdout);
-    writeline = 0;
 }
 
-void writestack(void)
+void writestack()
 {
+    int written = 0;
+
     if (stk == &memory[MEMORYMAX])
 	;
-    else if (autoput == 2)
+    else if (autoput == 2) {
 	writeterm(stk, stdout);
-    else if (autoput == 1) {
+	written = 1;
+    } else if (autoput == 1) {
 	writefactor(stk, stdout);
 	POP(stk);
+	written = 1;
     }
-    writeln();
+    if (stk == &memory[MEMORYMAX])
+	crit_ptr = &critical[MEMORYMAX];
+    if (written)
+	writeln();
 }
 
 /*

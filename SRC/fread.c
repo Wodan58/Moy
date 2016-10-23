@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.4
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -23,8 +23,8 @@ PRIVATE void fread_(void)
     count = stk->u.num;
     POP(stk);
     FILE("fread");
-    buf = GC_malloc(count);
+    buf = malloc(count);
     for (i = fread(buf, 1, count, stk->u.fil) - 1; i >= 0; i--)
-	cur = newnode(INTEGER_, (void *)(long_t)buf[i], cur);
+	cur = heapnode(INTEGER_, (void *)(long_t)buf[i], cur);
     PUSH(LIST_, cur);
 }

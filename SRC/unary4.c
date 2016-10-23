@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.5
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -12,38 +12,71 @@ Executes P four times, with Xi, returns Ri (i = 1..4).
 /* unary4.c */
 PRIVATE void unary4_(void)
 {
-    Node *prog, *first, *second, *third, *save, *result[4];
+    Node *prog, first, second, third, *top, result[4];
+#ifdef ARITY
+    int d;
+#endif
 
     FIVEPARAMS("unary4");
     ONEQUOTE("unary4");
     prog = stk->u.lis;
     POP(stk);
-    third = stk;
+    third = *stk;
     POP(stk);
-    second = stk;
+    second = *stk;
     POP(stk);
-    first = stk;
+    first = *stk;
     POP(stk);
-    save = stk->next;
-    inside_condition++;
+    top = stk->next;
+#ifdef ARITY
+    copy_(d = arity(prog));
+#else
+    CONDITION;
+#endif
     exeterm(prog);
-    result[0] = stk;
-    stk = save;
-    DUPLICATE(first);
+    result[0] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&first);
+#ifdef ARITY
+    copy_(d);
+#else
+    CONDITION;
+#endif
     exeterm(prog);
-    result[1] = stk;
-    stk = save;
-    DUPLICATE(second);
+    result[1] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&second);
+#ifdef ARITY
+    copy_(d);
+#else
+    CONDITION;
+#endif
     exeterm(prog);
-    result[2] = stk;
-    stk = save;
-    DUPLICATE(third);
+    result[2] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&third);
+#ifdef ARITY
+    copy_(d);
+#else
+    CONDITION;
+#endif
     exeterm(prog);
-    inside_condition--;
-    result[3] = stk;
-    stk = save;
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
-    DUPLICATE(result[2]);
-    DUPLICATE(result[3]);
+    result[3] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&result[0]);
+    DUPLICATE(&result[1]);
+    DUPLICATE(&result[2]);
+    DUPLICATE(&result[3]);
 }

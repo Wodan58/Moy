@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -26,7 +26,7 @@ PRIVATE void fwrite_(void)
 #else
 	;
 #endif
-    buf = GC_malloc(length);
+    buf = malloc(length);
     for (n = stk->u.lis, i = 0; n; n = n->next, i++)
 	buf[i] = n->u.num;
     POP(stk);

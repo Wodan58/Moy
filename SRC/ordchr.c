@@ -1,7 +1,7 @@
 /*
     module  : ordchr.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 /* ordchr.c */
 PRIVATE void PROCEDURE(void)
@@ -11,7 +11,7 @@ PRIVATE void PROCEDURE(void)
     if (OUTSIDE)
 	stk->op = RESULTTYP;
     else
-	stk = newnode(RESULTTYP, stk->u.ptr, stk->next);
+	GNULLARY(RESULTTYP, stk->u.ptr);
 }
 
 #undef PROCEDURE

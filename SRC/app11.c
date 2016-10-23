@@ -1,7 +1,7 @@
 /*
     module  : app11.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -14,11 +14,10 @@ PRIVATE void app11_(void)
     THREEPARAMS("app11");
     ONEQUOTE("app11");
     app1_();
-    if (inside_condition || inside_critical)
-	stk->next = stk->next->next;
-    else {
+    if (OUTSIDE) {
 	stk[1].op = stk->op;
 	stk[1].u = stk->u;
 	++stk;
-    }
+    } else
+	stk->next = stk->next->next;
 }

@@ -1,7 +1,7 @@
 /*
     module  : app12.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -13,13 +13,12 @@ PRIVATE void app12_(void)
 {
     THREEPARAMS("app12");
     unary2_();
-    if (inside_condition || inside_critical)
-	stk->next->next = stk->next->next->next;
-    else {
+    if (OUTSIDE) {
 	stk[2].op = stk[1].op;
 	stk[2].u = stk[1].u;
 	stk[1].op = stk->op;
 	stk[1].u = stk->u;
 	++stk;
-    }
+    } else
+	stk->next->next = stk->next->next->next;
 }

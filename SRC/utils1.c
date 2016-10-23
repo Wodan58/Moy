@@ -1,12 +1,13 @@
 /*
     module  : utils1.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.12
+    date    : 10/19/16
 */
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
 #include "globals1.h"
+#include "memory.h"
+#include "compile.h"
 
 PUBLIC void readfactor(void)
 {
@@ -14,7 +15,7 @@ PUBLIC void readfactor(void)
 
     switch (sym) {
     case FLOAT_:
-	stk = dblnode(yylval.dbl, stk);
+	stk = FLOAT_NEWNODE(yylval.dbl, stk);
 	break;
     case '{':
 	while ((sym = yylex()) != '}')
@@ -22,14 +23,14 @@ PUBLIC void readfactor(void)
 		set |= 1 << yylval.num;
 	    else
 		execerror("numeric", "set");
-	stk = newnode(SET_, (void *)set, stk);
+	stk = SET_NEWNODE(set, stk);
 	break;
     case '[':
 	sym = yylex();
 	readterm();
 	break;
     default:
-	stk = newnode(sym, yylval.ptr, stk);
+	GNULLARY(sym, yylval.ptr);
 	break;
     }
 }
@@ -38,7 +39,7 @@ PUBLIC void readterm(void)
 {
     Node **cur;
 
-    stk = newnode(LIST_, 0, stk);
+    stk = LIST_NEWNODE(0, stk);
     if (sym == ']')
 	return;
     cur = &stk->u.lis;
@@ -51,30 +52,31 @@ PUBLIC void readterm(void)
     } while ((sym = yylex()) != ']');
 }
 
-PUBLIC void writefactor(Node *n, FILE *stm)
+PUBLIC void writefactor(Node *node, FILE *stm)
 {
+    static int in_quot;
     char *p;
     int i, j;
     long_t set;
 
-    if (!n || n == &memory[MEMORYMAX])
+    if (!node || node == &memory[MEMORYMAX])
 	execerror("non-empty stack", "print");
-    switch (n->op) {
+    switch (node->op) {
     case 0:
-    case 1:
+	fprintf(stm, "%s", node->u.str);
 	break;
     case BOOLEAN_:
-	fprintf(stm, "%s", n->u.num ? "true" : "false");
+	fprintf(stm, "%s", node->u.num ? "true" : "false");
 	break;
     case INTEGER_:
-	fprintf(stm, "%lld", (long long)n->u.num);
+	fprintf(stm, "%lld", (long long)node->u.num);
 	break;
     case FLOAT_:
-	fprintf(stm, "%g", n->u.dbl);
+	fprintf(stm, "%g", node->u.dbl);
 	break;
     case SET_:
 	fprintf(stm, "{");
-	for (set = n->u.set, i = 0, j = 1; i < _SETSIZE_; i++, j <<= 1)
+	for (set = node->u.set, i = 0, j = 1; i < _SETSIZE_; i++, j <<= 1)
 	    if (set & j) {
 		fprintf(stm, "%d", i);
 		if ((set &= ~j) == 0)
@@ -84,11 +86,11 @@ PUBLIC void writefactor(Node *n, FILE *stm)
 	fprintf(stm, "}");
 	break;
     case CHAR_:
-	fprintf(stm, "'%c", (int)n->u.num);
+	fprintf(stm, "'%c", (int)node->u.num);
 	break;
     case STRING_:
 	fputc('"', stm);
-	for (p = n->u.str; *p; p++) {
+	for (p = node->u.str; *p; p++) {
 	    if (*p == '"' || *p == '\\' || *p == '\n')
 		fputc('\\', stm);
 	    fputc(*p == '\n' ? 'n' : *p, stm);
@@ -96,42 +98,76 @@ PUBLIC void writefactor(Node *n, FILE *stm)
 	fputc('"', stm);
 	break;
     case LIST_:
+	in_quot++;
 	fprintf(stm, "%s", "[");
-	writeterm(n->u.lis, stm);
+	writeterm(node->u.lis, stm);
 	fprintf(stm, "%s", "]");
+	in_quot--;
 	break;
     case USR_:
-	fprintf(stm, "%s", n->u.ent->name);
+	if (node->unmark)
+	    fprintf(stm, "`");
+	fprintf(stm, "%s", node->u.ent->name);
 	break;
     case FILE_:
-	if (!n->u.fil)
+	if (!node->u.fil)
 	    fprintf(stm, "file:NULL");
-	else if (n->u.fil == stdin)
+	else if (node->u.fil == stdin)
 	    fprintf(stm, "file:stdin");
-	else if (n->u.fil == stdout)
+	else if (node->u.fil == stdout)
 	    fprintf(stm, "file:stdout");
-	else if (n->u.fil == stderr)
+	else if (node->u.fil == stderr)
 	    fprintf(stm, "file:stderr");
 	else
-	    fprintf(stm, "file:%p", n->u.fil);
+	    fprintf(stm, "file:%p", node->u.fil);
 	break;
     case ANON_FUNCT_:
-	fprintf(stm, "%p", n->u.proc);
+	fprintf(stm, "%p", node->u.proc);
 	break;
     case SYMBOL_:
-	fprintf(stm, "%s", n->u.str);
+	if (node->unmark)
+	    fprintf(stm, "`");
+	fprintf(stm, "%s", node->u.str);
 	break;
     default:
-	fprintf(stm, "%s", opername(n->op));
+	if (node->unmark)
+	    fprintf(stm, "`");
+	fprintf(stm, "%s", opername(node->op));
 	break;
     }
 }
 
-PUBLIC void writeterm(Node *n, FILE *stm)
+PUBLIC void writeterm(Node *node, FILE *stm)
 {
-    while (n && n != &memory[MEMORYMAX]) {
-	writefactor(n, stm);
-	if ((n = n->next) != 0)
+    while (node && node != &memory[MEMORYMAX]) {
+	writefactor(node, stm);
+	if ((node = node->next) != 0)
 	    fprintf(stm, " ");
     }
+}
+
+PUBLIC Node *copyterm(Node *node)
+{
+    Entry *sym;
+    Node *root = 0, **cur;
+
+    for (cur = &root; node; node = node->next) {
+	*cur = malloc(sizeof(Node));
+	**cur = *node;
+	(*cur)->next = 0;
+	if (node->op == USR_) {
+	    sym = node->u.ent;
+	    if (sym->u.body) {
+		if (!sym->is_used) {
+		    sym->is_used = 1;
+		    **cur = *copyterm(sym->u.body);
+		} else if (!sym->uniq)
+		    sym->uniq = ++identifier;
+	    }
+	}
+	do
+	    cur = &(*cur)->next;
+	while (*cur);
+    }
+    return root;
 }

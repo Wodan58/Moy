@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.2
-    date    : 09/09/16
+    version : 1.12
+    date    : 10/17/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -16,6 +16,25 @@
 #define Q(x, y)		utstring_printf(str, x, y)
 #define R(x, y, z)	utstring_printf(str, x, y, z)
 #define S(x, y, z, w)	utstring_printf(str, x, y, z, w)
+
+char *scramble(char *str)
+{
+    int i;
+    char *ptr = str;
+
+    for (i = 0; str[i]; i++)
+	if (isalnum(str[i]) || str[i] == '-' || str[i] == '_')
+	    ;
+	else
+	    return "op";
+    if (strchr(ptr, '-')) {
+	ptr = strdup(ptr);
+	for (i = 0; ptr[i]; i++)
+	    if (ptr[i] == '-')
+		ptr[i] = '_';
+    }
+    return ptr;
+}
 
 char *CorrectOpername(int op)
 {
@@ -136,9 +155,6 @@ void PrintMember(Node *cur, int list, int *pindex, UT_string *str)
     if (!cur)
 	return;
     switch (cur->op) {
-    case 0:
-    case 1:
-	break;
     case USR_:
 	sym = cur->u.ent;
 	if (!sym->u.body) {
@@ -166,7 +182,7 @@ void PrintMember(Node *cur, int list, int *pindex, UT_string *str)
     case INTEGER_:
 	if (!type)
 	    type = "INTEGER_";
-	R(" [%d].u.num=%d,", index, cur->u.num);
+	R(" [%d].u.num=%lld,", index, (long long)cur->u.num);
 	R(" [%d].op=%s,", index, type);
 	if (cur->next)
 	    S(" [%d].next=L%d+%d,", index, list, index + 1);
@@ -197,7 +213,7 @@ void PrintMember(Node *cur, int list, int *pindex, UT_string *str)
 	    S(" [%d].next=L%d+%d,", index, list, index+1 + ListLen(cur->u.ptr));
 	P("\n");
 	*pindex = index + 1;
-	for (cur = reverse(copy(cur->u.lis)); cur; cur = cur->next)
+	for (cur = cur->u.lis; cur; cur = cur->next)
 	    PrintMember(cur, list, pindex, str);
 	break;
     default:
@@ -211,28 +227,26 @@ void PrintMember(Node *cur, int list, int *pindex, UT_string *str)
     }
 }
 
+static int list;
+
 int PrintFirstList(Node *cur, UT_string *str)
 {
-    static int temp;
     int index = 0;
 
-    while (cur->next)
-	cur = cur->next;
-    Q("static Node N%d[1] = {\n", ++temp);
-    PrintMember(cur, temp, &index, str);
+    Q("static Node L%d[1] = {\n", ++list);
+    PrintMember(cur, list, &index, str);
     P("};\n");
-    return temp;
+    return list;
 }
 
-int PrintList(Node *cur, UT_string *str)
+void PrintList(Node *cur, UT_string *str)
 {
     if (!cur)
 	P("PUSH(LIST_, 0);\n");
     else {
-	static int list;
 	int index = 0, leng = ListLen(cur);
 	R("static Node L%d[%d] = {\n", ++list, leng);
-	for (cur = reverse(copy(cur)); cur; cur = cur->next)
+	for (; cur; cur = cur->next)
 	    PrintMember(cur, list, &index, str);
 	Q("};\nPUSH(LIST_, L%d);\n", list);
     }
@@ -240,6 +254,7 @@ int PrintList(Node *cur, UT_string *str)
 
 void PrintFactor(Node *node, UT_string *str)
 {
+    char *name;
     Entry *sym;
 
     if (!node)
@@ -247,20 +262,29 @@ void PrintFactor(Node *node, UT_string *str)
     switch (node->op) {
     case 0:
 	Q("%s", node->u.str);
-    case 1:
 	break;
     case USR_:
 	sym = node->u.ent;
-	R("%s_%d();", scramble(sym->name), sym->uniq);
+	if (!sym->u.body)
+	    Q("PUSH(SYMBOL_, \"%s\");", sym->name);
+	else {
+	    if (!sym->uniq)
+		sym->uniq = ++identifier;
+	    name = scramble(sym->name);
+	    if (node->unmark)
+		R("PUSH(ANON_FUNCT_, %s_%d);", name, sym->uniq);
+	    else
+		R("%s_%d();", name, sym->uniq);
+	}
 	break;
     case BOOLEAN_:
-	Q("PUSH(BOOLEAN_, %ld);", (long) node->u.num);
+	Q("PUSH(BOOLEAN_, %d);", (int)node->u.num);
 	break;
     case CHAR_:
-	Q("PUSH(CHAR_, %ld);", (long) node->u.num);
+	Q("PUSH(CHAR_, %d);", (int)node->u.num);
 	break;
     case INTEGER_:
-	Q("PUSH(INTEGER_, %ld);", (long) node->u.num);
+	Q("PUSH(INTEGER_, %lld);", (long long)node->u.num);
 	break;
     case FLOAT_:
 	Q("FLOAT_PUSH(%g);", node->u.dbl);
@@ -269,13 +293,17 @@ void PrintFactor(Node *node, UT_string *str)
 	Q("PUSH(STRING_, %s);", PrintString(node->u.str));
 	break;
     case SET_:
-	Q("PUSH(SET_, %ld);", (long) node->u.set);
+	Q("PUSH(SET_, %lld);", (long long)node->u.set);
 	break;
     case LIST_:
 	PrintList(node->u.lis, str);
 	break;
     default:
-	Q("%s_();", CorrectOpername(node->op));
+	name = CorrectOpername(node->op);
+	if (node->unmark)
+	    Q("PUSH(ANON_FUNCT_, %s_);", name);
+	else
+	    Q("%s_();", name);
 	break;
     }
 }

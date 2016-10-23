@@ -1,7 +1,7 @@
 /*
     module  : main2.c
-    version : 1.2
-    date    : 09/09/16
+    version : 1.5
+    date    : 10/21/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,11 +11,17 @@
 #include <time.h>
 #define ALLOC
 #include "globals1.h"
+#include "builtin.h"
 
 extern FILE *yyin, *yyout;
 
 /* inisymboltable */
-struct optable_t optable[1];
+struct optable_t optable[] = {
+{"quit",	quit_,	"->",	" ", "Exit from Joy."},
+{0, id_, "->", " ", "->"}
+};
+
+int identifier;
 
 int joy_main();
 
@@ -31,10 +37,6 @@ int main(int argc, char **argv)
     g_argv = argv;
     yyin = stdin;
     yyout = stdout;
-    if (argc > 1 && !freopen(argv[1], "r", stdin)) {
-	fprintf(stderr, "failed to open the file '%s'.\n", argv[1]);
-	exit(1);
-    }
     inilinebuffer();
     startclock = clock();
     correct_inhas_compare = 1;

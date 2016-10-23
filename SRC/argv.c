@@ -1,7 +1,7 @@
 /*
     module  : argv.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -16,6 +16,6 @@ PRIVATE void argv_(void)
     Node *cur = 0;
 
     for (i = g_argc - 1; i >= 0; i--)
-	cur = newnode(STRING_, g_argv[i], cur);
+	cur = heapnode(STRING_, g_argv[i], cur);
     PUSH(LIST_, cur);
 }

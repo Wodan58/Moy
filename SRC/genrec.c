@@ -1,7 +1,7 @@
 /*
     module  : genrec.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.6
+    date    : 10/16/16
 */
 #include "interp.h"
 
@@ -14,25 +14,31 @@ Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 PRIVATE void genrecaux(void)
 {
     int num;
-    Node buf, *prog, *save;
+    Node temp, *prog, *save;
 
-    buf = *stk;
-    prog = &buf;
+    temp = *stk;
+    prog = stk->u.lis->u.lis;
     POP(stk);
     save = stk;
+#ifdef ARITY
+    copy_(arity(prog));
+#else
     CONDITION;
-    exeterm(prog->u.lis->u.lis);
+#endif
+    exeterm(prog);
     num = stk->u.num;
-    RELEASE;
     stk = save;
+#ifndef ARITY
+    RELEASE;
+#endif
     if (num)
-	exeterm(prog->u.lis->next->u.lis);
+	exeterm(temp.u.lis->next->u.lis);
     else {
-	exeterm(prog->u.lis->next->next->u.lis);
-	PUSH(LIST_, prog->u.lis);
-	PUSH(LIST_, ANON_FUNCT_NEWNODE(genrecaux, 0));
+	exeterm(temp.u.lis->next->next->u.lis);
+	PUSH(LIST_, temp.u.lis);
+	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(genrecaux, 0));
 	cons_();
-	exeterm(prog->u.lis->next->next->next);
+	exeterm(temp.u.lis->next->next->next);
     }
 }
 

@@ -1,8 +1,9 @@
 /*
     module  : condnestrec.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.5
+    date    : 10/04/16
 */
+#include <assert.h>
 #include "interp.h"
 
 /*
@@ -17,17 +18,25 @@ consecutive [Ri] (n > 3 would be exceptional.)
 PRIVATE void condnestrecaux(Node *root)
 {
     int num = 0;
-    Node *cur, *save = stk;
+    Node *cur, *list, *save;
 
-    CONDITION;
     for (cur = root; cur && cur->next; cur = cur->next) {
+	list = cur->u.lis->u.lis;
+	save = stk;
+#ifdef ARITY
+	copy_(arity(list));
+#else
+	CONDITION;
+#endif
+	exeterm(list);
+	num = stk->u.num;
 	stk = save;
-	exeterm(cur->u.lis->u.lis);
-	if ((num = stk->u.num) != 0)
+#ifndef ARITY
+	RELEASE;
+#endif
+	if (num)
 	    break;
     }
-    RELEASE;
-    stk = save;
     cur = num ? cur->u.lis->next : cur->u.lis;
     exeterm(cur->u.lis);
     for (cur = cur->next; cur; cur = cur->next) {

@@ -1,7 +1,7 @@
 /*
     module  : eval.c
-    version : 1.2
-    date    : 09/09/16
+    version : 1.17
+    date    : 10/21/16
 */
 #include <stdio.h>
 #include <ctype.h>
@@ -11,46 +11,99 @@
 #include "globals1.h"
 #include "compile.h"
 
+// #define DEBUG
+// #define TRACE
+
 #define P(x)		utstring_printf(str, x)
 #define Q(x, y)		utstring_printf(str, x, y)
-
-static UT_string *declhdr, *program, *library;
+#define R(x, y, z)	utstring_printf(str, x, y, z)
 
 void EvalPrintTerm(Node *root, UT_string *str);
 
-/*
-    Evaluate must be present for all builtins that use exeterm
-*/
-int evaluate(Node *cur)
-{
-    int list;
-    Entry *sym;
-    UT_string *str;
-    short op, changed = 0;
-    Node *first, *second, *third, *fourth;
+enum {
+    t_BOOLEAN = BOOLEAN_ + FALSE - FALSE_,
+    t_CHAR,
+    t_INTEGER,
+    t_FLOAT,
+    t_USR,
+    t_SYMBOL,
+    t_STRING,
+    t_SET,
+    t_LIST,
+    t_FILE,
+    t_ANON_FUNCT
+};
 
-    if (!cur)
-	return changed;
-    if (cur->op == USR_) {
-	sym = cur->u.ent;
-	if (sym->u.body) {
-	    if (!sym->is_used) {
-		cur->op = changed = sym->is_used = 1;
-		cur->next = concat(copy(sym->u.body), cur->next);
-	    } else if (!sym->uniq)
-		sym->uniq = ++identifier;
-	}
-	return changed;
-    }
-    op = cur->op + FALSE - FALSE_;
+#ifdef DEBUG
+static char *datatype[] = {
+    "BOOLEAN",
+    "CHAR",
+    "INTEGER",
+    "FLOAT",
+    "USR",
+    "SYMBOL",
+    "STRING",
+    "SET",
+    "LIST",
+    "FILE",
+    "ANON_FUNCT"
+};
+#endif
+
+/*
+    optimize must be present for all builtins that use exeterm
+*/
+void optimize(Node *node, UT_string *library)
+{
+#ifdef ARITY
+    int d;
+#endif
+    int list, op;
+    UT_string *str;
+    Node *cur, *first, *second, *third, *fourth;
+
+    if (!node || !node->op)
+	return;
+    /* t_USR = 263 + 275 - 12 = 526 */
+    op = node->op + FALSE - FALSE_;
+
+#ifdef DEBUG
+    if (node->op <= 231)
+	fprintf(stderr, "eval: %s\n", optable[node->op].name);
+    else if (op >= t_BOOLEAN && op <= t_ANON_FUNCT)
+	fprintf(stderr, "eval: %s\n", datatype[op - t_BOOLEAN]);
+    else
+	fprintf(stderr, "eval: %d\n", node->op);
+#endif
+
     switch (op) {
+    case t_USR:
+	utstring_new(str);
+	Entry *sym = node->u.ent;
+	if (!sym->u.body)
+	    Q("PUSH(SYMBOL_, \"%s\");", sym->name);
+	else {
+	    if (!sym->uniq)
+		sym->uniq = ++identifier;
+	    char *name = scramble(sym->name);
+	    if (node->unmark)
+		R("PUSH(ANON_FUNCT_, %s_%d);", name, sym->uniq);
+	    else {
+		R("void %s_%d();", name, sym->uniq);
+		R("%s_%d();", name, sym->uniq);
+	    }
+	}
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	break;
+
     case BINREC:
     {
 	int my_ident;
 #ifdef TRACE
 	fprintf(stderr, "binrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((fourth = node->next) == 0)
 	    break;
 	if ((third = fourth->next) == 0)
 	    break;
@@ -67,666 +120,877 @@ int evaluate(Node *cur)
 	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void binrec_%d();", my_ident = ++identifier);
 	Q("binrec_%d();", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = first->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 
 	utstring_new(str);
 	Q("void binrec_%d()", my_ident);
-	P("{ int num; Node node, *save = stk; CONDITION;");
+	P("{ int num; Node *save, temp;");
+	P("save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
 	EvalPrintTerm(first->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (num) {");
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (num) {");
 	EvalPrintTerm(second->u.lis, str);
 	P("} else {");
 	EvalPrintTerm(third->u.lis, str);
-	P("node = *stk; POP(stk);");
+	P("temp = *stk; POP(stk);");
 	Q("binrec_%d();", my_ident);
-	P("DUPLICATE(&node);");
+	P("DUPLICATE(&temp);");
 	Q("binrec_%d();", my_ident);
 	EvalPrintTerm(fourth->u.lis, str);
 	P("} }");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
-    } 
+    }
+
     case CASE:
+    {
 #ifdef TRACE
 	fprintf(stderr, "case\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("{ int num = 0; for (;;) {");
-	for (first = reverse(copy(fourth->u.lis)); first && first->next;
-		first = first->next) {
-	    list = PrintFirstList(first->u.lis, str);
-	    Q("if (!Compare(N%d, stk, &error) && !error) {", list);
-	    P("POP(stk);");
-	    second = reverse(copy(first->u.lis));
-	    EvalPrintTerm(reverse(copy(second->next)), str);
+	for (cur = first->u.lis; cur && cur->next; cur = cur->next) {
+	    list = PrintFirstList(cur->u.lis, str);
+	    Q("if (!Compare(L%d, stk, &error) && !error) { POP(stk);", list);
+	    EvalPrintTerm(cur->u.lis->next, str);
 	    P("num = 1; break; }");
 	}
 	P("break; } if (!num) {");
-	EvalPrintTerm(first->u.lis, str);
+	EvalPrintTerm(cur->u.lis, str);
 	P("} }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case I:
-    case APP1:
+    {
 #ifdef TRACE
 	fprintf(stderr, "i\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case X:
+    {
 #ifdef TRACE
 	fprintf(stderr, "x\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	PrintFactor(fourth, str);
+	PrintFactor(first, str);
 	P("x_();");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case DIP:
+    {
 #ifdef TRACE
 	fprintf(stderr, "dip\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node save = *stk; POP(stk);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("DUPLICATE(&save); }");
+	P("{ Node temp = *stk; POP(stk);");
+	EvalPrintTerm(first->u.lis, str);
+	P("DUPLICATE(&temp); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case CONSTRUCT:
+    {
 #ifdef TRACE
 	fprintf(stderr, "construct\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *save, *root = stk; inside_condition++;");
-	EvalPrintTerm(third->u.lis, str);
-	P("save = stk;");
-	for (first = reverse(copy(fourth->u.lis)); first; first = first->next) {
-	    P("stk = save;");
-	    EvalPrintTerm(first->u.lis, str);
-	    P("root = newnode(stk->op, stk->u.ptr, root);");
+	P("{ Node *root = 0, *save[2];");
+	P("save[0] = stk;");
+	EvalPrintTerm(first->u.lis, str);
+	for (cur = second->u.lis; cur; cur = cur->next) {
+	    P("save[1] = stk;");
+#ifdef ARITY
+	    if ((d = arity(cur->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    EvalPrintTerm(cur->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("root = heapnode(stk->op, stk->u.ptr, root);");
+	    P("stk = save[1];");
 	}
-	P("inside_condition--; stk = root; }");
+	P("stk = save[0];");
+	P("while (root) { DUPLICATE(root); root = root->next; } }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case NULLARY:
+    {
 #ifdef TRACE
 	fprintf(stderr, "nullary\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *top = stk, *node; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
+	P("{ Node *top, *save;");
+	P("top = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
 	P("if (!stk) execerror(\"value to push\", \"nullary\");");
-	P("node = stk; stk = top; DUPLICATE(node); }");
+	P("save = stk; stk = top; DUPLICATE(save); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case UNARY:
+    {
 #ifdef TRACE
 	fprintf(stderr, "unary\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *top = stk->next, *node; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
+	P("{ Node *top, *save;");
+	P("top = stk->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
 	P("if (!stk) execerror(\"value to push\", \"unary\");");
-	P("node = stk; stk = top; DUPLICATE(node); }");
+	P("save = stk; stk = top; DUPLICATE(save); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case UNARY2:
+    {
 #ifdef TRACE
 	fprintf(stderr, "unary2\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *parm = stk, *save, *result[2];");
-	P("POP(stk); save = stk->next; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[0] = stk; stk = save; DUPLICATE(parm);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--; result[1] = stk; stk = save;");
-	P("DUPLICATE(result[0]); DUPLICATE(result[1]); }");
+	P("{ Node temp, *top, result[2];");
+	P("temp = *stk; POP(stk); top = stk->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[0] = *stk; stk = top; DUPLICATE(&temp);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[1] = *stk; stk = top;");
+	P("DUPLICATE(&result[0]); DUPLICATE(&result[1]); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case UNARY3:
+    {
 #ifdef TRACE
 	fprintf(stderr, "unary3\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *first, *second = stk, *save, *result[3]; POP(stk);");
-	P("first = stk; POP(stk); save = stk->next; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[0] = stk; stk = save; DUPLICATE(first);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[1] = stk; stk = save; DUPLICATE(second);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--; result[2] = stk; stk = save;");
-	P("DUPLICATE(result[0]); DUPLICATE(result[1]);");
-	P("DUPLICATE(result[2]); }");
+	P("{ Node first, second, *top, result[3];");
+	P("second = *stk; POP(stk); first = *stk; POP(stk); top = stk->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[0] = *stk; stk = top; DUPLICATE(&first);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[1] = *stk; stk = top; DUPLICATE(&second);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[2] = *stk; stk = top; DUPLICATE(&result[0]);");
+	P("DUPLICATE(&result[1]); DUPLICATE(&result[2]); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case UNARY4:
+    {
 #ifdef TRACE
 	fprintf(stderr, "unary4\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *first, *second, *third = stk, *save, *result[4];");
-	P("POP(stk); second = stk; POP(stk); first = stk; POP(stk);");
-	P("save = stk->next; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[0] = stk; stk = save; DUPLICATE(first);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[1] = stk; stk = save; DUPLICATE(second);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[2] = stk; stk = save; DUPLICATE(third);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--; result[3] = stk; stk = save;");
-	P("DUPLICATE(result[0]); DUPLICATE(result[1]);");
-	P("DUPLICATE(result[2]); DUPLICATE(result[3]); }");
+	P("{ Node first, second, third, *top, result[4];");
+	P("third = *stk; POP(stk); second = *stk; POP(stk);");
+	P("first = *stk; POP(stk); top = stk->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[0] = *stk; stk = top; DUPLICATE(&first);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[1] = *stk; stk = top; DUPLICATE(&second);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[2] = *stk; stk = top; DUPLICATE(&third);");
+#ifdef ARITY
+	if (d)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[3] = *stk; stk = top; DUPLICATE(&result[0]);");
+	P("DUPLICATE(&result[1]); DUPLICATE(&result[2]);");
+	P("DUPLICATE(&result[3]); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case BINARY:
+    {
 #ifdef TRACE
 	fprintf(stderr, "binary\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *top = stk->next->next, *node; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
+	P("{ Node *top, *save;");
+	P("top = stk->next->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
 	P("if (!stk) execerror(\"value to push\", \"binary\");");
-	P("node = stk; stk = top; DUPLICATE(node); }");
+	P("save = stk; stk = top; DUPLICATE(save); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case TERNARY:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ternary\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *top = stk->next->next->next,*node; inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
+	P("{ Node *top, *save;");
+	P("top = stk->next->next->next;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
 	P("if (!stk) execerror(\"value to push\", \"ternary\");");
-	P("node = stk; stk = top; DUPLICATE(node); }");
+	P("save = stk; stk = top; DUPLICATE(save); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case CLEAVE:
+    {
 #ifdef TRACE
 	fprintf(stderr, "cleave\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *result[2], *save = stk; inside_condition++;");
-	EvalPrintTerm(third->u.lis, str);
-	P("result[0] = stk; stk = save;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("result[1] = stk; stk = save; POP(stk);");
-	P("DUPLICATE(result[0]); DUPLICATE(result[1]); }");
+	P("{ Node result[2], *save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[0] = *stk; stk = save;");
+#ifdef ARITY
+	if ((d = arity(second->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(second->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("result[1] = *stk; stk = save; POP(stk);");
+	P("DUPLICATE(&result[0]); DUPLICATE(&result[1]); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case BRANCH:
+    {
 #ifdef TRACE
 	fprintf(stderr, "branch\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("{ int num = stk->u.num; POP(stk); if (num) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("} }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFTE:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ifte\n");
 #endif
-	if ((fourth = cur->next) == 0)
-	    break;
-	if ((third = fourth->next) == 0)
+	if ((third = node->next) == 0)
 	    break;
 	if ((second = third->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if ((first = second->next) == 0)
 	    break;
 	if (third->op != LIST_)
 	    break;
 	if (second->op != LIST_)
 	    break;
+	if (first->op != LIST_)
+	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ int num; Node *save = stk; CONDITION;");
+	P("{ int num; Node *save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (num) {");
 	EvalPrintTerm(second->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (num) {");
-	EvalPrintTerm(third->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(third->u.lis, str);
 	P("} }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = second->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFLIST:
+    {
 #ifdef TRACE
 	fprintf(stderr, "iflist\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == LIST_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFINTEGER:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ifinteger\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == INTEGER_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFCHAR:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ifchar\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == CHAR_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFLOGICAL:
+    {
 #ifdef TRACE
 	fprintf(stderr, "iflogical\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == BOOLEAN_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFSET:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ifset\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == SET_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFSTRING:
+    {
 #ifdef TRACE
 	fprintf(stderr, "ifstring\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == STRING_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFFLOAT:
+    {
 #ifdef TRACE
 	fprintf(stderr, "iffloat\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == FLOAT_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case IFFILE:
+    {
 #ifdef TRACE
 	fprintf(stderr, "iffile\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("if (stk->op == FILE_) {");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(second->u.lis, str);
 	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case COND:
+    {
 #ifdef TRACE
 	fprintf(stderr, "cond\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ int num = 0; Node *save = stk; CONDITION; for (;;) {");
-	for (first = reverse(copy(fourth->u.lis)); first && first->next;
-		first = first->next) {
+	P("{ int num = 0; Node *save; for (;;) {");
+	for (cur = first->u.lis; cur && cur->next; cur = cur->next) {
+	    second = cur->u.lis->u.lis;
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(second)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    EvalPrintTerm(second, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num;");
 	    P("stk = save;");
-	    second = reverse(copy(first->u.lis));
-	    EvalPrintTerm(second->u.lis, str);
-	    P("if ((num = stk->u.num) != 0) { RELEASE; stk = save;");
-	    EvalPrintTerm(reverse(copy(second->next)), str);
+	    P("if (num) {");
+	    EvalPrintTerm(cur->u.lis->next, str);
 	    P(" break; }");
 	}
-	P("break; } if (!num) { RELEASE; stk = save;");
-	EvalPrintTerm(first->u.lis, str);
+	P("break; } if (!num) {");
+	EvalPrintTerm(cur->u.lis, str);
 	P("} }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case WHILE:
+    {
 #ifdef TRACE
 	fprintf(stderr, "while\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ int num; Node *save; for (;;) { save = stk; CONDITION;");
-	EvalPrintTerm(third->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (!num) break;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} }");
+	P("for (;;) { int num; Node *save;");
+	P("save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (!num) break;");
+	EvalPrintTerm(second->u.lis, str);
+	P("}");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case LINREC:
     {
@@ -734,7 +998,7 @@ int evaluate(Node *cur)
 #ifdef TRACE
 	fprintf(stderr, "linrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((fourth = node->next) == 0)
 	    break;
 	if ((third = fourth->next) == 0)
 	    break;
@@ -751,19 +1015,29 @@ int evaluate(Node *cur)
 	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void linrec_%d();", my_ident = ++identifier);
 	Q("linrec_%d();", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = first->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 
 	utstring_new(str);
 	Q("void linrec_%d()", my_ident);
-	P("{ int num; Node *save = stk; CONDITION;");
+	P("{ int num; Node *save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
 	EvalPrintTerm(first->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (num) {");
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (num) {");
 	EvalPrintTerm(second->u.lis, str);
 	P("} else {");
 	EvalPrintTerm(third->u.lis, str);
@@ -773,42 +1047,55 @@ int evaluate(Node *cur)
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
     }
+
     case TAILREC:
+    {
 #ifdef TRACE
 	fprintf(stderr, "tailrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
-	    break;
-	if ((third = fourth->next) == 0)
+	if ((third = node->next) == 0)
 	    break;
 	if ((second = third->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if ((first = second->next) == 0)
 	    break;
 	if (third->op != LIST_)
 	    break;
 	if (second->op != LIST_)
 	    break;
+	if (first->op != LIST_)
+	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void tailrec_%d();", ++identifier);
 	Q("tailrec_%d();", identifier);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = second->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 
 	utstring_new(str);
 	Q("void tailrec_%d()", identifier);
-	P("{ int num; Node *save; tailrec: save = stk; CONDITION;");
+	P("{ int num; Node *save; tailrec: save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
+	EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (num) {");
 	EvalPrintTerm(second->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (num) {");
-	EvalPrintTerm(third->u.lis, str);
 	P("} else {");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(third->u.lis, str);
 	P("goto tailrec; } }");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
+    }
 
     case GENREC:
     {
@@ -816,7 +1103,7 @@ int evaluate(Node *cur)
 #ifdef TRACE
 	fprintf(stderr, "genrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((fourth = node->next) == 0)
 	    break;
 	if ((third = fourth->next) == 0)
 	    break;
@@ -833,19 +1120,29 @@ int evaluate(Node *cur)
 	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	P("cons_(); cons_(); cons_();");
 	Q("void genrec_%d();", my_ident = ++identifier);
 	Q("genrec_%d();", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
+	node->op = 0;
+	node->u.str = utstring_body(str);
 
 	utstring_new(str);
 	Q("void genrec_%d()", my_ident);
-	P("{ int num; Node *save; POP(stk); save = stk; CONDITION;");
+	P("{ int num; Node *save; POP(stk); save = stk;");
+#ifdef ARITY
+	if ((d = arity(first->u.lis)) != 0)
+	    Q("copy_(%d);", d);
+#else
+	P("CONDITION;");
+#endif
 	EvalPrintTerm(first->u.lis, str);
-	P("num = stk->u.num; RELEASE; stk = save; if (num) {");
+#ifndef ARITY
+	P("RELEASE;");
+#endif
+	P("num = stk->u.num;");
+	P("stk = save;");
+	P("if (num) {");
 	EvalPrintTerm(second->u.lis, str);
 	P("} else {");
 	EvalPrintTerm(third->u.lis, str);
@@ -854,13 +1151,14 @@ int evaluate(Node *cur)
 	PrintFactor(third, str);
 	PrintFactor(fourth, str);
 	P("cons_(); cons_(); cons_();");
-	Q("PUSH(LIST_, newnode(ANON_FUNCT_, genrec_%d, 0)); cons_();",
-		my_ident);
+	Q("NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(genrec_%d, 0));", my_ident);
+	P("cons_();");
 	EvalPrintTerm(fourth->u.lis, str);
 	P("} }");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
-    }    
+    }
+
     case CONDLINREC:
     case CONDNESTREC:
     {
@@ -868,37 +1166,45 @@ int evaluate(Node *cur)
 #ifdef TRACE
 	fprintf(stderr, "condnestrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void condnestrec_%d();", my_ident = ++identifier);
 	Q("condnestrec_%d();", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 
 	utstring_new(str);
-	Q("void condnestrec_%d() { Node *save = stk; CONDITION;", my_ident);
-	first = reverse(copy(fourth->u.lis));
-	for (; first && first->next; first = first->next) {
+	Q("void condnestrec_%d() { int num = 0; Node *save;", my_ident);
+	for (cur = first->u.lis; cur && cur->next; cur = cur->next) {
+	    first = cur->u.lis;
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num;");
 	    P("stk = save;");
-	    second = reverse(copy(first->u.lis));
-	    EvalPrintTerm(second->u.lis, str);
-	    P("if (stk->u.num) { RELEASE; stk = save;");
-	    second = second->next;
-	    EvalPrintTerm(second->u.lis, str);
-	    while ((second = second->next) != 0) {
+	    P("if (num) {");
+	    first = first->next;
+	    EvalPrintTerm(first->u.lis, str);
+	    while ((first = first->next) != 0) {
 		Q("condnestrec_%d();", my_ident);
-		EvalPrintTerm(second->u.lis, str);
+		EvalPrintTerm(first->u.lis, str);
 	    }
 	    P("return; }");
 	}
-	P("RELEASE; stk = save;");
-	first = reverse(copy(first->u.lis));
+	first = cur->u.lis;
 	EvalPrintTerm(first->u.lis, str);
 	while ((first = first->next) != 0) {
 	    Q("condnestrec_%d();", my_ident);
@@ -907,367 +1213,978 @@ int evaluate(Node *cur)
 	P("}");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
+    }
 
     case STEP:
+    {
 #ifdef TRACE
 	fprintf(stderr, "step\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *data, *cur; char *str; int i; long_t set;");
-	P("data = stk; POP(stk); switch (data->op) { case LIST_:");
-	P("for (cur = data->u.lis; cur; cur = cur->next) {");
-	P("DUPLICATE(cur);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} break; case STRING_:");
-	P("for (str = data->u.str; str && *str; str++) {");
-	P("PUSH(CHAR_, (long_t)*str);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} break; case SET_: set = data->u.set;");
-	P("for (i = 0; i < _SETSIZE_; i++)");
-	P("if (set & (1 << i)) { PUSH(INTEGER_, (long_t)i);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} break; default: execerror(\"aggregate parameter\",\"step\"); } }");
+	if (second->op == LIST_) {
+	    P("{ Node *list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} }");
+	} else if (second->op == STRING_) {
+	    P("{ char *str = stk->u.str; POP(stk);");
+	    P("for (; *str; str++) {");
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} }");
+	} else if (second->op == SET_) {
+	    P("{ int i; long_t set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("Node *list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} } else if (stk->op == STRING_) {");
+	    P("char *str = stk->u.str; POP(stk);");
+	    P("for (; *str; str++) {");
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} } else if (stk->op == SET_) {");
+	    P("int i; long_t set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("} } else { BADAGGREGATE(\"step\"); }");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case MAP:
+    {
 #ifdef TRACE
 	fprintf(stderr, "map\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *cur, *root = 0, *last = 0, *data, *save;");
-	P("char *str, *res; int i = 0, num; long_t set, zet = 0;");
-	P("data = stk; POP(stk); save = stk; switch (data->op) {");
-	P("case LIST_: for (cur = data->u.lis; cur; cur = cur->next) {");
-	P("stk = save; inside_condition++; DUPLICATE(cur);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
-	P("if (!stk) execerror(\"non-empty stack\", \"map\");");
-	P("if (!root) last = root = newnode(stk->op, stk->u.ptr, 0);");
-	P("else last = last->next = newnode(stk->op, stk->u.ptr, 0);");
-	P("} stk = save; PUSH(LIST_, root); break; case STRING_:");
-	P("res = strdup(data->u.str);");
-	P("for (str = data->u.str; str && *str; str++) {");
-	P("stk = save; CONDITION; PUSH(CHAR_, (long_t)*str);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("num = stk->u.num; RELEASE;");
-	P("res[i++] = num; } stk = save; PUSH(STRING_, res); break;");
-	P("case SET_: set = data->u.set;");
-	P("for (i = 0; i < _SETSIZE_; i++) if (set & (1 << i)) {");
-	P("stk = save; CONDITION; PUSH(INTEGER_, (long_t)i);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("num = stk->u.num; RELEASE;");
-	P("zet |= 1 << num; } stk = save; PUSH(SET_, (long_t)zet); break;");
-	P("default: execerror(\"aggregate parameter\", \"map\"); } }");
+	if (second->op == LIST_) {
+	    P("{ Node *save, *list, *root = 0, *cur;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("if (!root) cur = root = heapnode(stk->op, stk->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(stk->op, stk->u.ptr, 0);");
+	    P("stk = save; } PUSH(LIST_, root); }");
+	} else if (second->op == STRING_) {
+	    P("{ Node *save; int i; char *str, *result;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (i = 0, result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("result[i++] = stk->u.num; stk = save; }");
+	    P("result[i] = 0; PUSH(STRING_, result); }");
+	} else if (second->op == SET_) {
+	    P("{ Node *save; int i; long_t set, result;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (result = i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("result |= 1 << stk->u.num; stk = save; }");
+	    P("PUSH(SET_, result); }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("Node *save, *list, *root = 0, *cur;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("if (!root) cur = root = heapnode(stk->op, stk->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(stk->op, stk->u.ptr, 0);");
+	    P("stk = save; } PUSH(LIST_, root); }");
+	    P("else if (stk->op == STRING_) {");
+	    P("Node *save; int i; char *str, *result;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (i = 0, result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("result[i++] = stk->u.num; stk = save; }");
+	    P("result[i] = 0; PUSH(STRING_, result); }");
+	    P("else if (stk->op == SET_) {");
+	    P("Node *save; int i; long_t set, result;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (result = i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (!stk) execerror(\"non-empty stack\", \"map\");");
+	    P("result |= 1 << stk->u.num; stk = save; }");
+	    P("PUSH(SET_, result); }");
+	    P("else {");
+	    P("BADAGGREGATE(\"map\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case TIMES:
+    {
 #ifdef TRACE
 	fprintf(stderr, "times\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ int i, num = stk->u.num; POP(stk);");
-	P("for (i = 0; i < num; i++) {");
-	EvalPrintTerm(fourth->u.lis, str);
+	P("{ int num = stk->u.num; POP(stk);");
+	P("while (num--) {");
+	EvalPrintTerm(first->u.lis, str);
 	P("} }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case INFRA:
+    {
 #ifdef TRACE
 	fprintf(stderr, "infra\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *prog, *save = stk->next; stk = stk->u.lis;");
-	P("inside_condition++;");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("inside_condition--;");
-	P("prog = stk; stk = save; PUSH(LIST_, prog); }");
+	P("{ Node *list, *save;");
+	P("list = stk->u.lis; POP(stk);");
+	P("save = stk2lst(); lst2stk(list);");
+	EvalPrintTerm(first->u.lis, str);
+	P("list = stk2lst(); lst2stk(save);");
+	P("PUSH(LIST_, list); }");
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case PRIMREC:
+    {
 #ifdef TRACE
 	fprintf(stderr, "primrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((third = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ int i, num = 0; Node *data, *cur; char *str; long_t set;");
-	P("data = stk; POP(stk); switch (data->op) { case LIST_:");
-	P("for (cur = data->u.lis; cur; cur = cur->next, num++)");
-	P("DUPLICATE(cur); break; case STRING_:");
-	P("for (str = data->u.str; str && *str; str++, num++)");
-	P("PUSH(CHAR_, (long_t)*str); break; case SET_: set = data->u.set;");
-	P("for (i = 0; i < _SETSIZE_; i++) if (set & (1 << i)) {");
-	P("PUSH(INTEGER_, (long_t)i); num++; } break; case INTEGER_:");
-	P("for (i = num = data->u.num; i > 0; i--)");
-	P("PUSH(INTEGER_, (long_t)i); break; default:");
-	P("execerror(\"different type\", \"primrec\"); }");
-	EvalPrintTerm(third->u.lis, str);
-	P("for (i = 0; i < num; i++) {");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} }");
+	if (third->op == LIST_) {
+	    P("{ int num = 0; Node *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next, num++)");
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("}");
+	} else if (third->op == STRING_) {
+	    P("{ int num = 0; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (; str && *str; str++, num++)");
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("}");
+	} else if (third->op == SET_) {
+	    P("{ int i, num = 0; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("PUSH(INTEGER_, i); num++; }");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("}");
+	} else if (third->op == INTEGER_) {
+	    P("{ int i, num = stk->u.num; POP(stk);");
+	    P("for (i = num; i > 0; i--)");
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("}");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("int num = 0; Node *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next, num++)");
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("} else if (stk->op == STRING_) {");
+	    P("int num = 0; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (; str && *str; str++, num++)");
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("} else if (stk->op == SET_) {");
+	    P("int i, num = 0; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("PUSH(INTEGER_, i); num++; }");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("} else if (stk->op == INTEGER_) {");
+	    P("int i, num = stk->u.num; POP(stk);");
+	    P("for (i = num; i > 0; i--)");
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+	    P("while (num--)");
+	    EvalPrintTerm(second->u.lis, str);
+	    P("} else {");
+	    P("BADAGGREGATE(\"map\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = third->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case FILTER:
+    {
 #ifdef TRACE
 	fprintf(stderr, "filter\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *cur = stk, *root = 0, *last, *save; int i, num;");
-	P("char *str, *res; long_t set, zet = 0; POP(stk); save = stk;");
-	P("switch (cur->op) { case LIST_:"); P("for (cur = cur->u.lis;");
-	P("cur; cur = cur->next) {");
-	P("CONDITION; stk = newnode(cur->op, cur->u.ptr, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("num = stk->u.num; RELEASE; if (num) {");
-	P("if (!root) last = root = newnode(cur->op, cur->u.ptr, 0);");
-	P("else last = last->next = newnode(cur->op, cur->u.ptr, 0);");
-	P("} } stk = save; PUSH(LIST_, root); break; case STRING_:");
-	P("str = cur->u.str; res = strdup(str); CONDITION;");
-	P("for (i = 0; str && *str; str++) { stk = CHAR_NEWNODE(*str, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) res[i++] = *str; } RELEASE; res[i] = 0;");
-	P("stk = save; PUSH(STRING_, res); break; case SET_:");
-	P("set = cur->u.set; CONDITION; for (i = 0; i < _SETSIZE_; i++)");
-	P("if (set & (1 << i)) { stk = INTEGER_NEWNODE(i, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) zet |= 1 << i; } RELEASE;");
-	P("stk = save; PUSH(SET_, (long_t)zet); break;");
-	P("default: execerror(\"valid aggregate\", \"filter\"); } }");
+	if (second->op == LIST_) {
+	    P("{ int num = 0; Node *save, *list, *root = 0, *cur;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) {");
+	    P("if (!root) cur = root = heapnode(list->op, list->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(list->op, list->u.ptr, 0); }");
+	    P("} PUSH(LIST_, root); }");
+	} else if (second->op == STRING_) {
+	    P("{ Node *save; int i = 0; char *str, *result;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[i++] = *str; stk = save; }");
+	    P("result[i] = 0; PUSH(STRING_, result); }");
+	} else if (second->op == SET_) {
+	    P("{ Node *save; int i; long_t set, result = 0;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result |= 1 << i; stk = save; }");
+	    P("PUSH(SET_, result); }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("int num = 0; Node *save, *list, *root = 0, *cur;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) {");
+	    P("if (!root) cur = root = heapnode(list->op, list->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(list->op, list->u.ptr, 0); }");
+	    P("} PUSH(LIST_, root); }");
+	    P("else if (stk->op == STRING_) {");
+	    P("Node *save; int i = 0; char *str, *result;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[i++] = *str; stk = save; }");
+	    P("result[i] = 0; PUSH(STRING_, result); }");
+	    P("else if (stk->op == SET_) {");
+	    P("Node *save; int i; long_t set, result = 0;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result |= 1 << i; stk = save; }");
+	    P("PUSH(SET_, result); }");
+	    P("else {");
+	    P("BADAGGREGATE(\"filter\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case SPLIT:
+    {
 #ifdef TRACE
 	fprintf(stderr, "split\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *cur = stk, *root = 0, *head = 0, *last, *tail, *save;");
-	P("int i, j, num; char *str, *res, *rez; long_t set, zet = 0,");
-	P("zed = 0; POP(stk); save = stk; switch (cur->op) { case LIST_:");
-	P("for (cur = cur->u.lis; cur; cur = cur->next) {");
-	P("CONDITION; stk = newnode(cur->op, cur->u.ptr, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("num = stk->u.num; RELEASE; if (num) {");
-	P("if (!root) last = root = newnode(cur->op, cur->u.ptr, 0);");
-	P("else last = last->next = newnode(cur->op, cur->u.ptr, 0);");
-	P("} else {");
-	P("if (!head) tail = head = newnode(cur->op, cur->u.ptr, 0);");
-	P("else tail = tail->next = newnode(cur->op, cur->u.ptr, 0);");
-	P("} } stk = save; PUSH(LIST_, root); PUSH(LIST_, head);");
-	P("break; case STRING_: str = cur->u.str; res = strdup(str);");
-	P("rez = strdup(str); CONDITION;");
-	P("for (j = i = 0; str && *str; str++) {");
-	P("stk = CHAR_NEWNODE(*str, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) res[i++] = *str; else rez[j++] = *str; }");
-	P("RELEASE; res[i] = 0; rez[j] = 0; stk = save; PUSH(STRING_, res);");
-	P("PUSH(STRING_, rez); break; case SET_: set = cur->u.set; CONDITION;");
-	P("for (i = 0; i < _SETSIZE_; i++) if (set & (1 << i)) {");
-	P("stk = INTEGER_NEWNODE(i, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) zet |= 1 << i; else zed |= 1 << i; }");
-	P("RELEASE; stk = save; PUSH(SET_, (long_t)zet); break; default:");
-	P("execerror(\"valid aggregate\", \"split\"); } }");
+	if (second->op == LIST_) {
+	    P("{ int num = 0; Node *save, *list, *root = 0, *cur,");
+	    P("*head = 0, *tail;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num)");
+	    P("if (!root) cur = root = heapnode(list->op, list->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
+	    P("else if (!head)");
+	    P("tail = head = heapnode(list->op, list->u.ptr, 0);");
+	    P("else tail = tail->next = heapnode(list->op, list->u.ptr, 0);");
+	    P("} PUSH(LIST_, root); PUSH(LIST_, head); }");
+	} else if (second->op == STRING_) {
+	    P("{ Node *save; int i = 0, j = 0; char *str, *result[2];");
+	    P("str = stk->u.str; POP(stk); result[0] = strdup(str);");
+	    P("for (result[1] = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[0][i++] = *str;");
+	    P("else result[1][j++] = *str; stk = save; }");
+	    P("result[0][i] = 0; result[1][j] = 0;");
+	    P("PUSH(STRING_, result[0]); PUSH(STRING_, result[1]); }");
+	} else if (second->op == SET_) {
+	    P("{ Node *save; int i; long_t set, result[2];");
+	    P("result[0] = result[1] = 0;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[0] |= 1 << i;");
+	    P("else result[1] |= i << i; stk = save; }");
+	    P("PUSH(SET_, result[0]); PUSH(SET_, result[1]); }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("int num = 0; Node *save, *list, *root = 0, *cur,");
+	    P("*head = 0, *tail;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num)");
+	    P("if (!root) cur = root = heapnode(list->op, list->u.ptr, 0);");
+	    P("else cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
+	    P("else if (!head)");
+	    P("tail = head = heapnode(list->op, list->u.ptr, 0);");
+	    P("else tail = tail->next = heapnode(list->op, list->u.ptr, 0);");
+	    P("} PUSH(LIST_, root); PUSH(LIST_, head); }");
+	    P("else if (stk->op == STRING_) {");
+	    P("Node *save; int i = 0, j = 0; char *str, *result[2];");
+	    P("str = stk->u.str; POP(stk); result[0] = strdup(str);");
+	    P("for (result[1] = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[0][i++] = *str;");
+	    P("else result[1][j++] = *str; stk = save; }");
+	    P("result[0][i] = 0; result[1][j] = 0;");
+	    P("PUSH(STRING_, result[0]); PUSH(STRING_, result[1]); }");
+	    P("else if (stk->op == SET_) {");
+	    P("Node *save; int i; long_t set, result[2];");
+	    P("result[0] = result[1] = 0;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("if (stk->u.num) result[0] |= 1 << i;");
+	    P("else result[1] |= i << i; stk = save; }");
+	    P("PUSH(SET_, result[0]); PUSH(SET_, result[1]); }");
+	    P("else {");
+	    P("BADAGGREGATE(\"split\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case SOME:
+    {
 #ifdef TRACE
 	fprintf(stderr, "some\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *cur = stk, *save; int i, num = 0; char *str; long_t set;");
-	P("POP(stk); save = stk; CONDITION; switch (cur->op) { case LIST_:");
-	P("for (cur = cur->u.lis; cur; cur = cur->next) {");
-	P("stk = newnode(cur->op, cur->u.ptr, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 1; break; } } break; case STRING_:");
-	P("for (str = cur->u.str; str && *str; str++) {");
-	P("stk = CHAR_NEWNODE(*str, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 1; break; } } break; case SET_:");
-	P("set = cur->u.set;");
-	P("for (i = 0; i < _SETSIZE_; i++) if (set & (1 << i)) {");
-	P("stk = INTEGER_NEWNODE(i, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 1; break; } } break;");
-	P("default: execerror(\"valid aggregate\", \"some\"); }");
-	P("RELEASE; stk = save; PUSH(BOOLEAN_, (long_t)num); }");
+	if (second->op == LIST_) {
+	    P("{ int num = 0; Node *save, *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else if (second->op == STRING_) {
+	    P("{ int num = 0; Node *save; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else if (second->op == SET_) {
+	    P("{ int num = 0; Node *save; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("int num = 0; Node *save, *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else if (stk->op == STRING_) {");
+	    P("int num = 0; Node *save; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else if (stk->op == SET_) {");
+	    P("int num = 0; Node *save; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; if (num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else {");
+	    P("BADAGGREGATE(\"some\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
+    }
 
     case ALL:
+    {
 #ifdef TRACE
 	fprintf(stderr, "all\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
+	    break;
+	if ((second = first->next) == 0)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	P("{ Node *cur = stk, *save; int i, num = 1; char *str; long_t set;");
-	P("POP(stk); save = stk; CONDITION; switch (cur->op) {");
-	P("case LIST_: for (cur = cur->u.lis; cur; cur = cur->next) {");
-	P("stk = newnode(cur->op, cur->u.ptr, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 0; break; } } break; case STRING_:");
-	P("for (str = cur->u.str; str && *str; str++) {");
-	P("stk = CHAR_NEWNODE(*str, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 0; break; } } break; case SET_:");
-	P("set = cur->u.set;");
-	P("for (i = 0; i < SETSIZE; i++) if (set & (1 << i)) {");
-	P("stk = INTEGER_NEWNODE(i, save);");
-	EvalPrintTerm(fourth->u.lis, str);
-	P("if (stk->u.num) { num = 0; break; } } break;");
-	P("default: execerror(\"valid aggregate\", \"all\"); }");
-	P("RELEASE; stk = save; PUSH(BOOLEAN_, (long_t)num); }");
+	if (second->op == LIST_) {
+	    P("{ int num = 1; Node *save, *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else if (second->op == STRING_) {
+	    P("{ int num = 1; Node *save; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else if (second->op == SET_) {
+	    P("{ int num = 1; Node *save; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	} else {
+	    P("if (stk->op == LIST_) {");
+	    P("int num = 1; Node *save, *list;");
+	    P("list = stk->u.lis; POP(stk);");
+	    P("for (; list; list = list->next) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("DUPLICATE(list);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else if (stk->op == STRING_) {");
+	    P("int num = 1; Node *save; char *str;");
+	    P("str = stk->u.str; POP(stk);");
+	    P("for (result = strdup(str); *str; str++) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(CHAR_, *str);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; stk = save; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else if (stk->op == SET_) {");
+	    P("int num = 1; Node *save; long_t set;");
+	    P("set = stk->u.set; POP(stk);");
+	    P("for (i = 0; i < _SETSIZE_; i++)");
+	    P("if (set & (1 << i)) {");
+	    P("save = stk;");
+#ifdef ARITY
+	    if ((d = arity(first->u.lis)) != 0)
+		Q("copy_(%d);", d);
+#else
+	    P("CONDITION;");
+#endif
+	    P("PUSH(INTEGER_, i);");
+	    EvalPrintTerm(first->u.lis, str);
+#ifndef ARITY
+	    P("RELEASE;");
+#endif
+	    P("num = stk->u.num; if (!num) break; }");
+	    P("PUSH(BOOLEAN_, num); }");
+	    P("else {");
+	    P("BADAGGREGATE(\"all\");");
+	    P("}");
+	}
 
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 	break;
     }
+
     case TREESTEP:
     {
 	int my_ident;
 #ifdef TRACE
 	fprintf(stderr, "treestep\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((first = node->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void treestep_%d(Node *item);", my_ident = ++identifier);
 	Q("{ Node *item = stk; POP(stk); treestep_%d(item); }", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
-	cur->next = fourth->next;
+	node->op = 0;
+	node->u.str = utstring_body(str);
+	node->next = first->next;
 
 	utstring_new(str);
 	Q("void treestep_%d(Node *item) { Node *cur;", my_ident);
 	P("if (item->op != LIST_) { DUPLICATE(item);");
-	EvalPrintTerm(fourth->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} else for (cur = item->u.lis; cur; cur = cur->next)");
 	Q("treestep_%d(cur); }", my_ident);
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
     }
+
     case TREEREC:
+    {
+	int my_ident;
 #ifdef TRACE
 	fprintf(stderr, "treerec\n");
 #endif
-	if ((fourth = cur->next) == 0)
+	if ((second = node->next) == 0)
 	    break;
-	if ((third = fourth->next) == 0)
+	if ((first = second->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if (second->op != LIST_)
 	    break;
-	if (third->op != LIST_)
+	if (first->op != LIST_)
 	    break;
 
-	changed = 1;
 	utstring_new(str);
-	Q("void treerec_%d();", ++identifier);
-	Q("cons_(); treerec_%d();", identifier);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
+	Q("void treerec_%d();", my_ident = ++identifier);
+	Q("cons_(); treerec_%d();", my_ident);
+	node->op = 0;
+	node->u.str = utstring_body(str);
 
 	utstring_new(str);
-	Q("void treerec_%d() {", identifier);
+	Q("void treerec_%d() {", my_ident);
 	P("if (stk->next->op == LIST_) {");
-	Q("PUSH(LIST_, newnode(ANON_FUNCT_, treerec_%d, 0)); cons_();",
-		identifier);
-	EvalPrintTerm(fourth->u.lis, str);
+	Q("NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treerec_%d, 0));",
+	my_ident);
+	P("cons_();");
+	EvalPrintTerm(second->u.lis, str);
 	P("} else { POP(stk);");
-	EvalPrintTerm(third->u.lis, str);
+	EvalPrintTerm(first->u.lis, str);
 	P("} }");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
+    }
 
     case TREEGENREC:
     {
@@ -1275,137 +2192,38 @@ int evaluate(Node *cur)
 #ifdef TRACE
 	fprintf(stderr, "treegenrec\n");
 #endif
-	if ((fourth = cur->next) == 0)
-	    break;
-	if ((third = fourth->next) == 0)
+	if ((third = node->next) == 0)
 	    break;
 	if ((second = third->next) == 0)
 	    break;
-	if (fourth->op != LIST_)
+	if ((first = second->next) == 0)
 	    break;
 	if (third->op != LIST_)
 	    break;
 	if (second->op != LIST_)
 	    break;
+	if (first->op != LIST_)
+	    break;
 
-	changed = 1;
 	utstring_new(str);
 	Q("void treegenrec_%d();", my_ident = ++identifier);
 	Q("cons_(); cons_(); treegenrec_%d();", my_ident);
-	cur->op = 0;
-	cur->u.str = utstring_body(str);
+	node->op = 0;
+	node->u.str = utstring_body(str);
 
 	utstring_new(str);
 	Q("void treegenrec_%d() {", my_ident);
 	P("Node *save = stk; POP(stk); if (stk->op == LIST_) {");
-	EvalPrintTerm(third->u.lis, str);
-	P("DUPLICATE(save);");
-	Q("PUSH(LIST_, newnode(ANON_FUNCT_, treegenrec_%d, 0)); cons_();",
-		my_ident);
-	EvalPrintTerm(fourth->u.lis, str);
-	P("} else {");
 	EvalPrintTerm(second->u.lis, str);
+	P("DUPLICATE(save);");
+	Q("NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treegenrec_%d, 0));",
+	my_ident);
+	P("cons_();");
+	EvalPrintTerm(third->u.lis, str);
+	P("} else {");
+	EvalPrintTerm(first->u.lis, str);
 	P("} }");
 	utstring_printf(library, "%s", utstring_body(str));
 	break;
-    }
-    }
-    return changed;
-}
-
-/*
-    Look for replacements until no more replacements can be done
-*/
-void EvalPrintTerm(Node *root, UT_string *str)
-{
-    Node *cur;
-    short changed;
-
-    root = copy(root);
-    do {
-#ifdef TRACE
-	fprintf(stderr, "Compiling: ");
-	writeterm(root, stderr);
-	fputc('\n', stderr);
-#endif
-	for (changed = 0, cur = root; cur; cur = cur->next)
-	    changed |= evaluate(cur);
-    } while (changed);
-    PrintTerm(reverse(root), str);
-}
-
-char *scramble(char *str)
-{
-    int i;
-    char *ptr = str;
-
-    for (i = 0; str[i]; i++)
-	if (isalnum(str[i]) || str[i] == '-' || str[i] == '_')
-	    ;
-	else
-	    return "op";
-    if (strchr(ptr, '-')) {
-	ptr = strdup(ptr);
-	for (i = 0; ptr[i]; i++)
-	    if (ptr[i] == '-')
-		ptr[i] = '_';
-    }
-    return ptr;
-}
-
-void compilelib()
-{
-    char *name;
-    Entry *sym;
-    int changed;
-    UT_string *str;
-
-    do
-	for (changed = 0, sym = symtab; sym < symtabindex; sym++)
-	    if (!sym->mark && sym->uniq) {
-		sym->mark = changed = 1;
-		utstring_new(str);
-		EvalPrintTerm(sym->u.body, str);
-		name = scramble(sym->name);
-		utstring_printf(declhdr, "void %s_%d(void);\n",
-				name, sym->uniq);
-		utstring_printf(library, "void %s_%d(void) {\n%s}\n\n",
-				name, sym->uniq, utstring_body(str));
-	    }
-    while (changed);
-}
-
-void exitcompile(void)
-{
-    compilelib();
-    time_t t = time(0);
-    printf("/*\n * generated %s */\n", ctime(&t));
-    printf("#include \"runtime.h\"\n\n");
-    printf("%s\n", utstring_body(declhdr));
-    printf("int joy_main() {\n");
-    printf("stk = &memory[MEMORYMAX];\n");
-    printf("%sreturn 0; }\n\n", utstring_body(program));
-    printf("%s", utstring_body(library));
-    fflush(stdout);
-}
-
-/*
-    Compile a term - instead of being executed, commands are printed.
-*/
-void compile(Node *node)
-{
-    static short init;
-    Entry *sym;
-
-    if (!init) {
-	init = 1;
-	atexit(exitcompile);
-	utstring_new(declhdr);
-	utstring_new(program);
-	utstring_new(library);
-    }
-    EvalPrintTerm(node, program);
-    utstring_printf(program, "writestack();\n");
-    for (sym = symtab; sym < symtabindex; sym++)
-	sym->is_used = 0;
+    } }
 }

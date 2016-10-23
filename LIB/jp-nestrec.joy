@@ -1,7 +1,7 @@
 #
 #   module  : jp-nestrec.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 10/19/16
 #
 %INCLUDE usrlib.joy
 
@@ -200,7 +200,7 @@ DEFINE
 	linrec.
 
 
-[ -7 42 99 100 101 102 345 ]  [x-mcc91]  map.
+[ -7 42 99 100 101 102 345 ]  [l-mcc91]  map.
 
 (*
     r-ack ==

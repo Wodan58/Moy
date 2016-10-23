@@ -1,7 +1,7 @@
 /*
     module  : treegenrec.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/16/16
 */
 #include "interp.h"
 
@@ -20,7 +20,7 @@ PRIVATE void treegenrecaux(void)
     if (stk->op == LIST_) {
 	exeterm(save->u.lis->next->u.lis);
 	DUPLICATE(save);
-	PUSH(LIST_, ANON_FUNCT_NEWNODE(treegenrecaux, 0));
+	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treegenrecaux, 0));
 	cons_();
 	exeterm(stk->u.lis->u.lis->next->next);
     } else

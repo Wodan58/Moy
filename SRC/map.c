@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.9
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -14,70 +14,90 @@ collects results in sametype aggregate B.
 PRIVATE void map_(void)
 {
     Node *prog, *cur = 0,
-	 *data, *root = 0,
-	 *save, *last = 0;
-    int i = 0, num;
+	 *root = 0, *last = 0, *save;
+    int j;
+#ifdef ARITY
+    int d;
+#endif
 
     TWOPARAMS("map");
     ONEQUOTE("map");
     prog = stk->u.lis;
     POP(stk);
-    data = stk;
+    cur = stk;
     POP(stk);
-    save = stk;
-    switch (data->op) {
+#ifdef ARITY
+    d = arity(prog);
+#endif
+    switch (cur->op) {
     case LIST_:
 	 {
-	    for (cur = data->u.lis; cur; cur = cur->next) {
-		stk = save;
-		inside_condition++;
+	    for (cur = cur->u.lis; cur; cur = cur->next) {
+		save = stk;
+#ifdef ARITY
+		copy_(d);
+#else
+		CONDITION;
+#endif
 		DUPLICATE(cur);
 		exeterm(prog);
-		inside_condition--;
 #ifdef RUNTIME_CHECKS
 		if (!stk)
 		    execerror("non-empty stack", "map");
 #endif
 		if (!root)
-		    last = root = newnode(stk->op, stk->u.ptr, 0);
+		    last = root = heapnode(stk->op, stk->u.ptr, 0);
 		else
-		    last = last->next = newnode(stk->op, stk->u.ptr, 0);
+		    last = last->next = heapnode(stk->op, stk->u.ptr, 0);
+		stk = save;
+#ifndef ARITY
+		RELEASE;
+#endif
 	    }
-	    stk = save;
 	    PUSH(LIST_, root);
 	    break;
 	}
     case STRING_:
 	 {
-	    char *str = data->u.str, *result;
-	    result = GC_strdup(str);
-	    for ( ; str && *str; str++) {
-		stk = save;
+	    char *str = cur->u.str, *result = strdup(str);
+	    for (j = 0; str && *str; str++) {
+		save = stk;
+#ifdef ARITY
+		copy_(d);
+#else
 		CONDITION;
-		PUSH(CHAR_, (long_t)*str);
+#endif
+		PUSH(CHAR_, *str);
 		exeterm(prog);
-		num = stk->u.num;
+		result[j++] = stk->u.num;
+		stk = save;
+#ifndef ARITY
 		RELEASE;
-		result[i++] = (char)num;
+#endif
 	    }
-	    stk = save;
+	    result[j] = 0;
 	    PUSH(STRING_, result);
 	    break;
 	}
     case SET_:
 	 {
-	    long_t set = data->u.set, result = 0;
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (set & (1 << i)) {
-		    stk = save;
+	    long_t set = cur->u.set, result = 0;
+	    for (j = 0; j < _SETSIZE_; j++)
+		if (set & (1 << j)) {
+		    save = stk;
+#ifdef ARITY
+		    copy_(d);
+#else
 		    CONDITION;
-		    PUSH(INTEGER_, (long_t)i);
+#endif
+		    PUSH(INTEGER_, j);
 		    exeterm(prog);
-		    num = stk->u.num;
+		    result |= 1 << stk->u.num;
+		    stk = save;
+#ifndef ARITY
 		    RELEASE;
-		    result |= 1 << num;
+#endif
 		}
-	    stk = save;
 	    PUSH(SET_, result);
 	    break;
 	}

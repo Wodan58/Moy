@@ -1,7 +1,7 @@
 #
 #   module  : tutlib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 09/19/16
 #
 (* FILE: tutlib.joy *)
 
@@ -32,15 +32,17 @@ LIBRA
 	while;
     expecting ==
 	[ equal ]
-	[ pop pop praise [succ] dip]
-	[ "No, the right answer is:  " putchars put pop newline ]
+	[ pop pop praise [succ] dip ]
+	[ "No, the right answer is:  " putchars put
+	  "  Your answer:  " putchars put newline ]
 	ifte
 	succ;
     expecting-from ==
 	[ [equal] some ]
-	[ pop pop praise [succ] dip]
+	[ pop pop praise [succ] dip ]
 	[ "No, the right answer must be one of the following:\n\t" putchars
-	  [put "  " putchars] step pop newline ]
+	  [put "  " putchars] step
+	  "  Your answer:  " putchars put newline ]
 	ifte
 	succ;
     ini-stats ==

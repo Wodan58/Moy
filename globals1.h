@@ -1,7 +1,7 @@
 /*
     module  : globals1.h
-    version : 1.3
-    date    : 09/09/16
+    version : 1.11
+    date    : 10/19/16
 */
 #define RUNTIME_CHECKS
 
@@ -57,6 +57,7 @@ typedef double		real_t;
 typedef struct Node {
     Types u;
     Operator op;
+    unsigned char mark, unmark;
     struct Node *next;
 } Node;
 
@@ -67,6 +68,10 @@ typedef struct Entry {
     unsigned char is_local;
     unsigned char is_unknown;
     unsigned char is_used;
+    unsigned char is_marked;
+    unsigned char is_printed;
+    unsigned char is_found;
+    unsigned char is_copied;
     union {
 	Node *body;
 	struct Entry *module_fields;
@@ -97,19 +102,19 @@ CLASS int hashvalue;
 CLASS int display_enter;
 CLASS int display_lookup;
 
-CLASS int writeline;
 CLASS int correct_inhas_compare;
-CLASS int inside_condition;
-CLASS int inside_critical;
 CLASS int inside_definition;
+CLASS int inside_condition;
 
 CLASS Entry /* symbol table */
     symtab[SYMTABMAX], *hashentry[HASHSIZE],
-    *symtabindex INIT( = symtab ), *display[DISPLAYMAX], /* *firstlibra, */
+    *symtabindex INIT( = symtab ), *display[DISPLAYMAX],
     *location; /* getsym */
 
 CLASS Node /* dynamic memory */
-    memory[MEMORYMAX + 1], critical[MEMORYMAX], *crit_ptr;
+    memory[MEMORYMAX + 1], *min_stk_ptr INIT( = &memory[MEMORYMAX]),
+    condition[MEMORYMAX], *cond_ptr INIT( = &condition[MEMORYMAX]),
+    critical[MEMORYMAX], *crit_ptr INIT( = &critical[MEMORYMAX]);
 
 #ifdef _MSC_VER
 Node *stk;
@@ -144,6 +149,17 @@ PUBLIC void readfactor(void); /* read a JOY factor */
 PUBLIC void readterm(void);
 PUBLIC void writefactor(Node *n, FILE *stm);
 PUBLIC void writeterm(Node *n, FILE *stm);
+PUBLIC Node *copyterm(Node *node);
+
+/* arity.c */
+PUBLIC int arity(Node *n);
+
+/* copy.c */
+PUBLIC void copy_(int cnt);
+
+/* infra.c */
+PUBLIC Node *stk2lst();
+PUBLIC void lst2stk(Node *cur);
 
 #define USR_NEWNODE(u,r)	newnode(USR_, u, r)
 #define ANON_FUNCT_NEWNODE(u,r)	newnode(ANON_FUNCT_, u, r)
@@ -157,19 +173,35 @@ PUBLIC void writeterm(Node *n, FILE *stm);
 #define FILE_NEWNODE(u,r)	newnode(FILE_, u, r)
 #define SYM_NEWNODE(u,r)	newnode(SYMBOL_, u, r)
 
-#define OUTSIDE		!inside_condition && !inside_critical
-#define RELEASE		if (!--inside_critical) crit_ptr = &critical[MEMORYMAX]
-#define CONDITION	++inside_critical
+#define INSIDE		(stk > memory && stk <= &memory[MEMORYMAX])
+#define OUTSIDE		(!inside_condition)
+#define CONDITION	(inside_condition++)
+#define RELEASE		if (--inside_condition == 0) \
+			    cond_ptr = &condition[MEMORYMAX]
 
+#ifdef STATS
 #define DUPLICATE(node)						\
 do {								\
-    if (OUTSIDE && stk > memory && stk <= &memory[MEMORYMAX]) { \
+    if (OUTSIDE && INSIDE) {					\
+	stk[-1].op = (node)->op;				\
+	stk[-1].u.ptr = (node)->u.ptr;				\
+	--stk;							\
+	if (min_stk_ptr > stk)					\
+	    min_stk_ptr = stk;					\
+    } else							\
+	stk = newnode((node)->op, (node)->u.ptr, stk);		\
+} while (0)
+#else
+#define DUPLICATE(node)						\
+do {								\
+    if (OUTSIDE && INSIDE) {					\
 	stk[-1].op = (node)->op;				\
 	stk[-1].u.ptr = (node)->u.ptr;				\
 	--stk;							\
     } else							\
 	stk = newnode((node)->op, (node)->u.ptr, stk);		\
 } while (0)
+#endif
 
 #define PUSH(type, value)					\
 do {								\

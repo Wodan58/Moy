@@ -1,14 +1,16 @@
 /*
     module  : exeterm.c
-    version : 1.2
-    date    : 09/09/16
+    version : 1.5
+    date    : 10/19/16
 */
 #include "interp.h"
 
+// #define TRACE
+
 #ifdef TRACE
-PUBLIC void printfactor(Node *n, FILE *stm)
+PUBLIC void printfactor(Node *node, FILE *stm)
 {
-    switch (n->op) {
+    switch (node->op) {
     case BOOLEAN_:
 	fprintf(stm, "type boolean");
 	return;
@@ -31,13 +33,13 @@ PUBLIC void printfactor(Node *n, FILE *stm)
 	fprintf(stm, "type list");
 	return;
     case USR_:
-	fprintf(stm, n->u.ent->name);
+	fprintf(stm, node->u.ent->name);
 	return;
     case FILE_:
 	fprintf(stm, "type file");
 	return;
     default:
-	fprintf(stm, "%s", symtab[n->op].name);
+	fprintf(stm, "%s", symtab[node->op].name);
 	return;
     }
 }
@@ -46,11 +48,11 @@ PUBLIC void printfactor(Node *n, FILE *stm)
 #ifdef TRACE
 static void report_symbols(void)
 {
-    Entry *n;
+    Entry *sym;
 
-    for (n = symtab; n->name; n++)
-	if (n->is_used)
-	    fprintf(stderr, "%s\n", n->name);
+    for (sym = symtab; sym->name; sym++)
+	if (sym->is_found)
+	    fprintf(stderr, "%s\n", sym->name);
 }
 #endif
 
@@ -64,7 +66,7 @@ static void report_stats(void)
 }
 #endif
 
-void exeterm(Node *n)
+void exeterm(Node *node)
 {
 #ifdef TRACE
     static int first;
@@ -83,17 +85,17 @@ void exeterm(Node *n)
     }
     ++calls;
 #endif
-    while (n) {
+    while (node) {
 #ifdef STATS
 	++opers;
 #endif
 #ifdef TRACE
-	writefactor(n, stdout);
-	printf(" . ");
-	writeterm(stk, stdout);
-	printf("\n");
+	writefactor(node, stderr);
+	fprintf(stderr, " . ");
+	writeterm(stk, stderr);
+	fprintf(stderr, "\n");
 #endif
-	switch (n->op) {
+	switch (node->op) {
 	case COPIED_:
 	case ILLEGAL_:
 	    fprintf(stderr, "exeterm: attempting to execute bad node\n");
@@ -105,26 +107,26 @@ void exeterm(Node *n)
 	case SET_:
 	case STRING_:
 	case LIST_:
-	    DUPLICATE(n);
+	    DUPLICATE(node);
 	    break;
 	case SYMBOL_:
 	    break;
 	case USR_:
-	    if (!n->u.ent->u.body && undeferror)
-		execerror("definition", n->u.ent->name);
-	    if (!n->next) {
-		n = n->u.ent->u.body;
+	    if (!node->u.ent->u.body && undeferror)
+		execerror("definition", node->u.ent->name);
+	    if (!node->next) {
+		node = node->u.ent->u.body;
 		continue;
 	    }
-	    exeterm(n->u.ent->u.body);
+	    exeterm(node->u.ent->u.body);
 	    break;
 	default:
-	    (*n->u.proc) ();
+	    (*node->u.proc) ();
 #ifdef TRACE
-	    symtab[(int) n->op].is_used = 1;
+	    symtab[node->op].is_found = 1;
 #endif
 	    break;
 	}
-	n = n->next;
+	node = node->next;
     }
 }

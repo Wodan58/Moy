@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.3
-    date    : 09/09/16
+    version : 1.7
+    date    : 10/16/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +11,14 @@
 #include <time.h>
 #include "memory.h"
 #include "globals1.h"
+
+#define YY_NO_UNPUT
+#define YY_NO_INPUT
+
+#ifdef free
+#undef free
+#define free(X)		(!X?X++:0)
+#endif
 
 #ifdef YYLMAX
 #undef YYLMAX
@@ -23,7 +31,7 @@ int yylook(void), yywrap(void), yyback(int *, int);
 
 int yyerror(char *str)
 {
-    fprintf(stderr, "%s (%d)\n", str, yylval.num);
+    fprintf(stderr, "%s (%lld)\n", str, (long long)yylval.num);
     return 0;
 }
 
@@ -97,9 +105,9 @@ true		{ yylval.num = 1; return BOOLEAN_; }
 maxint		{ yylval.num = _MAXINT_; return INTEGER_; }
 setsize		{ yylval.num = SETSIZE; return Symbol; }
 stack		{ yylval.num = STACK; return Symbol; }
-__symtabmax	{ yylval.num = __SYMTABMAX; return Symbol; }
-__symtabindex	{ yylval.num = __SYMTABINDEX; return Symbol; }
-__dump		{ yylval.num = __DUMP; return Symbol; }
+__symtabmax	{ yylval.num = SYMTABMAX_; return Symbol; }
+__symtabindex	{ yylval.num = SYMTABINDEX; return Symbol; }
+__dump		{ yylval.num = DUMP; return Symbol; }
 conts		{ yylval.num = CONTS; return Symbol; }
 autoput		{ yylval.num = AUTOPUT; return Symbol; }
 undeferror	{ yylval.num = UNDEFERROR; return Symbol; }
@@ -108,7 +116,7 @@ echo		{ yylval.num = ECHO_; return Symbol; }
 clock		{ yylval.num = CLOCK; return Symbol; }
 time		{ yylval.num = TIME; return Symbol; }
 rand		{ yylval.num = RAND; return Symbol; }
-__memorymax	{ yylval.num = __MEMORYMAX; return Symbol; }
+__memorymax	{ yylval.num = MEMORYMAX_; return Symbol; }
 stdin		{ yylval.num = STDIN; return Symbol; }
 stdout		{ yylval.num = STDOUT; return Symbol; }
 stderr		{ yylval.num = STDERR; return Symbol; }
@@ -291,10 +299,10 @@ help		{ yylval.num = HELP; return Symbol; }
 _help		{ yylval.num = _HELP; return Symbol; }
 helpdetail	{ yylval.num = HELPDETAIL; return Symbol; }
 manual		{ yylval.num = MANUAL; return Symbol; }
-__html_manual	{ yylval.num = __HTML_MANUAL; return Symbol; }
-__latex_manual	{ yylval.num = __LATEX_MANUAL; return Symbol; }
-__manual_list	{ yylval.num = __MANUAL_LIST; return Symbol; }
-__settracegc	{ yylval.num = __SETTRACEGC; return Symbol; }
+__html_manual	{ yylval.num = HTML_MANUAL; return Symbol; }
+__latex_manual	{ yylval.num = LATEX_MANUAL; return Symbol; }
+__manual_list	{ yylval.num = MANUAL_LIST; return Symbol; }
+__settracegc	{ yylval.num = SETTRACEGC; return Symbol; }
 setautoput	{ yylval.num = SETAUTOPUT; return Symbol; }
 setundeferror	{ yylval.num = SETUNDEFERROR; return Symbol; }
 setecho		{ yylval.num = SETECHO; return Symbol; }
@@ -303,7 +311,7 @@ system		{ yylval.num = SYSTEM; return Symbol; }
 getenv		{ yylval.num = GETENV; return Symbol; }
 argv		{ yylval.num = ARGV; return Symbol; }
 argc		{ yylval.num = ARGC; return Symbol; }
-__memoryindex	{ yylval.num = __MEMORYINDEX; return Symbol; }
+__memoryindex	{ yylval.num = MEMORYINDEX; return Symbol; }
 get		{ yylval.num = GET; return Symbol; }
 getch		{ yylval.num = GETCH; return Symbol; }
 put		{ yylval.num = PUT; return Symbol; }

@@ -1,7 +1,7 @@
 /*
     module  : fgets.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -18,12 +18,12 @@ PRIVATE void fgets_(void)
 
     ONEPARAM("fgets");
     FILE("fgets");
-    buf = GC_malloc(size);
+    buf = malloc(size);
     buf[0] = 0;
     while (fgets(buf + length, size - length, stk->u.fil)) {
 	if ((length = strlen(buf)) > 0 && buf[length - 1] == '\n')
 	    break;
-	buf = GC_realloc(buf, size <<= 1);
+	buf = realloc(buf, size <<= 1);
     }
     PUSH(STRING_, buf);
 }

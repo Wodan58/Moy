@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -24,7 +24,7 @@ PRIVATE void strftime_(void)
     LIST("strftime");
     decode_time(&t);
     length = INPLINEMAX;
-    result = GC_malloc(length);
+    result = malloc(length);
     strftime(result, length, fmt, &t);
     if (OUTSIDE) {
 	stk->u.str = result;

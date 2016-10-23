@@ -1,7 +1,7 @@
 /*
     module  : cleave.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.5
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -12,7 +12,7 @@ Executes P1 and P2, each with X on top, producing two results.
 /* cleave.c */
 PRIVATE void cleave_(void)
 {
-    Node *prog[2], *result[2], *save;
+    Node *prog[2], result[2], *save;
 
     THREEPARAMS("cleave");
     TWOQUOTES("cleave");
@@ -21,15 +21,24 @@ PRIVATE void cleave_(void)
     prog[0] = stk->u.lis;
     POP(stk);
     save = stk;
-    inside_condition++;
+#ifdef ARITY
+    copy_(arity(prog[0]));
+#else
+    CONDITION;
+#endif
     exeterm(prog[0]);
-    result[0] = stk;
+    result[0] = *stk;
     stk = save;
+#ifdef ARITY
+    copy_(arity(prog[1]));
+#endif
     exeterm(prog[1]);
-    inside_condition--;
-    result[1] = stk;
+    result[1] = *stk;
     stk = save;
+#ifndef ARITY
+    RELEASE;
+#endif
     POP(stk);
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
+    DUPLICATE(&result[0]);
+    DUPLICATE(&result[1]);
 }

@@ -1,7 +1,7 @@
 /*
     module  : stack.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -14,7 +14,7 @@ PRIVATE void stack_(void)
 {
     Node *cur, *node = 0;
 
-    for (cur = stk; cur != &memory[MEMORYMAX]; cur = cur->next)
-	node = newnode(cur->op, cur->u.ptr, node);
+    for (cur = stk; cur && cur != &memory[MEMORYMAX]; cur = cur->next)
+	node = heapnode(cur->op, cur->u.ptr, node);
     PUSH(LIST_, reverse(node));
 }

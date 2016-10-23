@@ -1,7 +1,7 @@
 /*
     module  : unstack.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/05/16
 */
 #include "interp.h"
 
@@ -16,7 +16,8 @@ PRIVATE void unstack_(void)
 
     ONEPARAM("unstack");
     LIST("unstack");
+    cur = stk->u.lis;
     stk = &memory[MEMORYMAX];
-    for (cur = reverse(stk->u.lis); cur; cur = cur->next)
+    for (cur = reverse(cur); cur; cur = cur->next)
 	DUPLICATE(cur);
 }

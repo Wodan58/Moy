@@ -1,7 +1,7 @@
 /*
     module  : scan1.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 #include <stdio.h>
 #include <ctype.h>

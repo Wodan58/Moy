@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.5
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -44,7 +44,7 @@ PRIVATE void take_(void)
 		num = 0;
 	    if ((size_t)num > strlen(str))
 		return;
-	    ptr = GC_malloc(num + 1);
+	    ptr = malloc(num + 1);
 	    strncpy(ptr, str, num);
 	    ptr[num] = 0;
 	    if (OUTSIDE)
@@ -64,9 +64,9 @@ PRIVATE void take_(void)
 	    }
 	    for (cur = stk->u.lis; cur && num-- > 0; cur = cur->next)
 		if (!root)
-		    last = root = newnode(cur->op, cur->u.ptr, 0);
+		    last = root = heapnode(cur->op, cur->u.ptr, 0);
 		else
-		    last = last->next = newnode(cur->op, cur->u.ptr, 0);
+		    last = last->next = heapnode(cur->op, cur->u.ptr, 0);
 	    if (OUTSIDE)
 		stk->u.lis = root;
 	    else

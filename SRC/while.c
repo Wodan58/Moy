@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.6
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -13,23 +13,35 @@ While executing B yields true executes D.
 PRIVATE void while_(void)
 {
     int num;
-    Node *body, *test, *save;
+    Node *prog, *list, *save;
+#ifdef ARITY
+    int d;
+#endif
 
     TWOPARAMS("while");
     TWOQUOTES("while");
-    body = stk->u.lis;
+    prog = stk->u.lis;
     POP(stk);
-    test = stk->u.lis;
+    list = stk->u.lis;
     POP(stk);
+#ifdef ARITY
+    d = arity(list);
+#endif
     for (;;) {
 	save = stk;
+#ifdef ARITY
+	copy_(d);
+#else
 	CONDITION;
-	exeterm(test);
+#endif
+	exeterm(list);
 	num = stk->u.num;
-	RELEASE;
 	stk = save;
+#ifndef ARITY
+	RELEASE;
+#endif
 	if (!num)
-	    return;
-	exeterm(body);
+	    break;
+	exeterm(prog);
     }
 }

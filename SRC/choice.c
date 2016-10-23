@@ -1,7 +1,7 @@
 /*
     module  : choice.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -24,7 +24,7 @@ PRIVATE void choice_(void)
 	POP(stk);
 	POP(stk);
     } else if (stk->next->next->u.num)
-	stk = newnode(stk->next->op, stk->next->u.ptr, stk->next->next->next);
+	GTERNARY(stk->next->op, stk->next->u.ptr);
     else
-	stk = newnode(stk->op, stk->u.ptr, stk->next->next->next);
+	GTERNARY(stk->op, stk->u.ptr);
 }

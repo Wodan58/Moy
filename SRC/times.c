@@ -1,7 +1,7 @@
 /*
     module  : times.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 10/16/16
 */
 #include "interp.h"
 
@@ -12,7 +12,7 @@ N times executes P.
 /* times.c */
 PRIVATE void times_(void)
 {
-    int i, num;
+    int num;
     Node *prog;
 
     TWOPARAMS("times");
@@ -22,6 +22,6 @@ PRIVATE void times_(void)
     POP(stk);
     num = stk->u.num;
     POP(stk);
-    for (i = 0; i < num; i++)
+    while (num--)
 	exeterm(prog);
 }

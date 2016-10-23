@@ -1,7 +1,7 @@
 /*
     module  : ifte.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.7
+    date    : 10/16/16
 */
 #include "interp.h"
 
@@ -12,22 +12,27 @@ Executes B. If that yields true, then executes T else executes F.
 /* ifte.c */
 PRIVATE void ifte_(void)
 {
-    int num;
-    Node *second, *first, *test, *save;
+    Node *third, *second, *first, *save;
 
     THREEPARAMS("ifte");
     THREEQUOTES("ifte");
+    third = stk->u.lis;
+    POP(stk);
     second = stk->u.lis;
     POP(stk);
     first = stk->u.lis;
     POP(stk);
-    test = stk->u.lis;
-    POP(stk);
     save = stk;
+#ifdef ARITY
+    copy_(arity(first));
+#else
     CONDITION;
-    exeterm(test);
-    num = stk->u.num;
-    RELEASE;
+#endif
+    exeterm(first);
+    first = stk->u.num ? second : third;
     stk = save;
-    exeterm(num ? first : second);
+#ifndef ARITY
+    RELEASE;
+#endif
+    exeterm(first);
 }

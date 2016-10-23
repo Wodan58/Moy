@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.10
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -12,13 +12,16 @@ Uses test B to filter aggregate A producing sametype aggregate A1.
 /* filter.c */
 PRIVATE void filter_(void)
 {
-    int i, num;
     Operator op;
     char *str = 0;
     long_t set = 0;
     Node *prog, *cur = 0,
 	 *list = 0, *root = 0,
 	 *save, *last = 0;
+    int j, num;
+#ifdef ARITY
+    int d;
+#endif
 
     TWOPARAMS("filter");
     ONEQUOTE("filter");
@@ -36,58 +39,81 @@ PRIVATE void filter_(void)
 	break;
     }
     POP(stk);
-    save = stk;
+#ifdef ARITY
+    d = arity(prog);
+#endif
     switch (op) {
     case SET_:
 	{
 	    long_t result = 0;
 
-	    CONDITION;
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (set & (1 << i)) {
-		    stk = INTEGER_NEWNODE(i, save);
+	    for (j = 0; j < _SETSIZE_; j++)
+		if (set & (1 << j)) {
+		    save = stk;
+#ifdef ARITY
+		    copy_(d);
+#else
+		    CONDITION;
+#endif
+		    PUSH(INTEGER_, j);
 		    exeterm(prog);
 		    if (stk->u.num)
-			result |= 1 << i;
+			result |= 1 << j;
+		    stk = save;
+#ifndef ARITY
+		    RELEASE;
+#endif
 		}
-	    RELEASE;
-	    stk = save;
 	    PUSH(SET_, result);
 	    break;
 	}
     case STRING_:
 	{
-	    char *result = GC_strdup(str);
+	    char *result = strdup(str);
 
-	    CONDITION;
-	    for (i = 0; str && *str; str++) {
-		stk = CHAR_NEWNODE(*str, save);
+	    for (j = 0; str && *str; str++) {
+		save = stk;
+#ifdef ARITY
+		copy_(d);
+#else
+		CONDITION;
+#endif
+		PUSH(CHAR_, *str);
 		exeterm(prog);
 		if (stk->u.num)
-		    result[i++] = *str;
+		    result[j++] = *str;
+		stk = save;
+#ifndef ARITY
+		RELEASE;
+#endif
 	    }
-	    RELEASE;
-	    result[i] = '\0';
-	    stk = save;
+	    result[j] = 0;
 	    PUSH(STRING_, result);
 	    break;
 	}
     case LIST_:
 	{
 	    for (cur = list; cur; cur = cur->next) {
+		save = stk;
+#ifdef ARITY
+		copy_(d);
+#else
 		CONDITION;
-		stk = newnode(cur->op, cur->u.ptr, save);
+#endif
+		DUPLICATE(cur);
 		exeterm(prog);
 		num = stk->u.num;
+		stk = save;
+#ifndef ARITY
 		RELEASE;
+#endif
 		if (num) {
 		    if (!root)
-			last = root = newnode(cur->op, cur->u.ptr, 0);
+			last = root = heapnode(cur->op, cur->u.ptr, 0);
 		    else
-			last = last->next = newnode(cur->op, cur->u.ptr, 0);
+			last = last->next = heapnode(cur->op, cur->u.ptr, 0);
 		}
 	    }
-	    stk = save;
 	    PUSH(LIST_, root);
 	    break;
 	}

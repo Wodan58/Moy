@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.3
-    date    : 09/09/16
+    version : 1.8
+    date    : 10/17/16
 */
 #ifndef PARSER
 #include "parse.h"
@@ -25,6 +25,8 @@ void stoppriv(void);
 void exitpriv(struct Entry *prev);
 struct Node *dblnode(double dbl, struct Node *next);
 struct Node *newnode(Operator op, void *ptr, struct Node *next);
+struct Node *getnode(int heap);
+struct Node *heapnode(Operator op, void *ptr, struct Node *next);
 struct Node *concat(struct Node *node, struct Node *next);
 struct Node *copy(struct Node *node);
 struct Node *reverse(struct Node *cur);
@@ -61,7 +63,7 @@ void unary2_(void);
 typedef struct optable_t {
     char *name;
     void (*proc)(void);
-    char *messg1, *messg2;
+    char *messg1, *effect, *messg2;
 } optable_t;
 
 extern struct optable_t optable[];

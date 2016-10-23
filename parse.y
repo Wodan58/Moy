@@ -1,21 +1,22 @@
 %{
 /*
     module  : parse.y
-    version : 1.4
-    date    : 09/10/16
+    version : 1.12
+    date    : 10/17/16
 */
 #include <stdio.h>
 #include <time.h>
 #include "memory.h"
 
 #define PARSER
+#define YYSTACK_ALLOC	malloc
 
 int yyerror(char *str), yylex(void), yyparse(void);
 %}
 
-%token <str> SYMBOL_ USR_ STRING_
 %token <num> Symbol BOOLEAN_ CHAR_ INTEGER_
 %token <dbl> FLOAT_
+%token <str> USR_ SYMBOL_ STRING_
 %token <set> SET_
 %token <lis> LIST_
 %token <fil> FILE_
@@ -27,8 +28,8 @@ int yyerror(char *str), yylex(void), yyparse(void);
 %token JEQUAL
 %token END
 
-%token FALSE TRUE MAXINT SETSIZE STACK __SYMTABMAX __SYMTABINDEX __DUMP CONTS
-%token AUTOPUT UNDEFERROR UNDEFS ECHO_ CLOCK TIME RAND __MEMORYMAX STDIN STDOUT
+%token FALSE TRUE MAXINT SETSIZE STACK SYMTABMAX_ SYMTABINDEX DUMP CONTS
+%token AUTOPUT UNDEFERROR UNDEFS ECHO_ CLOCK TIME RAND MEMORYMAX_ STDIN STDOUT
 %token STDERR ID DUP SWAP ROLLUP ROLLDOWN ROTATE POPD DUPD SWAPD ROLLUPD
 %token ROLLDOWND ROTATED POP CHOICE OR XOR AND NOT PLUS MINUS MUL DIVIDE REM
 %token DIV SIGN NEG ORD CHR ABS ACOS ASIN ATAN ATAN2 CEIL COS COSH EXP FLOOR
@@ -45,9 +46,9 @@ int yyerror(char *str), yylex(void), yyparse(void);
 %token IFLIST IFFLOAT IFFILE COND WHILE LINREC TAILREC BINREC GENREC
 %token CONDNESTREC CONDLINREC STEP FOLD MAP TIMES INFRA PRIMREC FILTER SPLIT
 %token SOME ALL TREESTEP TREEREC TREEGENREC HELP _HELP HELPDETAIL MANUAL
-%token __HTML_MANUAL __LATEX_MANUAL __MANUAL_LIST __SETTRACEGC SETAUTOPUT
-%token SETUNDEFERROR SETECHO GC SYSTEM GETENV ARGV ARGC __MEMORYINDEX GET GETCH
-%token PUT PUTCH PUTCHARS INCLUDE ABORT QUIT
+%token HTML_MANUAL LATEX_MANUAL MANUAL_LIST SETTRACEGC SETAUTOPUT SETUNDEFERROR
+%token SETECHO GC SYSTEM GETENV ARGV ARGC MEMORYINDEX GET GETCH PUT PUTCH
+%token PUTCHARS INCLUDE ABORT QUIT
 
 %type <num> char_or_int
 %type <set> opt_set set
@@ -132,14 +133,14 @@ opt_definition : SYMBOL_ JEQUAL opt_quot
 /*
     A term is one or more factors.
 */
-opt_term : term { if (!compiling) $$ = reverse($1); } ;
+opt_term : term { $$ = reverse($1); } ;
 
 term : term factor { $2->next = $1; $$ = $2; } | factor ;
 
 /*
     A quotation is similar to a term.
 */
-opt_quot : quot { if (!compiling) $$ = reverse($1); }
+opt_quot : quot { $$ = reverse($1); }
 	 | /* empty */ { $$ = 0; } ;
 
 quot : quot factor { $2->next = $1; $$ = $2; } | factor ;
@@ -152,7 +153,7 @@ factor  : Symbol { $$ = newnode(Symbol, (void *)$1, 0); }
 	| BOOLEAN_ { $$ = newnode(BOOLEAN_, (void *)$1, 0); }
 	| CHAR_ { $$ = newnode(CHAR_, (void *)$1, 0); }
 	| INTEGER_ { $$ = newnode(INTEGER_, (void *)$1, 0); }
-	| FLOAT_ { $$ = dblnode($1, 0); /* FLOAT_ */ }
+	| FLOAT_ { $$ = dblnode($1, 0); }
 	| STRING_ { $$ = newnode(STRING_, $1, 0); }
 	| list { $$ = newnode(LIST_, $1, 0); }
 	| set { $$ = newnode(SET_, (void *)$1, 0); }

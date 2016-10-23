@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.4
-    date    : 09/10/16
+    version : 1.5
+    date    : 10/21/16
 */
 #include "interp.h"
 
@@ -32,7 +32,7 @@ PRIVATE void intern_(void)
     for (i = 0; optable[i].name; i++)
 	if (!strcmp(id, optable[i].name)) {
 	    if (OUTSIDE) {
-		stk->op = i;
+		stk->op = ANON_FUNCT_;
 		stk->u.proc = optable[i].proc;
 	    } else
 		UNARY(ANON_FUNCT_NEWNODE, optable[i].proc);

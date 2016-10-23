@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 10/16/16
 */
 #include "interp.h"
 
@@ -14,51 +14,44 @@ For aggregate X uses successive members and combines by C for new R.
 /* primrec.c */
 PRIVATE void primrec_(void)
 {
+    char *str;
+    long_t set;
     int i, num = 0;
-    Node *data, *second, *third;
+    Node *cur, *init, *prog;
 
     THREEPARAMS("primrec");
-    third = stk->u.lis;
+    prog = stk->u.lis;
     POP(stk);
-    second = stk->u.lis;
+    init = stk->u.lis;
     POP(stk);
-    data = stk;
+    cur = stk;
     POP(stk);
-    switch (data->op) {
+    switch (cur->op) {
     case LIST_:
-	 {
-	    Node *cur;
-	    for (cur = data->u.lis; cur; cur = cur->next, num++)
-		DUPLICATE(cur);
-	    break;
-	}
+	for (cur = cur->u.lis; cur; cur = cur->next, num++)
+	    DUPLICATE(cur);
+	break;
     case STRING_:
-	 {
-	    char *str;
-	    for (str = data->u.str; str && *str; str++, num++)
-		PUSH(CHAR_, (long_t)*str);
-	    break;
-	}
+	for (str = cur->u.str; str && *str; str++, num++)
+	    PUSH(CHAR_, (long_t)*str);
+	break;
     case SET_:
-	 {
-	    long_t set = data->u.set;
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (set & (1 << i)) {
-		    PUSH(INTEGER_, i);
-		    num++;
-		}
-	    break;
-	}
-    case INTEGER_:
-	 {
-	    for (i = num = data->u.num; i > 0; i--)
+	set = cur->u.set;
+	for (i = 0; i < _SETSIZE_; i++)
+	    if (set & (1 << i)) {
 		PUSH(INTEGER_, i);
-	    break;
-	}
+		num++;
+	    }
+	break;
+    case INTEGER_:
+	i = num = cur->u.num;
+	while (i--)
+	    PUSH(INTEGER_, i);
+	break;
     default:
 	BADDATA("primrec");
     }
-    exeterm(second);
-    for (i = 0; i < num; i++)
-	exeterm(third);
+    exeterm(init);
+    while (num--)
+	exeterm(prog);
 }

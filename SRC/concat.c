@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.4
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -28,8 +28,8 @@ PRIVATE void concat_(void)
 	return;
     case STRING_:
 	 {
-	    char *str = GC_malloc(strlen(stk->next->u.str) +
-				  strlen(stk->u.str) + 1);
+	    char *str = malloc(strlen(stk->next->u.str) +
+			       strlen(stk->u.str) + 1);
 	    strcpy(str, stk->next->u.str);
 	    strcat(str, stk->u.str);
 	    if (OUTSIDE) {
@@ -50,9 +50,9 @@ PRIVATE void concat_(void)
 	}
 	for (cur = stk->next->u.lis; cur; cur = cur->next)
 	    if (!root)
-		last = root = newnode(cur->op, cur->u.ptr, 0);
+		last = root = heapnode(cur->op, cur->u.ptr, 0);
 	    else
-		last = last->next = newnode(cur->op, cur->u.ptr, 0);
+		last = last->next = heapnode(cur->op, cur->u.ptr, 0);
 	last->next = stk->u.lis;
 	if (OUTSIDE) {
 	    stk->next->u.lis = root;

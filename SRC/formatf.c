@@ -1,7 +1,7 @@
 /*
     module  : formatf.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 09/19/16
 */
 #include "interp.h"
 
@@ -39,7 +39,7 @@ PRIVATE void formatf_(void)
 #else
     leng = snprintf(0, 0, format, width, prec, stk->u.num);
 #endif
-    result = GC_malloc(leng + 1);
+    result = malloc(leng + 1);
     FLOAT("formatf");
 #ifdef BIT_32
     sprintf(result, format, width, prec, stk->u.dbl);

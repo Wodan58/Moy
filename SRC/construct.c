@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.5
+    date    : 10/04/16
 */
 #include "interp.h"
 
@@ -13,22 +13,31 @@ Then executes each [Pi] to give Ri pushed onto saved stack.
 /* construct.c */
 PRIVATE void construct_(void)
 {
-    Node *cur, *test, *root, *save;
+    Node *cur, *prog, *root = 0, *save[2];
 
     TWOPARAMS("construct");
     TWOQUOTES("construct");
     cur = stk->u.lis;
     POP(stk);
-    test = stk->u.lis;
+    prog = stk->u.lis;
     POP(stk);
-    root = stk;
-    inside_condition++;
-    exeterm(test);
-    for (save = stk; cur; cur = cur->next) {
-	stk = save;
+    save[0] = stk;
+    exeterm(prog);
+    for ( ; cur; cur = cur->next) {
+	save[1] = stk;
+#ifdef ARITY
+	copy_(arity(cur->u.lis));
+#else
+	CONDITION;
+#endif
 	exeterm(cur->u.lis);
-	root = newnode(stk->op, stk->u.ptr, root);
+	root = heapnode(stk->op, stk->u.ptr, root);
+	stk = save[1];
+#ifndef ARITY
+	RELEASE;
+#endif
     }
-    inside_condition--;
-    stk = root;
+    stk = save[0];
+    for (cur = root; cur; cur = cur->next)
+	DUPLICATE(cur);
 }

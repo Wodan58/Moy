@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.6
+    date    : 10/08/16
 */
 #include "interp.h"
 
@@ -13,24 +13,41 @@ Returns the two values R1 and R2.
 /* unary2.c */
 PRIVATE void unary2_(void)
 {
-    Node *prog, *parm, *save, *result[2];
+    Node *prog, temp, *top, result[2];
+#ifdef ARITY
+    int d;
+#endif
 
     THREEPARAMS("unary2");
     ONEQUOTE("unary2");
     prog = stk->u.lis;
     POP(stk);
-    parm = stk;
+    temp = *stk;
     POP(stk);
-    save = stk->next;
-    inside_condition++;
+    top = stk->next;
+#ifdef ARITY
+    copy_(d = arity(prog));
+#else 
+    CONDITION;
+#endif
     exeterm(prog);
-    result[0] = stk;
-    stk = save;
-    DUPLICATE(parm);
+    result[0] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&temp);
+#ifdef ARITY
+    copy_(d);
+#else
+    CONDITION;
+#endif
     exeterm(prog);
-    inside_condition--;
-    result[1] = stk;
-    stk = save;
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
+    result[1] = *stk;
+#ifndef ARITY
+    RELEASE;
+#endif
+    stk = top;
+    DUPLICATE(&result[0]);
+    DUPLICATE(&result[1]);
 }

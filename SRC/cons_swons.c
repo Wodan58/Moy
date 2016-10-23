@@ -1,7 +1,7 @@
 /*
     module  : cons_swons.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.4
+    date    : 10/04/16
 */
 /* cons_swons.c */
 PRIVATE void PROCEDURE(void)
@@ -10,11 +10,11 @@ PRIVATE void PROCEDURE(void)
     switch (AGGR->op) {
     case LIST_:
 	if (OUTSIDE) {
-	    stk->next->u.lis = newnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis);
+	    stk->next->u.lis = heapnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis);
 	    stk->next->op = LIST_;
 	    POP(stk);
 	} else
-	    BINARY(LIST_NEWNODE, newnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis));
+	    BINARY(LIST_NEWNODE, heapnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis));
 	break;
     case SET_:
 	CHECKSETMEMBER(ELEM, NAME);
@@ -27,7 +27,7 @@ PRIVATE void PROCEDURE(void)
 	break;
     case STRING_:
 	{
-	    char *str = GC_malloc(strlen(AGGR->u.str) + 2);
+	    char *str = malloc(strlen(AGGR->u.str) + 2);
 #ifdef RUNTIME_CHECKS
 	    if (ELEM->op != CHAR_)
 		execerror("character", NAME);
