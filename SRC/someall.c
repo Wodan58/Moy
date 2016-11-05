@@ -1,16 +1,13 @@
 /*
     module  : someall.c
-    version : 1.7
-    date    : 10/04/16
+    version : 1.8
+    date    : 11/05/16
 */
 /* someall.c */
 PRIVATE void PROCEDURE(void)
 {
-    Operator op;
-    char *str = 0;
-    long_t set = 0;
-    Node *prog, *save, *list = 0, *cur;
-    int i, num = INITIAL;
+    Node *prog, *save;
+    int j, num = INITIAL;
 #ifdef ARITY
     int d;
 #endif
@@ -19,33 +16,25 @@ PRIVATE void PROCEDURE(void)
     ONEQUOTE(NAME);
     prog = stk->u.lis;
     POP(stk);
-    switch (op = stk->op) {
-    case SET_:
-	set = stk->u.set;
-	break;
-    case STRING_:
-	str = stk->u.str;
-	break;
-    case LIST_:
-	list = stk->u.lis;
-	break;
-    }
-    POP(stk);
 #ifdef ARITY
     d = arity(prog);
 #endif
-    switch (op) {
+    switch (stk->op) {
     case SET_:
 	{
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (set & (1 << i)) {
+	    long_t set;
+
+	    set = stk->u.set;
+	    POP(stk);
+	    for (j = 0; j < _SETSIZE_; j++)
+		if (set & (1 << j)) {
 		    save = stk;
 #ifdef ARITY
 		    copy_(d);
 #else
 		    CONDITION;
 #endif
-		    PUSH(INTEGER_, i);
+		    PUSH(INTEGER_, j);
 		    exeterm(prog);
 		    num = stk->u.num;
 		    stk = save;
@@ -59,7 +48,11 @@ PRIVATE void PROCEDURE(void)
 	}
     case STRING_:
 	{
-	    for ( ; str && *str; str++) {
+	    char *str;
+
+	    str = stk->u.str;
+	    POP(stk);
+	    for (; str && *str; str++) {
 		save = stk;
 #ifdef ARITY
 		copy_(d);
@@ -80,14 +73,18 @@ PRIVATE void PROCEDURE(void)
 	}
     case LIST_:
 	{
-	    for (cur = list; cur; cur = cur->next) {
+	    Node *list;
+
+	    list = stk->u.lis;
+	    POP(stk);
+	    for (; list; list = list->next) {
 		save = stk;
 #ifdef ARITY
 		copy_(d);
 #else
 		CONDITION;
 #endif
-		DUPLICATE(cur);
+		DUPLICATE(list);
 		exeterm(prog);
 		num = stk->u.num;
 		stk = save;

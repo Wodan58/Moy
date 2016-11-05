@@ -1,9 +1,8 @@
 /*
     module  : condnestrec.c
-    version : 1.5
-    date    : 10/04/16
+    version : 1.6
+    date    : 11/05/16
 */
-#include <assert.h>
 #include "interp.h"
 
 /*

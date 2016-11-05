@@ -1,7 +1,7 @@
 /*
     module  : arity.c
-    version : 1.5
-    date    : 10/16/16
+    version : 1.6
+    date    : 11/05/16
 */
 #include <stdio.h>
 #include <string.h>
@@ -9,12 +9,9 @@
 #include "globals1.h"
 #include "utstring.h"
 
-#define rebase(x)	(x - FALSE + FALSE_)
-
 #define P(x)		utstring_printf(str, x)
 #define Q(x, y)		utstring_printf(str, x, y)
 
-void genrecaux(void);
 char *aritysym(int op);
 void arityterm(Node *cur, UT_string *str);
 
@@ -42,10 +39,6 @@ void arityfactor(Node *cur, UT_string *str)
 	}
 	break;
     case ANON_FUNCT_:
-	if (cur->u.ptr == genrecaux) {
-	    P("DA");
-	    break;
-	}
     case SYMBOL_:
 	P("?");
 	break;
@@ -57,53 +50,134 @@ void arityfactor(Node *cur, UT_string *str)
 
 int tally(char *str)
 {
-    int d = 0;
+    int d;
     char *ptr;
 
     if (strchr(str, '?'))
 	return MEMORYMAX;
-    for ( ; *str; str++) {
-	if (*str == 'A')
-	    if ((ptr = strchr(str, 'D')) != 0)
-		*ptr = *str = ' ';
+    for (d = 0; *str; str++)
 	if (*str == 'D')
 	    d++;
-    }
+	else if (*str == 'A')
+	    if ((ptr = strchr(str, 'D')) != 0)
+		*ptr = *str = ' ';
     return d;
 }
 
 void arityterm(Node *cur, UT_string *str)
 {
-    int d[2];
-    UT_string *tmp[2];
+    int sp, a[4], q[5];
 
-    for ( ; cur; cur = cur->next) {
-	if (cur->op == LIST_ && cur->next &&
-		   (cur->next->op == rebase(I) ||
-		    cur->next->op == rebase(X) ||
-		    cur->next->op == rebase(DIP) ||
-		    cur->next->op == rebase(SOME) ||
-		    cur->next->op == rebase(ALL) ||
-		    cur->next->op == rebase(STEP))) {
-	    arityterm(cur->u.lis, str);
-	    cur = cur->next;
-	} else if (cur->op == LIST_ && cur->next &&
-		   cur->next->op == LIST_ && cur->next->next &&
-		   cur->next->next->op == LIST_ && cur->next->next->next &&
-		   cur->next->next->next->op == rebase(IFTE)) {
-	    utstring_new(tmp[0]);
-	    arityterm(cur->next->u.lis, tmp[0]);	/* TRUE branch */
-	    d[0] = tally(utstring_body(tmp[0]));
-	    utstring_new(tmp[1]);
-	    arityterm(cur->next->next->u.lis, tmp[1]);	/* FALSE branch */
-	    d[1] = tally(utstring_body(tmp[1]));
-	    if (d[0] == d[1]) {				/* only if equal */
-		arityterm(cur->next->u.lis, str);	/* TRUE branch */
-		cur = cur->next->next->next;
-	    } else
-		arityfactor(cur, str);
-	} else
+    for (sp = 0; cur; cur = cur->next) {
+	if (cur->op == LIST_) {
+	    q[sp++] = arity(cur->u.lis);
+	    if (sp == 5) {
+		q[0] = q[1];
+		q[1] = q[2];
+		q[2] = q[3];
+		q[3] = q[4];
+		sp = 4;
+	    }
+	    P("A");
+	    continue;
+	}
+	switch (cur->op + FALSE - FALSE_) {
+	case ALL:
+	case BINARY:
+	case DIP:
+	case FILTER:
+	case FOLD:
+	case I:
+	case INFRA:
+	case MAP:
+	case NULLARY:
+	case SOME:
+	case SPLIT:
+	case STEP:
+	case TERNARY:
+	case TIMES:
+	case TREESTEP:
+	case UNARY:
+	case UNARY2:
+	case UNARY3:
+	case UNARY4:
+	case X:
+	    if (!sp || (a[0] = q[sp - 1]) == MEMORYMAX)
+		P("?");
+	    else
+		while (a[0]--)
+		    P("D");
+	    break;
+	case BRANCH:
+	case CLEAVE:
+	case IFCHAR:
+	case IFFILE:
+	case IFFLOAT:
+	case IFINTEGER:
+	case IFLIST:
+	case IFLOGICAL:
+	case IFSET:
+	case IFSTRING:
+	case PRIMREC:
+	case TREEREC:
+	case WHILE:
+	    if (sp < 2 || (a[0] = q[sp - 1]) == MEMORYMAX ||
+			  (a[1] = q[sp - 2]) == MEMORYMAX)
+		P("?");
+	    else {
+		if (a[0] < a[1])
+		    a[0] = a[1];
+		while (a[0]--)
+		    P("D");
+	    }
+	    break;
+	case IFTE:
+	case TAILREC:
+	case TREEGENREC:
+	    if (sp < 3 || (a[0] = q[sp - 1]) == MEMORYMAX ||
+			  (a[1] = q[sp - 2]) == MEMORYMAX ||
+			  (a[2] = q[sp - 3]) == MEMORYMAX)
+		P("?");
+	    else {
+		if (a[0] < a[1])
+		    a[0] = a[1];
+		if (a[0] < a[2])
+		    a[0] = a[2];
+		while (a[0]--)
+		    P("D");
+	    }
+	    break;
+	case BINREC:
+	case GENREC:
+	case LINREC:
+	    if (sp < 4 || (a[0] = q[sp - 1]) == MEMORYMAX ||
+			  (a[1] = q[sp - 2]) == MEMORYMAX ||
+			  (a[2] = q[sp - 3]) == MEMORYMAX ||
+			  (a[3] = q[sp - 4]) == MEMORYMAX)
+		P("?");
+	    else {
+		if (a[0] < a[1])
+		    a[0] = a[1];
+		if (a[0] < a[2])
+		    a[0] = a[2];
+		if (a[0] < a[3])
+		    a[0] = a[3];
+		while (a[0]--)
+		    P("D");
+	    }
+	    break;
+	case CASE:
+	case COND:
+	case CONDLINREC:
+	case CONDNESTREC:
+	case CONSTRUCT:
+	    P("?");
+	    break;
+	default:
 	    arityfactor(cur, str);
+	    break;
+	}
+	sp = 0;
     }
 }
 

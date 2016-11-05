@@ -1,7 +1,7 @@
 /*
     module  : optable.c
-    version : 1.7
-    date    : 10/21/16
+    version : 1.8
+    date    : 11/05/16
 */
 #include "interp.h"
 #include "builtin.h"
@@ -626,10 +626,10 @@ struct optable_t optable[] =
 {"split",		split_,		"A [B]  ->  A1 A2",	"DDAA",
 "Uses test B to split aggregate A into sametype aggregates A1 and A2 ."},
 
-{"some",		some_,		"A [B]  ->  X",		"A",
+{"some",		some_,		"A [B]  ->  X",		"DDA",
 "Applies test B to members of aggregate A, X = true if some pass."},
 
-{"all",			all_,		"A [B]  ->  X",		"A",
+{"all",			all_,		"A [B]  ->  X",		"DDA",
 "Applies test B to members of aggregate A, X = true if all pass."},
 
 {"treestep",		treestep_,	"T [P]  ->  ...",	"DDDA",

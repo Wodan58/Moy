@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.10
-    date    : 10/04/16
+    version : 1.11
+    date    : 11/05/16
 */
 #include "interp.h"
 
@@ -12,13 +12,8 @@ Uses test B to filter aggregate A producing sametype aggregate A1.
 /* filter.c */
 PRIVATE void filter_(void)
 {
-    Operator op;
-    char *str = 0;
-    long_t set = 0;
-    Node *prog, *cur = 0,
-	 *list = 0, *root = 0,
-	 *save, *last = 0;
-    int j, num;
+    int j;
+    Node *prog, *save;
 #ifdef ARITY
     int d;
 #endif
@@ -27,26 +22,16 @@ PRIVATE void filter_(void)
     ONEQUOTE("filter");
     prog = stk->u.lis;
     POP(stk);
-    switch (op = stk->op) {
-    case SET_:
-	set = stk->u.set;
-	break;
-    case STRING_:
-	str = stk->u.str;
-	break;
-    case LIST_:
-	list = stk->u.lis;
-	break;
-    }
-    POP(stk);
 #ifdef ARITY
     d = arity(prog);
 #endif
-    switch (op) {
+    switch (stk->op) {
     case SET_:
 	{
-	    long_t result = 0;
+	    long_t set, result = 0;
 
+	    set = stk->u.set;
+	    POP(stk);
 	    for (j = 0; j < _SETSIZE_; j++)
 		if (set & (1 << j)) {
 		    save = stk;
@@ -69,8 +54,11 @@ PRIVATE void filter_(void)
 	}
     case STRING_:
 	{
-	    char *result = strdup(str);
+	    char *str, *result;
 
+	    str = stk->u.str;
+	    POP(stk);
+	    result = strdup(str);
 	    for (j = 0; str && *str; str++) {
 		save = stk;
 #ifdef ARITY
@@ -93,26 +81,29 @@ PRIVATE void filter_(void)
 	}
     case LIST_:
 	{
-	    for (cur = list; cur; cur = cur->next) {
+	    Node *list, *root = 0, *cur;
+
+	    list = stk->u.lis;
+	    POP(stk);
+	    for (; list; list = list->next) {
 		save = stk;
 #ifdef ARITY
 		copy_(d);
 #else
 		CONDITION;
 #endif
-		DUPLICATE(cur);
+		DUPLICATE(list);
 		exeterm(prog);
-		num = stk->u.num;
+		if (stk->u.num) {
+		    if (!root)
+			cur = root = heapnode(list->op, list->u.ptr, 0);
+		    else
+			cur = cur->next = heapnode(list->op, list->u.ptr, 0);
+		}
 		stk = save;
 #ifndef ARITY
 		RELEASE;
 #endif
-		if (num) {
-		    if (!root)
-			last = root = heapnode(cur->op, cur->u.ptr, 0);
-		    else
-			last = last->next = heapnode(cur->op, cur->u.ptr, 0);
-		}
 	    }
 	    PUSH(LIST_, root);
 	    break;

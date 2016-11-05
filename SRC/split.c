@@ -1,9 +1,8 @@
 /*
     module  : split.c
-    version : 1.10
-    date    : 10/04/16
+    version : 1.11
+    date    : 11/05/16
 */
-#include <assert.h>
 #include "interp.h"
 
 /*
@@ -13,12 +12,7 @@ Uses test B to split aggregate A into sametype aggregates A1 and A2.
 /* split.c */
 PRIVATE void split_(void)
 {
-    Operator op;
-    char *str = 0;
-    long_t set = 0;
-    int j, num;
-    Node *prog, *cur = 0, *root = 0, *last = 0,
-	 *save, *list = 0, *head = 0, *tail = 0;
+    Node *prog, *save;
 #ifdef ARITY
     int d;
 #endif
@@ -27,25 +21,17 @@ PRIVATE void split_(void)
     ONEQUOTE("split");
     prog = stk->u.lis;
     POP(stk);
-    switch (op = stk->op) {
-    case SET_:
-	set = stk->u.set;
-	break;
-    case STRING_:
-	str = stk->u.str;
-	break;
-    case LIST_:
-	list = stk->u.lis;
-	break;
-    }
-    POP(stk);
 #ifdef ARITY
     d = arity(prog);
 #endif
-    switch (op) {
+    switch (stk->op) {
     case SET_:
 	{
-	    long_t yes_set = 0, no_set = 0;
+	    int j;
+	    long_t set, yes_set = 0, no_set = 0;
+
+	    set = stk->u.set;
+	    POP(stk);
 	    for (j = 0; j < _SETSIZE_; j++) {
 		if (set & (1 << j)) {
 		    save = stk;
@@ -56,8 +42,7 @@ PRIVATE void split_(void)
 #endif
 		    PUSH(INTEGER_, j);
 		    exeterm(prog);
-		    if (stk->u.num)
-			yes_set |= 1 << j;
+		    if (stk->u.num) yes_set |= 1 << j;
 		    else
 			no_set |= 1 << j;
 		    stk = save;
@@ -73,9 +58,13 @@ PRIVATE void split_(void)
     case STRING_:
 	{
 	    int yesptr = 0, noptr = 0;
-	    char *yesstring = strdup(str),
-		 *nostring = strdup(str);
-	    for ( ; str && *str; str++) {
+	    char *str, *yesstring, *nostring;
+
+	    str = stk->u.str;
+	    POP(stk);
+	    yesstring = strdup(str);
+	    nostring = strdup(str);
+	    for (; str && *str; str++) {
 		save = stk;
 #ifdef ARITY
 		copy_(d);
@@ -101,29 +90,32 @@ PRIVATE void split_(void)
 	}
     case LIST_:
 	{
-	    for (cur = list; cur; cur = cur->next) {
+	    Node *list, *root = 0, *cur, *head = 0, *tail;
+
+	    list = stk->u.lis;
+	    POP(stk);
+	    for (; list; list = list->next) {
 		save = stk;
 #ifdef ARITY
 		copy_(d);
 #else
 		CONDITION;
 #endif
-		DUPLICATE(cur);
+		DUPLICATE(list);
 		exeterm(prog);
-		num = stk->u.num;
+		if (stk->u.num)
+		    if (!root)
+			cur = root = heapnode(list->op, list->u.ptr, 0);
+		    else
+			cur = cur->next = heapnode(list->op, list->u.ptr, 0);
+		else if (!head)
+		    tail = head = heapnode(list->op, list->u.ptr, 0);
+		else
+		    tail = tail->next = heapnode(list->op, list->u.ptr, 0);
 		stk = save;
 #ifndef ARITY
 		RELEASE;
 #endif
-		if (num)
-		    if (!root)
-			last = root = heapnode(cur->op, cur->u.ptr, 0);
-		    else
-			last = last->next = heapnode(cur->op, cur->u.ptr, 0);
-		else if (!head)
-		    tail = head = heapnode(cur->op, cur->u.ptr, 0);
-		else
-		    tail = tail->next = heapnode(cur->op, cur->u.ptr, 0);
 	    }
 	    PUSH(LIST_, root);
 	    PUSH(LIST_, head);
