@@ -1,7 +1,7 @@
 Moy
 ---
 
-This is [Joy1](https://github.com/Wodan58/joy1) implemented with Lex and Yacc and some additions: round, fget, filetime, sametype, casting, and getch.
+This is [Joy1](https://github.com/Wodan58/joy1) implemented with Lex and Yacc and some additions: round, fget, filetime, index, sametype, casting, and getch.
 This project depends on the [BDW garbage collector](https://github.com/ivmai/bdwgc).
 
 Changes
