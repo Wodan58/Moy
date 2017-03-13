@@ -1,13 +1,22 @@
 /*
     module  : memoryindex.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 __memoryindex  :  ->
 Pushes current value of memory.
 */
-/* memoryindex.c */
-PUSH_PROC(__memoryindex_, INTEGER_, (stk > memory && stk < &memory[MEMORYMAX] ?  stk - memory : 0))
+PRIVATE void do_memoryindex(void)
+{
+    ptrdiff_t mem_index = 0;
+
+#ifndef NCHECK
+    COMPILE;
+#endif
+    if (INSIDE)
+	mem_index = stk - memory;
+    PUSH(INTEGER_, mem_index);
+}

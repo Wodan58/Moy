@@ -1,17 +1,16 @@
 /*
     module  : popd.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 popd  :  Y Z  ->  Z
 As if defined by:   popd  ==  [pop] dip
 */
-/* popd.c */
-#define PROCEDURE	popd_
+#define PROCEDURE	do_popd
 #define NAME		"popd"
 #define PARAMCOUNT	TWOPARAMS
-#define ARGUMENT	pop_
+#define ARGUMENT	do_pop
 #include "dipped.c"

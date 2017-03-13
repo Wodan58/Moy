@@ -1,13 +1,20 @@
 /*
     module  : clock.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+extern clock_t startclock;
 
 /*
 clock  :  ->  I
 Pushes the integer value of current CPU usage in milliseconds.
 */
-/* clock.c */
-PUSH_PROC(clock_, INTEGER_, clock() - startclock)
+PRIVATE void do_clock(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(INTEGER_, clock() - startclock);
+}

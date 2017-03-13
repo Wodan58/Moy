@@ -1,6 +1,4 @@
 
-
-
 Interactive tutorial on JOY
 
 Contents:
@@ -16,11 +14,11 @@ The usual binary operators are:  +  -  *  /
 But these operators are written after their arguments.
 What will the program   2  3  +   leave on the stack ?
 An integer is expected:
-No, the right answer is:  5 
+No, the right answer is:  5   Your answer:  1234 
 What will the program   7  6  *   leave on the stack ?
 Good.
 What will the program   7  6  *  2  3  +  -   leave on the stack ?
-No, the right answer is:  37 
+No, the right answer is:  37   Your answer:  36 
 The most important aggregate datatype is that of lists.
 These are written inside square brackets, like this:
         [42 17 3 9 35]
@@ -30,17 +28,17 @@ What will the program   [5 4 2 7]  first   leave on the stack ?
 Good.
 What will the program   [5 4 2 7]  rest   leave on the stack ?
 A list is expected:
-No, the right answer is:  [4 2 7] 
+No, the right answer is:  [4 2 7]   Your answer:  [2 4 7] 
 What will the program   8  [9 3]  cons   leave on the stack ?
 Good.
 What will the program   [5 3]  dup  concat   leave on the stack ?
-No, the right answer is:  [5 3 5 3] 
+No, the right answer is:  [5 3 5 3]   Your answer:  [[5 3] 5 3] 
 What will the program   [5 3]  dup  cons   leave on the stack ?
 Good.
 What will the dots   ...   have to be, so that
 	...  [3 2 4]  concat
 leaves    [7 3 3 2 4]    on the stack ?
-No, the right answer is:  [7 3] 
+No, the right answer is:  [7 3]   Your answer:  [73] 
 You answered 4 of the 9 questions correctly.
 
 2 - The map and filter combinators
@@ -50,7 +48,7 @@ on the stack. But combinators always expect a quoted program
 and perhaps something else. For example, the   map   combinator
 expects a single program and below that an aggregate, e.g. a list.
 What will the program   [3 2 4] [dup +] map   leave on the stack ?
-No, the right answer is:  [6 4 8] 
+No, the right answer is:  [6 4 8]   Your answer:  [9 4 16] 
 What will the dots   ...   have to be, so that
 	[3 2 4]  ...  map
 leaves    [13 12 14]    on the stack ?
@@ -75,7 +73,7 @@ on the stack. In most cases they have been pushed just beforehand.
 What will the program   5  [7 <]  [10 +]  [10 -]  ifte   leave on the stack ?
 Good.
 What will the program   8  [7 <]  [10 +]  [10 -]  ifte   leave on the stack ?
-No, the right answer is:  -2 
+No, the right answer is:  -2   Your answer:  -8 
 A programmer wants to write a recursive definition of the
 factorial function, which has the form:
     factorial ==
@@ -90,7 +88,7 @@ Good.
 This question is harder:
 What could be used as the third quote?
 No, the right answer must be one of the following:
-	[dup pred factorial *]   [dup 1 - factorial *]   
+	[dup pred factorial *]   [dup 1 - factorial *]     Your answer:  [factorial *] 
 Later the programmer realises that the factorial function
 is only needed in one place of the program, so it would be good
 not to have the definition at all, by using the  linrec  combinator:

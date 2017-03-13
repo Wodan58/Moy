@@ -1,16 +1,15 @@
 /*
     module  : pow.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 pow  :  F G  ->  H
 H is F raised to the Gth power.
 */
-/* pow.c */
-#define PROCEDURE	pow_
+#define PROCEDURE	do_pow
 #define NAME		"pow"
 #define FUNC		pow
 #include "bfloat.c"

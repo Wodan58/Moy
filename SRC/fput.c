@@ -1,26 +1,28 @@
 /*
     module  : fput.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fput  :  S X  ->  S
 Writes X to stream S, pops X off stack.
 */
-/* fput.c */
-PRIVATE void fput_(void)
+PRIVATE void do_fput(void)
 {
-    FILE *stm;
+    FILE *fp;
+    Node temp;
 
+#ifndef NCHECK
+    COMPILE;
     TWOPARAMS("fput");
-#ifdef RUNTIME_CHECKS
     if (stk->next->op != FILE_ || !stk->next->u.fil)
 	execerror("file", "fput");
 #endif
-    stm = stk->next->u.fil;
-    writefactor(stk, stm);
-    fprintf(stm, " ");
+    temp = *stk;
     POP(stk);
+    fp = stk->u.fil;
+    writefactor(&temp, fp);
+    putc(' ', fp);
 }

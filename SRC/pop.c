@@ -1,17 +1,22 @@
 /*
     module  : pop.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 pop  :  X  ->
 Removes X from top of the stack.
 */
-/* pop.c */
-PRIVATE void pop_(void)
+PRIVATE void do_pop(void)
 {
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("pop");
+#endif
     POP(stk);
 }

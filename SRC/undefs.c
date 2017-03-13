@@ -1,22 +1,23 @@
 /*
     module  : undefs.c
-    version : 1.3
-    date    : 10/04/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 undefs  :  ->  [..]
 Push a list of all undefined symbols in the current symbol table.
 */
-/* undefs.c */
-PRIVATE void undefs_(void)
+PRIVATE void do_undefs(void)
 {
-    Node *n = 0;
-    Entry *i = symtabindex;
+    int i;
+    Node *root = 0;
 
-    while (--i != symtab)
-	if (i->name[0] && i->name[0] != '_' && !i->u.body)
-	    n = heapnode(STRING_, i->name, n);
-    PUSH(LIST_, n);
+    for (i = symtabindex - 1; i >= 0; i--)
+	if (symtab[i].name[0] && symtab[i].name[0] != '_' &&
+	    (symtab[i].flags & (IS_MODULE | IS_BUILTIN)) == 0 &&
+	     !symtab[i].u.body)
+	    root = heapnode(STRING_, (void *)symtab[i].name, root);
+    PUSH(LIST_, root);
 }

@@ -1,20 +1,25 @@
 /*
     module  : null.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 null  :  X  ->  B
 Tests for empty aggregate X or zero numeric.
 */
-/* null.c */
-PRIVATE void null_(void)
+PRIVATE void do_null(void)
 {
     int num = 0;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("null");
+#endif
     switch (stk->op) {
     case STRING_:
 	num = !*stk->u.str;
@@ -36,8 +41,10 @@ PRIVATE void null_(void)
     case INTEGER_:
 	num = !stk->u.num;
 	break;
+#ifndef NCHECK
     default:
 	BADDATA("null");
+#endif
     }
     if (OUTSIDE) {
 	stk->u.num = num;

@@ -1,13 +1,18 @@
 /*
     module  : symtabmax.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 __symtabmax  :  ->  I
 Pushes value of maximum size of the symbol table.
 */
-/* symtabmax.c */
-PUSH_PROC(__symtabmax_, INTEGER_, SYMTABMAX)
+PRIVATE void do_symtabmax(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(INTEGER_, SYMTABMAX);
+}

@@ -1,13 +1,18 @@
 /*
     module  : dump.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 __dump  :  ->  [..]
 debugging only: pushes the dump as a list.
 */
-/* dump.c */
-PUSH_PROC(__dump_, LIST_, 0)
+PRIVATE void do_dump(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(LIST_, 0);
+}

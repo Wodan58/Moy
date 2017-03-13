@@ -1,18 +1,20 @@
 /*
     module  : fflush.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fflush  :  S  ->  S
 Flush stream S, forcing all buffered output to be written.
 */
-/* fflush.c */
-PRIVATE void fflush_(void)
+PRIVATE void do_fflush(void)
 {
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("fflush");
     FILE("fflush");
+#endif
     fflush(stk->u.fil);
 }

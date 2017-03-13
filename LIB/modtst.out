@@ -1,4 +1,4 @@
-
+ inilib  is loaded
 0
 1
 2
@@ -24,4 +24,3 @@ run time error: a needed for m2
 run time error: b needed for m2
 run time error: c needed for m2
 run time error: d needed for m2
-

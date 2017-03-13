@@ -1,9 +1,9 @@
 /*
     module  : localtime.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 localtime  :  I  ->  T
@@ -13,8 +13,7 @@ Month is 1 = January ... 12 = December;
 isdst is a Boolean flagging daylight savings/summer time;
 weekday is 1 = Monday ... 7 = Sunday.
 */
-/* localtime.c */
-#define PROCEDURE	localtime_
+#define PROCEDURE	do_localtime
 #define NAME		"localtime"
 #define FUNC		localtime
 #include "unmktime.c"

@@ -1,49 +1,60 @@
 /*
     module  : rest.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rest  :  A  ->  R
 R is the non-empty aggregate A with its first member removed.
 */
-/* rest.c */
-PRIVATE void rest_(void)
+PRIVATE void do_rest(void)
 {
+    int i = 0;
+    char *str;
+
+#ifndef NCHECK
+    if (optimizing && AGGREGATE(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("rest");
+#endif
     switch (stk->op) {
-    case SET_:
-	 {
-	    int i = 0;
-	    CHECKEMPTYSET(stk->u.set, "rest");
-	    while (!(stk->u.set & (1 << i)))
-		i++;
-	    if (OUTSIDE)
-		stk->u.set = stk->u.set & ~(1 << i);
-	    else
-		UNARY(SET_NEWNODE, stk->u.set & ~(1 << i));
-	    break;
-	}
-    case STRING_:
-	 {
-	    char *str = stk->u.str;
-	    CHECKEMPTYSTRING(str, "rest");
-	    if (OUTSIDE)
-		stk->u.str = ++str;
-	    else
-		UNARY(STRING_NEWNODE, ++str);
-	    break;
-	}
     case LIST_:
+#ifndef NCHECK
 	CHECKEMPTYLIST(stk->u.lis, "rest");
+#endif
 	if (OUTSIDE)
 	    stk->u.lis = stk->u.lis->next;
 	else
 	    UNARY(LIST_NEWNODE, stk->u.lis->next);
-	return;
+	break;
+    case STRING_:
+	str = stk->u.str;
+#ifndef NCHECK
+	CHECKEMPTYSTRING(str, "rest");
+#endif
+	if (OUTSIDE)
+	    stk->u.str = ++str;
+	else
+	    UNARY(STRING_NEWNODE, ++str);
+	break;
+    case SET_:
+#ifndef NCHECK
+	CHECKEMPTYSET(stk->u.set, "rest");
+#endif
+	while (!(stk->u.set & (1 << i)))
+	    i++;
+	if (OUTSIDE)
+	    stk->u.set = stk->u.set & ~(1 << i);
+	else
+	    UNARY(SET_NEWNODE, stk->u.set & ~(1 << i));
+	break;
+#ifndef NCHECK
     default:
 	BADAGGREGATE("rest");
+#endif
     }
 }

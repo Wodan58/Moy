@@ -1,20 +1,22 @@
 /*
     module  : fremove.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fremove  :  P  ->  B
 The file system object with pathname P is removed from the file system.
 B is a boolean indicating success or failure.
 */
-/* fremove.c */
-PRIVATE void fremove_(void)
+PRIVATE void do_fremove(void)
 {
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("fremove");
     STRING("fremove");
+#endif
     if (OUTSIDE) {
 	stk->next->u.num = !remove(stk->u.str);
 	stk->next->op = BOOLEAN_;

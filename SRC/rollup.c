@@ -1,20 +1,25 @@
 /*
     module  : rollup.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rollup  :  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
 */
-/* rollup.c */
-PRIVATE void rollup_(void)
+PRIVATE void do_rollup(void)
 {
     Node temp, *node, *next;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
+	;
+    else
+	COMPILE;
     THREEPARAMS("rollup");
+#endif
     temp = *stk;
     node = stk->next;
     next = node->next;

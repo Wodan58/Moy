@@ -1,13 +1,18 @@
 /*
     module  : stdin.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 stdin  :  ->  S
 Pushes the standard input stream.
 */
-/* stdin.c */
-PUSH_PROC(stdin_, FILE_, stdin)
+PRIVATE void do_stdin(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(FILE_, stdin);
+}

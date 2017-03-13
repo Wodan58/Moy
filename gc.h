@@ -1,9 +1,10 @@
 /*
-    module  : memory.h
-    version : 1.3
-    date    : 09/09/16
+    module  : gc.h
+    version : 1.4
+    date    : 03/12/17
 */
 void *GC_malloc(size_t size);
+void *GC_malloc_atomic(size_t size);
 void *GC_realloc(void *ptr, size_t new_size);
 char *GC_strdup(const char *str);
 void GC_gcollect(void);

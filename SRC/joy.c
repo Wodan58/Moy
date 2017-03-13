@@ -1,16 +1,15 @@
 /*
     module  : joy.c
-    version : 1.2
-    date    : 09/09/16
+    version : 1.3
+    date    : 03/12/17
 */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
-#include "memory.h"
-#include "globals1.h"
+#include "joy.h"
+#include "symbol.h"
 
-int EscVal(char *str)
+static int EscVal(char *str)
 {
     int i, num;
 
@@ -49,16 +48,30 @@ char *StrVal(char *str)
     int i = 0;
     char *buf;
 
-    buf = strdup(str);
+    buf = GC_strdup(str);
     while (*str != '"')
 	if (*str != '\\')
 	    buf[i++] = *str++;
 	else {
 	    buf[i++] = EscVal(++str);
 	    ++str;
-	    if (isdigit((int) *str))
+	    if (isdigit((int)*str))
 		str += 2;
 	}
     buf[i] = 0;
     return buf;
+}
+
+char *DelSpace(char *str)
+{
+    int i;
+
+    for (i = strlen(str) - 1; i >= 0; i--)
+	if (isspace((int)str[i]))
+	    str[i] = 0;
+	else
+	    break;
+    while (isspace((int)*str))
+	str++;
+    return str;
 }

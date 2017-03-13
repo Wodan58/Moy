@@ -1,13 +1,18 @@
 /*
     module  : false.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 false  :  ->  false
 Pushes the value false.
 */
-/* false.c */
-PUSH_PROC(false_, BOOLEAN_, 0)
+PRIVATE void do_false(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(BOOLEAN_, 0);
+}

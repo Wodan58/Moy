@@ -1,16 +1,15 @@
 /*
     module  : float.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 float  :  R  ->  B
 Tests whether R is a float.
 */
-/* float.c */
-#define PROCEDURE	float_
+#define PROCEDURE	do_float
 #define NAME		"float"
 #define REL		==
 #define TYP		FLOAT_

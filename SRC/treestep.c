@@ -1,16 +1,46 @@
 /*
     module  : treestep.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_treestep(void)
+{
+    Node *prog;
+    unsigned ident;
+    FILE *oldfp, *newfp;
+
+    if (!LIST_1)
+	return 0;
+    prog = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "void do_treestep_%d(void);", ident = ++identifier);
+    fprintf(outfp, "do_treestep_%d();", ident);
+    oldfp = outfp;
+    newfp = outfp = nextfile();
+    fprintf(outfp, "void do_treestep_%d(void) {", ident);
+    fprintf(outfp, "Node *cur;");
+    fprintf(outfp, "if (stk->op != LIST_) {");
+    evaluate(prog);
+    fprintf(outfp, "} else {");
+    fprintf(outfp, "cur = stk->u.lis; POP(stk);");
+    fprintf(outfp, "for (; cur; cur = cur->next) {");
+    fprintf(outfp, "DUPLICATE(cur);");
+    fprintf(outfp, "do_treestep_%d(); } } }", ident);
+    closefile(newfp);
+    outfp = oldfp;
+    return 1;
+}
+#endif
 
 /*
 treestep  :  T [P]  ->  ...
 Recursively traverses leaves of tree T, executes P for each leaf.
 */
-/* treestep.c */
-PRIVATE void treestepaux(Node *item, Node *prog)
+static void do_treestepaux(Node *item, Node *prog)
 {
     Node *cur;
 
@@ -18,18 +48,23 @@ PRIVATE void treestepaux(Node *item, Node *prog)
 	DUPLICATE(item);
 	exeterm(prog);
     } else for (cur = item->u.lis; cur; cur = cur->next)
-	treestepaux(cur, prog);
+	do_treestepaux(cur, prog);
 }
 
-PRIVATE void treestep_(void)
+PRIVATE void do_treestep(void)
 {
     Node *item, *prog;
 
+#ifndef NCHECK
+    if (optimizing && put_treestep())
+	return;
+    COMPILE;
     TWOPARAMS("treestep");
     ONEQUOTE("treestep");
+#endif
     prog = stk->u.lis;
     POP(stk);
     item = stk;
     POP(stk);
-    treestepaux(item, prog);
+    do_treestepaux(item, prog);
 }

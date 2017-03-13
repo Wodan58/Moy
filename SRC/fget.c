@@ -1,26 +1,22 @@
 /*
     module  : fget.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fget  :  S  ->  S F
 Reads a factor from stream S and pushes it onto stack.
 */
-/* fget.c */
-PRIVATE void fget_(void)
+PRIVATE void do_fget(void)
 {
-    FILE *stm = 0;
-
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("fget");
-#ifdef RUNTIME_CHECKS
     if (stk->op != FILE_ || !stk->u.fil)
 	execerror("file", "fget");
 #endif
-    stm = stk->u.fil;
-    redirect(stm);
-    sym = yylex();
-    readfactor();
+    redirect(stk->u.fil);
+    readfactor(yylex());
 }

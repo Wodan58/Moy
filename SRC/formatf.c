@@ -1,9 +1,9 @@
 /*
     module  : formatf.c
-    version : 1.3
-    date    : 09/19/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 formatf  :  F C I J  ->  S
@@ -12,20 +12,27 @@ S is the formatted version of F in mode C
 'g or G = general with lower or upper case letters)
 with maximum width I and precision J.
 */
-/* formatf.c */
-PRIVATE void formatf_(void)
+PRIVATE void do_formatf(void)
 {
     int width, prec, leng;
     char spec, format[7], *result;
 
+#ifndef NCHECK
+    if (optimizing && INTEGER_1 && INTEGER_2 && CHAR_3 && FLOAT_4)
+	;
+    else
+	COMPILE;
     FOURPARAMS("formatf");
     INTEGER("formatf");
     INTEGER2("formatf");
+#endif
     prec = stk->u.num;
     POP(stk);
     width = stk->u.num;
     POP(stk);
+#ifndef NCHECK
     CHARACTER("formatf");
+#endif
     spec = stk->u.num;
     POP(stk);
 #ifdef RUNTIME_CHECKS
@@ -34,14 +41,16 @@ PRIVATE void formatf_(void)
 #endif
     strcpy(format, "%*.*lg");
     format[5] = spec;
-#ifdef BIT_32
+#ifndef NCHECK
+    FLOAT("formatf");
+#endif
+#ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
-    leng = snprintf(0, 0, format, width, prec, stk->u.num);
+    leng = snprintf(0, 0, format, width, prec, stk->u.dbl);
 #endif
-    result = malloc(leng + 1);
-    FLOAT("formatf");
-#ifdef BIT_32
+    result = GC_malloc_atomic(leng + 1);
+#ifdef _MSC_VER
     sprintf(result, format, width, prec, stk->u.dbl);
 #else
     snprintf(result, leng, format, width, prec, stk->u.dbl);

@@ -1,45 +1,61 @@
 /*
     module  : while.c
-    version : 1.6
-    date    : 10/04/16
+    version : 1.7
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_while(void)
+{
+    Node *prog[2];
+
+    if (!(LIST_1 && LIST_2))
+	return 0;
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "{ /* WHILE */");
+    fprintf(outfp, "int num; Node *save; for (;;) {");
+    fprintf(outfp, "CONDITION; save = stk;");
+    evaluate2(prog[0], START_SCOPE);
+    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+    fprintf(outfp, "if (!num) break;");
+    evaluate2(prog[1], END_SCOPE);
+    fprintf(outfp, "} }");
+    return 1;
+}
+#endif
 
 /*
 while  :  [B] [D]  ->  ...
 While executing B yields true executes D.
 */
-/* while.c */
-PRIVATE void while_(void)
+PRIVATE void do_while(void)
 {
     int num;
     Node *prog, *list, *save;
-#ifdef ARITY
-    int d;
-#endif
 
+#ifndef NCHECK
+    if (optimizing && put_while())
+	return;
+    COMPILE;
     TWOPARAMS("while");
     TWOQUOTES("while");
+#endif
     prog = stk->u.lis;
     POP(stk);
     list = stk->u.lis;
     POP(stk);
-#ifdef ARITY
-    d = arity(list);
-#endif
     for (;;) {
-	save = stk;
-#ifdef ARITY
-	copy_(d);
-#else
 	CONDITION;
-#endif
+	save = stk;
 	exeterm(list);
 	num = stk->u.num;
 	stk = save;
-#ifndef ARITY
 	RELEASE;
-#endif
 	if (!num)
 	    break;
 	exeterm(prog);

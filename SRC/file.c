@@ -1,16 +1,15 @@
 /*
     module  : file.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 file  :  F  ->  B
 Tests whether F is a file.
 */
-/* file.c */
-#define PROCEDURE	file_
+#define PROCEDURE	do_file
 #define NAME		"file"
 #define REL		==
 #define TYP		FILE_

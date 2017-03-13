@@ -1,8 +1,4 @@
 (*
-    Demo program.
+    Fibonacci, only for benchmarking.
 *)
-DEFINE fib == [small] [] [pred dup pred] [+] binrec.
-
-0 __settracegc.
-
-40 fib.
+10 [dup small] [] [pred dup pred] [+] binrec.

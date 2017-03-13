@@ -1,9 +1,57 @@
 /*
     module  : binrec.c
-    version : 1.5
-    date    : 10/04/16
+    version : 1.6
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_binrec(void)
+{
+    Node *prog[4];
+    unsigned ident;
+    FILE *oldfp, *newfp;
+
+    if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
+	return 0;
+    prog[3] = stk->u.lis;
+    POP(stk);
+    prog[2] = stk->u.lis;
+    POP(stk);
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "void do_binrec_%d(void);", ident = ++identifier);
+    fprintf(outfp, "do_binrec_%d();", ident);
+    oldfp = outfp;
+    newfp = outfp = nextfile();
+    fprintf(outfp, "void do_binrec_%d(void) {", ident);
+    if (IS_NOK(prog[0]))
+	fprintf(outfp, "Node *save;");
+    fprintf(outfp, "int num; Node temp;");
+    if (IS_NOK(prog[0]))
+	fprintf(outfp, "CONDITION; save = stk;");
+    evaluate2(prog[0], START_SCOPE);
+    fprintf(outfp, "num = TOPVAL(stk);");
+    if (IS_NOK(prog[0]))
+	fprintf(outfp, "stk = save; RELEASE;");
+    fprintf(outfp, "if (num) {");
+    evaluate(prog[1]);
+    fprintf(outfp, "} else {");
+    evaluate2(prog[2], MID_SCOPE);
+    fprintf(outfp, "temp = TOPNODE(stk);\n");
+    fprintf(outfp, "do_binrec_%d();", ident);
+    fprintf(outfp, "DUPLICATE(&temp);");
+    fprintf(outfp, "do_binrec_%d();", ident);
+    evaluate2(prog[3], END_SCOPE);
+    fprintf(outfp, "} }\n");
+    closefile(newfp);
+    outfp = oldfp;
+    return 1;
+}
+#endif
 
 /*
 binrec  :  [P] [T] [R1] [R2]  ->  ...
@@ -11,66 +59,48 @@ Executes P. If that yields true, executes T.
 Else uses R1 to produce two intermediates, recurses on both,
 then executes R2 to combine their results.
 */
-/* binrec.c */
-#ifdef ARITY
-PRIVATE void binrecaux(int d,Node *first,Node *second,Node *third,Node *fourth)
-#else
-PRIVATE void binrecaux(Node *first, Node *second, Node *third, Node *fourth)
-#endif
+static void do_binrecaux(Node *prog[])
 {
     int num;
     Node *save, temp;
 
-    save = stk;
-#ifdef ARITY
-    copy_(d);
-#else
     CONDITION;
-#endif
-    exeterm(first);
+    save = stk;
+    exeterm(prog[0]);
     num = stk->u.num;
     stk = save;
-#ifndef ARITY
     RELEASE;
-#endif
     if (num)
-	exeterm(second);
+	exeterm(prog[1]);
     else {
-	exeterm(third);
+	exeterm(prog[2]);
 	temp = *stk;
 	POP(stk);
-#ifdef ARITY
-	binrecaux(d, first, second, third, fourth);
-#else
-	binrecaux(first, second, third, fourth);
-#endif
+	do_binrecaux(prog);
 	DUPLICATE(&temp);
-#ifdef ARITY
-	binrecaux(d, first, second, third, fourth);
-#else
-	binrecaux(first, second, third, fourth);
-#endif
-	exeterm(fourth);
+	do_binrecaux(prog);
+	exeterm(prog[3]);
     }
 }
 
-PRIVATE void binrec_(void)
+PRIVATE void do_binrec(void)
 {
-    Node *first, *second, *third, *fourth;
+    Node *prog[4];
 
+#ifndef NCHECK
+    if (optimizing && put_binrec())
+	return;
+    COMPILE;
     FOURPARAMS("binrec");
     FOURQUOTES("binrec");
-    fourth = stk->u.lis;
-    POP(stk);
-    third = stk->u.lis;
-    POP(stk);
-    second = stk->u.lis;
-    POP(stk);
-    first = stk->u.lis;
-    POP(stk);
-#ifdef ARITY
-    binrecaux(arity(first), first, second, third, fourth);
-#else
-    binrecaux(first, second, third, fourth);
 #endif
+    prog[3] = stk->u.lis;
+    POP(stk);
+    prog[2] = stk->u.lis;
+    POP(stk);
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    do_binrecaux(prog);
 }

@@ -1,26 +1,33 @@
 /*
     module  : help.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* help.c */
+#define LINEWIDTH	72
+
 PRIVATE void PROCEDURE(void)
 {
-    Entry *i = symtabindex;
-    int column = 0, name_length;
+    char *ptr;
+    int i, column = 0, leng;
 
-    while (--i > symtab)
-	if (i->name[0] REL '_' && !i->is_local) {
-	    name_length = strlen(i->name) + 1;
-	    if (column + name_length > 72) {
+#ifndef NCHECK
+    COMPILE;
+#endif
+    for (i = symtabindex - 1; i >= 0; i--)
+	if (symtab[i].name[0] REL '_' && (symtab[i].flags & IS_LOCAL) == 0) {
+	    ptr = symtab[i].name;
+	    leng = strlen(ptr) + 1;
+	    if (column + leng > LINEWIDTH) {
 		printf("\n");
 		column = 0;
 	    }
-	    printf("%s ", i->name);
-	    column += name_length;
+	    printf("%s", ptr);
+	    putchar(' ');
+	    column += leng;
 	}
-    printf("\n");
+    putchar('\n');
 }
 
 #undef PROCEDURE
 #undef REL
+#undef LINEWIDTH

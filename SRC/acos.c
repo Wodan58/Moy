@@ -1,16 +1,15 @@
 /*
     module  : acos.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 acos  :  F  ->  G
 G is the arc cosine of F.
 */
-/* acos.c */
-#define PROCEDURE	acos_
+#define PROCEDURE	do_acos
 #define NAME		"acos"
 #define FUNC		acos
 #include "ufloat.c"

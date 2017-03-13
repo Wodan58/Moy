@@ -1,13 +1,16 @@
 /*
     module  : maxmin.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* maxmin.c */
 PRIVATE void PROCEDURE(void)
 {
+#ifndef NCHECK
+    if (optimizing && ((NUMERIC_1 && NUMERIC_2) || (CHAR_1 && CHAR_2)))
+	;
+    else
+	COMPILE;
     TWOPARAMS(NAME);
-#ifdef RUNTIME_CHECKS
     if ((((stk->op == FLOAT_ || stk->op == INTEGER_) &&
 	  (stk->next->op == FLOAT_ || stk->next->op == INTEGER_)) ||
 	  (stk->op == CHAR_ && stk->next->op == CHAR_)));

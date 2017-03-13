@@ -1,19 +1,24 @@
 /*
     module  : fold.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fold  :  A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
 and combines with binary operator P to produce value V.
 */
-/* fold.c */
-PRIVATE void fold_(void)
+PRIVATE void do_fold(void)
 {
+#ifndef NCHECK
+    if (optimizing && LIST_1 && VALID(stk->next) && VALID(stk->next->next))
+	;
+    else
+	COMPILE;
     THREEPARAMS("fold");
-    swapd_();
-    step_();
+#endif
+    do_swapd();
+    do_step();
 }

@@ -1,11 +1,10 @@
 /*
     module  : decode.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
-/* decode.c */
 PRIVATE void decode_time(struct tm *t)
 {
     Node *p;

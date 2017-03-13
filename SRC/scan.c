@@ -1,33 +1,28 @@
 /*
-    module  : scan1.c
-    version : 1.3
-    date    : 10/04/16
+    module  : scan.c
+    version : 1.1
+    date    : 03/12/17
 */
 #include <stdio.h>
 #include <ctype.h>
-#include <stdlib.h>
-#include <time.h>
-#include "globals1.h"
+#include "joy.h"
+#include "symbol.h"
 
-extern FILE *yyin;
+#define INPSTACKMAX	10
 
 static int ilevel;
 static FILE *infile[INPSTACKMAX];
 
-PUBLIC void inilinebuffer(void)
-{
-    infile[0] = yyin;
-}
-
-PUBLIC void redirect(FILE *fp)
+void redirect(FILE *fp)
 {
     if (ilevel + 1 == INPSTACKMAX)
 	execerror("fewer include files", "redirect");
     infile[ilevel++] = yyin;
     infile[ilevel] = yyin = fp;
+    new_buffer();
 }
 
-PUBLIC void include(char *filnam)
+void include(char *filnam)
 {
     FILE *fp;
 
@@ -45,5 +40,6 @@ int yywrap(void)
     if (!ilevel)
 	return 1;
     yyin = infile[--ilevel];
+    old_buffer();
     return 0;
 }

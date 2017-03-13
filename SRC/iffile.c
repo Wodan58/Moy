@@ -1,16 +1,15 @@
 /*
     module  : iffile.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 iffile  :  X [T] [E]  ->  ...
 If X is a file, executes T else executes E.
 */
-/* iffile.c */
-#define PROCEDURE	iffile_
+#define PROCEDURE	do_iffile
 #define NAME		"iffile"
 #define TYP		FILE_
-#include "if_type.c"
+#include "iftype.c"

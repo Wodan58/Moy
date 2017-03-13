@@ -1,13 +1,21 @@
 /*
     module  : putchars.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 putchars  :  "abc.."  ->
 Writes abc.. (without quotes)
 */
-/* putchars.c */
-USETOP(putchars_, "putchars", STRING, printf("%s", stk->u.str))
+PRIVATE void do_putchars(void)
+{
+#ifndef NCHECK
+    COMPILE;
+    ONEPARAM("putchars");
+    STRING("putchars");
+#endif
+    printf("%s", stk->u.str);
+    POP(stk);
+}

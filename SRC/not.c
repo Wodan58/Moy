@@ -1,20 +1,25 @@
 /*
     module  : not.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 not  :  X  ->  Y
 Y is the complement of set X, logical negation for truth values.
 */
-/* not.c */
-PRIVATE void not_(void)
+PRIVATE void do_not(void)
 {
     int num = 0;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("not");
+#endif
     switch (stk->op) {
     case SET_:
 	if (OUTSIDE)
@@ -23,7 +28,7 @@ PRIVATE void not_(void)
 	    UNARY(SET_NEWNODE, ~stk->u.set);
 	return;
     case STRING_:
-	num = stk->u.str && *stk->u.str != 0;
+	num = *stk->u.str != 0;
 	break;
     case LIST_:
 	num = !stk->u.lis;
@@ -39,8 +44,10 @@ PRIVATE void not_(void)
     case FILE_:
 	num = !stk->u.fil;
 	break;
+#ifndef NCHECK
     default:
 	BADDATA("not");
+#endif
     }
     if (OUTSIDE) {
 	stk->u.num = num;

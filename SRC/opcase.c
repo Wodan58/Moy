@@ -1,29 +1,39 @@
 /*
     module  : opcase.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 opcase  :  X [..[X Xs]..]  ->  X [Xs]
 Indexing on type of X, returns the list [Xs].
 */
-/* opcase.c */
-PRIVATE void opcase_(void)
+PRIVATE void do_opcase(void)
 {
     Node *cur;
 
+#ifndef NCHECK
+    if (optimizing && LIST_1 && VALID(stk->next))
+	;
+    else
+	COMPILE;
     ONEPARAM("opcase");
     LIST("opcase");
-    cur = stk->u.lis;
-    CHECKEMPTYLIST(cur, "opcase");
-    while (cur->next && cur->op == LIST_ && cur->u.lis->op != stk->next->op)
-	cur = cur->next;
+    CHECKEMPTYLIST(stk->u.lis, "opcase");
+#endif
+    for (cur = stk->u.lis; cur->next && cur->op == LIST_; cur = cur->next)
+	if (cur->u.lis->op == stk->next->op)
+	    if (cur->u.lis->op != ANON_FUNCT_ ||
+		cur->u.lis->u.proc == stk->next->u.proc)
+		break;
+#ifndef NCHECK
     CHECKLIST(cur->op, "opcase");
+#endif
+    cur = cur->next ? cur->u.lis->next : cur->u.lis;
     if (OUTSIDE) {
-	stk->u.lis = cur->next ? cur->u.lis->next : cur->u.lis;
+	stk->u.lis = cur;
 	stk->op = LIST_;
     } else
-	UNARY(LIST_NEWNODE, cur->next ? cur->u.lis->next : cur->u.lis);
+	UNARY(LIST_NEWNODE, cur);
 }

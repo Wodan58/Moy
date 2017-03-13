@@ -1,5 +1,3 @@
-
-
 [0 [1 [succ] str-maker]]
 [1 [2 [2 *] str-maker]]
 [[] [[[]] [[] cons] str-maker]]

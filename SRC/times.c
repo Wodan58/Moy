@@ -1,23 +1,46 @@
 /*
     module  : times.c
-    version : 1.3
-    date    : 10/16/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_times(void)
+{
+    Node *prog;
+
+    if (!LIST_1)
+	return 0;
+    prog = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "{ /* TIMES */");
+    fprintf(outfp, "unsigned num = stk->u.num; POP(stk);");
+    fprintf(outfp, "while (num--) {");
+    evaluate(prog);
+    fprintf(outfp, "} }");
+    return 1;
+}
+#endif
 
 /*
 times  :  N [P]  ->  ...
 N times executes P.
 */
-/* times.c */
-PRIVATE void times_(void)
+PRIVATE void do_times(void)
 {
-    int num;
     Node *prog;
+    unsigned num;
 
+#ifndef NCHECK
+    if (optimizing && put_times())
+	return;
+    COMPILE;
     TWOPARAMS("times");
     ONEQUOTE("times");
     INTEGER2("times");
+#endif
     prog = stk->u.lis;
     POP(stk);
     num = stk->u.num;

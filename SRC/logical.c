@@ -1,16 +1,15 @@
 /*
     module  : logical.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 logical  :  X  ->  B
 Tests whether X is a logical.
 */
-/* logical.c */
-#define PROCEDURE	logical_
+#define PROCEDURE	do_logical
 #define NAME		"logical"
 #define REL		==
 #define TYP		BOOLEAN_

@@ -1,17 +1,16 @@
 /*
     module  : cons.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 cons  :  X A  ->  B
 Aggregate B is A with a new member X (first member for sequences).
 */
-/* cons.c */
-#define PROCEDURE	cons_
+#define PROCEDURE	do_cons
 #define NAME		"cons"
 #define AGGR		stk
 #define ELEM		stk->next
-#include "cons_swons.c"
+#include "consswons.c"

@@ -1,18 +1,20 @@
 /*
     module  : x.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 x  :  [P] x  ->  ...
 Executes P without popping [P]. So, [P] x  ==  [P] P.
 */
-/* x.c */
-PRIVATE void x_(void)
+PRIVATE void do_x(void)
 {
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("x");
     ONEQUOTE("x");
+#endif
     exeterm(stk->u.lis);
 }

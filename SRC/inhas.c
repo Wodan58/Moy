@@ -1,40 +1,40 @@
 /*
     module  : inhas.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-/* inhas.c */
 PRIVATE void PROCEDURE(void)
 {
-    int error, found = 0;
+    Node *cur;
+    char *str;
+    int found = 0;
 
+#ifndef NCHECK
+    if (optimizing && VALID(AGGR) && VALID(ELEM))
+	;
+    else
+	COMPILE;
     TWOPARAMS(NAME);
+#endif
     switch (AGGR->op) {
+    case LIST_:
+	cur = AGGR->u.lis;
+	while (cur && cur->u.num != ELEM->u.num)
+	    cur = cur->next;
+	found = cur != 0;
+	break;
+    case STRING_:
+	for (str = AGGR->u.str; *str && *str != ELEM->u.num; str++)
+	    ;
+	found = *str != 0;
+	break;
     case SET_:
 	found = (AGGR->u.set & (1 << ELEM->u.num)) > 0;
 	break;
-    case STRING_:
-	{
-	    char *str;
-	    for (str = AGGR->u.str;
-		 str && *str && *str != ELEM->u.num; str++);
-	    found = str && *str;
-	    break;
-	}
-    case LIST_:
-	{
-	    Node *cur = AGGR->u.lis;
-	    if (correct_inhas_compare)
-		while (cur && (Compare(cur, ELEM, &error) || error))
-		    cur = cur->next;
-	    else
-		while (cur && cur->u.num != ELEM->u.num)
-		    cur = cur->next;
-	    found = cur != 0;
-	    break;
-	}
+#ifndef NCHECK
     default:
 	BADAGGREGATE(NAME);
+#endif
     }
     if (OUTSIDE) {
 	stk->next->u.num = found;

@@ -1,13 +1,18 @@
 /*
     module  : ufloat.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* ufloat.c */
 PRIVATE void PROCEDURE(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1)
+	;
+    else
+	COMPILE;
     ONEPARAM(NAME);
     FLOAT(NAME);
+#endif
     if (OUTSIDE)
 	stk->u.dbl = FUNC(FLOATVAL);
     else

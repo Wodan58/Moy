@@ -1,7 +1,7 @@
 #
 #   module  : tutlib.joy
-#   version : 1.2
-#   date    : 09/19/16
+#   version : 1.3
+#   date    : 03/12/17
 #
 (* FILE: tutlib.joy *)
 
@@ -34,7 +34,7 @@ LIBRA
 	[ equal ]
 	[ pop pop praise [succ] dip ]
 	[ "No, the right answer is:  " putchars put
-	  "  Your answer:  " putchars put newline ]
+	  "   Your answer:  " putchars put newline ]
 	ifte
 	succ;
     expecting-from ==
@@ -42,15 +42,15 @@ LIBRA
 	[ pop pop praise [succ] dip ]
 	[ "No, the right answer must be one of the following:\n\t" putchars
 	  [put "  " putchars] step
-	  "  Your answer:  " putchars put newline ]
+	  "   Your answer:  " putchars put newline ]
 	ifte
 	succ;
     ini-stats ==
 	0 0 ;
     put-stats ==
 	"You answered " putchars [put] dip
-	"of the " putchars put
-	"questions correctly.\n\n" putchars;
+	" of the " putchars put
+	" questions correctly.\n\n" putchars;
 
 (* the following assume a "Table Of Contents" definition of the form
 	toc-of-tutorial == [ [ [Q0] "Title" ]
@@ -78,7 +78,7 @@ where each Qi is a quote, each Hi is a section heading. *)
 	  "type  0  to do all sections, or\n"
 	  "type any other number (even negative) to quit.\n" ]
 	putstrings
-	get-integer
+	get-integer 
 	[toc-of-tutorial size >=] [0 swap -] [] ifte;
     toc-do-section ==
 	toc-of-tutorial of first i;

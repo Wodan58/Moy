@@ -1,39 +1,46 @@
 /*
     module  : symbol.c
-    version : 1.9
-    date    : 10/19/16
+    version : 1.10
+    date    : 03/12/17
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
-#include "memory.h"
-#include "globals1.h"
-#include "builtin.h"
+#include "joy.h"
+#include "symbol.h"
 
-PUBLIC void gc_(void)
-{
-    GC_gcollect();
-}
+#define HASHSIZE	9
+#define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
 
-void HashValue(char *name)
+Entry symtab[SYMTABMAX];
+unsigned symtabindex, symtabstart;
+
+static unsigned display_enter, display_lookup;
+static Entry *hashentry[HASHSIZE], *display[DISPLAYMAX];
+
+static unsigned HashValue(char *name)
 {
-    hashvalue = 0;
+    unsigned hashvalue = 0;
+
     while (*name)
 	hashvalue += *name++;
     hashvalue %= HASHSIZE;
+    return hashvalue;
 }
 
-static void enterglobal(char *name)
+static Entry *enterglobal(char *name, unsigned hashvalue)
 {
-    if (symtabindex - symtab >= SYMTABMAX)
+    Entry *sym;
+
+    if (symtabindex >= SYMTABMAX)
 	execerror("index", "symbols");
-    location = symtabindex++;
-    location->name = strdup(name);
-    location->u.body = 0;	/* may be assigned in definition */
-    location->is_unknown = 1;
-    location->next = hashentry[hashvalue];
-    hashentry[hashvalue] = location;
+    sym = &symtab[symtabindex++];
+    sym->name = GC_strdup(name);
+    sym->u.body = 0;			/* may be assigned in definition */
+    sym->flags |= IS_UNKNOWN;
+    sym->next = hashentry[hashvalue];
+    hashentry[hashvalue] = sym;
+    return sym;
 }
 
 static int namecmp(char *name, char *table)
@@ -45,24 +52,26 @@ static int namecmp(char *name, char *table)
     return *name == *table || (*name == '.' && !*table);
 }
 
-static void sym_module(char *module, char *member)
+static Entry *module(char *module, char *member, Entry *sym)
 {
-    Entry *mod_fields;
+    Entry *fields;
 
-    while (location->is_module) {
-	mod_fields = location->u.module_fields;
-	while (mod_fields && !namecmp(member, mod_fields->name))
-	    mod_fields = mod_fields->next;
-	if ((location = mod_fields) == 0)
-	    execerror(member, module);	/* no such field in module */
+    while (sym->flags & IS_MODULE) {
+	fields = sym->u.member;
+	while (fields && !namecmp(member, fields->name))
+	    fields = fields->next;
+	if ((sym = fields) == 0)
+	    execerror(member, module);		/* no such field in module */
 	module = member;
 	member = strchr(module, '.') + 1;
     }
+    return sym;
 }
 
-static void sym_lookup(char *name)
+Entry *lookup(char *name)
 {
-    int i;
+    Entry *sym;
+    unsigned i, hashvalue;
     char str[ALEN], *member;
 
     if ((member = strchr(name, '.')) != 0) {
@@ -71,86 +80,72 @@ static void sym_lookup(char *name)
 	name = str;
     }
 
-    HashValue(name);
     for (i = display_lookup; i > 0; i--)
-	for (location = display[i]; location; location = location->next)
-	    if (!strcmp(name, location->name)) {
-		sym_module(name, member);
-		return;		/* found in local table */
-	    }
+	for (sym = display[i]; sym; sym = sym->next)
+	    if (!strcmp(name, sym->name))
+		return module(name, member, sym); /* found in local table */
 
-    for (location = hashentry[hashvalue]; location; location = location->next)
-	if (!strcmp(name, location->name)) {
-	    sym_module(name, member);
-	    return;
-	}
+    hashvalue = HashValue(name);
 
-    enterglobal(name);		/* not found, enter in global */
+    for (sym = hashentry[hashvalue]; sym; sym = sym->next)
+	if (!strcmp(name, sym->name))
+	    return module(name, member, sym);
+
+    return enterglobal(name, hashvalue);	/* not found, enter in global */
 }
 
-void lookup(void)
+static void detachatom(Entry *sym, unsigned hashvalue)
 {
-    sym_lookup(id);
-}
+    Entry *cur, *prev = 0;
 
-static void detachatom(void)
-{
-    Entry *cur, *prev;
-
-    for (prev = cur = hashentry[hashvalue]; cur; prev = cur, cur = cur->next)
-	if (cur == location) {
-	    if (prev == cur)
-		hashentry[hashvalue] = cur->next;
-	    else
+    for (cur = hashentry[hashvalue]; cur; prev = cur, cur = cur->next)
+	if (cur == sym) {
+	    if (prev)
 		prev->next = cur->next;
+	    else
+		hashentry[hashvalue] = cur->next;
 	    break;
 	}
 }
 
-Entry *enteratom(char *name, Node *body)
+Entry *enteratom(Entry *sym, Node *body)
 {
-    sym_lookup(name);
+    char *name = sym->name;
+
     if (display_enter > 0) {
-	if (location->is_unknown)
-	    detachatom();
+	if (sym->flags & IS_UNKNOWN)
+	    detachatom(sym, HashValue(name));
 	else {
-	    if (symtabindex - symtab >= SYMTABMAX)
+	    if (symtabindex >= SYMTABMAX)
 		execerror("index", "symbols");
-	    location = symtabindex++;
-	    location->name = strdup(name);
-	    location->u.body = 0;	/* may be assigned later */
+	    sym = &symtab[symtabindex++];
+	    sym->name = GC_strdup(name);
+	    sym->u.body = 0;			/* may be assigned later */
 	}
-	location->is_local = 1;
-	location->next = display[display_enter];
-	display[display_enter] = location;
+	sym->flags |= IS_LOCAL;
+	sym->next = display[display_enter];
+	display[display_enter] = sym;
     }
-    location->is_unknown = 0;
-#if 0
-    if (location < firstlibra) {
-	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", name);
-	enterglobal(name);
-    }
-#endif
-    location->u.body = body;
-    return location;
+    sym->flags &= ~IS_UNKNOWN;
+    sym->u.body = body;
+    return sym;
 }
 
-Entry *initmod(char *name)
+Entry *initmod(Entry *sym)
 {
-    enteratom(name, 0);
-    location->is_module = 1;
+    sym->flags = IS_MODULE;
     ++display_lookup;
     if (++display_enter >= DISPLAYMAX)
 	execerror("index", "display");
     display[display_enter] = 0;
-    return location;
+    return sym;
 }
 
 void exitmod(Entry *sym)
 {
     if (!sym)
 	return;
-    sym->u.module_fields = display[display_enter--];
+    sym->u.member = display[display_enter--];
     --display_lookup;
 }
 
@@ -180,180 +175,22 @@ void exitpriv(Entry *prev)
 {
     if (!prev)
 	--display_lookup;
-    else if (prev != (Entry *) - 1)
+    else if (prev != (Entry *)-1)
 	display[display_lookup] = prev;
 }
 
-#ifdef STATS
-static double nodes;
-static Node *min_cond_ptr = &condition[MEMORYMAX],
-            *min_crit_ptr = &critical[MEMORYMAX];
-
-static void report_nodes(void)
+void dump(void)
 {
-    size_t cond, crit, stac;
+    unsigned i;
 
-    fprintf(stderr, "%d symbols used\n", (int)(symtabindex - symtab));
-    fprintf(stderr, "%.0f memory nodes\n", nodes);
-    crit = min_crit_ptr - critical;
-    fprintf(stderr, "%d critical nodes\n", (int)(MEMORYMAX - crit));
-    cond = min_cond_ptr - condition;
-    fprintf(stderr, "%d condition nodes\n", (int)(MEMORYMAX - cond));
-    stac = min_stk_ptr - memory;
-    fprintf(stderr, "%d stack nodes\n", (int)(MEMORYMAX - stac));
-}
-
-static void count_nodes(void)
-{
-    if (++nodes == 1)
-	atexit(report_nodes);
-}
-#endif
-
-Node *getnode(int heap)
-{
-    Node *node = 0;
-
-#ifdef STATS
-    if (stk >= memory && stk <= &memory[MEMORYMAX])
-	if (min_stk_ptr > stk)
-	    min_stk_ptr = stk;
-#endif
-    if (!inside_definition) {
-	if (!heap && inside_condition && cond_ptr > condition) {
-	    node = --cond_ptr;
-#ifdef STATS
-	    if (min_cond_ptr > node)
-		min_cond_ptr = node;
-#endif
-	    return node;
+    for (i = 0; i < symtabindex; i++)
+	if (symtab[i].flags & IS_MODULE)
+	    printf("%s (module)\n", symtab[i].name);
+	else if (symtab[i].flags & IS_BUILTIN)
+	    printf("%s (%p)\n", symtab[i].name, symtab[i].u.proc);
+	else {
+	    printf("%s == ", symtab[i].name);
+	    writeterm(symtab[i].u.body, stdout);
+	    printf("\n");
 	}
-	if (crit_ptr > critical) {
-	    node = --crit_ptr;
-#ifdef STATS
-	    if (min_crit_ptr > node)
-		min_crit_ptr = node;
-#endif
-	    return node;
-	}
-    }
-    node = malloc(sizeof(Node));
-#ifdef STATS
-    count_nodes();
-#endif
-    if (!node)
-	execerror("memory", "allocator");
-    return node;
-}
-
-Node *dblnode(double dbl, Node *next)
-{
-    Node *node = getnode(0);
-
-    node->op = FLOAT_;
-    node->u.dbl = dbl;
-    node->next = next;
-    return node;
-}
-
-Node *newnode(Operator op, void *ptr, Node *next)
-{
-    Node *node = getnode(0);
-
-    if ((node->op = op) == SYMBOL_) {
-	node->op = USR_;
-	sym_lookup(ptr);
-	node->u.ent = location;
-    } else {
-	node->u.ptr = ptr;
-	if (op == Symbol && optable[0].proc == id_) {
-	    node->op = node->u.num - FALSE + FALSE_;
-	    node->u.proc = optable[node->op].proc;
-	}
-    }
-    node->next = next;
-    return node;
-}
-
-Node *heapnode(Operator op, void *ptr, Node *next)
-{
-    Node *node = getnode(1);
-
-    node->op = op;
-    node->u.ptr = ptr;
-    node->next = next;
-    return node;
-}
-
-Node *concat(Node *node, Node *next)
-{
-    Node *cur = node;
-
-    if (node) {
-	while (node->next)
-	    node = node->next;
-	node->next = next;
-    }
-    return cur;
-}
-
-Node *copy(Node *node)
-{
-    Node *root = 0, **cur;
-
-    for (cur = &root; node; node = node->next) {
-	*cur = malloc(sizeof(Node));
-	**cur = *node;
-	cur = &(*cur)->next;
-	*cur = 0;
-    }
-    return root;
-}
-
-Node *reverse(Node *cur)
-{
-    Node *old = 0, *prev;
-
-    while (cur) {
-	prev = cur;
-	cur = cur->next;
-	prev->next = old;
-	old = prev;
-    }
-    return old;
-}
-
-void writeln(void)
-{
-    putchar('\n');
-    fflush(stdout);
-}
-
-void writestack()
-{
-    int written = 0;
-
-    if (stk == &memory[MEMORYMAX])
-	;
-    else if (autoput == 2) {
-	writeterm(stk, stdout);
-	written = 1;
-    } else if (autoput == 1) {
-	writefactor(stk, stdout);
-	POP(stk);
-	written = 1;
-    }
-    if (stk == &memory[MEMORYMAX])
-	crit_ptr = &critical[MEMORYMAX];
-    if (written)
-	writeln();
-}
-
-/*
-   Interprete a term
-*/
-void execute(Node *cur)
-{
-    exeterm(cur);
-    writestack();
 }

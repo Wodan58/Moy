@@ -1,44 +1,30 @@
 /*
     module  : concat.c
-    version : 1.4
-    date    : 10/04/16
+    version : 1.5
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 concat  :  S T  ->  U
 Sequence U is the concatenation of sequences S and T.
 */
-/* concat.c */
-PRIVATE void concat_(void)
+PRIVATE void do_concat(void)
 {
-    Node *cur = 0;
-    Node *root = 0;
-    Node *last = 0;
+    char *str;
+    unsigned i;
+    Node *cur = 0, *root = 0, *last = 0;
 
+#ifndef NCHECK
+    if (optimizing && stk->op == stk->next->op &&
+	AGGREGATE(stk) && AGGREGATE(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS("concat");
     SAME2TYPES("concat");
+#endif
     switch (stk->op) {
-    case SET_:
-	if (OUTSIDE) {
-	    stk->next->u.set |= stk->u.set;
-	    POP(stk);
-	} else
-	    BINARY(SET_NEWNODE, stk->next->u.set | stk->u.set);
-	return;
-    case STRING_:
-	 {
-	    char *str = malloc(strlen(stk->next->u.str) +
-			       strlen(stk->u.str) + 1);
-	    strcpy(str, stk->next->u.str);
-	    strcat(str, stk->u.str);
-	    if (OUTSIDE) {
-		stk->next->u.str = str;
-		POP(stk);
-	    } else
-		BINARY(STRING_NEWNODE, str);
-	    return;
-	}
     case LIST_:
 	if (!stk->next->u.lis) {
 	    if (OUTSIDE) {
@@ -59,8 +45,28 @@ PRIVATE void concat_(void)
 	    POP(stk);
 	} else
 	    BINARY(LIST_NEWNODE, root);
-	return;
+	break;
+    case STRING_:
+	i = strlen(stk->next->u.str);
+	str = GC_malloc_atomic(i + strlen(stk->u.str) + 1);
+	strcpy(str, stk->next->u.str);
+	strcpy(str + i, stk->u.str);
+	if (OUTSIDE) {
+	    stk->next->u.str = str;
+	    POP(stk);
+	} else
+	    BINARY(STRING_NEWNODE, str);
+	break;
+    case SET_:
+	if (OUTSIDE) {
+	    stk->next->u.set |= stk->u.set;
+	    POP(stk);
+	} else
+	    BINARY(SET_NEWNODE, stk->next->u.set | stk->u.set);
+	break;
+#ifndef NCHECK
     default:
 	BADAGGREGATE("concat");
+#endif
     }
 }

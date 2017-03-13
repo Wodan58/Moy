@@ -1,14 +1,20 @@
 /*
     module  : fileget.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* fileget.c */
 PRIVATE void PROCEDURE(void)
 {
+    Node temp;
+
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM(NAME);
     FILE(NAME);
-    PUSH(CONSTRUCTOR, EXPR);
+#endif
+    temp.op = CONSTRUCTOR;
+    temp.u.ptr = (void *)EXPR;
+    DUPLICATE(&temp);
 }
 
 #undef PROCEDURE

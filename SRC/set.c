@@ -1,16 +1,15 @@
 /*
     module  : set.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 set  :  X  ->  B
 Tests whether X is a set.
 */
-/* set.c */
-#define PROCEDURE	set_
+#define PROCEDURE	do_set
 #define NAME		"set"
 #define REL		==
 #define TYP		SET_

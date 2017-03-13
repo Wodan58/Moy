@@ -1,24 +1,59 @@
 /*
     module  : case.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+PRIVATE double Compare(Node *first, Node *second, int *error);
+
+#ifndef NCHECK
+int put_case(void)
+{
+    Node *cur;
+    unsigned item;
+
+    if (!LIST_1)
+	return 0;
+    cur = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "{ /* CASE */");
+    fprintf(outfp, "int num = 0, error; for (;;) {");
+    for ( ; cur->next; cur = cur->next) {
+	evaluate2(0, INIT_SCOPE);
+	item = PrintHead(cur, outfp);
+	fprintf(outfp, "if (!Compare(L%d, stk, &error)", item);
+	fprintf(outfp, "&& !error) { POP(stk);");
+	evaluate(cur->u.lis->next);
+	fprintf(outfp, "num = 1; break; }");
+	evaluate2(0, STOP_SCOPE);
+    }
+    fprintf(outfp, "break; } if (!num) {");
+    evaluate(cur->u.lis);
+    fprintf(outfp, "} }");
+    return 1;
+}
+#endif
 
 /*
 case  :  X [..[X Y]..]  ->  Y i
 Indexing on the value of X, execute the matching Y.
 */
-/* case.c */
-PRIVATE void case_(void)
+PRIVATE void do_case(void)
 {
     Node *cur;
     int error;
 
+#ifndef NCHECK
+    if (optimizing && put_case())
+	return;
+    COMPILE;
     TWOPARAMS("case");
     LIST("case");
+    CHECKEMPTYLIST(stk->u.lis, "case");
+#endif
     cur = stk->u.lis;
-    CHECKEMPTYLIST(cur, "case");
     POP(stk);
     for ( ; cur->next; cur = cur->next)
 	if (!Compare(cur->u.lis, stk, &error) && !error)

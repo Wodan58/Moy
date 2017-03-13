@@ -1,22 +1,45 @@
 /*
     module  : manual.c
-    version : 1.3
-    date    : 10/04/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
-/* manual.c */
-PRIVATE void manual_list_(void)
+PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
+
+/*
+manual  :  ->
+Writes this manual of all Joy primitives to output file.
+*/
+PRIVATE void do_manual(void)
 {
-    int i = -1;
-    Node *tmp, *cur = 0;
+#ifndef NCHECK
+    COMPILE;
+#endif
+    make_manual(0);
+}
 
-    while (optable[++i].name);
-    while (--i) {
-	tmp = heapnode(STRING_, optable[i].messg2, 0);
-	tmp = heapnode(STRING_, optable[i].messg1, tmp);
-	tmp = heapnode(STRING_, optable[i].name, tmp);
-	cur = heapnode(LIST_, tmp, cur);
-    }
-    PUSH(LIST_, cur);
+/*
+__html_manual  :  ->
+Writes this manual of all Joy primitives to output file in HTML style.
+*/
+PRIVATE void do_html_manual(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    make_manual(1);
+}
+
+/*
+__latex_manual  :  ->
+Writes this manual of all Joy primitives to output file in Latex style
+but without the head and tail.
+*/
+PRIVATE void do_latex_manual(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    make_manual(2);
 }

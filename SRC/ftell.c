@@ -1,16 +1,15 @@
 /*
     module  : ftell.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 ftell  :  S  ->  S I
 I is the current position of stream S.
 */
-/* ftell.c */
-#define PROCEDURE	ftell_
+#define PROCEDURE	do_ftell
 #define NAME		"ftell"
 #define CONSTRUCTOR	INTEGER_
 #define EXPR		ftell(stk->u.fil)

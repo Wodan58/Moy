@@ -1,16 +1,15 @@
 /*
     module  : tan.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 tan  :  F  ->  G
 G is the tangent of F.
 */
-/* tan.c */
-#define PROCEDURE	tan_
+#define PROCEDURE	do_tan
 #define NAME		"tan"
 #define FUNC		tan
 #include "ufloat.c"

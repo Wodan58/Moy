@@ -1,13 +1,18 @@
 /*
     module  : stderr.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 stderr  :  ->  S
 Pushes the standard error stream.
 */
-/* stderr.c */
-PUSH_PROC(stderr_, FILE_, stderr)
+PRIVATE void do_stderr(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(FILE_, stderr);
+}

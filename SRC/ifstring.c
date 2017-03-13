@@ -1,16 +1,15 @@
 /*
     module  : ifstring.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 ifstring  :  X [T] [E]  ->  ...
 If X is a string, executes T else executes E.
 */
-/* ifstring.c */
-#define PROCEDURE	ifstring_
+#define PROCEDURE	do_ifstring
 #define NAME		"ifstring"
 #define TYP		STRING_
-#include "if_type.c"
+#include "iftype.c"

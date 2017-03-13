@@ -1,16 +1,15 @@
 /*
     module  : in.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 in  :  X A  ->  B
 Tests whether X is a member of aggregate A.
 */
-/* in.c */
-#define PROCEDURE	in_
+#define PROCEDURE	do_in
 #define NAME		"in"
 #define AGGR		stk
 #define ELEM		stk->next

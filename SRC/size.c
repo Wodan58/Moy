@@ -1,41 +1,44 @@
 /*
     module  : size.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 size  :  A  ->  I
 Integer I is the number of elements of aggregate A.
 */
-/* size.c */
-PRIVATE void size_(void)
+PRIVATE void do_size(void)
 {
+    int i;
+    Node *cur;
     size_t size = 0;
 
+#ifndef NCHECK
+    if (optimizing && AGGREGATE(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("size");
+#endif
     switch (stk->op) {
-    case SET_:
-	{
-	    int i;
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (stk->u.set & (1 << i))
-		    size++;
-	    break;
-	}
+    case LIST_:
+	for (cur = stk->u.lis; cur; cur = cur->next)
+	    size++;
+	break;
     case STRING_:
 	size = strlen(stk->u.str);
 	break;
-    case LIST_:
-	{
-	    Node *cur;
-	    for (cur = stk->u.lis; cur; cur = cur->next)
+    case SET_:
+	for (i = 0; i < SETSIZE_; i++)
+	    if (stk->u.set & (1 << i))
 		size++;
-	    break;
-	}
+	break;
+#ifndef NCHECK
     default:
 	BADAGGREGATE("size");
+#endif
     }
     if (OUTSIDE) {
 	stk->u.num = size;

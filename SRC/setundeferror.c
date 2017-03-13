@@ -1,14 +1,22 @@
 /*
     module  : setundeferror.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 setundeferror  :  I  ->
 Sets flag that controls behavior of undefined functions
 (0 = no error, 1 = error).
 */
-/* setundeferror.c */
-USETOP(setundeferror_, "setundeferror", NUMERICTYPE, undeferror = stk->u.num)
+PRIVATE void do_setundeferror(void)
+{
+#ifndef NCHECK
+    COMPILE;
+    ONEPARAM("undeferror");
+    NUMERICTYPE("undeferror");
+#endif
+    undeferror = stk->u.num;
+    POP(stk);
+}

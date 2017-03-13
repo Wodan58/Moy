@@ -1,11 +1,10 @@
 /*
     module  : makemanual.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
-/* makemanual.c */
 #define PLAIN (style == 0)
 #define HTML  (style == 1)
 #define LATEX (style == 2)
@@ -20,39 +19,40 @@
 	if (HTML) printf("</B><BR><BR>");			\
 	printf("\n\n"); }
 
-PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */ )
+extern optable_t optable[];
+
+PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 {
     int i;
-    char *n;
+    char *name;
 
     if (HTML)
 	printf("<HTML>\n<DL>\n");
-    for (i = BOOLEAN_; optable[i].name != 0; i++) {
-	n = optable[i].name;
-	HEADER(n, " truth value type", "literal") else
-	HEADER(n, "false", "operand") else
-	HEADER(n, "id", "operator") else
-	HEADER(n, "null", "predicate") else
-	HEADER(n, "i", "combinator") else
-	HEADER(n, "help", "miscellaneous commands")
-	if (n[0] != '_') {
+    for (i = 0; (name = optable[i].name) != 0; i++) {
+	HEADER(name, " truth value type", "literal") else
+	HEADER(name, "nothing", "operand") else
+	HEADER(name, "id", "operator") else
+	HEADER(name, "null", "predicate") else
+	HEADER(name, "i", "combinator") else
+	HEADER(name, "help", "miscellaneous commands")
+	if (name[0] != '_') {
 	    if (HTML)
 		printf("\n<DT>");
 	    else if (LATEX) {
-		if (n[0] == ' ') {
-		    n++;
+		if (name[0] == ' ') {
+		    name++;
 		    printf("\\item[\\BX{");
 		} else
 		    printf("\\item[\\JX{");
 	    }
-	    if (HTML && strcmp(n, "<=") == 0)
+	    if (HTML && strcmp(name, "<=") == 0)
 		printf("&lt;=");
 	    else
-		printf("%s", n);
+		printf("%s", name);
 	    if (LATEX)
 		printf("}]  \\verb#");
 	    if (HTML)
-		printf(" <CODE>      :  </CODE> ");
+		printf("<CODE> : </CODE>");
 	    /* the above line does not produce the spaces around ":" */
 	    else
 		printf("\t:  ");

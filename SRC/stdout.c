@@ -1,13 +1,18 @@
 /*
     module  : stdout.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 stdout  :  ->  S
 Pushes the standard output stream.
 */
-/* stdout.c */
-PUSH_PROC(stdout_, FILE_, stdout)
+PRIVATE void do_stdout(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(FILE_, stdout);
+}

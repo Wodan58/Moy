@@ -1,20 +1,25 @@
 /*
     module  : swap.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 swap  :  X Y  ->  Y X
 Interchanges X and Y on top of the stack.
 */
-/* swap.c */
-PRIVATE void swap_(void)
+PRIVATE void do_swap(void)
 {
     Node temp, *node;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS("swap");
+#endif
     temp = *stk;
     node = stk->next;
     if (OUTSIDE) {

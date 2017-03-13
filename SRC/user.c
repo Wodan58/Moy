@@ -1,16 +1,15 @@
 /*
     module  : user.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 user  :  X  ->  B
 Tests whether X is a user-defined symbol.
 */
-/* user.c */
-#define PROCEDURE	user_
+#define PROCEDURE	do_user
 #define NAME		"user"
 #define REL		==
 #define TYP		USR_

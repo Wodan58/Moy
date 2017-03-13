@@ -1,16 +1,15 @@
 /*
     module  : ferror.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 ferror  :  S  ->  S B
 B is the error status of stream S.
 */
-/* ferror.c */
-#define PROCEDURE	ferror_
+#define PROCEDURE	do_ferror
 #define NAME		"ferror"
 #define CONSTRUCTOR	BOOLEAN_
 #define EXPR		ferror(stk->u.fil)

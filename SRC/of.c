@@ -1,17 +1,16 @@
 /*
     module  : of.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 of  :  I A  ->  X
 X (= A[I]) is the I-th member of aggregate A.
 */
-/* of.c */
-#define PROCEDURE	of_
+#define PROCEDURE	do_of
 #define NAME		"of"
 #define AGGR		stk
 #define	INDEX		stk->next
-#include "of_at.c"
+#include "ofat.c"

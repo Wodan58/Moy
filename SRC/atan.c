@@ -1,16 +1,15 @@
 /*
     module  : atan.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 atan  :  F  ->  G
 G is the arc tangent of F.
 */
-/* atan.c */
-#define PROCEDURE	atan_
+#define PROCEDURE	do_atan
 #define NAME		"atan"
 #define FUNC		atan
 #include "ufloat.c"

@@ -1,16 +1,15 @@
 /*
     module  : ifchar.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 ifchar  :  X [T] [E]  ->  ...
 If X is a character, executes T else executes E.
 */
-/* ifchar.c */
-#define PROCEDURE	ifchar_
+#define PROCEDURE	do_ifchar
 #define NAME		"ifchar"
 #define TYP		CHAR_
-#include "if_type.c"
+#include "iftype.c"

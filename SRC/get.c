@@ -1,17 +1,18 @@
 /*
     module  : get.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 get  :  ->  F
 Reads a factor from input and pushes it onto stack.
 */
-/* get.c */
-PRIVATE void get_(void)
+PRIVATE void do_get(void)
 {
-    sym = yylex();
-    readfactor();
+#ifndef NCHECK
+    COMPILE;
+#endif
+    readfactor(yylex());
 }

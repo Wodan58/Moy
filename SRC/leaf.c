@@ -1,16 +1,15 @@
 /*
     module  : leaf.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 leaf  :  X  ->  B
 Tests whether X is not a list.
 */
-/* leaf.c */
-#define PROCEDURE	leaf_
+#define PROCEDURE	do_leaf
 #define NAME		"leaf"
 #define REL		!=
 #define TYP		LIST_

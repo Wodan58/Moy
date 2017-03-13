@@ -1,19 +1,24 @@
 /*
     module  : neg.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 neg  :  I  ->  J
 Integer J is the negative of integer I.  Also supports float.
 */
-/* neg.c */
-PRIVATE void neg_(void)
+PRIVATE void do_neg(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1)
+	;
+    else
+	COMPILE;
     ONEPARAM("neg");
     FLOAT("neg");
+#endif
     if (OUTSIDE) {
 	if (stk->op == FLOAT_)
 	    stk->u.dbl = -stk->u.dbl;

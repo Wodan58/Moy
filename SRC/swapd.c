@@ -1,17 +1,16 @@
 /*
     module  : swapd.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 swapd  :  X Y Z  ->  Y X Z
 As if defined by:   swapd  ==  [swap] dip
 */
-/* swapd.c */
-#define PROCEDURE	swapd_
+#define PROCEDURE	do_swapd
 #define NAME		"swapd"
 #define PARAMCOUNT	THREEPARAMS
-#define ARGUMENT	swap_
+#define ARGUMENT	do_swap
 #include "dipped.c"

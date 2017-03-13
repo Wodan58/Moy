@@ -1,24 +1,33 @@
 /*
     module  : comprel.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* comprel.c */
+PRIVATE double Compare(Node *first, Node *second, int *error);
+
 PRIVATE void PROCEDURE(void)
 {
     double cmp;
     int i, j, error, comp = 0;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS(NAME);
+#endif
     if (stk->op == SET_) {
 	i = stk->next->u.num;
 	j = stk->u.num;
 	comp = SETCMP;
     } else {
 	cmp = Compare(stk->next, stk, &error);
-	if (error)
+	if (error) {
+#ifndef NCHECK
 	    BADDATA(NAME);
-	else {
+#endif
+	} else {
 	    comp = cmp OPR 0;
 	    if (comp < 0)
 		comp = -1;

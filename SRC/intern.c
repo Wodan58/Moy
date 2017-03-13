@@ -1,27 +1,31 @@
 /*
     module  : intern.c
-    version : 1.5
-    date    : 10/21/16
+    version : 1.6
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 intern  :  "sym"  ->  sym
 Pushes the item whose name is "sym".
 */
-/* intern.c */
-PRIVATE void intern_(void)
+PRIVATE void do_intern(void)
 {
-#ifdef RUNTIME_CHECKS
+    Entry *sym;
+    char id[ALEN];
+#ifndef NCHECK
     char *ptr = 0;
-#endif
-    int i;
 
+    if (optimizing && STRING_1)
+	;
+    else
+	COMPILE;
     ONEPARAM("intern");
     STRING("intern");
+#endif
     strncpy(id, stk->u.str, ALEN);
     id[ALEN - 1] = 0;
-#ifdef RUNTIME_CHECKS
+#ifndef NCHECK
     if (id[0] == '-' || !strchr("(#)[]{}.;'\"0123456789", id[0]))
 	for (ptr = id + 1; *ptr; ptr++)
 	    if (!isalnum((int) *ptr) && !strchr("=_-", *ptr))
@@ -29,20 +33,17 @@ PRIVATE void intern_(void)
     if (!ptr || *ptr)
 	execerror("valid name", id);
 #endif
-    for (i = 0; optable[i].name; i++)
-	if (!strcmp(id, optable[i].name)) {
-	    if (OUTSIDE) {
-		stk->op = ANON_FUNCT_;
-		stk->u.proc = optable[i].proc;
-	    } else
-		UNARY(ANON_FUNCT_NEWNODE, optable[i].proc);
-	    return;
-	}
-    HashValue(id);
-    lookup();
+    sym = lookup(id);
     if (OUTSIDE) {
-	stk->u.ent = location;
-	stk->op = USR_;
-    } else
-	UNARY(USR_NEWNODE, location);
+	if (sym->flags & IS_BUILTIN) {
+	    stk->op = ANON_FUNCT_;
+	    stk->u.proc = sym->u.proc;
+	} else {
+	    stk->op = USR_;
+	    stk->u.ent = sym;
+	}
+    } else if (sym->flags & IS_BUILTIN)
+	UNARY(ANON_FUNCT_NEWNODE, sym->u.proc);
+    else
+	UNARY(USR_NEWNODE, sym);
 }

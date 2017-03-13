@@ -1,18 +1,23 @@
 /*
     module  : sametype.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 sametype  :  X Y  ->  B
 Tests whether X and Y have the same type.
 */
-/* sametype.c */
-PRIVATE void sametype_(void)
+PRIVATE void do_sametype(void)
 {
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS("sametype");
+#endif
     if (OUTSIDE) {
 	stk->next->u.num = stk->op == stk->next->op;
 	stk->next->op = BOOLEAN_;

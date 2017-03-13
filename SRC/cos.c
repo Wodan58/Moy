@@ -1,16 +1,15 @@
 /*
     module  : cos.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 cos  :  F  ->  G
 G is the cosine of F.
 */
-/* cos.c */
-#define PROCEDURE	cos_
+#define PROCEDURE	do_cos
 #define NAME		"cos"
 #define FUNC		cos
 #include "ufloat.c"

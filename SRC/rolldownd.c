@@ -1,17 +1,16 @@
 /*
     module  : rolldownd.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rolldownd  :  X Y Z W  ->  Y Z X W
 As if defined by:   rolldownd  ==  [rolldown] dip
 */
-/* rolldownd.c */
-#define PROCEDURE	rolldownd_
+#define PROCEDURE	do_rolldownd
 #define NAME		"rolldownd"
 #define PARAMCOUNT	FOURPARAMS
-#define ARGUMENT	rolldown_
+#define ARGUMENT	do_rolldown
 #include "dipped.c"

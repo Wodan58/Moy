@@ -1,16 +1,15 @@
 /*
     module  : sign.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 sign  :  N1  ->  N2
 Integer N2 is the sign (-1 or 0 or +1) of integer N1,
 or float N2 is the sign (-1.0 or 0.0 or 1.0) of float N1.
 */
-/* sign.c */
 PRIVATE double fsgn(double f)
 {
     if (f < 0)
@@ -21,10 +20,16 @@ PRIVATE double fsgn(double f)
 	return 0.0;
 }
 
-PRIVATE void sign_(void)
+PRIVATE void do_sign(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1)
+	;
+    else
+	COMPILE;
     ONEPARAM("sign");
     FLOAT("sign");
+#endif
     if (OUTSIDE) {
 	if (stk->op == FLOAT_)
 	    stk->u.dbl = fsgn(stk->u.dbl);

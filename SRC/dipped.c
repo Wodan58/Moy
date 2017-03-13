@@ -1,14 +1,19 @@
 /*
     module  : dipped.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* dipped.c */
 PRIVATE void PROCEDURE(void)
 {
     Node save;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next))
+	;
+    else
+	COMPILE;
     PARAMCOUNT(NAME);
+#endif
     save = *stk;
     POP(stk);
     ARGUMENT();

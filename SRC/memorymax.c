@@ -1,13 +1,18 @@
 /*
     module  : memorymax.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 __memorymax  : ->  I
 Pushes value of total size of memory.
 */
-/* memorymax.c */
-PUSH_PROC(__memorymax_, INTEGER_, MEMORYMAX)
+PRIVATE void do_memorymax(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(INTEGER_, MEMORYMAX);
+}

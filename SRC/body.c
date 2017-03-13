@@ -1,17 +1,18 @@
 /*
     module  : body.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 body  :  U  ->  [P]
 Quotation [P] is the body of user-defined symbol U.
 */
-/* body.c */
-PRIVATE void body_(void)
+PRIVATE void do_body(void)
 {
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("body");
     USERDEF("body");
     if (OUTSIDE) {
@@ -19,4 +20,7 @@ PRIVATE void body_(void)
 	stk->op = LIST_;
     } else
 	UNARY(LIST_NEWNODE, stk->u.ent->u.body);
+#else
+    POP(stk);
+#endif
 }

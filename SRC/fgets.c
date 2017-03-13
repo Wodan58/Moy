@@ -1,29 +1,30 @@
 /*
     module  : fgets.c
-    version : 1.3
-    date    : 09/19/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fgets  :  S  ->  S L
 L is the next available line (as a string) from stream S.
 */
-/* fgets.c */
-PRIVATE void fgets_(void)
+PRIVATE void do_fgets(void)
 {
-    int length = 0;
-    int size = INPLINEMAX;
-    char *buf = 0;
+    char *buf;
+    size_t leng, size = INPLINEMAX;
 
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("fgets");
     FILE("fgets");
-    buf = malloc(size);
-    buf[0] = 0;
-    while (fgets(buf + length, size - length, stk->u.fil)) {
-	if ((length = strlen(buf)) > 0 && buf[length - 1] == '\n')
+#endif
+    buf = GC_malloc_atomic(size);
+    buf[leng = 0] = 0;
+    while (fgets(buf + leng, size - leng, stk->u.fil)) {
+	if ((leng = strlen(buf)) > 0 && buf[leng - 1] == '\n')
 	    break;
-	buf = realloc(buf, size <<= 1);
+	buf = GC_realloc(buf, size <<= 1);
     }
     PUSH(STRING_, buf);
 }

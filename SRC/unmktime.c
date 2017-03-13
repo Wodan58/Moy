@@ -1,9 +1,8 @@
 /*
     module  : unmktime.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* unmktime.c */
 PRIVATE void PROCEDURE(void)
 {
     int wday;
@@ -11,8 +10,14 @@ PRIVATE void PROCEDURE(void)
     struct tm *t;
     time_t timval;
 
+#ifndef NCHECK
+    if (optimizing && INTEGER_1)
+	;
+    else
+	COMPILE;
     ONEPARAM(NAME);
     INTEGER(NAME);
+#endif
     timval = stk->u.num;
     t = FUNC(&timval);
     wday = t->tm_wday;

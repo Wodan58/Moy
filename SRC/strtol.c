@@ -1,9 +1,9 @@
 /*
     module  : strtol.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 strtol  :  S I  ->  J
@@ -11,28 +11,32 @@ String S is converted to the integer J using base I.
 If I = 0, assumes base 10,
 but leading "0" means base 8 and leading "0x" means base 16.
 */
-/* strtol.c */
-PRIVATE void strtol_(void)
+PRIVATE void do_strtol(void)
 {
     int base;
+    long_t num;
 
+#ifndef NCHECK
+    if (optimizing && INTEGER_1 && STRING_2)
+	;
+    else
+	COMPILE;
     TWOPARAMS("strtol");
     INTEGER("strtol");
+#endif
     base = stk->u.num;
     POP(stk);
+#ifndef NCHECK
     STRING("strtol");
+#endif
+#ifdef _MSC_VER
+    num = strtol(stk->u.str, 0, base);
+#else
+    num = strtoll(stk->u.str, 0, base);
+#endif
     if (OUTSIDE) {
-#ifdef BIT_32
-	stk->u.num = strtol(stk->u.str, 0, base);
-#else
-	stk->u.num = strtoll(stk->u.str, 0, base);
-#endif
+	stk->u.num = num;
 	stk->op = INTEGER_;
-	return;
-    }
-#ifdef BIT_32
-    UNARY(INTEGER_NEWNODE, strtol(stk->u.str, 0, base));
-#else
-    UNARY(INTEGER_NEWNODE, strtoll(stk->u.str, 0, base));
-#endif
+    } else
+	UNARY(INTEGER_NEWNODE, num);
 }

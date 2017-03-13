@@ -1,16 +1,15 @@
 /*
     module  : cosh.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 cosh  :  F  ->  G
 G is the hyperbolic cosine of F.
 */
-/* cosh.c */
-#define PROCEDURE	cosh_
+#define PROCEDURE	do_cosh
 #define NAME		"cosh"
 #define FUNC		cosh
 #include "ufloat.c"

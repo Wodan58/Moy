@@ -1,13 +1,18 @@
 /*
     module  : true.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 true  :  ->  true
 Pushes the value true.
 */
-/* true.c */
-PUSH_PROC(true_, BOOLEAN_, 1)
+PRIVATE void do_true(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(BOOLEAN_, 1);
+}

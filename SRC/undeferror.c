@@ -1,13 +1,18 @@
 /*
     module  : undeferror.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 undeferror  :  ->  I
 Pushes current value of undefined-is-error flag.
 */
-/* undeferror.c */
-PUSH_PROC(undeferror_, INTEGER_, undeferror)
+PRIVATE void do_undeferror(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(INTEGER_, undeferror);
+}

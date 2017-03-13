@@ -1,16 +1,15 @@
 /*
     module  : id.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 id  :  ->
 Identity function, does nothing.
 Any program of the form  P id Q  is equivalent to just  P Q.
 */
-/* id.c */
-PRIVATE void id_(void)
+PRIVATE void do_id(void)
 {
 }

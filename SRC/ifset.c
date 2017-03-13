@@ -1,16 +1,15 @@
 /*
     module  : ifset.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 ifset  :  X [T] [E]  ->  ...
 If X is a set, executes T else executes E.
 */
-/* ifset.c */
-#define PROCEDURE	ifset_
+#define PROCEDURE	do_ifset
 #define NAME		"ifset"
 #define TYP		SET_
-#include "if_type.c"
+#include "iftype.c"

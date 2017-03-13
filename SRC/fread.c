@@ -1,29 +1,32 @@
 /*
     module  : fread.c
-    version : 1.4
-    date    : 10/04/16
+    version : 1.5
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fread  :  S I  ->  L
 I bytes are read from the current position of stream S
 and returned as a list of I integers.
 */
-/* fread.c */
-PRIVATE void fread_(void)
+PRIVATE void do_fread(void)
 {
-    int i;
-    size_t count;
+    char *buf;
+    int i, count;
     Node *cur = 0;
-    unsigned char *buf;
 
+#ifndef NCHECK
+    COMPILE;
     TWOPARAMS("fread");
     INTEGER("fread");
+#endif
     count = stk->u.num;
     POP(stk);
+#ifndef NCHECK
     FILE("fread");
-    buf = malloc(count);
+#endif
+    buf = GC_malloc_atomic(count);
     for (i = fread(buf, 1, count, stk->u.fil) - 1; i >= 0; i--)
 	cur = heapnode(INTEGER_, (void *)(long_t)buf[i], cur);
     PUSH(LIST_, cur);

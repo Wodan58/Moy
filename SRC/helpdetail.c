@@ -1,40 +1,48 @@
 /*
     module  : helpdetail.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#define FALSE_		13
+#define TRUE_		14
+#define MAXINT		15
+
+extern optable_t optable[];
 
 /*
 helpdetail  :  [ S1 S2 .. ]  ->
 Gives brief help on each symbol S in the list.
 */
-/* helpdetail.c */
-PRIVATE void helpdetail_(void)
+PRIVATE void do_helpdetail(void)
 {
-    Node *n;
+    Node *node;
+    Operator op;
 
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("HELP");
     LIST("HELP");
+#endif
     printf("\n");
-    n = stk->u.lis;
-    while (n) {
-	if (n->op == USR_) {
-	    printf("%s  ==\n    ", n->u.ent->name);
-	    writeterm(n->u.ent->u.body, stdout);
+    node = stk->u.lis;
+    while (node) {
+	if (node->op == USR_) {
+	    printf("%s  ==\n    ", node->u.ent->name);
+	    writeterm(node->u.ent->u.body, stdout);
 	    printf("\n");
 	    break;
 	} else {
-	    int op;
-	    if ((op = n->op) == BOOLEAN_)
-		op = n->u.num ? TRUE_ : FALSE_;
-	    if (op == INTEGER_ && n->u.num == _MAXINT_)
-		op = MAXINT_;
+	    if ((op = node->op) == BOOLEAN_)
+		op = node->u.num ? TRUE_ : FALSE_;
+	    if (op == INTEGER_ && node->u.num == MAXINT_)
+		op = MAXINT;
 	    printf("%s  :  %s.\n%s\n", optable[op].name,
 		   optable[op].messg1, optable[op].messg2);
 	}
 	printf("\n");
-	n = n->next;
+	node = node->next;
     }
     POP(stk);
 }

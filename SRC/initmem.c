@@ -1,16 +1,16 @@
 /*
     module  : initmem.c
-    version : 1.6
-    date    : 10/17/16
+    version : 1.7
+    date    : 03/12/17
 */
 #include <stdio.h>
-#include <time.h>
-#include "globals1.h"
+#include "joy.h"
+#include "symbol.h"
 
 void initmem(void)
 {
-    for (stk = memory; stk < &memory[MEMORYMAX]; stk++)
-	stk->next = stk + 1;
-    stk->mark = 1;
-    stk->next = stk;
+    stk = &memory[MEMORYMAX];
+    while (--stk > memory)
+	stk->next = stk - 1;
+    stk->next = memory;
 }

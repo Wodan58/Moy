@@ -1,13 +1,21 @@
 /*
     module  : srand.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 srand  :  I  ->
 Sets the random integer seed to integer I.
 */
-/* srand.c */
-USETOP(srand_, "srand", INTEGER, srand(stk->u.num))
+PRIVATE void do_srand(void)
+{
+#ifndef NCHECK
+    COMPILE;
+    ONEPARAM("srand");
+    INTEGER("srand");
+#endif
+    srand(stk->u.num);
+    POP(stk);
+}

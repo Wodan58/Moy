@@ -1,13 +1,21 @@
 /*
     module  : putch.c
-    version : 1.3
-    date    : 10/19/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 putch  :  N  ->
 N : numeric, writes character whose ASCII is N.
 */
-/* putch.c */
-USETOP(putch_, "putch", NUMERICTYPE, printf("%c", (int) stk->u.num))
+PRIVATE void do_putch(void)
+{
+#ifndef NCHECK
+    COMPILE;
+    ONEPARAM("putch");
+    NUMERICTYPE("putch");
+#endif
+    printf("%c", (int)stk->u.num);
+    POP(stk);
+}

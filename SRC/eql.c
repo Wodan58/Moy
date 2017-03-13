@@ -1,17 +1,16 @@
 /*
     module  : eql.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 =  :  X Y  ->  B
 Either both X and Y are numeric or both are strings or symbols.
 Tests whether X equal to Y.  Also supports float.
 */
-/* eql.c */
-#define PROCEDURE	eql_
+#define PROCEDURE	do_eql
 #define NAME		"="
 #define CONSTRUCTOR	BOOLEAN_
 #define OPR		==

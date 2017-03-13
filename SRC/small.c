@@ -1,20 +1,25 @@
 /*
     module  : small.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 small  :  X  ->  B
 Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
 */
-/* small.c */
-PRIVATE void small_(void)
+PRIVATE void do_small(void)
 {
     int small = 0;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("small");
+#endif
     switch (stk->op) {
     case BOOLEAN_:
     case INTEGER_:
@@ -36,8 +41,10 @@ PRIVATE void small_(void)
     case LIST_:
 	small = !stk->u.lis || !stk->u.lis->next;
 	break;
+#ifndef NCHECK
     default:
 	BADDATA("small");
+#endif
     }
     if (OUTSIDE) {
 	stk->u.num = small;

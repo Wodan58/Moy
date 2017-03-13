@@ -1,13 +1,18 @@
 /*
     module  : echo.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 echo  :  ->  I
 Pushes value of echo flag, I = 0..3.
 */
-/* echo.c */
-PUSH_PROC(echo_, INTEGER_, echoflag)
+PRIVATE void do_echo(void)
+{
+#ifndef NCHECK
+    COMPILE;
+#endif
+    PUSH(INTEGER_, echoflag);
+}

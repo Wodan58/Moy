@@ -1,21 +1,23 @@
 /*
     module  : filetime.c
-    version : 1.1
-    date    : 05/06/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 #include <sys/stat.h>
 
 /*
 filetime  :  F  ->  T
 T is the modification time of file F.
 */
-/* filetime.c */
-PRIVATE void filetime_(void)
+PRIVATE void do_filetime(void)
 {
     struct stat buf;
 
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("filetime");
+#endif
     stat(stk->u.str, &buf);
     if (OUTSIDE) {
 	stk->op = INTEGER_;

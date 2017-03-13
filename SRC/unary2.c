@@ -1,52 +1,65 @@
 /*
     module  : unary2.c
-    version : 1.6
-    date    : 10/08/16
+    version : 1.7
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_unary2(void)
+{
+    Node *prog;
+
+    if (!LIST_1)
+	return 0;
+    prog = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "{ /* UNARY2 */");
+    fprintf(outfp, "Node temp, *top, result[2];");
+    fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
+    evaluate2(prog, START_SCOPE);
+    fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
+    fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
+    evaluate2(prog, END_SCOPE);
+    fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
+    fprintf(outfp, "DUPLICATE(&result[0]);");
+    fprintf(outfp, "DUPLICATE(&result[1]); }");
+    return 1;
+}
+#endif
 
 /*
 unary2  :  X1 X2 [P]  ->  R1 R2
 Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.
 */
-/* unary2.c */
-PRIVATE void unary2_(void)
+PRIVATE void do_unary2(void)
 {
     Node *prog, temp, *top, result[2];
-#ifdef ARITY
-    int d;
-#endif
 
+#ifndef NCHECK
+    if (optimizing && put_unary2())
+	return;
+    COMPILE;
     THREEPARAMS("unary2");
     ONEQUOTE("unary2");
+#endif
     prog = stk->u.lis;
     POP(stk);
     temp = *stk;
     POP(stk);
     top = stk->next;
-#ifdef ARITY
-    copy_(d = arity(prog));
-#else 
     CONDITION;
-#endif
     exeterm(prog);
     result[0] = *stk;
-#ifndef ARITY
     RELEASE;
-#endif
     stk = top;
     DUPLICATE(&temp);
-#ifdef ARITY
-    copy_(d);
-#else
     CONDITION;
-#endif
     exeterm(prog);
     result[1] = *stk;
-#ifndef ARITY
     RELEASE;
-#endif
     stk = top;
     DUPLICATE(&result[0]);
     DUPLICATE(&result[1]);

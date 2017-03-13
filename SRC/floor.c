@@ -1,16 +1,15 @@
 /*
     module  : floor.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 floor  :  F  ->  G
 G is the floor of F.
 */
-/* floor.c */
-#define PROCEDURE	floor_
+#define PROCEDURE	do_floor
 #define NAME		"floor"
 #define FUNC		floor
 #include "ufloat.c"

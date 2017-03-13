@@ -1,61 +1,88 @@
 /*
     module  : tailrec.c
-    version : 1.5
-    date    : 10/04/16
+    version : 1.6
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_tailrec(void)
+{
+    Node *prog[3];
+    unsigned ident;
+    FILE *oldfp, *newfp;
+
+    if (!(LIST_1 && LIST_2 && LIST_3))
+	return 0;
+    prog[2] = stk->u.lis;
+    POP(stk);
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "void do_tailrec_%d(void);", ident = ++identifier);
+    fprintf(outfp, "do_tailrec_%d();", ident);
+    oldfp = outfp;
+    newfp = outfp = nextfile();
+    fprintf(outfp, "void do_tailrec_%d(void) {", ident);
+    fprintf(outfp, "int num; Node *save;");
+    fprintf(outfp, "for (;;) {");
+    fprintf(outfp, "CONDITION; save = stk;");
+    evaluate2(prog[0], START_SCOPE);
+    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+    fprintf(outfp, "if (num) {");
+    evaluate(prog[1]);
+    fprintf(outfp, "break; }");
+    evaluate2(prog[2], END_SCOPE);
+    fprintf(outfp, "} }\n");
+    closefile(newfp);
+    outfp = oldfp;
+    return 1;
+}
+#endif
 
 /*
 tailrec  :  [P] [T] [R1]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses.
 */
-/* tailrec.c */
-#ifdef ARITY
-PRIVATE void tailrecaux(int d, Node *first, Node *second, Node *third)
-#else
-PRIVATE void tailrecaux(Node *first, Node *second, Node *third)
-#endif
+static void do_tailrecaux(Node *prog[])
 {
     int num;
     Node *save;
 
 tailrec:
-    save = stk;
-#ifdef ARITY
-    copy_(d);
-#else
     CONDITION;
-#endif
-    exeterm(first);
+    save = stk;
+    exeterm(prog[0]);
     num = stk->u.num;
     stk = save;
-#ifndef ARITY
     RELEASE;
-#endif
     if (num)
-	exeterm(second);
+	exeterm(prog[1]);
     else {
-	exeterm(third);
+	exeterm(prog[2]);
 	goto tailrec;
     }
 }
 
-PRIVATE void tailrec_(void)
+PRIVATE void do_tailrec(void)
 {
-    Node *first, *second, *third;
+    Node *prog[3];
 
+#ifndef NCHECK
+    if (optimizing && put_tailrec())
+	return;
+    COMPILE;
     THREEPARAMS("tailrec");
     THREEQUOTES("tailrec");
-    third = stk->u.lis;
-    POP(stk);
-    second = stk->u.lis;
-    POP(stk);
-    first = stk->u.lis;
-    POP(stk);
-#ifdef ARITY
-    tailrecaux(arity(first), first, second, third);
-#else
-    tailrecaux(first, second, third);
 #endif
+    prog[2] = stk->u.lis;
+    POP(stk);
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    do_tailrecaux(prog);
 }

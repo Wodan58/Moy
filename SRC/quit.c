@@ -1,19 +1,18 @@
 /*
     module  : quit.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "globals1.h"
+#include "runtime.h"
 
-PUBLIC void abort_(void)
+/*
+quit  ->
+Exit from Joy.
+*/
+PRIVATE void do_quit(void)
 {
-    exit(1);
-}
-
-PUBLIC void quit_(void)
-{
+#ifndef NCHECK
+    COMPILE;
+#endif
     exit(0);
 }

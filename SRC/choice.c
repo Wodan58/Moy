@@ -1,18 +1,23 @@
 /*
     module  : choice.c
-    version : 1.3
-    date    : 10/04/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 choice  :  B T F  ->  X
 If B is true, then X = T else X = F.
 */
-/* choice.c */
-PRIVATE void choice_(void)
+PRIVATE void do_choice(void)
 {
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
+	;
+    else
+	COMPILE;
     THREEPARAMS("choice");
+#endif
     if (OUTSIDE) {
 	if (stk->next->next->u.num) {
 	    stk->next->next->u = stk->next->u;

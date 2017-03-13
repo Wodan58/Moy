@@ -1,17 +1,16 @@
 /*
     module  : xor.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 xor  :  X Y  ->  Z
 Z is the symmetric difference of sets X and Y,
 logical exclusive disjunction for truth values.
 */
-/* xor.c */
-#define PROCEDURE	xor_
+#define PROCEDURE	do_xor
 #define NAME		"xor"
 #define OPER1		^
 #define OPER2		!=

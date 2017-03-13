@@ -1,7 +1,32 @@
 #
-#  Makefile for JOY library
+#	Makefile for JOY library
 #
 cmake_minimum_required(VERSION 3.0)
 find_package(FLEX)
 FLEX_TARGET(MyScanner lexer.l lexer.c)
-add_library(joy ${FLEX_MyScanner_OUTPUTS} abs.c acos.c all.c and.c app1.c argc.c argv.c asin.c at.c atan.c atan2.c autoput.c binary.c binrec.c body.c branch.c case.c ceil.c char.c choice.c chr.c cleave.c clock.c compare.c compare2.c concat.c cond.c condlinrec.c condnestrec.c cons.c construct.c conts.c cos.c cosh.c decode.c dip.c div.c divide.c drop.c dump.c dup.c dupd.c echo.c enconcat.c eql.c equal.c exp.c false.c fclose.c feof.c ferror.c fflush.c fget.c fgetch.c fgets.c file.c filter.c first.c float.c floor.c round.c fold.c fopen.c format.c formatf.c fput.c fputch.c fputchars.c fread.c fremove.c frename.c filetime.c frexp.c fseek.c ftell.c fwrite.c genrec.c geql.c get.c getch.c getenv.c gmtime.c greater.c has.c help1.c help2.c helpdetail.c i.c id.c ifchar.c iffile.c iffloat.c ifinteger.c iflist.c iflogical.c ifset.c ifstring.c ifte.c in.c include.c infra.c integer.c intern.c ldexp.c leaf.c leql.c less.c linrec.c list.c localtime.c log.c log10.c logical.c makemanual.c manual.c manual2.c map.c max.c maxint.c memoryindex.c memorymax.c min.c minus.c mktime.c modf.c mul.c name.c neg.c neql.c not.c null.c nullary.c of.c opcase.c opername.c or.c ord.c plus.c pop.c popd.c pow.c pred.c primrec.c put.c putch.c putchars.c rand.c rem.c rest.c rolldown.c rolldownd.c rollup.c rollupd.c rotate.c rotated.c sametype.c casting.c set.c setautoput.c setecho.c setsize.c settracegc.c setundeferror.c sign.c sin.c sinh.c size.c small.c some.c split.c sqrt.c srand.c stack.c stderr.c stdin.c stdout.c step.c strftime.c string.c strtod.c strtol.c succ.c swap.c swapd.c swons.c symtabindex.c symtabmax.c system.c tailrec.c take.c tan.c tanh.c ternary.c time.c times.c treegenrec.c treerec.c treestep.c true.c trunc.c unary.c unary2.c unary3.c unary4.c uncons.c undeferror.c undefs.c unstack.c unswons.c user.c while.c x.c xor.c exeterm.c app11.c app12.c optable.c lexer.c symbol.c utils1.c joy.c scan1.c initmem.c quit.c round2.c aritysym.c arity.c copy.c)
+add_library(joy ${FLEX_MyScanner_OUTPUTS} error.c initmem.c initsym.c interp1.c
+joy.c node.c print.c scan.c symbol.c utils.c binrec.c dup.c small.c pred.c
+plus.c put.c stop.c mul.c compare2.c eql.c greater.c or.c and.c not.c swap.c
+step.c cons.c dip.c i.c uncons.c pop.c nothing.c sametype.c index.c putch.c
+get.c stack.c unstack.c body.c leql.c setautoput.c setundeferror.c argv.c
+rest.c backup.c map.c strtol.c while.c rollup.c rem.c quit.c setecho.c minus.c
+succ.c concat.c abs.c dupd.c swapd.c cleave.c unary2.c divide.c argc.c time.c
+srand.c of.c first.c putchars.c integer.c ifte.c equal.c at.c list.c some.c
+size.c geql.c times.c linrec.c null.c nullary.c less.c infra.c settracegc.c
+popd.c id.c swons.c sin.c cos.c tan.c xor.c fold.c unswons.c rolldown.c log10.c
+unary.c split.c enconcat.c cond.c in.c filter.c rollupd.c iflist.c intern.c
+opcase.c has.c float.c string.c tailrec.c case.c leaf.c include.c abort.c x.c
+rotate.c condlinrec.c false.c true.c maxint.c setsize.c symtabmax.c
+symtabindex.c dump.c conts.c autoput.c undeferror.c undefs.c echo.c clock.c
+rand.c memorymax.c stdin.c stdout.c stderr.c rolldownd.c rotated.c choice.c
+div.c sign.c neg.c ord.c chr.c asin.c acos.c atan.c atan2.c ceil.c sinh.c
+cosh.c tanh.c exp.c floor.c round.c frexp.c ldexp.c log.c modf.c pow.c sqrt.c
+trunc.c localtime.c gmtime.c mktime.c strftime.c decode.c strtod.c format.c
+formatf.c min.c max.c compare.c drop.c take.c name.c neql.c char.c logical.c
+set.c user.c file.c ifchar.c iffile.c iffloat.c ifinteger.c iflogical.c ifset.c
+ifstring.c app1.c app11.c app12.c gc.c system.c getenv.c memoryindex.c getch.c
+all.c optable.c help1.c help2.c manual.c helpdetail.c makemanual.c manuallist.c
+casting.c branch.c construct.c unary3.c unary4.c binary.c ternary.c genrec.c
+primrec.c treestep.c treerec.c treegenrec.c fclose.c feof.c ferror.c fflush.c
+fget.c fgetch.c fgets.c fopen.c fread.c fwrite.c fremove.c frename.c filetime.c
+fput.c fputch.c fputchars.c fseek.c ftell.c)

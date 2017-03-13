@@ -1,17 +1,22 @@
 /*
     module  : dup.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 dup  :  X  ->  X X
 Pushes an extra copy of X onto stack.
 */
-/* dup.c */
-PRIVATE void dup_(void)
+PRIVATE void do_dup(void)
 {
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("dup");
+#endif
     DUPLICATE(stk);
 }

@@ -1,20 +1,25 @@
 /*
     module  : rotate.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rotate  :  X Y Z  ->  Z Y X
 Interchanges X and Z.
 */
-/* rotate.c */
-PRIVATE void rotate_(void)
+PRIVATE void do_rotate(void)
 {
     Node temp, *node, *next;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
+	;
+    else
+	COMPILE;
     THREEPARAMS("rotate");
+#endif
     temp = *stk;
     node = stk->next;
     next = node->next;

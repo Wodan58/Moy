@@ -1,19 +1,24 @@
 /*
     module  : trunc.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 trunc  :  F  ->  I
 I is an integer equal to the float F truncated toward zero.
 */
-/* trunc.c */
-PRIVATE void trunc_(void)
+PRIVATE void do_trunc(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1)
+	;
+    else
+	COMPILE;
     ONEPARAM("trunc");
     FLOAT("trunc");
+#endif
     if (OUTSIDE) {
 	stk->u.num = FLOATVAL;
 	stk->op = INTEGER_;

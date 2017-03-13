@@ -1,20 +1,24 @@
 /*
     module  : fclose.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fclose  :  S  ->
 Stream S is closed and removed from the stack.
 */
-/* fclose.c */
-PRIVATE void fclose_(void)
+PRIVATE void do_fclose(void)
 {
+    FILE *fp;
+
+#ifndef NCHECK
+    COMPILE;
     ONEPARAM("fclose");
     FILE("fclose");
-    if (stk->u.fil)
-	fclose(stk->u.fil);
+#endif
+    if ((fp = stk->u.fil) != 0)
+	fclose(fp);
     POP(stk);
 }

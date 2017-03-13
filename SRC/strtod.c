@@ -1,19 +1,24 @@
 /*
     module  : strtod.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 strtod  :  S  ->  R
 String S is converted to the float R.
 */
-/* strtod.c */
-PRIVATE void strtod_(void)
+PRIVATE void do_strtod(void)
 {
+#ifndef NCHECK
+    if (optimizing && STRING_1)
+	;
+    else
+	COMPILE;
     ONEPARAM("strtod");
     STRING("strtod");
+#endif
     if (OUTSIDE) {
 	stk->u.num = strtod(stk->u.str, 0);
 	stk->op = FLOAT_;

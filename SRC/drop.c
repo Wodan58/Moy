@@ -1,64 +1,61 @@
 /*
     module  : drop.c
-    version : 1.3
-    date    : 09/09/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 drop  :  A N  ->  B
 Aggregate B is the result of deleting the first N elements of A.
 */
-/* drop.c */
-PRIVATE void drop_(void)
+PRIVATE void do_drop(void)
 {
-    int n = stk->u.num;
+    int i, num;
+    Node *node;
+    ulong_t set;
 
+#ifndef NCHECK
+    if (optimizing && INTEGER_1 && AGGREGATE(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS("drop");
-    switch (stk->next->op) {
-    case SET_:
-	 {
-	    int i;
-	    long_t result = 0;
-	    for (i = 0; i < _SETSIZE_; i++)
-		if (stk->next->u.set & (1 << i)) {
-		    if (n < 1)
-			result |= 1 << i;
-		    else
-			n--;
-		}
-	    if (OUTSIDE) {
-		stk->next->u.set = result;
-		POP(stk);
-	    } else
-		BINARY(SET_NEWNODE, result);
-	    return;
-	}
-    case STRING_:
-	 {
-	    char *result = stk->next->u.str;
-	    while (n-- > 0 && *result)
-		++result;
-	    if (OUTSIDE) {
-		stk->next->u.str = result;
-		POP(stk);
-	    } else
-		BINARY(STRING_NEWNODE, result);
-	    return;
-	}
+#endif
+    num = stk->u.num;
+    POP(stk);
+    switch (stk->op) {
     case LIST_:
-	 {
-	    Node *result = stk->next->u.lis;
-	    while (n-- > 0 && result)
-		result = result->next;
-	    if (OUTSIDE) {
-		stk->next->u.lis = result;
-		POP(stk);
-	    } else
-		BINARY(LIST_NEWNODE, result);
-	    return;
-	}
+	node = stk->u.lis;
+	while (num-- > 0 && node)
+	    node = node->next;
+	if (OUTSIDE)
+	    stk->u.lis = node;
+	else
+	    UNARY(LIST_NEWNODE, node);
+	break;
+    case STRING_:
+	if (OUTSIDE)
+	    stk->u.str += num;
+	else
+	    UNARY(STRING_NEWNODE, (stk->u.str + num));
+	break;
+    case SET_:
+	for (set = i = 0; i < SETSIZE_; i++)
+	    if (stk->u.set & (1 << i)) {
+		if (num < 1)
+		    set |= 1 << i;
+		else
+		    num--;
+	    }
+	if (OUTSIDE)
+	    stk->u.set = set;
+	else
+	    UNARY(SET_NEWNODE, set);
+	break;
+#ifndef NCHECK
     default:
 	BADAGGREGATE("drop");
+#endif
     }
 }

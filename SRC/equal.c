@@ -1,15 +1,16 @@
 /*
     module  : equal.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+PRIVATE double Compare(Node *first, Node *second, int *error);
 
 /*
 equal  :  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
-/* equal.c */
 PRIVATE int equal_aux(Node *n1, Node *n2);
 
 PRIVATE int equal_list_aux(Node *n1, Node *n2)
@@ -37,9 +38,15 @@ PRIVATE int equal_aux(Node *n1, Node *n2)
     return !Compare(n1, n2, &error) && !error;
 }
 
-PRIVATE void equal_(void)
+PRIVATE void do_equal(void)
 {
+#ifndef NCHECK
+    if (optimizing && VALID(stk) && VALID(stk->next))
+	;
+    else
+	COMPILE;
     TWOPARAMS("equal");
+#endif
     if (OUTSIDE) {
 	stk->next->u.num = equal_aux(stk, stk->next);
 	stk->next->op = BOOLEAN_;

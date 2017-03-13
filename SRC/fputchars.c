@@ -1,25 +1,25 @@
 /*
     module  : fputchars.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fputchars  :  S "abc.."  ->  S
 The string abc.. (no quotes) is written to the current position of stream S.
 */
-/* fputchars.c */
-PRIVATE void fputchars_(void)
+PRIVATE void do_fputchars(void)
 {
-    FILE *stm;
+    char *str;
 
+#ifndef NCHECK
+    COMPILE;
     TWOPARAMS("fputchars");
-#ifdef RUNTIME_CHECKS
     if (stk->next->op != FILE_ || !stk->next->u.fil)
 	execerror("file", "fputchars");
 #endif
-    stm = stk->next->u.fil;
-    fprintf(stm, "%s", stk->u.str);
+    str = stk->u.str;
     POP(stk);
+    fprintf(stk->u.fil, "%s", str);
 }

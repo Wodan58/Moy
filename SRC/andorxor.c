@@ -1,13 +1,19 @@
 /*
     module  : andorxor.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-/* andorxor.c */
 PRIVATE void PROCEDURE(void)
 {
+#ifndef NCHECK
+    if (optimizing && stk->op == stk->next->op &&
+	stk->op >= BOOLEAN_ && stk->op <= SET_)
+	;
+    else
+	COMPILE;
     TWOPARAMS(NAME);
     SAME2TYPES(NAME);
+#endif
     switch (stk->next->op) {
     case SET_:
 	if (OUTSIDE) {
@@ -15,7 +21,7 @@ PRIVATE void PROCEDURE(void)
 	    POP(stk);
 	} else
 	    BINARY(SET_NEWNODE, stk->next->u.set OPER1 stk->u.set);
-	return;
+	break;
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
@@ -26,9 +32,11 @@ PRIVATE void PROCEDURE(void)
 	    POP(stk);
 	} else
 	    BINARY(BOOLEAN_NEWNODE, stk->next->u.num OPER2 stk->u.num);
-	return;
+	break;
+#ifndef NCHECK
     default:
 	BADDATA(NAME);
+#endif
     }
 }
 

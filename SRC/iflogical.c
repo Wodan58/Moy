@@ -1,16 +1,15 @@
 /*
     module  : iflogical.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 iflogical  :  X [T] [E]  ->  ...
 If X is a logical or truth value, executes T else executes E.
 */
-/* iflogical.c */
-#define PROCEDURE	iflogical_
+#define PROCEDURE	do_iflogical
 #define NAME		"iflogical"
 #define TYP		BOOLEAN_
-#include "if_type.c"
+#include "iftype.c"

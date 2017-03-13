@@ -1,20 +1,23 @@
 /*
     module  : rem.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rem  :  I J  ->  K
 Integer K is the remainder of dividing I by J.  Also supports float.
 */
-/* rem.c */
-PRIVATE void rem_(void)
+PRIVATE void do_rem(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1 && NUMERIC_2)
+	;
+    else
+	COMPILE;
     TWOPARAMS("rem");
     FLOAT2("rem");
-#ifdef RUNTIME_CHECKS
     if ((stk->op == FLOAT_ && !stk->u.dbl) ||
 	(stk->op == INTEGER_ && !stk->u.num))
 	execerror("non-zero operand", "rem");

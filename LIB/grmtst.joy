@@ -1,18 +1,13 @@
 #
 #   module  : grmtst.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 03/12/17
 #
 (* FILE:   grmtst.joy *)
 
 %PUT .
 %PUT testing the grammar library in file  grmlib.joy
 %PUT .
-
-(*
-DEFINE old_in == in;
-           in == [[string] [pop false]] dip [old_in] cons ifte.
-*)
 
 %INCLUDE usrlib.joy
 %INCLUDE grmlib.joy

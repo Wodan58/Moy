@@ -1,19 +1,24 @@
 /*
     module  : mul.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 *  :  I J  ->  K
 Integer K is the product of integers I and J.  Also supports float.
 */
-/* mul.c */
-PRIVATE void mul_(void)
+PRIVATE void do_mul(void)
 {
+#ifndef NCHECK
+    if (optimizing && NUMERIC_1 && NUMERIC_2)
+	;
+    else
+	COMPILE;
     TWOPARAMS("*");
     FLOAT2("*");
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl *= FLOATVAL;

@@ -1,35 +1,38 @@
 /*
     module  : fwrite.c
-    version : 1.3
-    date    : 09/19/16
+    version : 1.4
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 fwrite  :  S L  ->  S
 A list of integers are written as bytes to the current position of stream S.
 */
-/* fwrite.c */
-PRIVATE void fwrite_(void)
+PRIVATE void do_fwrite(void)
 {
-    int i;
-    Node *n;
-    size_t length;
-    unsigned char *buf;
+    char *buf;
+    Node *node;
+    int i, leng;
 
+#ifndef NCHECK
+    COMPILE;
     TWOPARAMS("fwrite");
     LIST("fwrite");
-    for (n = stk->u.lis, length = 0; n; n = n->next, length++)
-#ifdef RUNTIME_CHECKS
-	if (n->op != INTEGER_)
+#endif
+    for (node = stk->u.lis, leng = 0; node; node = node->next, leng++)
+#ifndef NCHECK
+	if (node->op != INTEGER_)
 	    execerror("numeric list", "fwrite");
 #else
 	;
 #endif
-    buf = malloc(length);
-    for (n = stk->u.lis, i = 0; n; n = n->next, i++)
-	buf[i] = n->u.num;
+    buf = GC_malloc_atomic(leng);
+    for (node = stk->u.lis, i = 0; node; node = node->next, i++)
+	buf[i] = node->u.num;
     POP(stk);
+#ifndef NCHECK
     FILE("fwrite");
-    fwrite(buf, length, 1, stk->u.fil);
+#endif
+    fwrite(buf, leng, 1, stk->u.fil);
 }

@@ -1,17 +1,16 @@
 /*
     module  : rotated.c
-    version : 1.1
-    date    : 04/23/16
+    version : 1.2
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 rotated  :  X Y Z W  ->  Z Y X W
 As if defined by:   rotated  ==  [rotate] dip
 */
-/* rotated.c */
-#define PROCEDURE	rotated_
+#define PROCEDURE	do_rotated
 #define NAME		"rotated"
 #define PARAMCOUNT	FOURPARAMS
-#define ARGUMENT	rotate_
+#define ARGUMENT	do_rotate
 #include "dipped.c"

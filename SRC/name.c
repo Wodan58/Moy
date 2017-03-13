@@ -1,21 +1,26 @@
 /*
     module  : name.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 name  :  sym  ->  "sym"
 For operators and combinators, the string "sym" is the name of item sym,
 for literals sym the result string is its type.
 */
-/* name.c */
-PRIVATE void name_(void)
+PRIVATE void do_name(void)
 {
     char *str;
 
+#ifndef NCHECK
+    if (optimizing && VALID(stk))
+	;
+    else
+	COMPILE;
     ONEPARAM("name");
+#endif
     str = stk->op == USR_ ? stk->u.ent->name : opername(stk->op);
     if (OUTSIDE) {
 	stk->u.str = str;

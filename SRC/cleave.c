@@ -1,43 +1,65 @@
 /*
     module  : cleave.c
-    version : 1.5
-    date    : 10/04/16
+    version : 1.6
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
+
+#ifndef NCHECK
+int put_cleave(void)
+{
+    Node *prog[2];
+
+    if (!(LIST_1 && LIST_2))
+	return 0;
+    prog[1] = stk->u.lis;
+    POP(stk);
+    prog[0] = stk->u.lis;
+    POP(stk);
+    printstack(outfp);
+    fprintf(outfp, "{ /* CLEAVE */");
+    fprintf(outfp, "Node result[2], *save;");
+    fprintf(outfp, "CONDITION; save = stk;");
+    evaluate2(prog[0], START_SCOPE);
+    fprintf(outfp, "result[0] = *stk; stk = save; RELEASE; CONDITION;");
+    evaluate2(prog[1], END_SCOPE);
+    fprintf(outfp, "result[1] = *stk; stk = save; RELEASE; POP(stk);");
+    fprintf(outfp, "DUPLICATE(&result[0]);");
+    fprintf(outfp, "DUPLICATE(&result[1]); }");
+    return 1;
+}
+#endif
 
 /*
 cleave  :  X [P1] [P2]  ->  R1 R2
 Executes P1 and P2, each with X on top, producing two results.
 */
-/* cleave.c */
-PRIVATE void cleave_(void)
+PRIVATE void do_cleave(void)
 {
     Node *prog[2], result[2], *save;
 
+#ifndef NCHECK
+    if (optimizing && put_cleave())
+	return;
+    COMPILE;
     THREEPARAMS("cleave");
     TWOQUOTES("cleave");
+#endif
     prog[1] = stk->u.lis;
     POP(stk);
     prog[0] = stk->u.lis;
     POP(stk);
-    save = stk;
-#ifdef ARITY
-    copy_(arity(prog[0]));
-#else
     CONDITION;
-#endif
+    save = stk;
     exeterm(prog[0]);
     result[0] = *stk;
     stk = save;
-#ifdef ARITY
-    copy_(arity(prog[1]));
-#endif
+    RELEASE;
+    CONDITION;
     exeterm(prog[1]);
     result[1] = *stk;
     stk = save;
-#ifndef ARITY
     RELEASE;
-#endif
     POP(stk);
     DUPLICATE(&result[0]);
     DUPLICATE(&result[1]);

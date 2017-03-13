@@ -1,16 +1,15 @@
 /*
     module  : feof.c
-    version : 1.2
-    date    : 05/06/16
+    version : 1.3
+    date    : 03/12/17
 */
-#include "interp.h"
+#include "runtime.h"
 
 /*
 feof  :  S  ->  S B
 B is the end-of-file status of stream S.
 */
-/* feof.c */
-#define PROCEDURE	feof_
+#define PROCEDURE	do_feof
 #define NAME		"feof"
 #define CONSTRUCTOR	BOOLEAN_
 #define EXPR		feof(stk->u.fil)
