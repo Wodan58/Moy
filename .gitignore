@@ -6,3 +6,5 @@ lexer.c
 parse.c
 parse.h
 moy.exe
+*.a
+*.sym

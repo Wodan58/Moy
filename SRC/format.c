@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.6
+    date    : 03/18/17
 */
 #include "runtime.h"
 
@@ -47,7 +47,7 @@ PRIVATE void do_format(void)
 #ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
-    leng = snprintf(0, 0, format, width, prec, (long long)stk->u.num);
+    leng = snprintf(0, 0, format, width, prec, (long long)stk->u.num) + 1;
 #endif
     result = GC_malloc_atomic(leng + 1);
 #ifdef _MSC_VER

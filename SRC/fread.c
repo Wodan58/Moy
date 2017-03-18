@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.5
-    date    : 03/12/17
+    version : 1.6
+    date    : 03/18/17
 */
 #include "runtime.h"
 
@@ -12,9 +12,9 @@ and returned as a list of I integers.
 */
 PRIVATE void do_fread(void)
 {
-    char *buf;
     int i, count;
     Node *cur = 0;
+    unsigned char *buf;
 
 #ifndef NCHECK
     COMPILE;

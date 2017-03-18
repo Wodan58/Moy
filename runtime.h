@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 03/18/17
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -21,7 +21,11 @@
 #define COMPILE		if (compiling) { printstack(outfp); \
 			fprintf(outfp, "%s();", __func__); return; }
 #else
+#ifdef _MSC_VER
+#define PRIVATE		static
+#else
 #define PRIVATE		inline static
+#endif
 #define STATIC		static
 #define COMPILE
 #endif

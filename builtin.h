@@ -1,10 +1,10 @@
 /*
     module  : builtin.h
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 03/18/17
 */
 PRIVATE void do_id(void);
-PRIVATE void do_nothing(void);
+PRIVATE void do_nothing(void);	// XXX
 PRIVATE void do_false(void);
 PRIVATE void do_true(void);
 PRIVATE void do_maxint(void);

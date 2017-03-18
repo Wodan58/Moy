@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 03/18/17
 */
 #ifdef RUNTIME
 #include "runtime.c"
@@ -764,10 +764,7 @@ void evaluate(Node *code)
 void evaluate1(Node *code)
 {
     direct = 1;
-    NewScope();
-    interprete(code);
-    printstack(outfp);
-    OldScope();
+    evaluate(code);
     direct = 0;
 }
 

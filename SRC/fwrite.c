@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 03/18/17
 */
 #include "runtime.h"
 
@@ -11,9 +11,9 @@ A list of integers are written as bytes to the current position of stream S.
 */
 PRIVATE void do_fwrite(void)
 {
-    char *buf;
     Node *node;
     int i, leng;
+    unsigned char *buf;
 
 #ifndef NCHECK
     COMPILE;
