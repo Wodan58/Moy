@@ -1,10 +1,10 @@
 /*
     module  : symbol.h
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 03/19/17
 */
 #define ALEN		22
-#define SYMTABMAX	500
+#define SYMTABMAX	700
 #define INPLINEMAX	1000
 
 #define IS_MODULE	1

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.8
-    date    : 03/12/17
+    version : 1.9
+    date    : 03/19/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -16,14 +16,58 @@
 
 int include_stack_ptr;
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+
+static int input(void);
 #endif
 
-#undef YYLMAX
-#define YYLMAX	2000
+void SkipComment(void)
+{
+    int ch;
+
+    ch = input();
+    do
+	while (ch != '*')
+	    ch = input();
+    while ((ch = input()) != ')');
+}
+
+void new_buffer(void)
+{
+#ifdef FLEX_SCANNER
+    if (include_stack_ptr >= MAX_INCLUDE_DEPTH)
+	execerror("fewer include files", "redirect");
+    include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
+    yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
+#endif
+}
+
+int old_buffer(void)
+{
+#ifdef FLEX_SCANNER
+    if (--include_stack_ptr >= 0)
+	yy_switch_to_buffer(include_stack[include_stack_ptr]);
+#endif
+    return 0;
+}
+
+#if defined(FLEX_SCANNER) || defined(_MSC_VER)
+/*
+    b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+*/
+int fileno(FILE *fp)
+{
+    return fp - stdin;
+}
+
+int isatty(int num)
+{
+    return !num;
+}
+#endif
 
 int yyerror(char *str)
 {
-    fprintf(stderr, "%s in line %d\n", str, yylineno);
+    fprintf(stderr, "%s\n", str);
     return 0;
 }
 
@@ -59,8 +103,8 @@ integer		(0|-?[1-9][0-9]*)
 octal		0[1-7][0-7]*
 hexal		0[Xx][0-9A-Fa-f]+
 float		{integer}\.[0-9]+([Ee][-+]?[1-9][0-9]*)?
+comment		"(*"
 linecom		#.*
-comment		"(*"")"*([^*)]|[^*]")"|"*"[^)])*"*"*"*)"
 
 %%
 
@@ -305,48 +349,10 @@ quit		{ yylval.num = DO_QUIT; return Symbol; }
 {octal}		|
 {hexal}		{ yylval.num = strtol(yytext, 0, 0); return INTEGER_; }
 {float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
+{comment}	SkipComment();
 {linecom}	|
-{comment}	|
 [ \t\n\r]+	;
 ^\$.*		system(yytext + 1);
 ^\%INCLUDE.*	include(DelSpace(yytext + 8));
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 .		return yytext[0];
-
-%%
-
-void new_buffer(void)
-{
-#ifdef FLEX_SCANNER
-    if (include_stack_ptr >= MAX_INCLUDE_DEPTH)
-	execerror("fewer include files", "redirect");
-    include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
-    yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
-#endif
-}
-
-int old_buffer(void)
-{
-#ifdef FLEX_SCANNER
-    if (--include_stack_ptr < 0)
-	yyterminate();
-    else
-	yy_switch_to_buffer(include_stack[include_stack_ptr]);
-#endif
-    return 0;
-}
-
-#if defined(FLEX_SCANNER) || defined(_MSC_VER)
-/*
-    b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
-*/
-int fileno(FILE *fp)
-{
-    return fp - stdin;
-}
-
-int isatty(int num)
-{
-    return !num;
-}
-#endif
