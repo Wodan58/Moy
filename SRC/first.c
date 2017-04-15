@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,10 @@ PRIVATE void do_first(void)
     int i = 0;
 
 #ifndef NCHECK
+    unsigned op, op1;
+
+    if (optimizing)
+	op = pop_history(&op1);
     if (optimizing && AGGREGATE(stk))
 	;
     else
@@ -23,6 +27,8 @@ PRIVATE void do_first(void)
     switch (stk->op) {
     case LIST_:
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(op1);
 	CHECKEMPTYLIST(stk->u.lis, "first");
 #endif
 	if (OUTSIDE) {
@@ -33,6 +39,8 @@ PRIVATE void do_first(void)
 	break;
     case STRING_:
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(CHAR_);
 	CHECKEMPTYSTRING(stk->u.str, "first");
 #endif
 	if (OUTSIDE) {
@@ -43,6 +51,8 @@ PRIVATE void do_first(void)
 	break;
     case SET_:
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(INTEGER_);
 	CHECKEMPTYSET(stk->u.set, "first");
 #endif
 	while (!(stk->u.set & (1 << i)))

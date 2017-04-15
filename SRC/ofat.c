@@ -1,7 +1,7 @@
 /*
     module  : ofat.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -9,6 +9,27 @@ PRIVATE void PROCEDURE(void)
     Node *cur;
 
 #ifndef NCHECK
+    unsigned op0, op1, op2, op3;
+
+    if (optimizing) {
+	op0 = pop_history(&op1);
+	op2 = pop_history(&op3);
+	if (op0 == LIST_ || op0 == STRING_ || op0 == SET_) {
+	    if (op0 == LIST_)
+		add_history(op1);
+	    else if (op0 == STRING_)
+		add_history(CHAR_);
+	    else
+		add_history(INTEGER_);
+	} else {
+	    if (op2 == LIST_)
+		add_history(op3);
+	    else if (op2 == STRING_)
+		add_history(CHAR_);
+	    else
+		add_history(INTEGER_);
+	}
+    }
     if (optimizing && AGGREGATE(AGGR) && VALID(INDEX))
 	;
     else

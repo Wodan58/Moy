@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.5
-    date    : 03/12/17
+    version : 1.6
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -16,6 +16,8 @@ PRIVATE void do_concat(void)
     Node *cur = 0, *root = 0, *last = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     if (optimizing && stk->op == stk->next->op &&
 	AGGREGATE(stk) && AGGREGATE(stk->next))
 	;

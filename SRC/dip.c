@@ -1,7 +1,7 @@
 /*
     module  : dip.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -9,16 +9,20 @@
 int put_dip(void)
 {
     Node *prog;
+    unsigned op, op1;
 
+    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* DIP */");
-    fprintf(outfp, "Node save = *stk; POP(stk);");
+    fprintf(outfp, "Node temp = *stk; POP(stk);");
+    op = pop_history(&op1);
     evaluate(prog);
-    fprintf(outfp, "DUPLICATE(&save); }");
+    add_history2(op, op1);
+    fprintf(outfp, "DUPLICATE(&temp); }");
     return 1;
 }
 #endif
@@ -29,7 +33,7 @@ Saves X, executes P, pushes X back.
 */
 PRIVATE void do_dip(void)
 {
-    Node *prog, save;
+    Node *prog, temp;
 
 #ifndef NCHECK
     if (optimizing && put_dip())
@@ -40,8 +44,8 @@ PRIVATE void do_dip(void)
 #endif
     prog = stk->u.lis;
     POP(stk);
-    save = *stk;
+    temp = *stk;
     POP(stk);
     exeterm(prog);
-    DUPLICATE(&save);
+    DUPLICATE(&temp);
 }

@@ -1,7 +1,7 @@
 /*
     module  : putch.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ N : numeric, writes character whose ASCII is N.
 PRIVATE void do_putch(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     ONEPARAM("putch");
     NUMERICTYPE("putch");

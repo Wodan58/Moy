@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,7 @@ int put_treestep(void)
     unsigned ident;
     FILE *oldfp, *newfp;
 
+    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -24,11 +25,12 @@ int put_treestep(void)
     fprintf(outfp, "void do_treestep_%d(void) {", ident);
     fprintf(outfp, "Node *cur;");
     fprintf(outfp, "if (stk->op != LIST_) {");
+    fprintf(outfp, "DUPLICATE(cur);");
+    add_history(INTEGER_);
     evaluate(prog);
     fprintf(outfp, "} else {");
     fprintf(outfp, "cur = stk->u.lis; POP(stk);");
     fprintf(outfp, "for (; cur; cur = cur->next) {");
-    fprintf(outfp, "DUPLICATE(cur);");
     fprintf(outfp, "do_treestep_%d(); } } }", ident);
     closefile(newfp);
     outfp = oldfp;

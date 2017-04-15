@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -10,6 +10,7 @@ int put_infra(void)
 {
     Node *prog;
 
+    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;

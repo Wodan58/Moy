@@ -1,7 +1,7 @@
 /*
     module  : unstack.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -14,12 +14,12 @@ PRIVATE void do_unstack(void)
     Node *cur;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     ONEPARAM("unstack");
     LIST("unstack");
 #endif
-    cur = stk->u.lis;
-    stk = memory;
-    for (cur = reverse(cur); cur; cur = cur->next)
+    for (cur = reverse(stk->u.lis), stk = memory; cur; cur = cur->next)
 	DUPLICATE(cur);
 }

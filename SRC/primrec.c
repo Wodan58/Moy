@@ -1,15 +1,17 @@
 /*
     module  : primrec.c
-    version : 1.5
-    date    : 03/12/17
+    version : 1.6
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_primrec(void)
 {
+    unsigned op, op1;
     Node *prog, *init;
 
+    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog = stk->u.lis;
@@ -17,26 +19,63 @@ int put_primrec(void)
     init = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(outfp, "{ /* PRIMREC */");
-    fprintf(outfp, "unsigned i, j = 0; char *str; long_t set;");
-    fprintf(outfp, "Node *cur = stk; POP(stk);");
-    fprintf(outfp, "switch (cur->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, j++)");
-    fprintf(outfp, "DUPLICATE(cur); break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "for (j = strlen(str = stk->u.str); *str; str++)");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str); break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = cur->u.set;");
-    fprintf(outfp, "for (j = i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & (1 << i)) {");
-    fprintf(outfp, "PUSH(INTEGER_, i); j++; } break;");
-    fprintf(outfp, "case INTEGER_:");
-    fprintf(outfp, "for (i = j = cur->u.num; i; i--)");
-    fprintf(outfp, "PUSH(INTEGER_, i); break; }");
+    if ((op = pop_history(&op1)) == LIST_) {
+	fprintf(outfp, "{ /* PRIMREC-LIST */");
+	fprintf(outfp, "assert(stk->op == LIST_);");
+	fprintf(outfp, "unsigned num = 0;");
+	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");
+	fprintf(outfp, "DUPLICATE(cur);");
+    } else if (op == STRING_) {
+	fprintf(outfp, "{ /* PRIMREC-STRING */");
+	fprintf(outfp, "assert(stk->op == STRING_);");
+	fprintf(outfp, "unsigned num = 0;");
+	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "char *str;");
+	fprintf(outfp, "for (num = strlen(str = cur->u.str); *str; str++)");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
+    } else if (op == SET_) {
+	fprintf(outfp, "{ /* PRIMREC-SET */");
+	fprintf(outfp, "assert(stk->op == SET_);");
+	fprintf(outfp, "unsigned num = 0;");
+	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "unsigned i; ulong_t set;");
+	fprintf(outfp, "set = cur->u.set;");
+	fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "PUSH(INTEGER_, i); num++; }");
+    } else if (op == INTEGER_) {
+	fprintf(outfp, "{ /* PRIMREC-INTEGER */");
+	fprintf(outfp, "assert(stk->op == INTEGER_);");
+	fprintf(outfp, "unsigned num = 0;");
+	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "unsigned i;");
+	fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
+	fprintf(outfp, "PUSH(INTEGER_, i);");
+    } else {
+	fprintf(outfp, "{ /* PRIMREC-GENERIC */");
+	fprintf(outfp, "unsigned num = 0;");
+	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "unsigned i; char *str; ulong_t set;");
+	fprintf(outfp, "switch (cur->op) {");
+	fprintf(outfp, "case LIST_:");
+	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");
+	fprintf(outfp, "DUPLICATE(cur); break;");
+	fprintf(outfp, "case STRING_:");
+	fprintf(outfp, "for (num = strlen(str = cur->u.str); *str; str++)");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str); break;");
+	fprintf(outfp, "case SET_:");
+	fprintf(outfp, "set = cur->u.set;");
+	fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "PUSH(INTEGER_, i); num++; } break;");
+	fprintf(outfp, "case INTEGER_:");
+	fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
+	fprintf(outfp, "PUSH(INTEGER_, i); break; }");
+    }
+    add_history(INTEGER_);
     evaluate2(init, START_SCOPE);
-    fprintf(outfp, "while (j--) {");
+    fprintf(outfp, "while (num--) {");
     evaluate2(prog, MID_SCOPE);
     fprintf(outfp, "} }");
     evaluate2(0, END_SCOPE);
@@ -75,7 +114,7 @@ PRIVATE void do_primrec(void)
 	    DUPLICATE(cur);
 	break;
     case STRING_:
-	for (str = cur->u.str; *str; str++, num++)
+	for (num = strlen(str = cur->u.str); *str; str++)
 	    PUSH(CHAR_, (long_t)*str);
 	break;
     case SET_:

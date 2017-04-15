@@ -1,7 +1,7 @@
 /*
     module  : comprel.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 PRIVATE double Compare(Node *first, Node *second, int *error);
 
@@ -11,6 +11,13 @@ PRIVATE void PROCEDURE(void)
     int i, j, error, comp = 0;
 
 #ifndef NCHECK
+    unsigned op, op1;
+
+    if (optimizing) {
+	del_history(1);
+	op = top_history(&op1);
+	chg_history(op == SET_ ? SET_ : BOOLEAN_);
+    }
     if (optimizing && VALID(stk) && VALID(stk->next))
 	;
     else

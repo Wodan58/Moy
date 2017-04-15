@@ -1,12 +1,12 @@
 /*
     module  : fread.c
-    version : 1.6
-    date    : 03/18/17
+    version : 1.7
+    date    : 04/09/17
 */
 #include "runtime.h"
 
 /*
-fread  :  S I  ->  L
+fread  :  S I  ->  S L
 I bytes are read from the current position of stream S
 and returned as a list of I integers.
 */
@@ -17,6 +17,8 @@ PRIVATE void do_fread(void)
     unsigned char *buf;
 
 #ifndef NCHECK
+    if (optimizing)
+	chg_history2(LIST_, INTEGER_);
     COMPILE;
     TWOPARAMS("fread");
     INTEGER("fread");

@@ -1,7 +1,7 @@
 /*
     module  : trunc.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ I is an integer equal to the float F truncated toward zero.
 PRIVATE void do_trunc(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	chg_history(INTEGER_);
     if (optimizing && NUMERIC_1)
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : getch.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -12,7 +12,9 @@ Reads a character from input and puts it onto stack.
 PRIVATE void do_getch(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	add_history(CHAR_);
     COMPILE;
 #endif
-    PUSH(INTEGER_, getchar());
+    PUSH(CHAR_, getchar());
 }

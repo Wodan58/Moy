@@ -1,7 +1,7 @@
 /*
     module  : argv.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/08/17
 */
 #include "runtime.h"
 
@@ -15,6 +15,8 @@ PRIVATE void do_argv(void)
     Node *cur = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	add_history2(LIST_, STRING_);
     COMPILE;
 #endif
     for (i = g_argc - 1; i >= 0; i--)

@@ -1,7 +1,7 @@
 /*
     module  : choice.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,13 @@ If B is true, then X = T else X = F.
 PRIVATE void do_choice(void)
 {
 #ifndef NCHECK
+    unsigned op, op1;
+
+    if (optimizing) {
+	del_history(1);
+	op = pop_history(&op1);
+	chg_history2(op, op1);
+    }
     if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
 	;
     else

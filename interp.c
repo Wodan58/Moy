@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.2
-    date    : 03/18/17
+    version : 1.3
+    date    : 04/15/17
 */
 #ifdef RUNTIME
 #include "runtime.c"
@@ -49,6 +49,14 @@ start:
 	case FLOAT_:
 	case FILE_:
 	case SYMBOL_:
+#ifndef RUNTIME
+	    if (optimizing) {
+		if (code->op == LIST_ && code->u.lis)
+		    add_history2(LIST_, code->u.lis->op);
+		else
+		    add_history(code->op);
+	    }
+#endif
 	    DUPLICATE(code);
 	    break;
 	case USR_:
@@ -81,7 +89,7 @@ start:
 		}
 		interprete(node);
 	    }
-	    break;
+	    continue;
 	case ANON_FUNCT_:
 	    (*code->u.proc)();
 	    break;
@@ -743,6 +751,11 @@ start:
 	    printf("unknown: %s\n", opername(code->op));
 	    exit(1);
 	}
+#ifndef RUNTIME
+#ifdef TRACE
+	prt_history();
+#endif
+#endif
     }
 }
 

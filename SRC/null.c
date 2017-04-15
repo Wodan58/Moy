@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,8 @@ PRIVATE void do_null(void)
     int num = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	chg_history(BOOLEAN_);
     if (optimizing && VALID(stk))
 	;
     else

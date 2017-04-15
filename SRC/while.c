@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.7
-    date    : 03/12/17
+    version : 1.8
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -10,6 +10,7 @@ int put_while(void)
 {
     Node *prog[2];
 
+    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog[1] = stk->u.lis;
@@ -20,7 +21,9 @@ int put_while(void)
     fprintf(outfp, "{ /* WHILE */");
     fprintf(outfp, "int num; Node *save; for (;;) {");
     fprintf(outfp, "CONDITION; save = stk;");
+    set_history(0);
     evaluate2(prog[0], START_SCOPE);
+    set_history(1);
     fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
     fprintf(outfp, "if (!num) break;");
     evaluate2(prog[1], END_SCOPE);

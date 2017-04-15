@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -16,6 +16,8 @@ PRIVATE void do_intern(void)
 #ifndef NCHECK
     char *ptr = 0;
 
+    if (optimizing)
+	chg_history(USR_);
     if (optimizing && STRING_1)
 	;
     else

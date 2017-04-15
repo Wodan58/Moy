@@ -1,17 +1,19 @@
 /*
     module  : treerec.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_treerec(void)
 {
+    void *save;
     Node *prog[2];
     unsigned ident;
     FILE *oldfp, *newfp;
 
+    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog[1] = stk->u.lis;
@@ -27,8 +29,12 @@ int put_treerec(void)
     fprintf(outfp, "NULLARY(LIST_NEWNODE,");
     fprintf(outfp, "ANON_FUNCT_NEWNODE(do_treerec_%d, 0));", ident);
     fprintf(outfp, "do_cons();");
+    save = new_history();
+    add_history2(LIST_, ANON_FUNCT_);
     evaluate(prog[1]);
+    old_history(save);
     fprintf(outfp, "} else { POP(stk);");
+    del_history(1);
     evaluate(prog[0]);
     fprintf(outfp, "} }");
     closefile(newfp);

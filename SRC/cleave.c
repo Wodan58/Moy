@@ -1,15 +1,18 @@
 /*
     module  : cleave.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_cleave(void)
 {
+    void *save;
     Node *prog[2];
+    unsigned op0, op1, op2, op3;
 
+    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog[1] = stk->u.lis;
@@ -20,9 +23,16 @@ int put_cleave(void)
     fprintf(outfp, "{ /* CLEAVE */");
     fprintf(outfp, "Node result[2], *save;");
     fprintf(outfp, "CONDITION; save = stk;");
+    save = new_history();
     evaluate2(prog[0], START_SCOPE);
+    op0 = top_history(&op1);
+    old_history(save);
     fprintf(outfp, "result[0] = *stk; stk = save; RELEASE; CONDITION;");
     evaluate2(prog[1], END_SCOPE);
+    op2 = top_history(&op3);
+    old_history(save);
+    add_history2(op0, op1);
+    add_history2(op2, op3);
     fprintf(outfp, "result[1] = *stk; stk = save; RELEASE; POP(stk);");
     fprintf(outfp, "DUPLICATE(&result[0]);");
     fprintf(outfp, "DUPLICATE(&result[1]); }");

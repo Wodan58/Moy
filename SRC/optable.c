@@ -1,7 +1,7 @@
 /*
     module  : optable.c
-    version : 1.9
-    date    : 03/12/17
+    version : 1.10
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -379,6 +379,9 @@ STATIC struct optable_t optable[] = {
 {"compare",		"A B  ->  I",
 "I (=-1,0,+1) is the comparison of aggregates A and B.\nThe values correspond to the predicates <=, =, >=."},
 
+{"index",		"X Y  ->  B",
+"X (= A[I]) is the member of A at position I (I = 0,1)."},
+
 {"at",			"A I  ->  X",
 "X (= A[I]) is the member of A at position I."},
 
@@ -387,6 +390,9 @@ STATIC struct optable_t optable[] = {
 
 {"size",		"A  ->  I",
 "Integer I is the number of elements of aggregate A."},
+
+{"casting",		"X Y  ->  Z",
+"Z takes the value from X and the type from Y."},
 
 {"opcase",		"X [..[X Xs]..]  ->  [Xs]",
 "Indexing on type of X, returns the list [Xs]."},
@@ -456,14 +462,8 @@ STATIC struct optable_t optable[] = {
 {"in",			"X A  ->  B",
 "Tests whether X is a member of aggregate A."},
 
-{"index",		"X Y  ->  B",
-"X (= A[I]) is the member of A at position I (I = 0,1)."},
-
 {"sametype",		"X Y  ->  B",
 "Tests whether X and Y have the same type."},
-
-{"casting",		"X Y  ->  Z",
-"Z takes the value from X and the type from Y."},
 
 {"integer",		"X  ->  B",
 "Tests whether X is an integer."},

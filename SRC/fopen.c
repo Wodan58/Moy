@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/10/17
 */
 #include "runtime.h"
 
@@ -13,6 +13,10 @@ and stream object S is pushed; if the open fails, file:NULL is pushed.
 PRIVATE void do_fopen(void)
 {
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(FILE_);
+    }
     COMPILE;
     TWOPARAMS("fopen");
     STRING("fopen");

@@ -1,7 +1,7 @@
 /*
     module  : settracegc.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ Sets value of flag for tracing garbage collection to I (= 0..2).
 PRIVATE void do_settracegc(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     ONEPARAM("settracegc");
     NUMERICTYPE("settracegc");

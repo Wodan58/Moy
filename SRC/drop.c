@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -16,6 +16,8 @@ PRIVATE void do_drop(void)
     ulong_t set;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     if (optimizing && INTEGER_1 && AGGREGATE(stk->next))
 	;
     else

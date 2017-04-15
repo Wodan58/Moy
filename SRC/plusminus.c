@@ -1,11 +1,13 @@
 /*
     module  : plusminus.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     if (optimizing && ((NUMERIC_1 && NUMERIC_2) || (INTEGER_1 && CHAR_2)))
 	;
     else

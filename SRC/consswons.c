@@ -1,13 +1,24 @@
 /*
     module  : consswons.c
-    version : 1.5
-    date    : 03/12/17
+    version : 1.6
+    date    : 04/15/17
 */
 PRIVATE void PROCEDURE(void)
 {
     char *str;
 
 #ifndef NCHECK
+    unsigned op0, op1, op2, op3;
+
+    if (optimizing) {
+	op0 = pop_history(&op1);
+	op2 = pop_history(&op3);
+#if PROCEDURE == do_cons
+	add_history2(op0, op2);
+#else
+	add_history2(op2, op1);
+#endif
+    }
     if (optimizing && AGGREGATE(AGGR) && VALID(ELEM))
 	;
     else

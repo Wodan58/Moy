@@ -1,7 +1,7 @@
 /*
     module  : inhas.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -10,6 +10,10 @@ PRIVATE void PROCEDURE(void)
     int found = 0;
 
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(BOOLEAN_);
+    }
     if (optimizing && VALID(AGGR) && VALID(ELEM))
 	;
     else

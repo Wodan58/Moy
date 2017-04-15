@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.9
-    date    : 03/19/17
+    version : 1.10
+    date    : 04/10/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +20,7 @@ YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 static int input(void);
 #endif
 
-void SkipComment(void)
+static void SkipComment(void)
 {
     int ch;
 
@@ -50,7 +50,7 @@ int old_buffer(void)
     return 0;
 }
 
-#if defined(FLEX_SCANNER) || defined(_MSC_VER)
+#if defined(FLEX_SCANNER) && defined(_MSC_VER)
 /*
     b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
 */
@@ -72,7 +72,7 @@ int yyerror(char *str)
 }
 
 #ifdef LEXDEBUG
-void allprint(int ch)
+static void allprint(int ch)
 {
     if (isprint(ch))
 	fputc(ch, yyout);
@@ -80,7 +80,7 @@ void allprint(int ch)
 	fprintf(yyout, "\\%03d", ch);
 }
 
-void sprint(char *str)
+static void sprint(char *str)
 {
     fprintf(yyout, "%s", str);
 }

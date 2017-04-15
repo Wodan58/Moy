@@ -1,7 +1,7 @@
 /*
     module  : strtol.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -17,6 +17,10 @@ PRIVATE void do_strtol(void)
     long_t num;
 
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(INTEGER_);
+    }
     if (optimizing && INTEGER_1 && STRING_2)
 	;
     else

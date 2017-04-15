@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.5
-    date    : 03/18/17
+    version : 1.6
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -16,6 +16,8 @@ PRIVATE void do_fwrite(void)
     unsigned char *buf;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     TWOPARAMS("fwrite");
     LIST("fwrite");

@@ -1,15 +1,17 @@
 /*
     module  : ifte.c
-    version : 1.8
-    date    : 03/12/17
+    version : 1.9
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_ifte(void)
 {
+    void *save;
     Node *prog[3];
 
+    del_history(3);
     if (!(LIST_1 && LIST_2 && LIST_3))
 	return 0;
     prog[2] = stk->u.lis;
@@ -22,11 +24,15 @@ int put_ifte(void)
     fprintf(outfp, "{ /* IFTE */");
     fprintf(outfp, "int num; Node *save;");
     fprintf(outfp, "CONDITION; save = stk;");
+    set_history(0);
     evaluate2(prog[0], START_SCOPE);
+    set_history(1);
     fprintf(outfp, "num = stk->u.num;");
     fprintf(outfp, "stk = save; RELEASE;");
     fprintf(outfp, "if (num) {");
+    save = new_history();
     evaluate(prog[1]);
+    old_history(save);
     fprintf(outfp, "} else {");
     evaluate2(prog[2], END_SCOPE);
     fprintf(outfp, "} }");

@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ Reads a factor from stream S and pushes it onto stack.
 PRIVATE void do_fget(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	add_history(INTEGER_);
     COMPILE;
     ONEPARAM("fget");
     if (stk->op != FILE_ || !stk->u.fil)

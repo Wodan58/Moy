@@ -1,7 +1,7 @@
 /*
     module  : iftype.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -9,8 +9,10 @@
 
 int PUT_PROC(PROCEDURE)
 {
+    void *save;
     Node *prog[2];
 
+    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog[1] = stk->u.lis;
@@ -20,7 +22,9 @@ int PUT_PROC(PROCEDURE)
     printstack(outfp);
     fprintf(outfp, "if (stk->op == %d) {", TYP);
     fprintf(outfp, "/* IFTYPE */");
+    save = new_history();
     evaluate(prog[0]);
+    old_history(save);
     fprintf(outfp, "} else {");
     evaluate(prog[1]);
     fprintf(outfp, "}");

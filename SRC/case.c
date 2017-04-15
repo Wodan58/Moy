@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -11,8 +11,10 @@ PRIVATE double Compare(Node *first, Node *second, int *error);
 int put_case(void)
 {
     Node *cur;
+    void *save;
     unsigned item;
 
+    del_history(2);
     if (!LIST_1)
 	return 0;
     cur = stk->u.lis;
@@ -20,12 +22,14 @@ int put_case(void)
     printstack(outfp);
     fprintf(outfp, "{ /* CASE */");
     fprintf(outfp, "int num = 0, error; for (;;) {");
-    for ( ; cur->next; cur = cur->next) {
+    for (; cur->next; cur = cur->next) {
 	evaluate2(0, INIT_SCOPE);
 	item = PrintHead(cur, outfp);
 	fprintf(outfp, "if (!Compare(L%d, stk, &error)", item);
 	fprintf(outfp, "&& !error) { POP(stk);");
+	save = new_history();
 	evaluate(cur->u.lis->next);
+	old_history(save);
 	fprintf(outfp, "num = 1; break; }");
 	evaluate2(0, STOP_SCOPE);
     }
@@ -55,7 +59,7 @@ PRIVATE void do_case(void)
 #endif
     cur = stk->u.lis;
     POP(stk);
-    for ( ; cur->next; cur = cur->next)
+    for (; cur->next; cur = cur->next)
 	if (!Compare(cur->u.lis, stk, &error) && !error)
 	    break;
     if (cur->next) {

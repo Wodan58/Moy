@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,7 @@ int put_tailrec(void)
     unsigned ident;
     FILE *oldfp, *newfp;
 
+    del_history(3);
     if (!(LIST_1 && LIST_2 && LIST_3))
 	return 0;
     prog[2] = stk->u.lis;
@@ -29,7 +30,9 @@ int put_tailrec(void)
     fprintf(outfp, "int num; Node *save;");
     fprintf(outfp, "for (;;) {");
     fprintf(outfp, "CONDITION; save = stk;");
+    set_history(0);
     evaluate2(prog[0], START_SCOPE);
+    set_history(1);
     fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
     fprintf(outfp, "if (num) {");
     evaluate(prog[1]);

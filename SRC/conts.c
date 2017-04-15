@@ -1,7 +1,7 @@
 /*
     module  : conts.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ Pushes current continuations. Buggy, do not use.
 PRIVATE void do_conts(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	add_history2(LIST_, LIST_);
     COMPILE;
 #endif
     PUSH(LIST_, 0);

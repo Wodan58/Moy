@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -19,6 +19,10 @@ PRIVATE void do_strftime(void)
     char *fmt, *result;
 
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(STRING_);
+    }
     if (optimizing && STRING_1 && LIST_2)
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : rolldown.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,16 @@ PRIVATE void do_rolldown(void)
     Node temp, *node, *next;
 
 #ifndef NCHECK
+    unsigned op0, op1, op2, op3, op4, op5;
+
+    if (optimizing) {
+	op0 = pop_history(&op1);	// Z
+	op2 = pop_history(&op3);	// Y
+	op4 = pop_history(&op5);	// X
+	add_history2(op2, op3);		// Y
+	add_history2(op0, op1);		// Z
+	add_history2(op4, op5);		// X
+    }
     if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : fremove.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -13,6 +13,8 @@ B is a boolean indicating success or failure.
 PRIVATE void do_fremove(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	chg_history(BOOLEAN_);
     COMPILE;
     ONEPARAM("fremove");
     STRING("fremove");

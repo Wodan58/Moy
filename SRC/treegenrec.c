@@ -1,17 +1,19 @@
 /*
     module  : treegenrec.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_treegenrec(void)
 {
+    void *save;
     Node *prog[3];
     unsigned ident;
     FILE *oldfp, *newfp;
 
+    del_history(3);
     if (!(LIST_1 && LIST_2 && LIST_3))
 	return 0;
     prog[2] = stk->u.lis;
@@ -27,6 +29,7 @@ int put_treegenrec(void)
     fprintf(outfp, "void do_treegenrec_%d(void) {", ident);
     fprintf(outfp, "Node *save = stk; POP(stk);");
     fprintf(outfp, "if (stk->op == LIST_) {");
+    save = new_history();
     evaluate2(prog[1], START_SCOPE);
     fprintf(outfp, "DUPLICATE(save);");
     fprintf(outfp, "NULLARY(LIST_NEWNODE,");
@@ -34,6 +37,7 @@ int put_treegenrec(void)
     fprintf(outfp, "do_cons();");
     evaluate2(prog[2], END_SCOPE);
     fprintf(outfp, "} else {");
+    old_history(save);
     evaluate(prog[0]);
     fprintf(outfp, "} }");
     closefile(newfp);

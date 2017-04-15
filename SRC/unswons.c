@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -17,6 +17,12 @@ PRIVATE void do_unswons(void)
     ulong_t set;
 
 #ifndef NCHECK
+    unsigned op1;
+
+    if (optimizing) {
+	top_history(&op1);
+	add_history(op1);
+    }
     COMPILE;
     ONEPARAM("unswons");
 #endif

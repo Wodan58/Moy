@@ -1,7 +1,7 @@
 /*
     module  : include.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -15,6 +15,8 @@ PRIVATE void do_include(void)
     char *str;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     ONEPARAM("include");
     STRING("include");

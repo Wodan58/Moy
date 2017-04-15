@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -17,12 +17,22 @@ PRIVATE void do_uncons(void)
     ulong_t set;
 
 #ifndef NCHECK
-    COMPILE;
+    unsigned op, op1;
+
+    if (optimizing && ((stk->op == LIST_ && stk->u.lis->op >= BOOLEAN_ &&
+	stk->u.lis->op < USR_) || stk->op == STRING_ || stk->op == SET_))
+	;
+    else
+	COMPILE;
+    if (optimizing)
+	op = pop_history(&op1);
     ONEPARAM("uncons");
 #endif
     switch (stk->op) {
     case LIST_:
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(op1);
 //	CHECKEMPTYLIST(stk->u.lis, "uncons");
 #endif
 	if ((save = stk->u.lis) == 0) {
@@ -43,6 +53,8 @@ PRIVATE void do_uncons(void)
     case STRING_:
 	str = stk->u.str;
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(CHAR_);
 	CHECKEMPTYSTRING(str, "uncons");
 #endif
 	if (OUTSIDE) {
@@ -55,6 +67,8 @@ PRIVATE void do_uncons(void)
     case SET_:
 	set = stk->u.set;
 #ifndef NCHECK
+	if (optimizing)
+	    add_history(INTEGER_);
 	CHECKEMPTYSET(set, "uncons");
 #endif
 	while (!(set & (1 << i)))
@@ -71,4 +85,8 @@ PRIVATE void do_uncons(void)
 	BADAGGREGATE("uncons");
 #endif
     }
+#ifndef NCHECK
+    if (optimizing)
+	add_history2(op, op1);
+#endif
 }

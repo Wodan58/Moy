@@ -1,7 +1,7 @@
 /*
     module  : undeferror.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ Pushes current value of undefined-is-error flag.
 PRIVATE void do_undeferror(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	add_history(INTEGER_);
     COMPILE;
 #endif
     PUSH(INTEGER_, undeferror);

@@ -1,7 +1,7 @@
 /*
     module  : sametype.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,10 @@ Tests whether X and Y have the same type.
 PRIVATE void do_sametype(void)
 {
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(BOOLEAN_);
+    }
     if (optimizing && VALID(stk) && VALID(stk->next))
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,8 @@ Quotation [P] is the body of user-defined symbol U.
 PRIVATE void do_body(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	chg_history2(LIST_, USR_);
     COMPILE;
     ONEPARAM("body");
     USERDEF("body");

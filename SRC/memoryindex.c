@@ -1,12 +1,12 @@
 /*
     module  : memoryindex.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
 /*
-__memoryindex  :  ->
+__memoryindex  :  ->  I
 Pushes current value of memory.
 */
 PRIVATE void do_memoryindex(void)
@@ -14,6 +14,8 @@ PRIVATE void do_memoryindex(void)
     ptrdiff_t mem_index = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	add_history(INTEGER_);
     COMPILE;
 #endif
     if (INSIDE)

@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.20
-    date    : 03/12/17
+    version : 1.22
+    date    : 04/15/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -211,13 +211,11 @@ static void PrintDecl(Node *root, FILE *fp)
 	}
 }
 
-unsigned printnode(Node *node, FILE *fp)
+static unsigned printnode(Node *node, FILE *fp)
 {
     unsigned list = 0;
 
     switch (node->op) {
-    case 0:
-	break;
     case BOOLEAN_:
 	fprintf(fp, "PUSH(BOOLEAN_, %d);", node->u.num != 0);
 	break;
@@ -250,16 +248,10 @@ unsigned printnode(Node *node, FILE *fp)
 	fprintf(fp, "\");");
 	break;
     default:
-	fprintf(stderr, "unknown: %d\n", node->op);
+	fprintf(stderr, "unknown; %d\n", node->op);
 	break;
     }
     return list;
-}
-
-unsigned PrintHead(Node *node, FILE *fp)
-{
-    PrintDecl(node->u.lis, fp);
-    return PrintList(node->u.lis, fp, 1);
 }
 
 static void printrecur(Node *node, FILE *fp)
@@ -268,6 +260,12 @@ static void printrecur(Node *node, FILE *fp)
 	return;
     printrecur(node->next, fp);
     printnode(node, fp);
+}
+
+unsigned PrintHead(Node *node, FILE *fp)
+{
+    PrintDecl(node->u.lis, fp);
+    return PrintList(node->u.lis, fp, 1);
 }
 
 void printstack(FILE *fp)
@@ -291,8 +289,9 @@ void finalise(void)
     char *name;
     unsigned i, changed;
 
+    if (optimizing)
+	clr_history();
     printf("}");
-    fflush(stdout);
     do
 	for (changed = i = 0; i < symtabindex; i++)
 	    if ((symtab[i].flags & (IS_PRINTED | IS_USED)) == IS_USED) {
@@ -307,7 +306,6 @@ void finalise(void)
 	    }
     while (changed);
     printf("\n");
-    fflush(stdout);
     printout();
     closeout();
 }

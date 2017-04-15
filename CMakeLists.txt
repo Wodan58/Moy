@@ -13,9 +13,9 @@ add_custom_command(OUTPUT parse.h
 		   DEPENDS parse.y)
 include_directories(. src)
 add_executable(moy ${BISON_MyParser_OUTPUTS}
-		compile.c interp.c listing.c main.c outfile.c)
+		compile.c interp.c listing.c main.c outfile.c history.c)
 if(_MSC_VER)
-set(CMAKE_EXE_LINKER_FLAGS /NOD)
+set(EXE_LINKER_FLAGS /NOD)
 target_link_libraries(moy joy /usr/local/lib/gc-lib.lib msvcrt)
 else()
 target_link_libraries(moy joy /usr/local/lib/libgc-lib.a)

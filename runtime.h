@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.5
-    date    : 03/18/17
+    version : 1.6
+    date    : 04/15/17
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <time.h>
 #include <math.h>
 #include "joy.h"

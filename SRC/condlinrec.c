@@ -1,7 +1,7 @@
 /*
     module  : condlinrec.c
-    version : 1.7
-    date    : 03/12/17
+    version : 1.8
+    date    : 04/15/17
 */
 #include "runtime.h"
 
@@ -12,6 +12,7 @@ int put_condnestrec(void)
     FILE *oldfp, *newfp;
     Node *root, *cur, *list, *node;
 
+    del_history(1);
     if (!LIST_1)
 	return 0;
     root = stk->u.lis;
@@ -27,7 +28,9 @@ int put_condnestrec(void)
     for (cur = root; cur->next; cur = cur->next) {
 	list = cur->u.lis->u.lis;
 	fprintf(outfp, "CONDITION; save = stk;");
+	set_history(0);
 	evaluate2(list, MID_SCOPE);
+	set_history(1);
 	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
 	evaluate2(0, INIT_SCOPE);
 	node = cur->u.lis->next;

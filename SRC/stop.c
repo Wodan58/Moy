@@ -1,7 +1,7 @@
 /*
     module  : stop.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -10,6 +10,8 @@ PRIVATE void do_stop(void)
     int written = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
 #endif
     if (stk == memory)

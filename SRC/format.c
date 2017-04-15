@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.6
-    date    : 03/18/17
+    version : 1.7
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -18,6 +18,10 @@ PRIVATE void do_format(void)
     char spec, format[8], *result;
 
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(3);
+	chg_history(STRING_);
+    }
     if (optimizing && INTEGER_1 && INTEGER_2 && CHAR_3 && NUMERIC_4)
 	;
     else

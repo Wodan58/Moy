@@ -1,17 +1,19 @@
 /*
     module  : binrec.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_binrec(void)
 {
+    void *save;
     Node *prog[4];
     unsigned ident;
     FILE *oldfp, *newfp;
 
+    del_history(4);
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
     prog[3] = stk->u.lis;
@@ -33,12 +35,16 @@ int put_binrec(void)
     fprintf(outfp, "int num; Node temp;");
     if (IS_NOK(prog[0]))
 	fprintf(outfp, "CONDITION; save = stk;");
+    set_history(0);
     evaluate2(prog[0], START_SCOPE);
+    set_history(1);
     fprintf(outfp, "num = TOPVAL(stk);");
     if (IS_NOK(prog[0]))
 	fprintf(outfp, "stk = save; RELEASE;");
     fprintf(outfp, "if (num) {");
+    save = new_history();
     evaluate(prog[1]);
+    old_history(save);
     fprintf(outfp, "} else {");
     evaluate2(prog[2], MID_SCOPE);
     fprintf(outfp, "temp = TOPNODE(stk);\n");

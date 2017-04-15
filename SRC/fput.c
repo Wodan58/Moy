@@ -1,7 +1,7 @@
 /*
     module  : fput.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -15,6 +15,8 @@ PRIVATE void do_fput(void)
     Node temp;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     COMPILE;
     TWOPARAMS("fput");
     if (stk->next->op != FILE_ || !stk->next->u.fil)

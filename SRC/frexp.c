@@ -1,7 +1,7 @@
 /*
     module  : frexp.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -15,6 +15,8 @@ PRIVATE void do_frexp(void)
     int exp;
 
 #ifndef NCHECK
+    if (optimizing)
+	add_history(INTEGER_);
     if (optimizing && NUMERIC_1)
 	;
     else

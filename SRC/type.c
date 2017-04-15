@@ -1,11 +1,13 @@
 /*
     module  : type.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
+    if (optimizing)
+	chg_history(BOOLEAN_);
     if (optimizing && VALID(stk))
 	;
     else

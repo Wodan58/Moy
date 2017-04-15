@@ -1,7 +1,7 @@
 /*
     module  : index.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,18 @@ PRIVATE void do_index(void)
     Node *list;
 
 #ifndef NCHECK
+    unsigned op, op1;
+
+    if (optimizing) {
+	op = pop_history(&op1);
+	del_history(1);
+	if (op == LIST_)
+	    add_history(op1);
+	else if (op == STRING_)
+	    add_history(CHAR_);
+	else
+	    add_history(INTEGER_);
+    }
     COMPILE;
     TWOPARAMS("index");
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.6
-    date    : 03/12/17
+    version : 1.7
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -17,6 +17,8 @@ PRIVATE void do_take(void)
     Node *root = 0, *cur, *last;
 
 #ifndef NCHECK
+    if (optimizing)
+	del_history(1);
     if (optimizing && INTEGER_1 && AGGREGATE(stk->next))
 	;
     else

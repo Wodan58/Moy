@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,12 @@ PRIVATE void do_not(void)
     int num = 0;
 
 #ifndef NCHECK
+    unsigned op, op1;
+
+    if (optimizing) {
+	op = top_history(&op1);
+	chg_history(op == SET_ ? SET_ : BOOLEAN_);
+    }
     if (optimizing && VALID(stk))
 	;
     else

@@ -1,12 +1,12 @@
 /*
     module  : backup.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 03/18/17
 */
 #include "runtime.h"
 
 /*
-    Make a backup of the stack (can be done with memcpy)
+    Make a backup of the stack
 */
 PRIVATE Node *backup(void)
 {
@@ -18,7 +18,7 @@ PRIVATE Node *backup(void)
 }
 
 /*
-    Restore an old copy of the stack (also memcpy)
+    Restore an old copy of the stack
 */
 PRIVATE void restore(Node *cur)
 {

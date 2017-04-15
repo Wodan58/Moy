@@ -1,7 +1,7 @@
 /*
     module  : frename.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -13,6 +13,10 @@ B is a boolean indicating success or failure.
 PRIVATE void do_frename(void)
 {
 #ifndef NCHECK
+    if (optimizing) {
+	del_history(1);
+	chg_history(BOOLEAN_);
+    }
     COMPILE;
     TWOPARAMS("frename");
     STRING("frename");

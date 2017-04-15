@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.9
-    date    : 03/12/17
+    version : 1.10
+    date    : 04/15/17
 */
 #define BIT_32
 
@@ -50,13 +50,30 @@ void printstack(FILE *fp);
 void initialise(void);
 void finalise(void);
 
+/* error.c */
+void execerror(char *message, const char *op);
+
+/* history.c */
+void add_history(unsigned op);
+void add_history2(unsigned op, unsigned op1);
+void prt_history(void);
+void clr_history(void);
+void set_history(int num);
+unsigned pop_history(unsigned *op);
+unsigned top_history(unsigned *op);
+void del_history(int num);
+void chg_history(unsigned op);
+void chg_history2(unsigned op, unsigned op2);
+void *new_history(void);
+void old_history(void *save);
+void *save_history(void *ptr, unsigned op, unsigned op1);
+int rest_history(void *ptr, unsigned *op, unsigned *op1);
+
 /* initmem.c */
 void initmem(void);
-void checkmem(void);
 
 /* initsym.c */
 void initsym(int argc, char **argv);
-void execerror(char *message, const char *op);
 
 /* joy.c */
 int ChrVal(char *str);

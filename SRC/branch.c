@@ -1,15 +1,17 @@
 /*
     module  : branch.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/15/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_branch(void)
 {
+    void *save;
     Node *prog[2];
 
+    del_history(3);
     if (!(LIST_1 && LIST_2))
 	return 0;
     prog[1] = stk->u.lis;
@@ -19,7 +21,9 @@ int put_branch(void)
     fprintf(outfp, "{ /* BRANCH */");
     fprintf(outfp, "int num = stk->u.num; POP(stk);");
     fprintf(outfp, "if (num) {");
+    save = new_history();
     evaluate(prog[0]);
+    old_history(save);
     fprintf(outfp, "} else {");
     evaluate(prog[1]);
     fprintf(outfp, "} }");

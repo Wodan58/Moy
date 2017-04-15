@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -16,6 +16,8 @@ PRIVATE void do_size(void)
     size_t size = 0;
 
 #ifndef NCHECK
+    if (optimizing)
+	chg_history(INTEGER_);
     if (optimizing && AGGREGATE(stk))
 	;
     else
