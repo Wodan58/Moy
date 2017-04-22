@@ -1,7 +1,7 @@
 /*
     module  : treerec.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -20,7 +20,7 @@ int put_treerec(void)
     prog[0] = stk->next->u.lis;
     printstack(outfp);
     fprintf(outfp, "do_cons();");
-    fprintf(outfp, "void do_treerec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_treerec_%d(void);", ident = ++identifier);
     fprintf(outfp, "do_treerec_%d();", ident);
     oldfp = outfp;
     newfp = outfp = nextfile();

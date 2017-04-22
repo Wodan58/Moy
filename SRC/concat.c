@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.6
-    date    : 04/09/17
+    version : 1.7
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -18,7 +18,7 @@ PRIVATE void do_concat(void)
 #ifndef NCHECK
     if (optimizing)
 	del_history(1);
-    if (optimizing && stk->op == stk->next->op &&
+    if (optimizing && stk->next != memory && stk->op == stk->next->op &&
 	AGGREGATE(stk) && AGGREGATE(stk->next))
 	;
     else

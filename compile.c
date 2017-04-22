@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.22
-    date    : 04/15/17
+    version : 1.23
+    date    : 04/22/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -188,7 +188,7 @@ static unsigned PrintList(Node *cur, FILE *fp, int head)
     return list;
 }
 
-static void PrintDecl(Node *root, FILE *fp)
+static void PrintDecl(Node *root)
 {
     Node *cur;
     Entry *sym;
@@ -197,7 +197,7 @@ static void PrintDecl(Node *root, FILE *fp)
     for (cur = root; cur; cur = cur->next)
 	switch (cur->op) {
 	case LIST_:
-	    PrintDecl(cur->u.lis, fp);
+	    PrintDecl(cur->u.lis);
 	    break;
 
 	case USR_:
@@ -205,7 +205,7 @@ static void PrintDecl(Node *root, FILE *fp)
 	    if (sym->u.body) {
 		sym->flags |= IS_USED;
 		name = usrname(sym->name);
-		fprintf(fp, "void do_%s(void);", name);
+		fprintf(declfp, "void do_%s(void);", name);
 	    }
 	    break;
 	}
@@ -232,7 +232,7 @@ static unsigned printnode(Node *node, FILE *fp)
 	fprintf(fp, "PUSH(STRING_,%s);", PrintString(node->u.str));
 	break;
     case LIST_:
-	PrintDecl(node->u.lis, fp);
+	PrintDecl(node->u.lis);
 	if ((list = PrintList(node->u.lis, fp, 0)) == 0)
 	    fprintf(fp, "PUSH(LIST_,0);");
 	else
@@ -264,7 +264,7 @@ static void printrecur(Node *node, FILE *fp)
 
 unsigned PrintHead(Node *node, FILE *fp)
 {
-    PrintDecl(node->u.lis, fp);
+    PrintDecl(node->u.lis);
     return PrintList(node->u.lis, fp, 1);
 }
 
@@ -280,8 +280,11 @@ void initialise(void)
 
     printf("/*\n * generated %s */\n", ctime(&t));
     printf("#include \"runtime.c\"\n");
-    printf("int main(int argc, char **argv) {");
-    printf("initsym(argc, argv);");
+    initout();
+    outfp = nextfile();
+    fprintf(outfp, "int main(int argc, char **argv) {");
+    fprintf(outfp, "initsym(argc, argv);");
+    declfp = stdout;
 }
 
 void finalise(void)
@@ -291,21 +294,20 @@ void finalise(void)
 
     if (optimizing)
 	clr_history();
-    printf("}");
+    fprintf(outfp, "}");
     do
 	for (changed = i = 0; i < symtabindex; i++)
 	    if ((symtab[i].flags & (IS_PRINTED | IS_USED)) == IS_USED) {
 		symtab[i].flags |= IS_PRINTED;
 		changed = 1;
 		name = usrname(symtab[i].name);
-		printf("void do_%s(void) {", name);
+		fprintf(outfp, "void do_%s(void) {", name);
 		DeList();
 		evaluate(symtab[i].u.body);
-		printf("}");
-		printout();
+		fprintf(outfp, "}");
 	    }
     while (changed);
-    printf("\n");
+    fprintf(outfp, "\n");
     printout();
     closeout();
 }

@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.12
-    date    : 04/15/17
+    version : 1.13
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -23,8 +23,8 @@ int put_map(void)
     printstack(outfp);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* MAP-LIST */");
-	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "Node *cur, *back = 0, *save, *root = 0, *last = 0;");
+	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
 	fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
@@ -40,9 +40,9 @@ int put_map(void)
 	fprintf(outfp, "} PUSH(LIST_, root); }");
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* MAP-STRING */");
-	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "char *str, *ptr;");
 	fprintf(outfp, "Node *cur, *back = 0, *save;");
+	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "str = cur->u.str;");
 	fprintf(outfp, "for (ptr = strdup(str); *str; str++) {");
@@ -56,9 +56,9 @@ int put_map(void)
 	fprintf(outfp, "} PUSH(STRING_, ptr); }");
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* MAP-SET */");
-	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "ulong_t set, zet; unsigned i = 0;");
 	fprintf(outfp, "Node *cur, *back = 0, *save;");
+	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "set = cur->u.set;");
 	fprintf(outfp, "for (zet = 0; i < SETSIZE_; i++)");

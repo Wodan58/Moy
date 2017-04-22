@@ -1,7 +1,7 @@
 /*
     module  : someall.c
-    version : 1.10
-    date    : 04/15/17
+    version : 1.11
+    date    : 04/22/17
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -21,9 +21,9 @@ int PUT_PROC(PROCEDURE)
     printstack(outfp);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* SOMEALL-LIST */");
-	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "unsigned num = %d;", INITIAL);
 	fprintf(outfp, "Node *list, *save;");
+	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "list = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; list; list = list->next) {");
 	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
@@ -32,9 +32,9 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* SOMEALL-STRING */");
-	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "unsigned num = %d;", INITIAL);
 	fprintf(outfp, "Node *save;");
+	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "char *str = stk->u.str; POP(stk);");
 	fprintf(outfp, "for (; *str; str++) {");
 	fprintf(outfp, "CONDITION; save = stk; PUSH(CHAR_, (long_t)*str);");
@@ -43,11 +43,10 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* SOMEALL-SET */");
+	fprintf(outfp, "unsigned i, num = %d;", INITIAL);
+	fprintf(outfp, "Node *save; ulong_t set;");
 	fprintf(outfp, "assert(stk->op == SET_);");
-	fprintf(outfp, "unsigned num = %d;", INITIAL);
-	fprintf(outfp, "unsigned i;");
-	fprintf(outfp, "Node *save;");
-	fprintf(outfp, "ulong_t set = stk->u.set; POP(stk);");
+	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
 	fprintf(outfp, "CONDITION; save = stk; PUSH(INTEGER_, i);");
@@ -56,9 +55,8 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else {
 	fprintf(outfp, "{ /* SOMEALL-GENERIC */");
-	fprintf(outfp, "unsigned num = %d;", INITIAL);
+	fprintf(outfp, "unsigned i, num = %d;", INITIAL);
 	fprintf(outfp, "char *str;");
-	fprintf(outfp, "unsigned i;");
 	fprintf(outfp, "ulong_t set;");
 	fprintf(outfp, "Node *list, *save;");
 	fprintf(outfp, "switch (stk->op) {");

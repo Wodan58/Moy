@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.13
-    date    : 04/15/17
+    version : 1.14
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -20,8 +20,8 @@ int put_filter(void)
     printstack(outfp);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* FILTER-LIST */");
-	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "Node *save, *list, *root = 0, *cur;");
+	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "list = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; list; list = list->next) {");
 	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
@@ -33,10 +33,10 @@ int put_filter(void)
 	fprintf(outfp, "PUSH(LIST_, root); }");
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* FILTER-STRING */");
-	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "int i = 0;");
 	fprintf(outfp, "char *str, *ptr;");
 	fprintf(outfp, "Node *save;");
+	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
 	fprintf(outfp, "for (ptr = GC_strdup(str); *str; str++) {");
 	fprintf(outfp, "CONDITION; save = stk; PUSH(CHAR_, (long_t)*str);");
@@ -47,10 +47,10 @@ int put_filter(void)
 	fprintf(outfp, "PUSH(STRING_, ptr); }");
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* FILTER-SET */");
-	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "int i = 0;");
 	fprintf(outfp, "ulong_t set, zet = 0;");
 	fprintf(outfp, "Node *save;");
+	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");

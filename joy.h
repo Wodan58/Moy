@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.10
-    date    : 04/15/17
+    version : 1.11
+    date    : 04/22/17
 */
 #define BIT_32
 
@@ -35,9 +35,9 @@ typedef struct optable_t {
 #endif
 
 /* initsym.c */
-extern FILE *outfp;
 extern char **g_argv;
 extern int g_argc, error;
+extern FILE *outfp, *declfp;
 extern unsigned compiling, optimizing, identifier;
 extern unsigned autoput, undeferror, echoflag, tracegc;
 
@@ -67,6 +67,7 @@ void chg_history2(unsigned op, unsigned op2);
 void *new_history(void);
 void old_history(void *save);
 void *save_history(void *ptr, unsigned op, unsigned op1);
+void swap_history(void *ptr);
 int rest_history(void *ptr, unsigned *op, unsigned *op1);
 
 /* initmem.c */

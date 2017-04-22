@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.13
-    date    : 03/12/17
+    version : 1.14
+    date    : 04/22/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -222,7 +222,7 @@ void writefactor(Node *node, FILE *stm)
     default:
 	fprintf(stm, "%s", ptr = printname(node->op));
 	if (*ptr == '\'') {
-	    fprintf(stderr, "unknown : %s\n", ptr);
+	    fprintf(stderr, "unknown, %s\n", ptr);
 	    exit(1);
 	}
 	break;

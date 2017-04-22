@@ -1,7 +1,7 @@
 /*
     module  : swap.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/09/17
 */
 #include "runtime.h"
 
@@ -14,6 +14,14 @@ PRIVATE void do_swap(void)
     Node temp, *node;
 
 #ifndef NCHECK
+    unsigned op0, op1, op2, op3;
+
+    if (optimizing) {
+	op0 = pop_history(&op1);	// Y
+	op2 = pop_history(&op3);	// X
+	add_history2(op0, op1);		// Y
+	add_history2(op2, op3);		// X
+    }
     if (optimizing && VALID(stk) && VALID(stk->next))
 	;
     else

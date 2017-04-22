@@ -1,14 +1,14 @@
 /*
     module  : dipped.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 04/22/17
 */
 PRIVATE void PROCEDURE(void)
 {
     Node temp;
 
 #ifndef NCHECK
-    unsigned op, op1;
+    unsigned op = 0, op1;
 
     if (optimizing) {
 	op = pop_history(&op1);

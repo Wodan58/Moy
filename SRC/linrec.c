@@ -1,7 +1,7 @@
 /*
     module  : linrec.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -25,7 +25,7 @@ int put_linrec(void)
     prog[0] = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(outfp, "void do_linrec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_linrec_%d(void);", ident = ++identifier);
     fprintf(outfp, "do_linrec_%d();", ident);
     oldfp = outfp;
     newfp = outfp = nextfile();

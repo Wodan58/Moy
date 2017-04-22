@@ -1,7 +1,7 @@
 /*
     module  : condlinrec.c
-    version : 1.8
-    date    : 04/15/17
+    version : 1.9
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -18,7 +18,7 @@ int put_condnestrec(void)
     root = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(outfp, "void do_condnestrec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_condnestrec_%d(void);", ident = ++identifier);
     fprintf(outfp, "do_condnestrec_%d();", ident);
     oldfp = outfp;
     newfp = outfp = nextfile();

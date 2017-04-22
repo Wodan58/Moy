@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -18,7 +18,7 @@ int put_treestep(void)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(outfp, "void do_treestep_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_treestep_%d(void);", ident = ++identifier);
     fprintf(outfp, "do_treestep_%d();", ident);
     oldfp = outfp;
     newfp = outfp = nextfile();

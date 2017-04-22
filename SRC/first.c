@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -14,10 +14,10 @@ PRIVATE void do_first(void)
     int i = 0;
 
 #ifndef NCHECK
-    unsigned op, op1;
+    unsigned op1;
 
     if (optimizing)
-	op = pop_history(&op1);
+	pop_history(&op1);
     if (optimizing && AGGREGATE(stk))
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.13
-    date    : 04/15/17
+    version : 1.14
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -20,8 +20,8 @@ int put_split(void)
     printstack(outfp);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* SPLIT-LIST */");
-	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "Node *save, *list, *root = 0, *cur, *head = 0, *tail;");
+	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "list = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; list; list = list->next) {");
 	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
@@ -36,10 +36,10 @@ int put_split(void)
 	fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); }");
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* SPLIT-STRING */");
-	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "char *str, *yes_str, *no_str;");
 	fprintf(outfp, "unsigned i, yes = 0, no = 0;");
 	fprintf(outfp, "Node *save;");
+	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
 	fprintf(outfp, "yes_str = GC_strdup(str);");
 	fprintf(outfp, "no_str = GC_strdup(str);");
@@ -57,10 +57,10 @@ int put_split(void)
 	fprintf(outfp, "PUSH(STRING_, no_str); }");
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* SPLIT-SET */");
-	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "unsigned i;");
 	fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
 	fprintf(outfp, "Node *save;");
+	fprintf(outfp, "assert(stk->op == SET_);");
 	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
@@ -75,8 +75,8 @@ int put_split(void)
 	fprintf(outfp, "PUSH(SET_, no_set); }");
     } else {
 	fprintf(outfp, "{ /* SPLIT-GENERIC */");
-	fprintf(outfp, "char *str, *yes_str, *no_str;");
 	fprintf(outfp, "unsigned i, yes = 0, no = 0;");
+	fprintf(outfp, "char *str, *yes_str, *no_str;");
 	fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
 	fprintf(outfp, "Node *save, *list, *root = 0, *cur, *head = 0, *tail;");
 	fprintf(outfp, "switch (stk->op) {");

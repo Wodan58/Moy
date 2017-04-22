@@ -1,7 +1,7 @@
 /*
     module  : main.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 04/22/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -35,7 +35,6 @@ int main(int argc, char **argv)
 	    compiling = optimizing = 1;
 	if (compiling) {
 	    initialise();
-	    initout();
 	    file = argv[2];
 	}
 	if ((yyin = freopen(file, "r", stdin)) == 0) {

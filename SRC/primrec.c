@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.6
-    date    : 04/15/17
+    version : 1.7
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -21,42 +21,39 @@ int put_primrec(void)
     printstack(outfp);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* PRIMREC-LIST */");
+	fprintf(outfp, "unsigned num = 0; Node *cur;");
 	fprintf(outfp, "assert(stk->op == LIST_);");
-	fprintf(outfp, "unsigned num = 0;");
-	fprintf(outfp, "Node *cur = stk; POP(stk);");
+	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");
 	fprintf(outfp, "DUPLICATE(cur);");
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* PRIMREC-STRING */");
+	fprintf(outfp, "unsigned num = 0; Node *cur; char *str;");
 	fprintf(outfp, "assert(stk->op == STRING_);");
-	fprintf(outfp, "unsigned num = 0;");
-	fprintf(outfp, "Node *cur = stk; POP(stk);");
-	fprintf(outfp, "char *str;");
+	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "for (num = strlen(str = cur->u.str); *str; str++)");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* PRIMREC-SET */");
+	fprintf(outfp, "unsigned i, num = 0; Node *cur; ulong_t set;");
 	fprintf(outfp, "assert(stk->op == SET_);");
-	fprintf(outfp, "unsigned num = 0;");
-	fprintf(outfp, "Node *cur = stk; POP(stk);");
-	fprintf(outfp, "unsigned i; ulong_t set;");
+	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "set = cur->u.set;");
 	fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
 	fprintf(outfp, "PUSH(INTEGER_, i); num++; }");
     } else if (op == INTEGER_) {
 	fprintf(outfp, "{ /* PRIMREC-INTEGER */");
+	fprintf(outfp, "unsigned i, num = 0; Node *cur;");
 	fprintf(outfp, "assert(stk->op == INTEGER_);");
-	fprintf(outfp, "unsigned num = 0;");
-	fprintf(outfp, "Node *cur = stk; POP(stk);");
-	fprintf(outfp, "unsigned i;");
+	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
 	fprintf(outfp, "PUSH(INTEGER_, i);");
     } else {
 	fprintf(outfp, "{ /* PRIMREC-GENERIC */");
-	fprintf(outfp, "unsigned num = 0;");
-	fprintf(outfp, "Node *cur = stk; POP(stk);");
-	fprintf(outfp, "unsigned i; char *str; ulong_t set;");
+	fprintf(outfp, "unsigned i, num = 0; Node *cur;");
+	fprintf(outfp, "char *str; ulong_t set;");
+	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "switch (cur->op) {");
 	fprintf(outfp, "case LIST_:");
 	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");

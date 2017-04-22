@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -21,8 +21,9 @@ int put_step(void)
     if ((op = pop_history(&op1)) == LIST_) {
 	add_history(op1);
 	fprintf(outfp, "{ /* STEP-LIST */");
+	fprintf(outfp, "Node *cur;");
 	fprintf(outfp, "assert(stk->op == LIST_);");
-	fprintf(outfp, "Node *cur = stk->u.lis; POP(stk);");
+	fprintf(outfp, "cur = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; cur; cur = cur->next) {");
 	fprintf(outfp, "DUPLICATE(cur);");
 	evaluate(prog);
@@ -30,8 +31,9 @@ int put_step(void)
     } else if (op == STRING_) {
 	add_history(CHAR_);
 	fprintf(outfp, "{ /* STEP-STRING */");
+	fprintf(outfp, "char *str;");
 	fprintf(outfp, "assert(stk->op == STRING_);");
-	fprintf(outfp, "char *str = stk->u.str; POP(stk);");
+	fprintf(outfp, "str = stk->u.str; POP(stk);");
 	fprintf(outfp, "for (; *str; str++) {");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	evaluate(prog);
@@ -39,9 +41,9 @@ int put_step(void)
     } else if (op == SET_) {
 	add_history(INTEGER_);
 	fprintf(outfp, "{ /* STEP-SET */");
+	fprintf(outfp, "unsigned i; ulong_t set;");
 	fprintf(outfp, "assert(stk->op == SET_);");
-	fprintf(outfp, "unsigned i;");
-	fprintf(outfp, "ulong_t set = stk->u.set; POP(stk);");
+	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
 	fprintf(outfp, "PUSH(INTEGER_, i);");

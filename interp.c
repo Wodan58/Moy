@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.3
-    date    : 04/15/17
+    version : 1.4
+    date    : 04/22/17
 */
 #ifdef RUNTIME
 #include "runtime.c"
@@ -77,7 +77,7 @@ start:
 		    } else {
 			sym->flags |= IS_USED;
 			name = usrname(sym->name);
-			fprintf(outfp, "void do_%s(void);", name);
+			fprintf(declfp, "void do_%s(void);", name);
 			fprintf(outfp, "do_%s();", name);
 		    }
 		    break;

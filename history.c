@@ -1,7 +1,7 @@
 /*
     module  : history.c
-    version : 1.1
-    date    : 04/15/17
+    version : 1.2
+    date    : 04/22/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +18,7 @@ typedef struct op_types {
 
 typedef struct op_state {
     op_types history[MAXHIST];
-    unsigned i, hist;
+    unsigned hist;
 } op_state;
 
 static unsigned hist;
@@ -167,8 +167,10 @@ void *save_history(void *ptr, unsigned op, unsigned op1)
 {
     op_state *save;
 
-    if ((save = ptr) == 0)
+    if ((save = ptr) == 0) {
 	save = GC_malloc_atomic(sizeof(op_state));
+	save->hist = 0;
+    }
     if (save->hist < MAXHIST) {
 	save->history[save->hist].op = op;
 	save->history[save->hist++].op1 = op1;
@@ -176,11 +178,29 @@ void *save_history(void *ptr, unsigned op, unsigned op1)
     return save;
 }
 
+void swap_history(void *ptr)
+{
+    unsigned i, j;
+    op_state *save;
+    Operator op, op1;
+
+    if ((save = ptr) == 0 || !save->hist)
+	return;
+    for (i = 0, j = save->hist - 1; i < j; i++, j--) {
+	op = save->history[i].op;
+	op1 = save->history[i].op1;
+	save->history[i].op = save->history[j].op;
+	save->history[i].op1 = save->history[j].op1;
+	save->history[j].op = op;
+	save->history[j].op1 = op1;
+    }
+}
+
 int rest_history(void *ptr, unsigned *op, unsigned *op1)
 {
     op_state *save;
 
-    if ((save = ptr) == 0 || !save->hist /* save->i >= save->hist */)
+    if ((save = ptr) == 0 || !save->hist)
 	return 0;
     *op = save->history[--save->hist].op;
     *op1 = save->history[save->hist].op1;

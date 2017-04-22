@@ -1,7 +1,7 @@
 /*
     module  : genrec.c
-    version : 1.8
-    date    : 04/15/17
+    version : 1.9
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -24,7 +24,7 @@ int put_genrec(void)
     fprintf(outfp, "do_cons();");
     fprintf(outfp, "do_cons();");
     fprintf(outfp, "do_cons();");
-    fprintf(outfp, "void do_genrec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_genrec_%d(void);", ident = ++identifier);
     fprintf(outfp, "do_genrec_%d();", ident);
     oldfp = outfp;
     newfp = outfp = nextfile();

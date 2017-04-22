@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -17,7 +17,7 @@ PRIVATE void do_uncons(void)
     ulong_t set;
 
 #ifndef NCHECK
-    unsigned op, op1;
+    unsigned op = 0, op1;
 
     if (optimizing && ((stk->op == LIST_ && stk->u.lis->op >= BOOLEAN_ &&
 	stk->u.lis->op < USR_) || stk->op == STRING_ || stk->op == SET_))

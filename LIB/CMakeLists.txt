@@ -2,8 +2,8 @@
 #	Makefile for MOY executables
 #
 macro(exe src)
-add_custom_target(${src}.c DEPENDS moy ${src}.joy)
 add_custom_command(OUTPUT ${src}.c
+		   DEPENDS moy ${src}.joy
 		   COMMAND moy -o ${src}.joy | clang-format >${src}.c
 		   COMMAND rm -f ${src}.sym)
 add_executable(${src} ${src}.c)

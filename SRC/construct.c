@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 04/22/17
 */
 #include "runtime.h"
 
@@ -36,6 +36,7 @@ int put_construct(void)
 	fprintf(outfp, "stk = save[1]; RELEASE;");
     }
     old_history(save[0]);
+    swap_history(save[2]);
     while (rest_history(save[2], &op, &op1))
 	add_history2(op, op1);
     fprintf(outfp, "stk = save[0]; while (root) {");
