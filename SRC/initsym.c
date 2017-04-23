@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.2
-    date    : 04/22/17
+    version : 1.3
+    date    : 04/23/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -24,6 +24,7 @@ static void quit(void)
     exit(0);
 }
 
+#ifndef _MSC_VER
 static char *name(char *str)
 {
     if (!strcmp(str, "plus"))
@@ -48,6 +49,7 @@ static char *name(char *str)
 	return "=";
     return str;
 }
+#endif
 
 void initsym(int argc, char **argv)
 {
@@ -55,7 +57,7 @@ void initsym(int argc, char **argv)
 #ifndef _MSC_VER
     FILE *fp;
     unsigned adr;
-    char chr, str[MAXSTR], *ptr, *tmp;
+    char chr, str[MAXSTR], cmd[MAXSTR], *ptr, *tmp;
 #endif
 
     startclock = clock();
@@ -68,16 +70,16 @@ void initsym(int argc, char **argv)
     sym->u.proc = quit;
     sym->flags |= IS_BUILTIN;
 #ifndef _MSC_VER
-    sprintf(str, "\"%s\".sym", argv[0]);
+    sprintf(str, "%s.sym", argv[0]);
     if ((fp = fopen(str, "r")) == 0) {
-	sprintf(str, "nm \"%s\" | grep \" _do_\" >\"%s\".sym",
-		argv[0], argv[0]);
-	system(str);
-	sprintf(str, "\"%s\".sym", argv[0]);
-	fp = fopen(str, "r");
+	sprintf(cmd, "nm %s | grep \" _do_\" >%s",
+		argv[0], str);
+	system(cmd);
+	if ((fp = fopen(str, "r")) == 0) {
+	    fprintf(stderr, "Failed to read %s\n", str);
+	    return;
+	}
     }
-    if (!fp)
-	return;
     while (fscanf(fp, "%x %c %s", &adr, &chr, str) == 3) {
 	ptr = name(str + 4);
 	if ((tmp = strchr(ptr, '.')) != 0)
