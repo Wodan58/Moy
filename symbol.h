@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.2
-    date    : 03/19/17
+    version : 1.3
+    date    : 04/30/17
 */
 #define ALEN		22
 #define SYMTABMAX	700
@@ -14,6 +14,7 @@
 #define IS_PRINTED	16
 #define IS_BUILTIN	32
 #define IS_ACTIVE	64
+#define IS_MARKED	128
 
 #define MID_SCOPE	0
 #define START_SCOPE	1
@@ -21,7 +22,7 @@
 #define INIT_SCOPE	3
 #define STOP_SCOPE	4
 
-typedef unsigned Operator;
+typedef unsigned char Operator;
 
 typedef struct Node {
     YYSTYPE u;
@@ -73,3 +74,6 @@ Entry *initpriv(void);
 void stoppriv(void);
 void exitpriv(Entry *prev);
 void dump(void);
+
+/* arity.c */
+int arity(Node *cur);

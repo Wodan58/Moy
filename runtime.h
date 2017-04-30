@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.6
-    date    : 04/15/17
+    version : 1.7
+    date    : 04/30/17
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -38,8 +38,6 @@
 #define RELEASE		cond_ptr = condition_stack[--inside_condition]
 
 #define exeterm(x)	interprete(x)
-#define TOPVAL(x)	(x--)->u.num
-#define TOPNODE(x)	(*x--)
 #define POP(x)		(x) = (x)->next
 #define DUPLICATE(x)	do { \
 			    if (OUTSIDE && INSIDE) { \
@@ -243,5 +241,4 @@
 #define LIST_4		(stk->next->next->next->op == LIST_)
 #define VALID(x)	((x)->op)
 #define AGGREGATE(x)	((x)->op >= SET_ && (x)->op <= LIST_)
-#define IS_NOK(x)	(!((x)->op == DO_DUP))
 #endif

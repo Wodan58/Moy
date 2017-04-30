@@ -1,13 +1,14 @@
 /*
     module  : binrec.c
-    version : 1.8
-    date    : 04/22/17
+    version : 1.9
+    date    : 04/30/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_binrec(void)
 {
+    int arr;
     void *save;
     Node *prog[4];
     unsigned ident;
@@ -30,24 +31,24 @@ int put_binrec(void)
     oldfp = outfp;
     newfp = outfp = nextfile();
     fprintf(outfp, "void do_binrec_%d(void) {", ident);
-    if (IS_NOK(prog[0]))
-	fprintf(outfp, "Node *save;");
-    fprintf(outfp, "int num; Node temp;");
-    if (IS_NOK(prog[0]))
-	fprintf(outfp, "CONDITION; save = stk;");
+    fprintf(outfp, "int num; Node *save, temp;");
+    if ((arr = arity(prog[0])) != 0)
+	fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "save = stk;");
     set_history(0);
     evaluate2(prog[0], START_SCOPE);
     set_history(1);
-    fprintf(outfp, "num = TOPVAL(stk);");
-    if (IS_NOK(prog[0]))
-	fprintf(outfp, "stk = save; RELEASE;");
+    fprintf(outfp, "num = stk->u.num;");
+    fprintf(outfp, "stk = save;");
+    if (arr != 0)
+	fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
     save = new_history();
     evaluate(prog[1]);
     old_history(save);
     fprintf(outfp, "} else {");
     evaluate2(prog[2], MID_SCOPE);
-    fprintf(outfp, "temp = TOPNODE(stk);\n");
+    fprintf(outfp, "temp = *stk; POP(stk);\n");
     fprintf(outfp, "do_binrec_%d();", ident);
     fprintf(outfp, "DUPLICATE(&temp);");
     fprintf(outfp, "do_binrec_%d();", ident);

@@ -1,13 +1,14 @@
 /*
     module  : while.c
-    version : 1.8
-    date    : 04/15/17
+    version : 1.9
+    date    : 04/30/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_while(void)
 {
+    int arr;
     Node *prog[2];
 
     del_history(2);
@@ -20,11 +21,15 @@ int put_while(void)
     printstack(outfp);
     fprintf(outfp, "{ /* WHILE */");
     fprintf(outfp, "int num; Node *save; for (;;) {");
-    fprintf(outfp, "CONDITION; save = stk;");
+    if ((arr = arity(prog[0])) != 0)
+	fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "save = stk;");
     set_history(0);
     evaluate2(prog[0], START_SCOPE);
     set_history(1);
-    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+    fprintf(outfp, "num = stk->u.num; stk = save;");
+    if (arr != 0)
+	fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (!num) break;");
     evaluate2(prog[1], END_SCOPE);
     fprintf(outfp, "} }");

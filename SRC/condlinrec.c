@@ -1,13 +1,14 @@
 /*
     module  : condlinrec.c
-    version : 1.9
-    date    : 04/22/17
+    version : 1.10
+    date    : 04/30/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_condnestrec(void)
 {
+    int arr;
     unsigned ident;
     FILE *oldfp, *newfp;
     Node *root, *cur, *list, *node;
@@ -27,11 +28,16 @@ int put_condnestrec(void)
     evaluate2(0, INIT_SCOPE);
     for (cur = root; cur->next; cur = cur->next) {
 	list = cur->u.lis->u.lis;
-	fprintf(outfp, "CONDITION; save = stk;");
+	if ((arr = arity(list)) != 0)
+	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "save = stk;");
 	set_history(0);
 	evaluate2(list, MID_SCOPE);
 	set_history(1);
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+	fprintf(outfp, "num = stk->u.num; stk = save;");
+	if (arr != 0)
+	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "if (num) {");
 	evaluate2(0, INIT_SCOPE);
 	node = cur->u.lis->next;
 	evaluate2(node->u.lis, MID_SCOPE);

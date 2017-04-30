@@ -1,13 +1,14 @@
 /*
     module  : cond.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 04/30/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_cond(void)
 {
+    int arr;
     void *save;
     Node *cur, *list;
 
@@ -22,11 +23,15 @@ int put_cond(void)
     evaluate2(0, INIT_SCOPE);
     for (; cur->next; cur = cur->next) {
 	list = cur->u.lis->u.lis;
-	fprintf(outfp, "CONDITION; save = stk;");
+	if ((arr = arity(list)) != 0)
+	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "save = stk;");
 	set_history(0);
 	evaluate2(list, MID_SCOPE);
 	set_history(1);
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+	fprintf(outfp, "num = stk->u.num; stk = save;");
+	if (arr != 0)
+	    fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num) {");
 	save = new_history();
 	evaluate1(cur->u.lis->next);

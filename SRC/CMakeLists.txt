@@ -29,4 +29,4 @@ all.c optable.c help1.c help2.c manual.c helpdetail.c makemanual.c manuallist.c
 casting.c branch.c construct.c unary3.c unary4.c binary.c ternary.c genrec.c
 primrec.c treestep.c treerec.c treegenrec.c fclose.c feof.c ferror.c fflush.c
 fget.c fgetch.c fgets.c fopen.c fread.c fwrite.c fremove.c frename.c filetime.c
-fput.c fputch.c fputchars.c fseek.c ftell.c)
+fput.c fputch.c fputchars.c fseek.c ftell.c arity.c aritysym.c)

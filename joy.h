@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.11
-    date    : 04/22/17
+    version : 1.12
+    date    : 04/30/17
 */
 #define BIT_32
 
