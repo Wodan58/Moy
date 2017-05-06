@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.23
-    date    : 04/22/17
+    version : 1.24
+    date    : 05/06/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -111,59 +111,59 @@ static void PrintMember(Node *cur, int list, unsigned *pindex, FILE *fp)
     switch (cur->op) {
     case BOOLEAN_:
 	fprintf(fp, ".u.num=%d,", cur->u.num != 0);
-	fprintf(fp, ".op=BOOLEAN_,");
+	fprintf(fp, ".op=BOOLEAN_");
 	break;
     case CHAR_:
 	fprintf(fp, ".u.num=%d,", (int)cur->u.num);
-	fprintf(fp, ".op=CHAR_,");
+	fprintf(fp, ".op=CHAR_");
 	break;
     case INTEGER_:
 	fprintf(fp, ".u.num=%lld,", (long long)cur->u.num);
-	fprintf(fp, ".op=INTEGER_,");
+	fprintf(fp, ".op=INTEGER_");
 	break;
     case SET_:
 	fprintf(fp, ".u.num=%llu,", (unsigned long long)cur->u.num);
-	fprintf(fp, ".op=SET_,");
+	fprintf(fp, ".op=SET_");
 	break;
     case STRING_:
 	fprintf(fp, ".u.str=%s,", PrintString(cur->u.str));
-	fprintf(fp, ".op=STRING_,");
+	fprintf(fp, ".op=STRING_");
 	break;
     case LIST_:
 	if (cur->u.lis)
 	    fprintf(fp, ".u.lis=L%d+%d,", list, index + 1);
-	fprintf(fp, ".op=LIST_,");
+	fprintf(fp, ".op=LIST_");
 	if (cur->next)
-	    fprintf(fp, ".next=L%d+%d,", list,
+	    fprintf(fp, ",.next=L%d+%d", list,
 			index + 1 + ListLeng(cur->u.lis));
-	fprintf(fp, "},");
+	fprintf(fp, "},\n");
 	*pindex = index + 1;
 	for (cur = cur->u.lis; cur; cur = cur->next)
 	    PrintMember(cur, list, pindex, fp);
 	return;
     case FLOAT_:
 	fprintf(fp, ".u.dbl=%g,", cur->u.dbl);
-	fprintf(fp, ".op=FLOAT_,");
+	fprintf(fp, ".op=FLOAT_");
 	break;
     case USR_:
 	sym = cur->u.ent;
 	name = usrname(sym->name);
 	if (sym->u.body) {
 	    fprintf(fp, ".u.proc=do_%s,", name);
-	    fprintf(fp, ".op=ANON_FUNCT_,");
+	    fprintf(fp, ".op=ANON_FUNCT_");
 	} else {
 	    fprintf(fp, ".u.str=\"%s\",", name);
-	    fprintf(fp, ".op=SYMBOL_,");
+	    fprintf(fp, ".op=SYMBOL_");
 	}
 	break;
     default:
 	fprintf(fp, ".u.proc=do_%s,", opername(cur->op));
-	fprintf(fp, ".op=ANON_FUNCT_,");
+	fprintf(fp, ".op=ANON_FUNCT_");
 	break;
     }
     if (cur->next)
-	fprintf(fp, ".next=L%d+%d,", list, index + 1);
-    fprintf(fp, "},");
+	fprintf(fp, ",.next=L%d+%d", list, index + 1);
+    fprintf(fp, "},\n");
     *pindex = index + 1;
 }
 
@@ -177,7 +177,7 @@ static unsigned PrintList(Node *cur, FILE *fp, int head)
     list = Listed(cur, &found);
     if (!found) {
 	leng = ListLeng(cur);
-	fprintf(fp, "static Node L%d[%d] = {", list, leng);
+	fprintf(fp, "static Node L%d[%d] = {\n", list, leng);
 	for (; cur; cur = cur->next) {
 	    PrintMember(cur, list, &index, fp);
 	    if (head)
@@ -294,7 +294,7 @@ void finalise(void)
 
     if (optimizing)
 	clr_history();
-    fprintf(outfp, "}");
+    fprintf(outfp, "return 0; }");
     do
 	for (changed = i = 0; i < symtabindex; i++)
 	    if ((symtab[i].flags & (IS_PRINTED | IS_USED)) == IS_USED) {

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.10
-    date    : 04/10/17
+    version : 1.11
+    date    : 05/06/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -25,10 +25,12 @@ static void SkipComment(void)
     int ch;
 
     ch = input();
-    do
-	while (ch != '*')
+    do {
+	while (ch != '*' && ch != EOF)
 	    ch = input();
-    while ((ch = input()) != ')');
+	if (ch == EOF)
+	    execerror("no EOF", "SkipComment");
+    } while ((ch = input()) != ')');
 }
 
 void new_buffer(void)
