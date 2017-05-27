@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.24
-    date    : 05/06/17
+    version : 1.25
+    date    : 05/26/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -278,18 +278,22 @@ void initialise(void)
 {
     time_t t = time(0);
 
+    if (!mainfunc)
+	mainfunc = "main";
     printf("/*\n * generated %s */\n", ctime(&t));
     printf("#include \"runtime.c\"\n");
     initout();
     outfp = nextfile();
-    fprintf(outfp, "int main(int argc, char **argv) {");
+    fprintf(outfp, "int %s(int argc, char **argv) {", mainfunc);
     fprintf(outfp, "initsym(argc, argv);");
     declfp = stdout;
 }
 
 void finalise(void)
 {
-    char *name;
+    Entry *sym;
+    Node *code;
+    char *name, *parm;
     unsigned i, changed;
 
     if (optimizing)
@@ -299,8 +303,15 @@ void finalise(void)
 	for (changed = i = 0; i < symtabindex; i++)
 	    if ((symtab[i].flags & (IS_PRINTED | IS_USED)) == IS_USED) {
 		symtab[i].flags |= IS_PRINTED;
-		changed = 1;
 		name = usrname(symtab[i].name);
+		code = symtab[i].u.body;
+		if (code->op == USR_) {
+		    sym = code->u.ent;
+		    parm = usrname(sym->name);
+		    if (!strcmp(name, parm))
+			continue;
+		}
+		changed = 1;
 		fprintf(outfp, "void do_%s(void) {", name);
 		DeList();
 		evaluate(symtab[i].u.body);

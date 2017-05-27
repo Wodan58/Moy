@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.3
-    date    : 04/23/17
+    version : 1.4
+    date    : 05/26/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -16,6 +16,7 @@ char **g_argv;
 int g_argc, error;
 clock_t startclock;
 FILE *outfp, *declfp;
+char *mainfunc;
 unsigned compiling, optimizing, identifier;
 unsigned autoput = 1, undeferror = 1, echoflag, tracegc;
 
@@ -70,7 +71,10 @@ void initsym(int argc, char **argv)
     sym->u.proc = quit;
     sym->flags |= IS_BUILTIN;
 #ifndef _MSC_VER
+    if (!argv)
+	return;
     sprintf(str, "%s.sym", argv[0]);
+#if 0
     if ((fp = fopen(str, "r")) == 0) {
 	sprintf(cmd, "nm %s | grep \" _do_\" >%s",
 		argv[0], str);
@@ -80,6 +84,9 @@ void initsym(int argc, char **argv)
 	    return;
 	}
     }
+#endif
+    if ((fp = fopen(str, "r")) == 0)
+	return;
     while (fscanf(fp, "%x %c %s", &adr, &chr, str) == 3) {
 	ptr = name(str + 4);
 	if ((tmp = strchr(ptr, '.')) != 0)

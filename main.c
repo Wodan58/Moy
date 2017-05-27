@@ -1,7 +1,7 @@
 /*
     module  : main.c
-    version : 1.4
-    date    : 04/22/17
+    version : 1.5
+    date    : 05/26/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -34,8 +34,11 @@ int main(int argc, char **argv)
 	else if (!strcmp(argv[1], "-o"))
 	    compiling = optimizing = 1;
 	if (compiling) {
+	    if (!strcmp(file = argv[2], "-f")) {
+		mainfunc = argv[3];
+		file = argv[4];
+	    }
 	    initialise();
-	    file = argv[2];
 	}
 	if ((yyin = freopen(file, "r", stdin)) == 0) {
 	    fprintf(stderr, "failed to open the file '%s'.\n", file);

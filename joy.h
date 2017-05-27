@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.12
-    date    : 04/30/17
+    version : 1.13
+    date    : 05/26/17
 */
 #define BIT_32
 
@@ -38,6 +38,7 @@ typedef struct optable_t {
 extern char **g_argv;
 extern int g_argc, error;
 extern FILE *outfp, *declfp;
+extern char *mainfunc;
 extern unsigned compiling, optimizing, identifier;
 extern unsigned autoput, undeferror, echoflag, tracegc;
 
