@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.13
-    date    : 05/26/17
+    version : 1.14
+    date    : 09/10/17
 */
 #define BIT_32
 
@@ -30,7 +30,7 @@ typedef struct optable_t {
 } optable_t;
 
 #ifndef PARSER
-#include "gc.h"
+#include "joygc.h"
 #include "parse.h"
 #endif
 
