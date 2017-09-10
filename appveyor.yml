@@ -1,3 +1,5 @@
-version: 1.0.{build}
-build:
-  verbosity: minimal
+version: 1.0.0.{build}
+
+build_script:
+  - git clone https://github.com/ivmai/bdwgc.git
+  - cmake --build . --config Release
