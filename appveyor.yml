@@ -10,7 +10,7 @@ install:
   # install flex/bison
   - if not exist %WINFLEXBISON_ARCHIVE% appveyor DownloadFile "https://sourceforge.net/projects/winflexbison/files/%WINFLEXBISON_ARCHIVE%"
   - 7z x -y -owinflexbison\ %WINFLEXBISON_ARCHIVE% > nul
-  - set Path=%CD%\winflexbison\%Path%
+  - set Path=.\winflexbison\%Path%
   - win_flex --version
   - win_bison --version
 
