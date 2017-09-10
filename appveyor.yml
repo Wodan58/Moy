@@ -1,8 +1,21 @@
 version: 1.0.0.{build}
 
+cache:
+  - win_flex_bison-2.4.5.zip
+
+environment:
+  WINFLEXBISON_ARCHIVE: win_flex_bison-2.4.5.zip
+
+install:
+  # install flex/bison
+  - if not exist %WINFLEXBISON_ARCHIVE% appveyor DownloadFile "http://downloads.sourceforge.net/project/winflexbison/%WINFLEXBISON_ARCHIVE%"
+  - 7z x -y -owinflexbison\ %WINFLEXBISON_ARCHIVE% > nul
+  - set Path=%CD%\winflexbison\%Path%
+  - win_flex --version
+  - win_bison --version
+
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
-  - set "PATH=%CYG_ROOT%\bin;%PATH%"
   - git clone https://github.com/ivmai/bdwgc.git
   - cmake -G "NMake Makefiles"
   - cmake --build . --config Release
