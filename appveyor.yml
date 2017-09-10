@@ -2,5 +2,5 @@ version: 1.0.0.{build}
 
 build_script:
   - git clone https://github.com/ivmai/bdwgc.git
-  - cmake -G "Unix Makefiles"
+  - cmake -G "NMake Makefiles"
   - cmake --build . --config Release
