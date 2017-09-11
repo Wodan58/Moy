@@ -4,10 +4,10 @@
 macro(exe src)
 add_custom_command(OUTPUT ${src}.c
 		   DEPENDS moy ${src}.joy
-		   COMMAND moy -o ${src}.joy | clang-format >${src}.c
-		   COMMAND rm -f ${src}.sym)
+		   COMMAND moy -o ${src}.joy >${src}.c
+		   COMMAND del ${src}.sym)
 add_executable(${src} ${src}.c)
-target_link_libraries(${src} joy /usr/local/lib/libgc-lib.a)
+target_link_libraries(${src} joy gc-lib)
 endmacro(exe)
 
 exe(fib)

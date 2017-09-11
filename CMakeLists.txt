@@ -10,6 +10,7 @@ add_custom_target(parse-h DEPENDS parse.h)
 add_custom_command(OUTPUT parse.h
 		   COMMAND ${BISON_EXECUTABLE} -doparse.c parse.y
 		   DEPENDS parse.y)
+add_definitions(-DGC_NOT_DLL)
 include_directories(. src bdwgc/include)
 add_subdirectory(bdwgc)
 add_executable(moy ${BISON_MyParser_OUTPUTS}
