@@ -22,12 +22,3 @@ build_script:
 artifacts:
   - path: moy.exe
     name: Moy
-
-deploy:
-  - provider: WebDeploy
-    server: ftp://home.kpn.nl/r.wiersma26
-    website: Wiersma
-    username: r.wiersma26@kpnplanet.nl
-    remove_files: true
-    app_offline: true
-    artifact: Moy
