@@ -11,7 +11,7 @@ add_custom_command(OUTPUT parse.h
 		   COMMAND ${BISON_EXECUTABLE} -doparse.c parse.y
 		   DEPENDS parse.y)
 add_definitions(-DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
-include_directories(. src bdwgc/include)
+include_directories(. SRC bdwgc/include)
 add_subdirectory(bdwgc)
 add_executable(moy ${BISON_MyParser_OUTPUTS}
 		compile.c interp.c listing.c main.c outfile.c history.c)
