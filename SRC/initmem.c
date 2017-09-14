@@ -1,7 +1,7 @@
 /*
     module  : initmem.c
-    version : 1.9
-    date    : 05/27/17
+    version : 1.10
+    date    : 09/14/17
 */
 #include "runtime.h"
 
@@ -10,7 +10,7 @@ static Node *oldstk;
 /*
     Make a backup of the stack
 */
-Node *backup(void)
+static Node *backup(void)
 {
     Node *root = 0, *cur;
 
@@ -22,7 +22,7 @@ Node *backup(void)
 /*
     Restore an old copy of the stack
 */
-void restore(Node *cur)
+static void restore(Node *cur)
 {
     for (stk = memory; cur; cur = cur->next)
 	DUPLICATE(cur);

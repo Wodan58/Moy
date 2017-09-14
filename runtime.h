@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.7
-    date    : 04/30/17
+    version : 1.8
+    date    : 09/14/17
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -24,6 +24,7 @@
 #else
 #ifdef _MSC_VER
 #define PRIVATE		static
+#pragma warning( disable : 4244 4305 )
 #else
 #define PRIVATE		inline static
 #endif

@@ -12,7 +12,8 @@ install:
   - 7z x -y %WINFLEXBISON_ARCHIVE%
   - win_flex --version
   - win_bison --version
-
+  # install unix tools
+ 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
   - git clone https://github.com/ivmai/bdwgc.git

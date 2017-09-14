@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.11
-    date    : 05/06/17
+    version : 1.12
+    date    : 09/14/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -51,21 +51,6 @@ int old_buffer(void)
 #endif
     return 0;
 }
-
-#if defined(FLEX_SCANNER) && defined(_MSC_VER)
-/*
-    b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
-*/
-int fileno(FILE *fp)
-{
-    return fp - stdin;
-}
-
-int isatty(int num)
-{
-    return !num;
-}
-#endif
 
 int yyerror(char *str)
 {

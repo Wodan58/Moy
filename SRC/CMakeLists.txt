@@ -3,7 +3,11 @@
 #
 cmake_minimum_required(VERSION 3.0)
 find_package(FLEX)
+if(WIN32)
+FLEX_TARGET(MyScanner lexer.l lexer.c COMPILE_FLAGS --wincompat)
+else()
 FLEX_TARGET(MyScanner lexer.l lexer.c)
+endif()
 add_library(joy ${FLEX_MyScanner_OUTPUTS} error.c initmem.c initsym.c interp1.c
 joy.c node.c print.c scan.c symbol.c utils.c binrec.c dup.c small.c pred.c
 plus.c put.c stop.c mul.c compare2.c eql.c greater.c or.c and.c not.c swap.c

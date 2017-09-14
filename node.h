@@ -1,7 +1,7 @@
 /*
     module  : node.h
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 09/14/17
 */
 #define MEMORYMAX	300
 
@@ -9,6 +9,7 @@
 extern Node *stk;
 
 #define __func__	__FUNCTION__
+#pragma warning( disable : 4244 4305 )
 #else
 register Node *stk asm("bl");
 #endif
