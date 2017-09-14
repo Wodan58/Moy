@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.14
-    date    : 04/30/17
+    version : 1.15
+    date    : 09/14/17
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -261,7 +261,7 @@
 %type <lis> opt_term term factor list
 %type <ent> opt_module module opt_private private
 
-%union YYSTYPE {
+%union {
     long_t num;
     ulong_t set;
     char *str;
