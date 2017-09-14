@@ -19,3 +19,7 @@ build_script:
   - git clone https://github.com/ivmai/bdwgc.git
   - cmake -G "NMake Makefiles"
   - cmake --build . --config Release
+
+artifacts:
+  - path: moy.exe
+    name: Moy
