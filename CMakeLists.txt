@@ -16,6 +16,6 @@ add_subdirectory(bdwgc)
 add_executable(moy ${BISON_MyParser_OUTPUTS}
 		compile.c interp.c listing.c main.c outfile.c history.c)
 target_link_libraries(moy joy gc-lib)
-add_subdirectory(src)
+add_subdirectory(SRC)
 add_dependencies(joy parse-h)
-add_subdirectory(lib)
+add_subdirectory(LIB)
