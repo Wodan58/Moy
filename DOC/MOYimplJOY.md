@@ -1,3 +1,6 @@
+ ![](media/image1.png)
+======================
+
 Introduction
 ============
 
@@ -53,7 +56,6 @@ also means that runtime errors can occur.
 More abstract: if P is a valid program and Q is a valid program, then so
 is P Q. In the example, both 2 and + are valid programs and so is 2 +.
 
-\
 Interface to C, implementation agnostic
 =======================================
 

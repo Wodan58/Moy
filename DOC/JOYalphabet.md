@@ -1,19 +1,18 @@
+ ![](media/image1.png)
+======================
+
 Introduction
 ============
 
-Rosetta Code is a wiki that offers example programs for many programming
-languages. JOY is one of those programming languages. From Rosetta Code
-26 tasks are taken, one task for each character in the alphabet, and
-described in this document. The tasks are quite diverse, starting with
-facts about the language, small test programs for syntactic constructs,
-up to complete applications. The description in this document solves
-each task, shows how to incorporate the task in a complete program, and
-shows the result of running the program.
-
-Links
------
-
-[Rosettacode](http://rosettacode.org/)
+[Rosetta Code](http://rosettacode.org/) is a wiki that offers example
+programs for many programming languages. JOY is one of those programming
+languages. From Rosetta Code 26 tasks are taken, one task for each
+character in the alphabet, and described in this document. The tasks are
+quite diverse, starting with facts about the language, small test
+programs for syntactic constructs, up to complete applications. The
+description in this document solves each task, shows how to incorporate
+the task in a complete program, and shows the result of running the
+program.
 
 V — variables
 =============
