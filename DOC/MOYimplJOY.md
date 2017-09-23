@@ -1,4 +1,4 @@
- ![](Wynn.PNG)
+ ![](media/image1.png)
 ======================
 
 Introduction
@@ -40,7 +40,7 @@ considerations.
 Valid JOY programs
 ==================
 
-2 +
+    2 +
 
 is a program that expects a number on top of the stack, adds 2 to that
 number and replaces the number with the result of the addition. It is a
@@ -165,6 +165,23 @@ between the multiple executions that are needed on behalf of the
 multiple types. In addition to that, there is also the arity count in
 arity.c that is used to decide whether conditions need to save and
 restore the stack with CONDITION and RELEASE statements.
+
+Adding a new builtin
+====================
+
+Adding a new builtin, for example *over*, requires the change of 10
+files:
+
+-   parse.y – DO\_OVER, a new token type
+-   builtin.h – do\_over(), a function declaration
+-   lexer.l – over, a new word as builtin
+-   optable.c – "over", an explanation of the functionality
+-   cmakelists.txt – over.c must be added to the build process
+-   over.c – definition, a file that contains the definition of *over*
+-   interp.c – DO\_OVER in the interpreter switch
+-   aritysym.c – DO\_OVER in table of arities
+-   print.c – "DO\_OVER" in opername
+-   runtime.c – \#include over.c
 
 Roadmap
 =======
