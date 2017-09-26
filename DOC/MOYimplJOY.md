@@ -1,4 +1,4 @@
- ![](media/image1.png)
+ ![](Wynn.PNG)
 ======================
 
 Introduction
