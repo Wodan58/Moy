@@ -1,0 +1,13 @@
+#
+#   module  : alljoy.joy
+#   version : 1.1
+#   date    : 04/25/16
+#
+%INCLUDE usrlib.joy
+%INCLUDE grmlib.joy
+%INCLUDE lsplib.joy
+%INCLUDE lazlib.joy
+%INCLUDE tutlib.joy
+%INCLUDE mtrlib.joy
+%INCLUDE typlib.joy
+help.

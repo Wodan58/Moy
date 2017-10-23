@@ -1,0 +1,87 @@
+0
+1
+2
+3
+0
+1
+2
+3
+1
+2
+4
+8
+[]
+[i]
+[i i]
+[i i i]
+5
+6
+8
+32
+64
+256
+21
+true
+42
+0
+1
+2
+0
+1
+2
+3
+[pop]
+[[pop] [dup [i] dip] dip i]
+[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i]
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i]
+5
+6
+8
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[Qsucc i] cons] swap i i]
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[Q0 i]] dip [Qadd i] cons [cons] cons] dip i i]
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[Q1 i]] dip [Qmul i] cons [cons] cons] dip i i]
+21
+true
+"Yes, yes"
+"No, no"
+true
+false
+"No, no"
+"Yes, yes"
+true
+false
+"Yes, yes"
+"Yes, yes"
+"Yes, yes"
+"No, no"
+"Yes, yes"
+"No, no"
+"No, no"
+"No, no"
+"Yes, yes"
+"No, no"
+"No, no"
+"Yes, yes"
+"No, no"
+2
+3
+3
+2
+0
+1
+2
+3
+0
+1
+0
+1
+2
+3
+5
+6
+8
+32
+64
+256
+21
+true

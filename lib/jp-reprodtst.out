@@ -1,0 +1,21 @@
+[0 [1 [succ] str-maker]]
+[1 [2 [2 *] str-maker]]
+[[] [[[]] [[] cons] str-maker]]
+[[[[]]]]
+[1 [2 [2 *] str-maker]]
+1024
+[0 1 2 3 4]
+[1 2 4 8 16 32 64 128 256 512]
+[31 37 41 43 47 53 59 61 67 71]
+[[0 [succ] infra dureco] [succ] infra dureco]
+[[1 [2 *] infra dureco] [2 *] infra dureco]
+[[0 [2 +] infra dureco] [2 +] infra dureco]
+4
+[[[] [[] cons] infra dureco] [[] cons] infra dureco]
+[[[[]]]]
+[[1 [2 *] infra dureco] [2 *] infra dureco]
+1024
+[0 1 2 3 4]
+[1 2 4 8 16 32 64 128 256 512]
+[31 37 41 43 47 53 59 61 67 71]
+[[10 1024] [11 2048] [12 4096] [13 8192] [14 16384]]
