@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.4
-    date    : 04/22/17
+    version : 1.5
+    date    : 10/23/17
 */
 #ifdef RUNTIME
 #include "runtime.c"
@@ -104,6 +104,12 @@ start:
 	    break;
 	case DO_DUP:
 	    do_dup();
+	    break;
+	case DO_OVER:
+	    do_over();
+	    break;
+	case DO_PICK:
+	    do_pick();
 	    break;
 	case DO_PLUS:
 	    do_plus();

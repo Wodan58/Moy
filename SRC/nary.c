@@ -1,7 +1,7 @@
 /*
     module  : nary.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 10/23/17
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -9,6 +9,7 @@
 
 int PUT_PROC(PROCEDURE)
 {
+    int arr;
     Node *prog;
 
     del_history(1);
@@ -18,10 +19,14 @@ int PUT_PROC(PROCEDURE)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* %s */", NAME);
-    fprintf(outfp, "Node temp, *top = %s; CONDITION;", TOPSTR);
+    fprintf(outfp, "Node temp, *top = %s;", TOPSTR);
+    if ((arr = arity(prog)) != ARITY)
+	fprintf(outfp, "CONDITION;");
     evaluate(prog);
-    fprintf(outfp, "temp = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&temp); }");
+    fprintf(outfp, "temp = *stk;");
+    if (arr != ARITY)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&temp); }");
     return 1;
 }
 #endif
@@ -57,5 +62,6 @@ PRIVATE void PROCEDURE(void)
 #undef PARAMCOUNT
 #undef TOP
 #undef TOPSTR
+#undef ARITY
 #undef CAT
 #undef PUT_PROC

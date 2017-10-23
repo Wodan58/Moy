@@ -1,7 +1,7 @@
 /*
     module  : ternary.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -16,4 +16,5 @@ exactly three are removed from the stack.
 #define PARAMCOUNT	FOURPARAMS
 #define TOP		stk->next->next->next
 #define TOPSTR		"stk->next->next->next"
+#define ARITY		3
 #include "nary.c"

@@ -1,7 +1,7 @@
 /*
     module  : unary.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -16,4 +16,5 @@ exactly one is removed from the stack.
 #define PARAMCOUNT	TWOPARAMS
 #define TOP		stk->next
 #define TOPSTR		"stk->next"
+#define ARITY		1
 #include "nary.c"

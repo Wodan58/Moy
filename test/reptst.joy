@@ -1,0 +1,87 @@
+
+MODULE rep 
+PUBLIC dureco == dup rest cons; duco == dup cons; 
+fix == [ duco ] swoncat duco; deposit == [ dup [ first ] dip ] swoncat; 
+durereco == dup rest rest cons; fix-a == [ ] [ [ over swons ] unary ] fix-i; 
+fix-c == [ 0 [ succ ] infra dureco ] swoncat dureco; 
+inter == [ dip cons dureco ] cons [ uncons ] swoncat cons dureco; 
+_expand == swap [ dip ] cons concat [ dip ] swoncat cons [ [ dip ] cons [
+[ pop ] swoncat ] dip ] dip [ ifte ] cons cons cons; 
+_binary == [ dip swap i ] _expand; count == [ 0 [ succ ] infra ] swoncat; 
+exe-t == [ dip dureco ] cons [ [ pred ] infra ] swoncat [ ifte ] cons [
+pop [ [ duco ] duco ] ] swons [ dup first null ] swons cons dureco; 
+f-stream-prepare == swap [ dip ] cons concat cons [ dup ] infra dup rest
+rest infra uncons uncons [ pop dup ] swoncat [ infra durereco ] cons; 
+fix-i == [ dip cons dureco ] cons [ uncons ] swoncat cons swoncat dureco; 
+linear == [ i ] _expand; n-stream == [ infra dureco ] cons cons dureco; 
+n-stream-d == [ infra dureco ] cons deposit cons dureco; 
+c-stream == [ dureco ] cons dureco; 
+c-stream-d == [ dureco ] deposit cons dureco; 
+exe == [ dip duco ] cons duco; exe-c == [ dip dureco ] cons count dureco; 
+f-stream == f-stream-prepare cons cons durereco; 
+f-stream-d == f-stream-prepare deposit cons cons durereco; 
+ints == [ dureco ] count dureco; self == [ duco ] duco END
+DEFINE trace == "trace: " putchars state putln
+; times10-c == [ 10 * ] rep.exe-c
+; ten-powers-log10 == 1.0 [ 10 * ] [ [ ] cons [ dup log10 ] infra ]
+rep.f-stream-d
+; swoncat == swap concat; steps == "steps: " putchars state putln
+; state == first first; squaring == [ dup * ] rep.exe; selfr == rep.self
+; qtest == qsort-fix-c i state; qsort-fix-c == qsort-bin rep.fix-c
+; qsort-bin == [ dup small ] [ ] [ uncons [ > ] split ] [ enconcat ]
+rep._binary
+; putln == put newline
+; primes-d == 2 [ succ [ dup prime not ] [ succ ] while ] rep.n-stream-d
+; prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ]
+while dup * <
+; ones-d == 1 rep.c-stream-d; ones == 1 rep.c-stream
+; nfib-fix-c == nfib rep.fix-c; nfib-fix-a == nfib rep.fix-a
+; nfib-fix == nfib-bin rep.fix
+; nfib-bin == [ dup small ] [ pop 1 ] [ pred dup pred ] [ + ] rep._binary
+; nfib == [ [ over small ] [ [ pop 1 ] dip ] [ [ pred dup pred ] dip dip swap i
+[ + ] dip ] ifte ]
+; newline == '\n putch; max-4-adds == 4 [ + ] rep.exe-t
+; max-3-adds == 3 [ + ] rep.exe-t
+; length-lin == [ dup null ] [ pop 0 ] [ rest ] [ succ ] rep.linear
+; length-fix-a == length-lin rep.fix-a; integers-from == [ succ ] rep.n-stream
+; integers == rep.ints; halving-d == 1.0 [ 2 / ] rep.n-stream-d
+; halving == 1.0 [ 2 / ] rep.n-stream
+; fact0 == [ [ over null ] [ pop pop 1 ] [ [ dup pred ] dip i * ] ifte ]
+; fact-lin == [ dup null ] [ pop 1 ] [ dup pred ] [ * ] rep.linear
+; fact-fix-c == fact rep.fix-c; fact-fix-a == fact rep.fix-a
+; fact-fix == fact-lin rep.fix
+; fact == [ [ over null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ]
+ifte ]
+; even-squares == 0 [ 2 + ] [ dup * ] rep.f-stream; c == concat
+; accu-sum == 0 [ + ] rep.inter
+; accu-product-list == [ ] [ [ * ] dip cons ] rep.inter
+; accu-list == [ ] [ cons ] rep.inter.
+
+2 setecho . selfr . selfr i i i . squaring . 2
+squaring i pop . 2 squaring i i pop . 2 squaring i i i pop . integers .
+integers i i i i i state . integers i i i i i i . times10-c . 3
+times10-c i i i i i pop . 3 times10-c i i i i i popd state . ones . ones
+i i i i i . ones i i i i i state . halving . halving i i i . halving i i
+i state . 42 integers-from . 42 integers-from i i i i i state . ones-d .
+ones-d i i i pop . . . halving-d . halving-d i i i i i pop . . . . .
+primes-d . primes-d i i i i i pop . . . . . even-squares . even-squares
+state . even-squares i state . even-squares i i state . even-squares i i
+i state . even-squares i i i i state . ten-powers-log10 .
+ten-powers-log10 i i i i i i pop . . . . . . accu-list . 1 2 3 4 5
+accu-list i i i i i state . accu-sum . 1 2 3 4 5 accu-sum i i i i i
+state . accu-product-list . 1 10 2 100 3 1000 4 10000 accu-product-list
+i i i i state . max-3-adds . 2 1 max-3-adds i pop . 3 2 1 max-3-adds i i
+pop . 4 3 2 1 max-3-adds i i i pop . 5 4 3 2 1 max-3-adds i i i i pop .
+. 5 4 3 2 1 max-4-adds i i i i pop . 6 fact0 rep.fix i . 6 fact rep.fix
+i . . 3 fact rep.fix i i . . 3 4 5 fact-fix i swap put i swap put i swap
+putln pop . 3 4 5 fact-fix-c i swap put i swap put i swap putln steps .
+3 4 5 fact-fix-a i swap put i swap put i swap putln trace . nfib-fix . 6
+nfib-fix i pop . 6 nfib-fix-c i swap putln steps . 6 nfib-fix-a i swap
+putln trace . 0 __settracegc . 4 fact-fix i pop . [ 2 5 3 7 6 ] [ a b c
+] length-fix-a i swap put i swap putln trace . 6 nfib-fix i pop . 6
+nfib-bin [ ] [ [ dup put ] dip ] rep.fix-i i newline pop . [ 5 10 9 14 7
+18 1 4 15 3 20 19 8 11 2 6 12 13 16 17 ] qtest . . [ 10 5 3 2 4 1 8 7 9
+6 15 13 12 14 11 18 17 19 16 20 ] qtest . . [ 1 2 3 4 5 6 7 8 9 10 11 12
+13 14 15 16 17 18 19 20 ] qtest . . [ 20 19 18 17 16 15 14 13 12 11 10 9
+8 7 6 5 4 3 2 1 ] qtest . . "You can also sort strings, of course" qtest
+. .

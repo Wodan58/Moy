@@ -1,0 +1,128 @@
+
+DEFINE unops == [ not succ pred fact fib first rest reverse i intern ]
+; swoncat == swap concat; shunt == [ swons ] step
+; sequand == [ pop false ] ifte; reverselist == [ ] swap shunt
+; reverse == [ [ ] ] [ "" ] iflist swap shunt
+; prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ]
+while dup * <
+; fib == [ 1 0 ] dip [ swap [ over + ] unary ] times popd
+; fact == [ [ over null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ]
+ifte ]
+; binops == [ and or + - * / = < > cons concat map filter ]
+; bin3ops == [ * / and cons ]; bin2ops == [ + - or concat ]
+; bin1ops == [ = < > ].
+HIDE new-infra == cons [ ] swap infra; 
+X2Y == unswons [ [ [ dup unops in ] [ X2Y ] dip swap ] [ [ dup binops in ] [
+X2Y X2Y ] dip swap ] [ swap ] ] cond; 
+R2T == [ [ [ [ dup unops in ] [ [ ] cons ] dip swons ] [ [ dup binops in ] [ [
+] cons cons ] dip swons ] [ [ dup list ] [ ] cons [ QUOTE ] swoncat ] [ [ ]
+cons ] ] cond ] step; 
+R2I == [ [ [ [ dup unops in ] swons ] [ [ dup binops in ] swons concat [ ] cons
+] [ [ dup list ] [ ] cons [ QUOTE ] swoncat ] [ [ ] cons ] ] cond ] step; 
+R2C == [ [ [ [ dup unops in ] [ [ ] cons ] dip swons ] [ [ dup binops in ] [ [
+] cons cons ] dip swons ] [ [ dup list ] [ ] cons [ QUOTE ] swoncat ] [ ] ]
+cond ] step; 
+I2C == unswons [ [ [ dup unops in ] [ I2C [ ] cons ] dip swons ] [ [ dup [
+QUOTE ] in ] [ unswons [ ] cons ] dip swons ] [ [ dup list ] I2C swap uncons
+swapd I2C swons cons cons ] [ ] ] cond; 
+C2T == [ dup list ] [ unswons [ [ [ dup unops in ] [ first C2T [ ] cons ] dip
+swons ] [ [ dup [ QUOTE ] in ] swons ] [ [ uncons first [ C2T ] dip C2T [ ]
+cons cons ] dip swons ] ] cond ] [ [ ] cons ] ifte; 
+C2R == [ dup list ] [ unswons [ [ [ dup unops in ] swap first C2R ] [ [ dup [
+QUOTE ] in ] pop first ] [ swap uncons first swap [ C2R ] dip C2R ] ] cond ] [
+] ifte; 
+C2P == [ dup list ] [ unswons [ [ [ dup unops in ] [ first C2P ] dip ] [ [ dup
+[ QUOTE ] in ] pop first ] [ [ uncons first swap [ C2P ] dip C2P ] dip ] ] cond
+] [ ] ifte; 
+C2I == [ dup list ] [ unswons [ [ [ dup unops in ] [ first C2I ] dip swons ] [
+[ dup [ QUOTE ] in ] swons ] [ [ uncons first [ C2I ] dip C2I ] dip swons
+concat [ ] cons ] ] cond ] [ [ ] cons ] ifte 
+IN Rev2Tre == R2T; Rev2Pol == reverselist [ X2Y ] new-infra rest
+; Rev2Inf == R2I; Rev2Cam == R2C
+; Pol2Rev == [ X2Y ] new-infra rest reverselist; Min2Tre == unswons M12T popd
+; Min2Rev == Min2Cam Cam2Rev; Min2Pol == Min2Cam Cam2Pol
+; Min2Inf == Min2Cam Cam2Inf; Min2Cam == unswons M12C popd
+; M42T == [ [ [ dup unops in ] [ unswons M42T [ ] cons ] dip swons ] [ [ dup
+[ QUOTE ] in ] [ unswons [ ] cons ] dip swons ] [ [ dup list ] unswons M12T
+popd ] [ [ ] cons ] ] cond
+; M42C == [ [ [ dup unops in ] [ unswons M42C [ ] cons ] dip swons ] [ [ dup
+[ QUOTE ] in ] [ unswons [ ] cons ] dip swons ] [ [ dup list ] unswons M12C
+popd ] [ ] ] cond
+; M32T == M42T [ over [ dup null not ] [ first bin3ops in ] sequand ] [ swap
+uncons swapd unswons M32T rollupd [ ] cons cons cons ] [ ] ifte
+; M32C == M42C [ over [ dup null not ] [ first bin3ops in ] sequand ] [ swap
+uncons swapd unswons M32C rollupd [ ] cons cons cons ] [ ] ifte
+; M22T == M32T [ over [ dup null not ] [ first bin2ops in ] sequand ] [ swap
+uncons swapd unswons M22T rollupd [ ] cons cons cons ] [ ] ifte
+; M22C == M32C [ over [ dup null not ] [ first bin2ops in ] sequand ] [ swap
+uncons swapd unswons M22C rollupd [ ] cons cons cons ] [ ] ifte
+; M12T == M22T [ over [ dup null not ] [ first bin1ops in ] sequand ] [ swap
+uncons swapd unswons M12T rollupd [ ] cons cons cons ] [ ] ifte
+; M12C == M22C [ over [ dup null not ] [ first bin1ops in ] sequand ] [ swap
+uncons swapd unswons M12C rollupd [ ] cons cons cons ] [ ] ifte
+; Inf2Rev == Inf2Cam Cam2Rev; Inf2Pol == Inf2Cam Cam2Pol; Inf2Cam == I2C popd
+; Cam2Tre == C2T; Cam2Rev == [ C2R ] new-infra; Cam2Pol == [ C2P ] new-infra
+; Cam2Inf == C2I END
+
+DEFINE 
+    fact == [1 1] dip [dup [*] dip succ] times pop.
+
+"\nTesting the 12 translators in the library  symlib.joy\n"
+putchars . 0 __settracegc . 1 setecho . [ 2 3 * 4 5 +
+- ] Rev2Cam . [ 4 6 pred * 5 succ 7 + - fact ] Rev2Cam . [ true true not
+or false false and or ] Rev2Cam . [ 2 3 * 2 3 + succ = ] Rev2Cam . [ 1 [
+2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Cam . [ [ 1 2 3 4 ] [ fact ] map
+] Rev2Cam . [ [ 6 7 8 9 ] [ prime ] filter ] Rev2Cam . [ 2 3 * 4 5 + - ]
+Rev2Tre . [ 4 6 pred * 5 succ 7 + - fact ] Rev2Tre . [ true true not or
+false false and or ] Rev2Tre . [ 2 3 * 2 3 + succ = ] Rev2Tre . [ 1 [ 2
+3 ] cons 4 [ 5 6 ] cons concat ] Rev2Tre . [ [ 1 2 3 4 ] [ fact ] map ]
+Rev2Tre . [ [ 6 7 8 9 ] [ prime ] filter ] Rev2Tre . [ 2 3 * 4 5 + - ]
+Rev2Inf . [ 4 6 pred * 5 succ 7 + - fact ] Rev2Inf . [ true true not or
+false false and or ] Rev2Inf . [ 2 3 * 2 3 + succ = ] Rev2Inf . [ 1 [ 2
+3 ] cons 4 [ 5 6 ] cons concat ] Rev2Inf . [ [ 1 2 3 4 ] [ fact ] map ]
+Rev2Inf . [ [ 6 7 8 9 ] [ prime ] filter ] Rev2Inf . [ 2 3 * 4 5 + - ]
+Rev2Pol . [ 4 6 pred * 5 succ 7 + - fact ] Rev2Pol . [ true true not or
+false false and or ] Rev2Pol . [ 2 3 * 2 3 + succ = ] Rev2Pol . [ 1 [ 2
+3 ] cons 4 [ 5 6 ] cons concat ] Rev2Pol . [ [ 1 2 3 4 ] [ fact ] map ]
+Rev2Pol . [ [ 6 7 8 9 ] [ prime ] filter ] Rev2Pol . [ - [ * 2 3 ] [ + 4
+5 ] ] Cam2Inf . [ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ] 7 ] ] ]
+Cam2Inf . [ or [ or true [ not true ] ] [ and false false ] ] Cam2Inf .
+[ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Inf . [ concat [ cons 1 [ QUOTE [
+2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Inf . [ map [ QUOTE [ 1 2 3
+4 ] ] [ QUOTE [ fact ] ] ] Cam2Inf . [ filter [ QUOTE [ 6 7 8 9 ] ] [
+QUOTE [ prime ] ] ] Cam2Inf . [ [ [ 2 * 3 ] - [ 4 + 5 ] ] ] Inf2Pol . [
+fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ] Inf2Pol . [ [ [ true or not
+true ] or [ false and false ] ] ] Inf2Pol . [ [ [ 2 * 3 ] = succ [ 2 + 3
+] ] ] Inf2Pol . [ [ [ 1 cons QUOTE [ 2 3 ] ] concat [ 4 cons QUOTE [ 5 6
+] ] ] ] Inf2Pol . [ [ QUOTE [ 1 2 3 4 ] map QUOTE [ fact ] ] ] Inf2Pol .
+[ [ QUOTE [ 6 7 8 9 ] filter QUOTE [ prime ] ] ] Inf2Pol . [ - * 2 3 + 4
+5 ] Pol2Rev . [ fact - * 4 pred 6 + succ 5 7 ] Pol2Rev . [ or or true
+not true and false false ] Pol2Rev . [ = * 2 3 succ + 2 3 ] Pol2Rev . [
+concat cons 1 [ 2 3 ] cons 4 [ 5 6 ] ] Pol2Rev . [ map [ 1 2 3 4 ] [
+fact ] ] Pol2Rev . [ filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev . [ - [ * 2
+3 ] [ + 4 5 ] ] Cam2Rev i . [ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ]
+7 ] ] ] Cam2Rev i . [ or [ or true [ not true ] ] [ and false false ] ]
+Cam2Rev i . [ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Rev i . [ concat [
+cons 1 [ QUOTE [ 2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Rev i . [
+map [ QUOTE [ 1 2 3 4 ] ] [ QUOTE [ fact ] ] ] Cam2Rev i . [ filter [
+QUOTE [ 6 7 8 9 ] ] [ QUOTE [ prime ] ] ] Cam2Rev i . [ [ [ 2 * 3 ] - [
+4 + 5 ] ] ] Inf2Rev i . [ fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ]
+Inf2Rev i . [ [ [ true or not true ] or [ false and false ] ] ] Inf2Rev
+i . [ [ [ 2 * 3 ] = succ [ 2 + 3 ] ] ] Inf2Rev i . [ [ [ 1 cons QUOTE [
+2 3 ] ] concat [ 4 cons QUOTE [ 5 6 ] ] ] ] Inf2Rev i . [ [ QUOTE [ 1 2
+3 4 ] map QUOTE [ fact ] ] ] Inf2Rev i . [ [ QUOTE [ 6 7 8 9 ] filter
+QUOTE [ prime ] ] ] Inf2Rev i . [ - * 2 3 + 4 5 ] Pol2Rev i . [ fact - *
+4 pred 6 + succ 5 7 ] Pol2Rev i . [ or or true not true and false false
+] Pol2Rev i . [ = * 2 3 succ + 2 3 ] Pol2Rev i . [ concat cons 1 [ 2 3 ]
+cons 4 [ 5 6 ] ] Pol2Rev i . [ map [ 1 2 3 4 ] [ fact ] ] Pol2Rev i . [
+filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev i . [ 1 * 2 + 3 * 4 + 5 * 6 < 100
+] Min2Inf . [ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Pol . [ 1 * 2 + 3 * 4 +
+5 * 6 < 100 ] Min2Cam . [ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Tre . [ 1 *
+2 + 3 * 4 + 5 * 6 < 100 ] Min2Rev . [ 1 * 2 + 3 * 4 + 5 * 6 < 100 ]
+Min2Rev i . [ cons [ intern [ reverse [ cons 't "iuq" ] ] ] [ QUOTE [ ]
+] ] Cam2Tre . [ cons [ intern [ reverse [ cons 't "iuq" ] ] ] [ QUOTE [
+] ] ] Cam2Inf . [ cons [ intern [ reverse [ cons 't "iuq" ] ] ] [ QUOTE
+[ ] ] ] Cam2Pol . [ cons [ intern [ reverse [ cons 't "iuq" ] ] ] [
+QUOTE [ ] ] ] Cam2Rev . [ cons [ intern [ reverse [ cons 't "iuq" ] ] ]
+[ QUOTE [ ] ] ] Cam2Rev i . [ cons [ intern [ reverse [ cons 't "iuq" ]
+] ] [ QUOTE [ ] ] ] Cam2Rev i i .

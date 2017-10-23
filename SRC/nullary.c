@@ -1,7 +1,7 @@
 /*
     module  : nullary.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -15,4 +15,5 @@ No matter how many parameters this consumes, none are removed from the stack.
 #define PARAMCOUNT	ONEPARAM
 #define TOP		stk
 #define TOPSTR		"stk"
+#define ARITY		0
 #include "nary.c"

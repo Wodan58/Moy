@@ -1,7 +1,7 @@
 /*
     module  : optable.c
-    version : 1.10
-    date    : 04/09/17
+    version : 1.11
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -117,6 +117,12 @@ STATIC struct optable_t optable[] = {
 
 {"dup",			"X  ->  X X",
 "Pushes an extra copy of X onto stack."},
+
+{"over",		"X Y  ->  X Y X",
+"Pushes an extra copy of second item X on top of the stack."},
+
+{"pick",		"X Y Z 2  ->  X Y Z X",
+"Pushes an extra copy of nth (e.g. 2) item X on top of the stack."},
 
 {"swap",		"X Y  ->  Y X",
 "Interchanges X and Y on top of the stack."},

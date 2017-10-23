@@ -1,7 +1,7 @@
 /*
     module  : runtime.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 10/23/17
 */
 #define NCHECK
 #include "runtime.h"
@@ -246,3 +246,7 @@
 #include "fputchars.c"
 #include "fseek.c"
 #include "ftell.c"
+
+/* new additions */
+#include "over.c"
+#include "pick.c"

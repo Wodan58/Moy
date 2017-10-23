@@ -1,7 +1,7 @@
 /*
     module  : aritysym.c
-    version : 1.2
-    date    : 04/30/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -47,6 +47,8 @@ char *aritysym(int op)
 	{ DO_STDERR, "A" },
 	{ DO_ID, "" },
 	{ DO_DUP, "A" },
+	{ DO_OVER, "A" },
+	{ DO_PICK, "DA" },
 	{ DO_SWAP, "DDAA" },
 	{ DO_ROLLUP, "DDDAAA" },
 	{ DO_ROLLDOWN, "DDDAAA" },
@@ -172,8 +174,8 @@ char *aritysym(int op)
 	{ DO_USER, "DA" },
 	{ DO_FLOAT, "DA" },
 	{ DO_FILE, "DA" },
-	{ DO_I, "D?" },
-	{ DO_X, "?" },
+	{ DO_I, "DA" },		// XXX
+	{ DO_X, "DDAA" },	// XXX
 	{ DO_DIP, "D?" },
 	{ DO_APP1, "D?" },
 	{ DO_APP11, "DDDA" },
@@ -191,7 +193,7 @@ char *aritysym(int op)
 	{ DO_TERNARY, "DDDDA" },
 	{ DO_CLEAVE, "DDDAA" },
 	{ DO_BRANCH, "DDD?" },
-	{ DO_IFTE, "DDD?" },
+	{ DO_IFTE, "DDDA" },	// XXX
 	{ DO_IFINTEGER, "DDD?" },
 	{ DO_IFCHAR, "DDD?" },
 	{ DO_IFLOGICAL, "DDD?" },
@@ -200,17 +202,17 @@ char *aritysym(int op)
 	{ DO_IFLIST, "DDD?" },
 	{ DO_IFFLOAT, "DDD?" },
 	{ DO_IFFILE, "DDD?" },
-	{ DO_COND, "D?" },
+	{ DO_COND, "DA" },	// XXX
 	{ DO_WHILE, "DDDA" },
-	{ DO_LINREC, "DDDD?" },
+	{ DO_LINREC, "DDDDA" },	// XXX
 	{ DO_TAILREC, "DDD?" },
 	{ DO_BINREC, "DDDD?" },
 	{ DO_GENREC, "DDDD?" },
-	{ DO_CONDNESTREC, "DDA" },
-	{ DO_CONDLINREC, "DDA" },
+	{ DO_CONDNESTREC, "DDA" },	// XXX
+	{ DO_CONDLINREC, "DDA" },	// XXX
 	{ DO_STEP, "DD?" },
 	{ DO_FOLD, "DDDA" },
-	{ DO_MAP, "DDA" },
+	{ DO_MAP, "DDA" },	// XXX
 	{ DO_TIMES, "DDA" },
 	{ DO_INFRA, "DDA" },
 	{ DO_PRIMREC, "DDDA" },

@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.14
-    date    : 09/10/17
+    version : 1.15
+    date    : 10/23/17
 */
 #define BIT_32
 
@@ -62,6 +62,7 @@ void clr_history(void);
 void set_history(int num);
 unsigned pop_history(unsigned *op);
 unsigned top_history(unsigned *op);
+unsigned sub_history(unsigned *op);
 void del_history(int num);
 void chg_history(unsigned op);
 void chg_history2(unsigned op, unsigned op2);

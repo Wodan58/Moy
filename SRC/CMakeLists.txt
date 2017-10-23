@@ -20,7 +20,7 @@ size.c geql.c times.c linrec.c null.c nullary.c less.c infra.c settracegc.c
 popd.c id.c swons.c sin.c cos.c tan.c xor.c fold.c unswons.c rolldown.c log10.c
 unary.c split.c enconcat.c cond.c in.c filter.c rollupd.c iflist.c intern.c
 opcase.c has.c float.c string.c tailrec.c case.c leaf.c include.c abort.c x.c
-rotate.c condlinrec.c false.c true.c maxint.c setsize.c symtabmax.c
+rotate.c condlinrec.c false.c true.c maxint.c setsize.c symtabmax.c over.c
 symtabindex.c dump.c conts.c autoput.c undeferror.c undefs.c echo.c clock.c
 rand.c memorymax.c stdin.c stdout.c stderr.c rolldownd.c rotated.c choice.c
 div.c sign.c neg.c ord.c chr.c asin.c acos.c atan.c atan2.c ceil.c sinh.c
@@ -33,4 +33,4 @@ all.c optable.c help1.c help2.c manual.c helpdetail.c makemanual.c manuallist.c
 casting.c branch.c construct.c unary3.c unary4.c binary.c ternary.c genrec.c
 primrec.c treestep.c treerec.c treegenrec.c fclose.c feof.c ferror.c fflush.c
 fget.c fgetch.c fgets.c fopen.c fread.c fwrite.c fremove.c frename.c filetime.c
-fput.c fputch.c fputchars.c fseek.c ftell.c arity.c aritysym.c)
+fput.c fputch.c fputchars.c fseek.c ftell.c arity.c aritysym.c pick.c)

@@ -1,0 +1,52 @@
+
+DEFINE y == [ dup cons ] swoncat dup cons i;
+; swoncat == swap concat; sequor == [ pop true ] swap ifte
+; second == rest first; putstrings == [ putchars ] step; putln == put newline
+; prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ]
+while dup * <
+; numerical == [ integer ] [ float ] sequor; newline == '\n putch
+; lisp == [ "\nLisp interpreter\n" "\t\tTo include the Lisp library, type\n"
+"\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n" "GO\n\n" ] putstrings lib0
+l-prompt putchars get [ dup [ EXIT ] first equal not ] [ eval putln l-prompt
+putchars get ] while pop pop "exit from Lisp interpreter\n" putchars
+; lib0 == [ [ [ FOLDR ] [ CLOSURE lib0 [ lis ini bin ] IF [ NULL lis ] ini [
+bin [ CAR lis ] [ FOLDR [ CDR lis ] ini bin ] ] ] ] [ [ FOLDL ] [
+CLOSURE lib0 [ lis ini bin ] IF [ NULL lis ] ini [ FOLDL [ CDR lis ] [
+bin [ CAR lis ] ini ] bin ] ] ] [ [ FOLDR2 ] [ CLOSURE lib0 [ l1 l2 ini
+tern ] IF [ or [ NULL l1 ] [ NULL l2 ] ] ini [ tern [ CAR l1 ] [ CAR l2
+] [ FOLDR2 [ CDR l1 ] [ CDR l2 ] ini tern ] ] ] ] [ [ RECFOLDR ] [
+CLOSURE lib0 [ x y bin ] IF [ ATOM x ] [ bin x y ] [ IF [ NULL x ] y [
+RECFOLDR [ CAR x ] [ RECFOLDR [ CDR x ] y bin ] bin ] ] ] ] ]
+; l-prompt == ""
+; eval == [ dup list ] [ unswons [ [ QUOTE first ] [ LAMBDA dupd cons [ CLOSURE
+] swoncat ] [ IF uncons [ eval ] dip swap [ dup null ] [ pop second ] [ pop
+first ] ifte eval ] [ DEF uncons first swap [ eval ] dip dup [ [ [ ]
+cons ] unary2 swons swons ] dip ] [ DEFUN uncons [ LAMBDA ] swoncat [ ]
+cons cons [ DEF ] swoncat eval ] [ swons [ eval ] map unswons apply ] ]
+case ] [ [ [ numerical ] [ string ] sequor ] [ ] [ dupd swap [ [ dup null ]
+[ true ] [ first first in ] ifte ] [ [ dup null ] [ pop ] [ first unswons
+rolldown [ over first over = ] [ pop pop first ] [ [ [ rest ] unary2 ] dip
+] tailrec ] ifte ] [ rest ] tailrec ] ifte ] ifte
+; call == [ ] cons i
+; apply == [ dup list ] [ unswons [ [ CLOSURE unswons call swons uncons swapd
+uncons [ swap cons swons ] dip eval popd ] [
+"apply: unknown procedure type -\n" putchars abort ] ] case ] [ [ [
+numerical ] [ string ] sequor ] [ ] [ [ [ CAR first first ] [ CDR first
+rest ] [ CONS uncons first cons ] [ EQ uncons first equal ] [ ATOM first
+leaf ] [ NULL first null ] [ LIST ] [ [ i ] dip call ] ] case ] ifte ]
+ifte
+.
+
+
+"\nTesting the Lisp interpreter lisp in the library lsplib.joy\n"
+putchars . 0 __settracegc . 1 setecho . lisp quit .
+123.456 false "hello world" [ QUOTE [ Peter Paul Mary ] ] [ QUOTE [ 1 2
+3 4 5 ] ] [ CAR [ QUOTE [ Peter Paul Mary ] ] ] [ CDR [ QUOTE [ 1 2 3 4
+5 ] ] ] [ CONS Fred [ QUOTE [ Peter Paul ] ] ] [ ATOM Fred ] [ ATOM [
+QUOTE [ 1 2 3 ] ] ] [ NULL [ QUOTE [ 1 2 3 ] ] ] [ NULL [ QUOTE [ ] ] ]
+[ EQ 2 3 ] [ LIST [ CDR [ QUOTE [ 1 2 3 ] ] ] [ ATOM 123 ] ] [ [ LAMBDA
+[ lis ] CAR [ CDR lis ] ] [ QUOTE [ 11 22 33 ] ] ] [ + [ * 2 5 ] [ - 10
+7 ] ] [ and true false ] [ or true false ] [ > 3 4 ] [ and [ NULL [
+QUOTE [ ] ] ] [ NULL [ QUOTE [ Bob ] ] ] ] [ map [ QUOTE [ 10 11 12 13
+14 15 16 ] ] [ QUOTE [ prime ] ] ] [ filter [ QUOTE [ 10 11 12 13 14 15
+16 ] ] [ QUOTE [ prime ] ] ] [ include "OK" "lsptst.lsp" ] EXIT

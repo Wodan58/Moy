@@ -1,7 +1,7 @@
 /*
     module  : history.c
-    version : 1.2
-    date    : 04/22/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -131,6 +131,14 @@ unsigned top_history(unsigned *op)
 	return 0;
     *op = history[hist - 1].op1;
     return history[hist - 1].op;
+}
+
+unsigned sub_history(unsigned *op)
+{
+    if (no_history || hist < 2)
+	return 0;
+    *op = history[hist - 2].op1;
+    return history[hist - 2].op;
 }
 
 unsigned pop_history(unsigned *op)

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.12
-    date    : 09/14/17
+    version : 1.13
+    date    : 10/23/17
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include "joy.h"
 #include "symbol.h"
+
+#define MAXLINE		1000
+
+static int moy_echo;
+static char buf[MAXLINE];
 
 #ifdef FLEX_SCANNER
 #define MAX_INCLUDE_DEPTH	10
@@ -19,6 +24,16 @@ YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 
 static int input(void);
 #endif
+
+static void putline(void)
+{
+    if (moy_echo > 2)
+	printf("%4d", yylineno);
+    if (moy_echo > 1)
+	printf("\t");
+    if (moy_echo)
+	printf("%s", buf);
+}
 
 static void SkipComment(void)
 {
@@ -54,7 +69,7 @@ int old_buffer(void)
 
 int yyerror(char *str)
 {
-    fprintf(stderr, "%s\n", str);
+    fprintf(stderr, "%s in line %d near %.*s\n", str, yylineno, yyleng, yytext);
     return 0;
 }
 
@@ -73,6 +88,8 @@ static void sprint(char *str)
 }
 #endif
 %}
+
+%option		yylineno
 
 %e		3000
 %p		8000
@@ -95,6 +112,8 @@ linecom		#.*
 
 %%
 
+\n.*\n		{ strncpy(buf, yytext + 1, MAXLINE); buf[MAXLINE - 1] = 0;
+		  yyless(1); putline(); }
 LIBRA		|
 DEFINE		|
 IN		|
@@ -129,6 +148,8 @@ stdout		{ yylval.num = DO_STDOUT; return Symbol; }
 stderr		{ yylval.num = DO_STDERR; return Symbol; }
 id		{ yylval.num = DO_ID; return Symbol; }
 dup		{ yylval.num = DO_DUP; return Symbol; }
+over		{ yylval.num = DO_OVER; return Symbol; }
+pick		{ yylval.num = DO_PICK; return Symbol; }
 swap		{ yylval.num = DO_SWAP; return Symbol; }
 rollup		{ yylval.num = DO_ROLLUP; return Symbol; }
 rolldown	{ yylval.num = DO_ROLLDOWN; return Symbol; }
@@ -337,9 +358,10 @@ quit		{ yylval.num = DO_QUIT; return Symbol; }
 {hexal}		{ yylval.num = strtol(yytext, 0, 0); return INTEGER_; }
 {float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
 {comment}	SkipComment();
-{linecom}	|
-[ \t\n\r]+	;
+[ \t\n]+	|
+{linecom}	;
 ^\$.*		system(yytext + 1);
 ^\%INCLUDE.*	include(DelSpace(yytext + 8));
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
-.		return yytext[0];
+^\%LISTING.*	moy_echo = atoi(yytext + 8);
+.		{ return yytext[0]; }

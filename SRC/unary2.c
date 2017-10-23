@@ -1,13 +1,14 @@
 /*
     module  : unary2.c
-    version : 1.8
-    date    : 04/15/17
+    version : 1.9
+    date    : 10/23/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_unary2(void)
 {
+    int arr;
     Node *prog;
 
     del_history(1);
@@ -18,13 +19,21 @@ int put_unary2(void)
     printstack(outfp);
     fprintf(outfp, "{ /* UNARY2 */");
     fprintf(outfp, "Node temp, *top, result[2];");
-    fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
+    fprintf(outfp, "temp = *stk; POP(stk); top = stk->next;");
+    if ((arr = arity(prog)) != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, START_SCOPE);
-    fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
+    fprintf(outfp, "result[0] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&temp);");
+    if (arr != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, END_SCOPE);
-    fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&result[0]);");
+    fprintf(outfp, "result[1] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&result[0]);");
     fprintf(outfp, "DUPLICATE(&result[1]); }");
     return 1;
 }

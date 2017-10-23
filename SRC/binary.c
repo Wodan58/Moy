@@ -1,7 +1,7 @@
 /*
     module  : binary.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 10/23/17
 */
 #include "runtime.h"
 
@@ -16,4 +16,5 @@ exactly two are removed from the stack.
 #define PARAMCOUNT	THREEPARAMS
 #define TOP		stk->next->next
 #define TOPSTR		"stk->next->next"
+#define ARITY		2
 #include "nary.c"

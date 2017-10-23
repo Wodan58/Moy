@@ -11,8 +11,7 @@ This project depends on the [BDW garbage collector](https://github.com/ivmai/bdw
 Changes
 -------
 
-Echo of input to output is not supported.
-Error messages are limited to "syntax error".
+Some builtins are not supported. Some other ones have been added.
 
 Installation
 ------------

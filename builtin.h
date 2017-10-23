@@ -1,7 +1,7 @@
 /*
     module  : builtin.h
-    version : 1.5
-    date    : 03/18/17
+    version : 1.6
+    date    : 10/23/17
 */
 PRIVATE void do_id(void);
 PRIVATE void do_nothing(void);	// XXX
@@ -26,6 +26,8 @@ PRIVATE void do_stdin(void);
 PRIVATE void do_stdout(void);
 PRIVATE void do_stderr(void);
 PRIVATE void do_dup(void);
+PRIVATE void do_over(void);	// XXX
+PRIVATE void do_pick(void);	// XXX
 PRIVATE void do_swap(void);
 PRIVATE void do_rollup(void);
 PRIVATE void do_rolldown(void);

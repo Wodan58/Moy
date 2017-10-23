@@ -1,0 +1,129 @@
+
+DEFINE verb-phrase == [ "is" _ ? "not" _ $ adjective | "sleeps" | [ "eats" |
+"sits" _ "on" ] _ $ noun-phrase ]
+; tree == [ "big" _ "tree" ]; term == [ $ factor _ * [ "*" _ $ factor ] ]
+; string2charlist == [ dup null ] [ pop [ ] ] [ uncons ] [ cons ] linrec
+; space == '\032 putch; shunt == [ swons ] step; sequand == [ pop false ] ifte
+; sentence == [ $ noun-phrase _ $ verb-phrase _ * [ [ "and" | "or" ] _ $
+sentence ] ]
+; second == rest first; reverse == [ [ ] ] [ "" ] iflist swap shunt
+; prs-trace == pop
+; noun-phrase == [ "John" | "Mary" | [ "a" | "the" ] _ * $ adjective _ [ "cat"
+| "dog" ] ]
+; newline == '\n putch
+; names == [ "peter" _ "smith" | "paul" _ "jones" | "mary" _ "robinson" ]
+; fib == [ 1 0 ] dip [ swap [ + ] unary ] times popd
+; factor == [ "x" | "(" _ $ expression _ ")" ]
+; fact == [ [ pop null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ]
+ifte ]
+; expression == [ $ term _ * [ "+" _ $ term ] ]
+; arith == [ "x" | "(" _ $ arith _ "+" _ $ arith _ ")" ]
+; anyname == [ [ "peter" | "paul" | "mary" ] _ [ "smith" | "jones" | "robinson"
+] ]
+; adjective == [ "brown" | "black" | "rich" ]
+; Rev-Pol == [ 'p _ * [ 'N | $ Rev-Pol _ [ 'A | 'C | 'K ] ] ]
+; Polish == [ 'p | 'N _ $ Polish | [ 'A | 'C | 'K ] _ $ Polish _ $ Polish ]
+; E == sentence prs-list-residues.
+HIDE parse-test == pop pop true or; 
+parse-string-residues == pop [ succ dup put ": " putchars ] dip [ putch ]
+step newline; 
+parse-list-residues == pop [ succ dup put ": " putchars ] dip [ put ] step
+newline; 
+parse-count == pop pop succ IN 
+prs-test == Min2Tre [ [ false ] dip [ [ parse-test ] ] ] dip parse
+; prs-string-residues == Min2Tre [ [ 0 ] dip [ [ parse-string-residues ] ] ]
+dip parse pop
+; prs-list-residues == Min2Tre [ [ 0 ] dip [ [ parse-list-residues ] ] ] dip
+parse pop
+; prs-count == Min2Tre [ [ 0 ] dip [ [ parse-count ] ] ] dip parse
+; parse == "parse B" prs-trace unswons [ [ [ dup [ | ] in ] pop [ [ ] cons cons
+dup ] dip uncons first [ swap [ [ i ] dip parse ] dip ] dip [ i ] dip parse
+] [ [ dup [ _ ] in ] pop uncons first swap [ [ parse ] cons swons ] dip
+parse ] [ [ dup [ ? ] in ] pop [ [ ] cons cons dup [ i unswons i ] dip ] dip
+[ i ] dip first parse ] [ [ dup [ + ] in ] swons [ ] cons cons cons dup [ i
+second parse ] dip i dup [ [ parse ] cons swons ] dip second parse ] [ [ dup
+[ * ] in ] swons [ [ ] cons cons dup [ i unswons i ] dip ] dip dup [ [ i
+] dip [ parse ] cons swons ] dip second parse ] [ [ dup [ $ ] in ] pop first
+i Min2Tre parse ] [ [ dup [ QUOTE ] in ] pop first swap [ swons ] dip
+unswons i ] [ [ dup [ epsilon ] in ] pop pop unswons i ] [ popd [ dup 3 pick
+first = ] [ pop [ rest ] dip unswons i ] [ pop pop pop ] ifte ] ]
+cond "parse E" prs-trace
+ END
+HIDE show-putchars-step == pop [ putchars ] step newline pop; 
+show-putchars-sp-step == pop [ putchars space ] step newline pop; 
+show-put-step == pop [ put ] step newline pop; show-put == pop put newline pop; 
+accumulate == pop popd swons IN 
+generate == [ 3 pick 3 pick size <= ] [ pop pop pop pop ] [ "generate B"
+gen-trace unswons [ [ [ dup [ | ] in ] pop [ [ ] cons cons cons dup ] dip
+uncons first [ swap [ [ i ] dip generate ] dip ] dip [ i ] dip generate ] [ [
+dup [ _ ] in ] pop uncons first [ [ generate ] cons swons ] dip generate ] [ [
+dup [ ?  ] in ] pop [ [ ] cons cons cons dup [ i unswons i ] dip ] dip [ i ]
+dip first generate ] [ [ dup [ + ] in ] swons [ ] cons cons cons cons dup [ i
+second generate ] dip i dup [ [ generate ] cons swons ] dip second
+generate ] [ [ dup [ * ] in ] swons [ [ ] cons cons cons dup [ i unswons i ]
+dip ] dip dup [ [ i ] dip [ generate ] cons swons ] dip second generate
+] [ [ dup [ $ ] in ] pop first i Min2Tre generate ] [ [ dup [ QUOTE ] in ] pop
+first swap [ swons ] dip unswons i ] [ [ dup [ epsilon ] in ] pop pop
+unswons i ] [ popd swap [ swons ] dip unswons i ] ] cond "generate E"
+gen-trace ] ifte
+; gen-trace == pop
+; gen-putchars-step == Min2Tre [ [ ] [ [ show-putchars-step ] ] ] dip generate
+; gen-putchars-sp-step == Min2Tre [ [ ] [ [ show-putchars-sp-step ] ] ] dip
+generate
+; gen-put-step == Min2Tre [ [ ] [ [ show-put-step ] ] ] dip generate
+; gen-put == Min2Tre [ [ ] [ [ show-put ] ] ] dip generate
+; gen-accumulate == Min2Tre [ [ [ ] ] dip [ ] [ [ accumulate ] ] ] dip generate
+ END
+DEFINE Min2Tre == unswons M12T popd
+; M42T == [ [ [ dup unops in ] [ unswons M42T [ ] cons ] dip swons ] [ [ dup [
+QUOTE ] in ] [ unswons [ ] cons ] dip swons ] [ [ dup list ] unswons M12T popd
+] [ [ ] cons ] ] cond
+; M32T == M42T [ over [ dup null not ] [ first bin3ops in ] sequand ] [ swap
+uncons swapd unswons M32T rollupd [ ] cons cons cons ] [ ] ifte
+; M22T == M32T [ over [ dup null not ] [ first bin2ops in ] sequand ] [ swap
+uncons swapd unswons M22T rollupd [ ] cons cons cons ] [ ] ifte
+; M12T == M22T [ over [ dup null not ] [ first bin1ops in ] sequand ] [ swap
+uncons swapd unswons M12T rollupd [ ] cons cons cons ] [ ] ifte
+.
+
+DEFINE
+    unops == [ ? * +  $ ];
+    binops == [ | _ ];
+    bin1ops == [ | ];
+    bin2ops == [ _ ];
+    bin3ops == [ ].
+
+"\ntesting the grammar library in file  grmlib.joy\n\n"
+putchars . 0 __settracegc . 1 setecho . 8 [ "The" _ [
+"cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ] gen-put .
+7 [ "The" _ ? [ ? "very" _ "big" ] _ "tree" ] gen-put . 5 [ "The" _ *
+"very" _ "big" _ "tree" ] gen-put-step . 7 [ "The" _ + [ "very" _ "big"
+] _ "tree" ] gen-putchars-sp-step . 8 [ Smith _ Peter _ "(Pete)" _ CS _
+QUOTE [ 20 22 18 16 ] _ 76 _ 'B | Jones _ Robert _ "(BOB)" _ LG _ QUOTE
+[ 12 19 13 14 ] _ 58 _ 'D ] gen-put-step . 5 [ [ 0 | 1 ] _ [ 0 | 1 ] _ [
+0 | 1 ] ] gen-put-step . 13 [ $ arith ] gen-putchars-step . 7 [ $
+expression ] gen-putchars-sp-step . 8 [ "The" _ [ "cat" | "dog" ] _
+"sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ] gen-accumulate . 7 [ $
+expression ] gen-accumulate size . 7 [ $ term ] gen-accumulate size . 7
+[ $ factor ] gen-accumulate size . 7 [ $ factor ] gen-putchars-sp-step .
+1 setecho . [ "big" "tree" ] tree prs-test . [ "peter" "smith" ] names
+prs-test . [ "paul" "jones" ] names prs-test . [ "mary" "robinson" ]
+names prs-test . [ "fred" ] names prs-test . [ "peter" "robinson" ]
+anyname prs-test . [ "paul" "smith" ] anyname prs-test . [ "paul"
+"nurks" ] anyname prs-test . [ "fred" "nurks" ] anyname prs-test . [
+"mary" "robinson" ] [ $ anyname ] prs-test . [ "mary" "robertson" ] [ $
+anyname ] prs-test . [ 'K 'p 'N 'p ] [ $ Polish ] prs-test . [ 'K 'p 'M
+'p ] [ $ Polish ] prs-test . [ 'K 'p 'N 'q ] [ $ Polish ] prs-test .
+"CNpApKpp" string2charlist Polish prs-test . "CNpBpKpp" string2charlist
+Polish prs-test . [ "*" "*" "*" "*" "*" "." ] [ * "*" ] prs-count . [
+"*" "*" "*" "." "*" "*" ] [ * "*" ] prs-count . [ "*" "*" "*" "." "*"
+"*" ] [ + "*" ] prs-count . "pNNpNANNpC " string2charlist Rev-Pol
+prs-string-residues . "pNNpNABNpC " string2charlist Rev-Pol
+prs-string-residues . [ "Mary" "sleeps" "and" "the" "cat" "sleeps" "." ]
+E . [ "the" "cat" "is" "brown" "and" "the" "dog" "is" "black" "." ] E .
+[ "the" "cat" "is" "brown" "und" "the" "dog" "is" "black" "." ] E . [
+"the" "cat" "is" "brown" "and" "the" "duck" "is" "black" "." ] E . [
+"the" "cat" "is" "brwon" "and" "the" "dog" "is" "black" "." ] E . [
+"Mary" "is" "rich" "and" "John" "is" "not" "rich" "." ] E . [ "a"
+"black" "cat" "sits" "on" "Mary" "." ] E . [ "a" "black" "cat" "sits"
+"on" "Maria" "." ] E .

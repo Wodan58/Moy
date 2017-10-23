@@ -1,0 +1,5 @@
+
+DEFINE putln == put newline; newline == '\n putch
+; gcd == [ dup 0 > ] [ dup rollup rem ] while pop.
+
+argv rest [10 strtol] map uncons uncons pop gcd putln.

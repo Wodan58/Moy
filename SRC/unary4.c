@@ -1,13 +1,14 @@
 /*
     module  : unary4.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 10/23/17
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_unary4(void)
 {
+    int arr;
     Node *prog;
 
     del_history(1);
@@ -19,19 +20,35 @@ int put_unary4(void)
     fprintf(outfp, "{ /* UNARY4 */");
     fprintf(outfp, "Node first, second, third, *top, result[4];");
     fprintf(outfp, "third = *stk; POP(stk); second = *stk; POP(stk);");
-    fprintf(outfp, "first = *stk; POP(stk); top = stk->next; CONDITION;");
+    fprintf(outfp, "first = *stk; POP(stk); top = stk->next;");
+    if ((arr = arity(prog)) != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, START_SCOPE);
-    fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&first); CONDITION;");
+    fprintf(outfp, "result[0] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&first);");
+    if (arr != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, MID_SCOPE);
-    fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&second); CONDITION;");
+    fprintf(outfp, "result[1] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&second);");
+    if (arr != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, MID_SCOPE);
-    fprintf(outfp, "result[2] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&third); CONDITION;");
+    fprintf(outfp, "result[2] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&third);");
+    if (arr != 1)
+	fprintf(outfp, "CONDITION;");
     evaluate2(prog, END_SCOPE);
-    fprintf(outfp, "result[3] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&result[0]);");
+    fprintf(outfp, "result[3] = *stk;");
+    if (arr != 1)
+	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "stk = top; DUPLICATE(&result[0]);");
     fprintf(outfp, "DUPLICATE(&result[1]);");
     fprintf(outfp, "DUPLICATE(&result[2]);");
     fprintf(outfp, "DUPLICATE(&result[3]); }");
