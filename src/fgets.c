@@ -1,11 +1,11 @@
 /*
     module  : fgets.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fgets  :  S  ->  S L
 L is the next available line (as a string) from stream S.
 */

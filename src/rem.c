@@ -1,11 +1,11 @@
 /*
     module  : rem.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 rem  :  I J  ->  K
 Integer K is the remainder of dividing I by J.  Also supports float.
 */

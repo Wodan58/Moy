@@ -1,11 +1,11 @@
 /*
     module  : setundeferror.c
-    version : 1.3
-    date    : 04/09/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 setundeferror  :  I  ->
 Sets flag that controls behavior of undefined functions
 (0 = no error, 1 = error).

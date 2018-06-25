@@ -1,11 +1,11 @@
 /*
     module  : getch.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 getch  :  ->  N
 Reads a character from input and puts it onto stack.
 */

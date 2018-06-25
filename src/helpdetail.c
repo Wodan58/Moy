@@ -1,17 +1,13 @@
 /*
     module  : helpdetail.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-#define FALSE_		13
-#define TRUE_		14
-#define MAXINT		15
-
 extern optable_t optable[];
 
-/*
+/**
 helpdetail  :  [ S1 S2 .. ]  ->
 Gives brief help on each symbol S in the list.
 */
@@ -37,9 +33,9 @@ PRIVATE void do_helpdetail(void)
 	    break;
 	} else {
 	    if ((op = node->op) == BOOLEAN_)
-		op = node->u.num ? TRUE_ : FALSE_;
+		op = node->u.num ? DO_TRUE : DO_FALSE;
 	    if (op == INTEGER_ && node->u.num == MAXINT_)
-		op = MAXINT;
+		op = DO_MAXINT;
 	    printf("%s  :  %s.\n%s\n", optable[op].name,
 		   optable[op].messg1, optable[op].messg2);
 	}

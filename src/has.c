@@ -1,11 +1,11 @@
 /*
     module  : has.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 has  :  A X  ->  B
 Tests whether aggregate A has X as a member.
 */
@@ -13,4 +13,4 @@ Tests whether aggregate A has X as a member.
 #define NAME		"has"
 #define AGGR		stk->next
 #define ELEM		stk
-#include "inhas.c"
+#include "inhas.h"

@@ -1,11 +1,11 @@
 /*
     module  : autoput.c
-    version : 1.4
-    date    : 04/08/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 autoput  :  ->  I
 Pushes current value of flag for automatic output, I = 0..2.
 */

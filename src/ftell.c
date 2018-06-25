@@ -1,11 +1,11 @@
 /*
     module  : ftell.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 ftell  :  S  ->  S I
 I is the current position of stream S.
 */
@@ -13,4 +13,4 @@ I is the current position of stream S.
 #define NAME		"ftell"
 #define CONSTRUCTOR	INTEGER_
 #define EXPR		ftell(stk->u.fil)
-#include "fileget.c"
+#include "fileget.h"

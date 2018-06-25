@@ -1,11 +1,11 @@
 /*
     module  : swap.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 swap  :  X Y  ->  Y X
 Interchanges X and Y on top of the stack.
 */

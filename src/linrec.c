@@ -1,7 +1,7 @@
 /*
     module  : linrec.c
-    version : 1.9
-    date    : 04/30/17
+    version : 1.10
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -56,12 +56,12 @@ int put_linrec(void)
 }
 #endif
 
-/*
+/**
 linrec  :  [P] [T] [R1] [R2]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses, executes R2.
 */
-static void do_linrecaux(Node *prog[])
+static void linrec(Node *prog[])
 {
     int num;
     Node *save;
@@ -76,7 +76,7 @@ static void do_linrecaux(Node *prog[])
 	exeterm(prog[1]);
     else {
 	exeterm(prog[2]);
-	do_linrecaux(prog);
+	linrec(prog);
 	exeterm(prog[3]);
     }
 }
@@ -100,5 +100,5 @@ PRIVATE void do_linrec(void)
     POP(stk);
     prog[0] = stk->u.lis;
     POP(stk);
-    do_linrecaux(prog);
+    linrec(prog);
 }

@@ -1,13 +1,13 @@
 /*
     module  : equal.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
 PRIVATE double Compare(Node *first, Node *second, int *error);
 
-/*
+/**
 equal  :  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */

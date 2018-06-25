@@ -1,11 +1,11 @@
 /*
     module  : fclose.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fclose  :  S  ->
 Stream S is closed and removed from the stack.
 */

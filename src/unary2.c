@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.9
-    date    : 10/23/17
+    version : 1.10
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -39,7 +39,7 @@ int put_unary2(void)
 }
 #endif
 
-/*
+/**
 unary2  :  X1 X2 [P]  ->  R1 R2
 Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.

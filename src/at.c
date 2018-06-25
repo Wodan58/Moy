@@ -1,11 +1,11 @@
 /*
     module  : at.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 at  :  A I  ->  X
 X (= A[I]) is the member of A at position I.
 */
@@ -13,4 +13,4 @@ X (= A[I]) is the member of A at position I.
 #define NAME		"at"
 #define AGGR		stk->next
 #define	INDEX		stk
-#include "ofat.c"
+#include "ofat.h"

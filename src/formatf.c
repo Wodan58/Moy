@@ -1,11 +1,11 @@
 /*
     module  : formatf.c
-    version : 1.6
-    date    : 04/09/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 formatf  :  F C I J  ->  S
 S is the formatted version of F in mode C
 ('e or 'E = exponential, 'f = fractional,

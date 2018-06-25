@@ -1,7 +1,7 @@
 /*
     module  : unary3.c
-    version : 1.8
-    date    : 10/23/17
+    version : 1.9
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -48,7 +48,7 @@ int put_unary3(void)
 }
 #endif
 
-/*
+/**
 unary3  :  X1 X2 X3 [P]  ->  R1 R2 R3
 Executes P three times, with Xi, returns Ri (i = 1..3).
 */

@@ -1,11 +1,11 @@
 /*
     module  : leaf.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 leaf  :  X  ->  B
 Tests whether X is not a list.
 */
@@ -13,4 +13,4 @@ Tests whether X is not a list.
 #define NAME		"leaf"
 #define REL		!=
 #define TYP		LIST_
-#include "type.c"
+#include "type.h"

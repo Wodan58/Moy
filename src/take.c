@@ -1,11 +1,11 @@
 /*
     module  : take.c
-    version : 1.7
-    date    : 04/09/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 take  :  A N  ->  B
 Aggregate B is the result of retaining just the first N elements of A.
 */

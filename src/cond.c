@@ -1,7 +1,7 @@
 /*
     module  : cond.c
-    version : 1.8
-    date    : 04/30/17
+    version : 1.9
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -46,7 +46,7 @@ int put_cond(void)
 }
 #endif
 
-/*
+/**
 cond  :  [..[[Bi] Ti]..[D]]  ->  ...
 Tries each Bi. If that yields true, then executes Ti and exits.
 If no Bi yields true, executes default D.

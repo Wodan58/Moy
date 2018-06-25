@@ -1,12 +1,12 @@
 /*
     module  : gc.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
-gc  ->
+/**
+gc  :  ->
 Initiates garbage collection.
 */
 PRIVATE void do_gc(void)

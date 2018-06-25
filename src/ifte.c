@@ -1,7 +1,7 @@
 /*
     module  : ifte.c
-    version : 1.10
-    date    : 04/30/17
+    version : 1.11
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -44,7 +44,7 @@ int put_ifte(void)
 }
 #endif
 
-/*
+/**
 ifte  :  [B] [T] [F]  ->  ...
 Executes B. If that yields true, then executes T else executes F.
 */

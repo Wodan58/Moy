@@ -1,7 +1,7 @@
 /*
     module  : builtin.h
-    version : 1.6
-    date    : 10/23/17
+    version : 1.7
+    date    : 06/25/18
 */
 PRIVATE void do_id(void);
 PRIVATE void do_nothing(void);	// XXX
@@ -10,9 +10,9 @@ PRIVATE void do_true(void);
 PRIVATE void do_maxint(void);
 PRIVATE void do_setsize(void);
 PRIVATE void do_stack(void);
-PRIVATE void do_symtabmax(void);
-PRIVATE void do_symtabindex(void);
-PRIVATE void do_dump(void);
+PRIVATE void do___symtabmax(void);
+PRIVATE void do___symtabindex(void);
+PRIVATE void do___dump(void);
 PRIVATE void do_conts(void);
 PRIVATE void do_autoput(void);
 PRIVATE void do_undeferror(void);
@@ -21,7 +21,7 @@ PRIVATE void do_echo(void);
 PRIVATE void do_clock(void);
 PRIVATE void do_time(void);
 PRIVATE void do_rand(void);
-PRIVATE void do_memorymax(void);
+PRIVATE void do___memorymax(void);
 PRIVATE void do_stdin(void);
 PRIVATE void do_stdout(void);
 PRIVATE void do_stderr(void);
@@ -199,13 +199,13 @@ PRIVATE void do_treestep(void);
 PRIVATE void do_treerec(void);
 PRIVATE void do_treegenrec(void);
 PRIVATE void do_help(void);
-PRIVATE void do_help1(void);
+PRIVATE void do__help(void);
 PRIVATE void do_helpdetail(void);
 PRIVATE void do_manual(void);
-PRIVATE void do_html_manual(void);
-PRIVATE void do_latex_manual(void);
-PRIVATE void do_manual_list(void);
-PRIVATE void do_settracegc(void);
+PRIVATE void do___html_manual(void);
+PRIVATE void do___latex_manual(void);
+PRIVATE void do___manual_list(void);
+PRIVATE void do___settracegc(void);
 PRIVATE void do_setautoput(void);
 PRIVATE void do_setundeferror(void);
 PRIVATE void do_setecho(void);
@@ -214,7 +214,7 @@ PRIVATE void do_system(void);
 PRIVATE void do_getenv(void);
 PRIVATE void do_argv(void);
 PRIVATE void do_argc(void);
-PRIVATE void do_memoryindex(void);
+PRIVATE void do___memoryindex(void);
 PRIVATE void do_get(void);
 PRIVATE void do_getch(void);	// XXX
 PRIVATE void do_put(void);

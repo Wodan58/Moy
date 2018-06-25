@@ -1,11 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : pick.c
+    version : 1.1
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 pick  :  X Y Z 2  ->  X Y Z X
 Pushes an extra copy of nth (e.g. 2) item X on top of the stack.
 */

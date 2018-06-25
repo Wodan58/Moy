@@ -1,11 +1,11 @@
 /*
     module  : maxint.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 maxint  :  ->  maxint
 Pushes largest integer (platform dependent). Typically it is 32 bits.
 */

@@ -1,11 +1,11 @@
 /*
     module  : rollup.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 rollup  :  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
 */

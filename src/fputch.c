@@ -1,11 +1,11 @@
 /*
     module  : fputch.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fputch  :  S C  ->  S
 The character C is written to the current position of stream S.
 */

@@ -1,11 +1,11 @@
 /*
     module  : not.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 not  :  X  ->  Y
 Y is the complement of set X, logical negation for truth values.
 */

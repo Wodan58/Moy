@@ -1,11 +1,11 @@
 /*
     module  : float.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 float  :  R  ->  B
 Tests whether R is a float.
 */
@@ -13,4 +13,4 @@ Tests whether R is a float.
 #define NAME		"float"
 #define REL		==
 #define TYP		FLOAT_
-#include "type.c"
+#include "type.h"

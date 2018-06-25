@@ -1,11 +1,11 @@
 /*
     module  : include.c
-    version : 1.3
-    date    : 04/09/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 include  :  "filnam.ext"  ->
 Transfers input to file whose name is "filnam.ext".
 On end-of-file returns to previous input file.

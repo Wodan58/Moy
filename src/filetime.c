@@ -1,12 +1,12 @@
 /*
     module  : filetime.c
-    version : 1.3
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 #include <sys/stat.h>
 
-/*
+/**
 filetime  :  F  ->  T
 T is the modification time of file F.
 */
@@ -20,7 +20,8 @@ PRIVATE void do_filetime(void)
     COMPILE;
     ONEPARAM("filetime");
 #endif
-    stat(stk->u.str, &buf);
+    if (stat(stk->u.str, &buf) == -1)
+	buf.st_mtime = 0;
     if (OUTSIDE) {
 	stk->op = INTEGER_;
 	stk->u.num = buf.st_mtime;

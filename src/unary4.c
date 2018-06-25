@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.8
-    date    : 10/23/17
+    version : 1.9
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -56,7 +56,7 @@ int put_unary4(void)
 }
 #endif
 
-/*
+/**
 unary4  :  X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
 Executes P four times, with Xi, returns Ri (i = 1..4).
 */

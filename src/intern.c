@@ -1,11 +1,11 @@
 /*
     module  : intern.c
-    version : 1.7
-    date    : 04/09/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 intern  :  "sym"  ->  sym
 Pushes the item whose name is "sym".
 */

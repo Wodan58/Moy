@@ -1,11 +1,11 @@
 /*
     module  : format.c
-    version : 1.7
-    date    : 04/09/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 format  :  N C I J  ->  S
 S is the formatted version of N in mode C
 ('d or 'i = decimal, 'o = octal, 'x or

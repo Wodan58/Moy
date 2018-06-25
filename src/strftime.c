@@ -1,13 +1,13 @@
 /*
     module  : strftime.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
 PRIVATE void decode_time(struct tm *t);
 
-/*
+/**
 strftime  :  T S1  ->  S2
 Formats a list T in the format of localtime or gmtime
 using string S1 and pushes the result S2.

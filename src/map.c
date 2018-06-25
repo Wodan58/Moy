@@ -1,12 +1,30 @@
 /*
     module  : map.c
-    version : 1.14
-    date    : 10/23/17
+    version : 1.15
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-PRIVATE Node *backup(void);
-PRIVATE void restore(Node *cur);
+/*
+    Make a backup of the stack
+*/
+PRIVATE Node *backup(void)
+{
+    Node *root = 0, *cur;
+
+    for (cur = stk; cur != memory; cur = cur->next)
+	root = heapnode(cur->op, cur->u.ptr, root);
+    return root;
+}
+
+/*
+    Restore an old copy of the stack
+*/
+PRIVATE void restore(Node *cur)
+{
+    for (stk = memory; cur; cur = cur->next)
+	DUPLICATE(cur);
+}
 
 #ifndef NCHECK
 int put_map(void)
@@ -151,7 +169,7 @@ int put_map(void)
 }
 #endif
 
-/*
+/**
 map  :  A [P]  ->  B
 Executes P on each member of aggregate A,
 collects results in sametype aggregate B.

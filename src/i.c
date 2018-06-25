@@ -1,7 +1,7 @@
 /*
     module  : i.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -21,7 +21,7 @@ int put_i(void)
 }
 #endif
 
-/*
+/**
 i  :  [P]  ->  ...
 Executes P. So, [P] i  ==  P.
 */

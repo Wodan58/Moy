@@ -1,11 +1,11 @@
 /*
     module  : fput.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fput  :  S X  ->  S
 Writes X to stream S, pops X off stack.
 */

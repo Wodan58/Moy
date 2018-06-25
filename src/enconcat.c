@@ -1,11 +1,11 @@
 /*
     module  : enconcat.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 enconcat  :  X S T  ->  U
 Sequence U is the concatenation of sequences S and T
 with X inserted between S and T (== swapd cons concat).

@@ -1,11 +1,11 @@
 /*
     module  : fread.c
-    version : 1.7
-    date    : 04/09/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fread  :  S I  ->  S L
 I bytes are read from the current position of stream S
 and returned as a list of I integers.

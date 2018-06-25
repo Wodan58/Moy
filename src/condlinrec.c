@@ -1,7 +1,7 @@
 /*
     module  : condlinrec.c
-    version : 1.10
-    date    : 04/30/17
+    version : 1.11
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -62,15 +62,7 @@ int put_condnestrec(void)
 }
 #endif
 
-/*
-condnestrec  :  [ [C1] [C2] .. [D] ]  ->  ...
-A generalisation of condlinrec.
-Each [Ci] is of the form [[B] [R1] [R2] .. [Rn]] and [D] is of the form
-[[R1] [R2] .. [Rn]]. Tries each B, or if all fail, takes the default [D].
-For the case taken, executes each [Ri] but recurses between any two
-consecutive [Ri] (n > 3 would be exceptional.)
-*/
-PRIVATE void do_condnestrecaux(Node *root)
+PRIVATE void condnestrec(Node *root)
 {
     int num = 0;
     Node *cur, *list, *save;
@@ -89,29 +81,12 @@ PRIVATE void do_condnestrecaux(Node *root)
     cur = num ? cur->u.lis->next : cur->u.lis;
     exeterm(cur->u.lis);
     while ((cur = cur->next) != 0) {
-	do_condnestrecaux(root);
+	condnestrec(root);
 	exeterm(cur->u.lis);
     }
 }
 
-PRIVATE void do_condnestrec(void)
-{
-    Node *prog;
-
-#ifndef NCHECK
-    if (optimizing && put_condnestrec())
-	return;
-    COMPILE;
-    ONEPARAM("condnestrec");
-    LIST("condnestrec");
-    CHECKEMPTYLIST(stk->u.lis, "condnestrec");
-#endif
-    prog = stk->u.lis;
-    POP(stk);
-    do_condnestrecaux(prog);
-}
-
-/*
+/**
 condlinrec  :  [ [C1] [C2] .. [D] ]  ->  ...
 Each [Ci] is of the form [[B] [T]] or [[B] [R1] [R2]].
 Tries each B. If that yields true and there is just a [T], executes T and exit.
@@ -134,5 +109,5 @@ PRIVATE void do_condlinrec(void)
 #endif
     prog = stk->u.lis;
     POP(stk);
-    do_condnestrecaux(prog);
+    condnestrec(prog);
 }

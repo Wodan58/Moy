@@ -1,7 +1,7 @@
 /*
     module  : treerec.c
-    version : 1.5
-    date    : 04/22/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -43,16 +43,16 @@ int put_treerec(void)
 }
 #endif
 
-/*
+/**
 treerec  :  T [O] [C]  ->  ...
 T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
-static void do_treerecaux(void)
+static void treerec(void)
 {
     Node *save;
 
     if (stk->next->op == LIST_) {
-	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(do_treerecaux, 0));
+	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treerec, 0));
 	do_cons();
 	exeterm(stk->u.lis->u.lis->next);
     } else {
@@ -72,5 +72,5 @@ PRIVATE void do_treerec(void)
     TWOQUOTES("treerec");
 #endif
     do_cons();
-    do_treerecaux();
+    treerec();
 }

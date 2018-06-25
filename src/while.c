@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.9
-    date    : 04/30/17
+    version : 1.10
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -37,7 +37,7 @@ int put_while(void)
 }
 #endif
 
-/*
+/**
 while  :  [B] [D]  ->  ...
 While executing B yields true executes D.
 */

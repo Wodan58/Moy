@@ -1,11 +1,11 @@
 /*
     module  : fseek.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fseek  :  S P W  ->  S B
 Stream S is repositioned to position P relative to whence-point W,
 where W = 0, 1, 2 for beginning, current position, end respectively.

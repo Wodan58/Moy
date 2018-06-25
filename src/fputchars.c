@@ -1,11 +1,11 @@
 /*
     module  : fputchars.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fputchars  :  S "abc.."  ->  S
 The string abc.. (no quotes) is written to the current position of stream S.
 */
@@ -25,3 +25,13 @@ PRIVATE void do_fputchars(void)
     POP(stk);
     fprintf(stk->u.fil, "%s", str);
 }
+
+/**
+fputstring  :  S "abc.."  ->  S
+== fputchars, as a temporary alternative.
+*/
+
+
+
+
+/* fputchars.c */

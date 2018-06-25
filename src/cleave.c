@@ -1,7 +1,7 @@
 /*
     module  : cleave.c
-    version : 1.8
-    date    : 10/23/17
+    version : 1.9
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -55,7 +55,7 @@ int put_cleave(void)
 }
 #endif
 
-/*
+/**
 cleave  :  X [P1] [P2]  ->  R1 R2
 Executes P1 and P2, each with X on top, producing two results.
 */

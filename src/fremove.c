@@ -1,11 +1,11 @@
 /*
     module  : fremove.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fremove  :  P  ->  B
 The file system object with pathname P is removed from the file system.
 B is a boolean indicating success or failure.

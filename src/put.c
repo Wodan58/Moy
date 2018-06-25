@@ -1,11 +1,11 @@
 /*
     module  : put.c
-    version : 1.3
-    date    : 04/09/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 put  :  X  ->
 Writes X to output, pops X off stack.
 */

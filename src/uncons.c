@@ -1,11 +1,11 @@
 /*
     module  : uncons.c
-    version : 1.6
-    date    : 04/22/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 uncons  :  A  ->  F R
 F and R are the first and the rest of non-empty aggregate A.
 */

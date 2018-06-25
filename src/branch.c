@@ -1,7 +1,7 @@
 /*
     module  : branch.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -31,7 +31,7 @@ int put_branch(void)
 }
 #endif
 
-/*
+/**
 branch  :  B [T] [F]  ->  ...
 If B is true, then executes T else executes F.
 */

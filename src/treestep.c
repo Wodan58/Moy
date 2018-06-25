@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.5
-    date    : 04/22/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -38,11 +38,11 @@ int put_treestep(void)
 }
 #endif
 
-/*
+/**
 treestep  :  T [P]  ->  ...
 Recursively traverses leaves of tree T, executes P for each leaf.
 */
-static void do_treestepaux(Node *item, Node *prog)
+static void treestep(Node *item, Node *prog)
 {
     Node *cur;
 
@@ -50,7 +50,7 @@ static void do_treestepaux(Node *item, Node *prog)
 	DUPLICATE(item);
 	exeterm(prog);
     } else for (cur = item->u.lis; cur; cur = cur->next)
-	do_treestepaux(cur, prog);
+	treestep(cur, prog);
 }
 
 PRIVATE void do_treestep(void)
@@ -68,5 +68,5 @@ PRIVATE void do_treestep(void)
     POP(stk);
     item = stk;
     POP(stk);
-    do_treestepaux(item, prog);
+    treestep(item, prog);
 }

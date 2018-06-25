@@ -1,11 +1,11 @@
 /*
     module  : argv.c
-    version : 1.5
-    date    : 04/08/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 argv  :  ->  A
 Creates an aggregate A containing the interpreter's command line arguments.
 */

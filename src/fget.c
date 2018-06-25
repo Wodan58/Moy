@@ -1,11 +1,11 @@
 /*
     module  : fget.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fget  :  S  ->  S F
 Reads a factor from stream S and pushes it onto stack.
 */

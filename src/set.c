@@ -1,11 +1,11 @@
 /*
     module  : set.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 set  :  X  ->  B
 Tests whether X is a set.
 */
@@ -13,4 +13,4 @@ Tests whether X is a set.
 #define NAME		"set"
 #define REL		==
 #define TYP		SET_
-#include "type.c"
+#include "type.h"

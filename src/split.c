@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.14
-    date    : 04/22/17
+    version : 1.15
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -133,7 +133,7 @@ int put_split(void)
 }
 #endif
 
-/*
+/**
 split  :  A [B]  ->  A1 A2
 Uses test B to split aggregate A into sametype aggregates A1 and A2.
 */

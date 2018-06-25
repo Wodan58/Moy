@@ -1,12 +1,10 @@
 /*
     module  : outfile.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 06/22/18
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
 
 #define MAXOUT		10
 

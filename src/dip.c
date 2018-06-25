@@ -1,7 +1,7 @@
 /*
     module  : dip.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -27,7 +27,7 @@ int put_dip(void)
 }
 #endif
 
-/*
+/**
 dip  :  X [P]  ->  ...  X
 Saves X, executes P, pushes X back.
 */

@@ -1,11 +1,11 @@
 /*
     module  : abs.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 abs  :  N1  ->  N2
 Integer N2 is the absolute value (0,1,2..) of integer N1,
 or float N2 is the absolute value (0.0 ..) of float N1.

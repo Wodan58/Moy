@@ -1,11 +1,11 @@
 /*
     module  : fold.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fold  :  A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
 and combines with binary operator P to produce value V.

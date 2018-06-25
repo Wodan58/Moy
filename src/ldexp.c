@@ -1,11 +1,11 @@
 /*
     module  : ldexp.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 ldexp  :  F I  ->  G
 G is F times 2 to the Ith power.
 */

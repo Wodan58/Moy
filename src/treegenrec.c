@@ -1,7 +1,7 @@
 /*
     module  : treegenrec.c
-    version : 1.6
-    date    : 04/22/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -46,12 +46,12 @@ int put_treegenrec(void)
 }
 #endif
 
-/*
+/**
 treegenrec  :  T [O1] [O2] [C]  ->  ...
 T is a tree. If T is a leaf, executes O1.
 Else executes O2 and then [[[O1] [O2] C] treegenrec] C.
 */
-static void do_treegenrecaux(void)
+static void treegenrec(void)
 {
     Node *save;
 
@@ -60,7 +60,7 @@ static void do_treegenrecaux(void)
     if (stk->op == LIST_) {
 	exeterm(save->u.lis->next->u.lis);
 	DUPLICATE(save);
-	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(do_treegenrecaux, 0));
+	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treegenrec, 0));
 	do_cons();
 	exeterm(stk->u.lis->u.lis->next->next);
     } else
@@ -78,5 +78,5 @@ PRIVATE void do_treegenrec(void)
 #endif
     do_cons();
     do_cons();
-    do_treegenrecaux();
+    treegenrec();
 }

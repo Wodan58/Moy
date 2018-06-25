@@ -1,12 +1,12 @@
 /*
     module  : abort.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
-abort  ->
+/**
+abort  :  ->
 Aborts execution of current Joy program, returns to Joy main cycle.
 */
 PRIVATE void do_abort(void)

@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.14
-    date    : 04/22/17
+    version : 1.15
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -107,7 +107,7 @@ int put_filter(void)
 }
 #endif
 
-/*
+/**
 filter  :  A [B]  ->  A1
 Uses test B to filter aggregate A producing sametype aggregate A1.
 */

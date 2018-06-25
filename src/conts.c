@@ -1,12 +1,12 @@
 /*
     module  : conts.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
-conts  ->  [[P] [Q] ..]
+/**
+conts  :  ->  [[P] [Q] ..]
 Pushes current continuations. Buggy, do not use.
 */
 PRIVATE void do_conts(void)

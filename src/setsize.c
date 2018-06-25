@@ -1,11 +1,11 @@
 /*
     module  : setsize.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 setsize  :  ->  setsize
 Pushes the maximum number of elements in a set (platform dependent).
 Typically it is 32, and set members are in the range 0..31.

@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.15
-    date    : 10/23/17
+    version : 1.16
+    date    : 06/22/18
 */
 #define BIT_32
 
@@ -39,7 +39,7 @@ extern char **g_argv;
 extern int g_argc, error;
 extern FILE *outfp, *declfp;
 extern char *mainfunc;
-extern unsigned compiling, optimizing, identifier;
+extern unsigned debugging, compiling, optimizing, identifier;
 extern unsigned autoput, undeferror, echoflag, tracegc;
 
 /* lexer.l */

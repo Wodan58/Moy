@@ -1,7 +1,7 @@
 /*
     module  : app1.c
-    version : 1.4
-    date    : 04/15/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -21,7 +21,7 @@ int put_app1(void)
 }
 #endif
 
-/*
+/**
 app1  :  X [P]  ->  R
 Executes P, pushes result R on stack with X.
 */

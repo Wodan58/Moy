@@ -1,11 +1,11 @@
 /*
     module  : get.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 get  :  ->  F
 Reads a factor from input and pushes it onto stack.
 */

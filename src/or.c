@@ -1,11 +1,11 @@
 /*
     module  : or.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 or  :  X Y  ->  Z
 Z is the union of sets X and Y, logical disjunction for truth values.
 */
@@ -13,4 +13,4 @@ Z is the union of sets X and Y, logical disjunction for truth values.
 #define NAME		"or"
 #define OPER1		|
 #define OPER2		||
-#include "andorxor.c"
+#include "andorxor.h"

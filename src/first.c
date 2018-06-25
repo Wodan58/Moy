@@ -1,11 +1,11 @@
 /*
     module  : first.c
-    version : 1.5
-    date    : 04/22/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 first  :  A  ->  F
 F is the first member of the non-empty aggregate A.
 */

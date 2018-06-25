@@ -1,11 +1,11 @@
 /*
     module  : fwrite.c
-    version : 1.6
-    date    : 04/09/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fwrite  :  S L  ->  S
 A list of integers are written as bytes to the current position of stream S.
 */

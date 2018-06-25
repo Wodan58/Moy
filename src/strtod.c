@@ -1,11 +1,11 @@
 /*
     module  : strtod.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 strtod  :  S  ->  R
 String S is converted to the float R.
 */

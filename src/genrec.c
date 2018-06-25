@@ -1,7 +1,7 @@
 /*
     module  : genrec.c
-    version : 1.10
-    date    : 04/30/17
+    version : 1.11
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -58,12 +58,12 @@ int put_genrec(void)
 }
 #endif
 
-/*
+/**
 genrec  :  [B] [T] [R1] [R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */
-static void do_genrecaux(void)
+static void genrec(void)
 {
     int num;
     Node code, *prog, *save;
@@ -82,7 +82,7 @@ static void do_genrecaux(void)
     else {
 	exeterm(code.u.lis->next->next->u.lis);
 	PUSH(LIST_, code.u.lis);
-	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(do_genrecaux, 0));
+	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(genrec, 0));
 	do_cons();
 	exeterm(code.u.lis->next->next->next);
     }
@@ -100,5 +100,5 @@ PRIVATE void do_genrec(void)
     do_cons();
     do_cons();
     do_cons();
-    do_genrecaux();
+    genrec();
 }

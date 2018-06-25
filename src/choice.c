@@ -1,11 +1,11 @@
 /*
     module  : choice.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 choice  :  B T F  ->  X
 If B is true, then X = T else X = F.
 */

@@ -1,11 +1,11 @@
 /*
     module  : dupd.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 dupd  :  Y Z  ->  Y Y Z
 As if defined by:   dupd  ==  [dup] dip
 */
@@ -13,4 +13,4 @@ As if defined by:   dupd  ==  [dup] dip
 #define NAME		"dupd"
 #define PARAMCOUNT	TWOPARAMS
 #define ARGUMENT	do_dup
-#include "dipped.c"
+#include "dipped.h"

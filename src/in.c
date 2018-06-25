@@ -1,11 +1,11 @@
 /*
     module  : in.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 in  :  X A  ->  B
 Tests whether X is a member of aggregate A.
 */
@@ -13,4 +13,4 @@ Tests whether X is a member of aggregate A.
 #define NAME		"in"
 #define AGGR		stk
 #define ELEM		stk->next
-#include "inhas.c"
+#include "inhas.h"

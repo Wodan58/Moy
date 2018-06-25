@@ -1,11 +1,11 @@
 /*
     module  : undefs.c
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 undefs  :  ->  [..]
 Push a list of all undefined symbols in the current symbol table.
 */

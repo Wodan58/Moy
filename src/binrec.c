@@ -1,7 +1,7 @@
 /*
     module  : binrec.c
-    version : 1.9
-    date    : 04/30/17
+    version : 1.10
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -60,13 +60,13 @@ int put_binrec(void)
 }
 #endif
 
-/*
+/**
 binrec  :  [P] [T] [R1] [R2]  ->  ...
 Executes P. If that yields true, executes T.
 Else uses R1 to produce two intermediates, recurses on both,
 then executes R2 to combine their results.
 */
-static void do_binrecaux(Node *prog[])
+static void binrec(Node *prog[])
 {
     int num;
     Node *save, temp;
@@ -83,9 +83,9 @@ static void do_binrecaux(Node *prog[])
 	exeterm(prog[2]);
 	temp = *stk;
 	POP(stk);
-	do_binrecaux(prog);
+	binrec(prog);
 	DUPLICATE(&temp);
-	do_binrecaux(prog);
+	binrec(prog);
 	exeterm(prog[3]);
     }
 }
@@ -109,5 +109,5 @@ PRIVATE void do_binrec(void)
     POP(stk);
     prog[0] = stk->u.lis;
     POP(stk);
-    do_binrecaux(prog);
+    binrec(prog);
 }

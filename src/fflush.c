@@ -1,11 +1,11 @@
 /*
     module  : fflush.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 fflush  :  S  ->  S
 Flush stream S, forcing all buffered output to be written.
 */

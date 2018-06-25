@@ -1,11 +1,11 @@
 /*
     module  : frexp.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 frexp  :  F  ->  G I
 G is the mantissa and I is the exponent of F.
 Unless F = 0, 0.5 <= abs(G) < 1.0.

@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.8
-    date    : 04/22/17
+    version : 1.9
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -46,7 +46,7 @@ int put_construct(void)
 }
 #endif
 
-/*
+/**
 construct  :  [P] [[P1] [P2] ..]  ->  R1 R2 ..
 Saves state of stack and then executes [P].
 Then executes each [Pi] to give Ri pushed onto saved stack.

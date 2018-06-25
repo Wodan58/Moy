@@ -1,11 +1,11 @@
 /*
     module  : frename.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 frename  :  P1 P2  ->  B
 The file system object with pathname P1 is renamed to P2.
 B is a boolean indicating success or failure.

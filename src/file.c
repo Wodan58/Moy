@@ -1,11 +1,11 @@
 /*
     module  : file.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 file  :  F  ->  B
 Tests whether F is a file.
 */
@@ -13,4 +13,4 @@ Tests whether F is a file.
 #define NAME		"file"
 #define REL		==
 #define TYP		FILE_
-#include "type.c"
+#include "type.h"

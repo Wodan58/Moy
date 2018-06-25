@@ -1,11 +1,11 @@
 /*
     module  : sign.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 sign  :  N1  ->  N2
 Integer N2 is the sign (-1 or 0 or +1) of integer N1,
 or float N2 is the sign (-1.0 or 0.0 or 1.0) of float N1.

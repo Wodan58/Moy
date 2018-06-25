@@ -1,11 +1,11 @@
 /*
     module  : strtol.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 strtol  :  S I  ->  J
 String S is converted to the integer J using base I.
 If I = 0, assumes base 10,

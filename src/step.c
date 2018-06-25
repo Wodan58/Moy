@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.6
-    date    : 04/22/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -81,7 +81,7 @@ int put_step(void)
 }
 #endif
 
-/*
+/**
 step  :  A [P]  ->  ...
 Sequentially putting members of aggregate A onto stack,
 executes P for each member of A.

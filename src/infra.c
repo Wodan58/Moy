@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.7
-    date    : 04/15/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -52,7 +52,7 @@ PRIVATE void lst2stk(Node *cur)
     }
 }
 
-/*
+/**
 infra  :  L1 [P]  ->  L2
 Using list L1 as stack, executes P and returns a new list L2.
 The first element of L1 is used as the top of stack,

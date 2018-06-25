@@ -1,11 +1,11 @@
 /*
     module  : small.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 small  :  X  ->  B
 Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
 */

@@ -1,11 +1,11 @@
 /*
     module  : concat.c
-    version : 1.7
-    date    : 04/22/17
+    version : 1.8
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 concat  :  S T  ->  U
 Sequence U is the concatenation of sequences S and T.
 */

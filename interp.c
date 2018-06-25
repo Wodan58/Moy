@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.5
-    date    : 10/23/17
+    version : 1.7
+    date    : 06/25/18
 */
 #ifdef RUNTIME
 #include "runtime.c"
@@ -34,10 +34,12 @@ start:
 #endif
     for (; code; code = code->next) {
 #ifdef TRACE
-	writestack(stk, stderr);
-	fprintf(stderr, " . ");
-	writeterm(code, stderr);
-	fprintf(stderr, "\n");
+	if (debugging) {
+	    writestack(stk, stderr);
+	    fprintf(stderr, " . ");
+	    writeterm(code, stderr);
+	    fprintf(stderr, "\n");
+	}
 #endif
 	switch (code->op) {
 	case BOOLEAN_:
@@ -61,9 +63,9 @@ start:
 	    break;
 	case USR_:
 	    sym = code->u.ent;
-	    if ((node = sym->u.body) == 0 && undeferror)
+	    if ((node = sym->u.body) == 0 && undeferror) {
 		execerror("definition", sym->name);
-	    else if (node && (sym->flags & IS_BUILTIN))
+	    } else if (node && (sym->flags & IS_BUILTIN))
 		(*sym->u.proc)();
 	    else if (node) {
 #ifndef RUNTIME
@@ -304,7 +306,7 @@ start:
 	    do_infra();
 	    break;
 	case DO_SETTRACEGC:
-	    do_settracegc();
+	    do___settracegc();
 	    break;
 	case DO_POPD:
 	    do_popd();
@@ -418,13 +420,13 @@ start:
 	    do_setsize();
 	    break;
 	case DO_SYMTABMAX:
-	    do_symtabmax();
+	    do___symtabmax();
 	    break;
 	case DO_SYMTABINDEX:
-	    do_symtabindex();
+	    do___symtabindex();
 	    break;
 	case DO_DUMP:
-	    do_dump();
+	    do___dump();
 	    break;
 	case DO_CONTS:
 	    do_conts();
@@ -448,7 +450,7 @@ start:
 	    do_rand();
 	    break;
 	case DO_MEMORYMAX:
-	    do_memorymax();
+	    do___memorymax();
 	    break;
 	case DO_STDIN:
 	    do_stdin();
@@ -634,7 +636,7 @@ start:
 	    do_getenv();
 	    break;
 	case DO_MEMORYINDEX:
-	    do_memoryindex();
+	    do___memoryindex();
 	    break;
 	case DO_GETCH:
 	    do_getch();
@@ -646,7 +648,7 @@ start:
 	    do_help();
 	    break;
 	case DO_HELP1:
-	    do_help1();
+	    do__help();
 	    break;
 	case DO_HELPDETAIL:
 	    do_helpdetail();
@@ -655,13 +657,13 @@ start:
 	    do_manual();
 	    break;
 	case DO_HTML_MANUAL:
-	    do_html_manual();
+	    do___html_manual();
 	    break;
 	case DO_LATEX_MANUAL:
-	    do_latex_manual();
+	    do___latex_manual();
 	    break;
 	case DO_MANUAL_LIST:
-	    do_manual_list();
+	    do___manual_list();
 	    break;
 	case DO_CASTING:
 	    do_casting();
@@ -757,10 +759,8 @@ start:
 	    printf("unknown: %s\n", opername(code->op));
 	    exit(1);
 	}
-#ifndef RUNTIME
-#ifdef TRACE
+#if 0
 	prt_history();
-#endif
 #endif
     }
 }

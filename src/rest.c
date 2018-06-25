@@ -1,11 +1,11 @@
 /*
     module  : rest.c
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 rest  :  A  ->  R
 R is the non-empty aggregate A with its first member removed.
 */

@@ -1,11 +1,11 @@
 /*
     module  : unstack.c
-    version : 1.5
-    date    : 04/15/17
+    version : 1.6
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 unstack  :  [X Y ..]  ->  ..Y X
 The list [X Y ..] becomes the new stack.
 */

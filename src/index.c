@@ -1,11 +1,11 @@
 /*
     module  : index.c
-    version : 1.2
-    date    : 04/09/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 index  :  I A  ->  X
 X (= A[I]) is the member of A at position I (I = 0,1).
 */

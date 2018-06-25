@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.9
-    date    : 04/30/17
+    version : 1.10
+    date    : 06/25/18
 */
 #include "runtime.h"
 
@@ -50,12 +50,12 @@ int put_tailrec(void)
 }
 #endif
 
-/*
+/**
 tailrec  :  [P] [T] [R1]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses.
 */
-static void do_tailrecaux(Node *prog[])
+static void tailrec(Node *prog[])
 {
     int num;
     Node *save;
@@ -92,5 +92,5 @@ PRIVATE void do_tailrec(void)
     POP(stk);
     prog[0] = stk->u.lis;
     POP(stk);
-    do_tailrecaux(prog);
+    tailrec(prog);
 }

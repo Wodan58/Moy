@@ -1,11 +1,11 @@
 /*
     module  : integer.c
-    version : 1.2
-    date    : 03/12/17
+    version : 1.3
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 integer  :  X  ->  B
 Tests whether X is an integer.
 */
@@ -13,4 +13,4 @@ Tests whether X is an integer.
 #define NAME		"integer"
 #define REL		==
 #define TYP		INTEGER_
-#include "type.c"
+#include "type.h"

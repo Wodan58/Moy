@@ -1,11 +1,11 @@
 /*
     module  : setecho.c
-    version : 1.3
-    date    : 04/09/17
+    version : 1.4
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 setecho  :  I  ->
 Sets value of echo flag for listing.
 I = 0: no echo, 1: echo, 2: with tab, 3: and linenumber.

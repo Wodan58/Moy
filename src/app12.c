@@ -1,11 +1,11 @@
 /*
     module  : app12.c
-    version : 1.4
-    date    : 03/12/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 app12  :  X Y1 Y2 [P]  ->  R1 R2
 Executes P twice, with Y1 and Y2, returns R1 and R2.
 */

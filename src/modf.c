@@ -1,11 +1,11 @@
 /*
     module  : modf.c
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 06/25/18
 */
 #include "runtime.h"
 
-/*
+/**
 modf  :  F  ->  G H
 G is the fractional part and H is the integer part
 (but expressed as a float) of F.

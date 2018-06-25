@@ -1,15 +1,15 @@
 /*
     module  : main.c
-    version : 1.5
-    date    : 05/26/17
+    version : 1.7
+    date    : 06/25/18
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <setjmp.h>
-#include <time.h>
+#include <unistd.h>
+#include <io.h>
 #include "joy.h"
-#include "symbol.h"
 
 static jmp_buf begin;
 
@@ -23,31 +23,13 @@ void execerror(char *message, const char *op)
 
 int main(int argc, char **argv)
 {
-    char *file;
-
-    initsym(argc, argv);
-    if (argc > 1) {
-	g_argc--;
-	g_argv++;
-	if (!strcmp(file = argv[1], "-c"))
-	    compiling = 1;
-	else if (!strcmp(argv[1], "-o"))
-	    compiling = optimizing = 1;
-	if (compiling) {
-	    if (!strcmp(file = argv[2], "-f")) {
-		mainfunc = argv[3];
-		file = argv[4];
-	    }
-	    initialise();
-	}
-	if ((yyin = freopen(file, "r", stdin)) == 0) {
-	    fprintf(stderr, "failed to open the file '%s'.\n", file);
-	    return 1;
-	}
-    } else {
+    if (argc == 1 && isatty(fileno(stdin))) {
 	printf("JOY  -  compiled at %s on %s (BDW)\n", __TIME__, __DATE__);
 	printf("Copyright 2001 by Manfred von Thun\n");
     }
+    initsym(argc, argv);
+    if (compiling)
+	initialise();
     setjmp(begin);
     argc = yyparse();
     if (compiling)
