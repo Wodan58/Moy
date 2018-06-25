@@ -1,14 +1,17 @@
 /*
     module  : main.c
-    version : 1.7
+    version : 1.8
     date    : 06/25/18
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <setjmp.h>
-#include <unistd.h>
+#ifdef _MSC_VER
 #include <io.h>
+#else
+#include <unistd.h>
+#endif
 #include "joy.h"
 
 static jmp_buf begin;
