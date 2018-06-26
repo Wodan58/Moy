@@ -2,9 +2,14 @@
 #  Generate parse.h
 #
 PATH=.:usr/local/wbin:$PATH
-if [ parse.y -nt parse.h ]
+if [ ! -f parse.h ]
 then
-bison -doparse.c parse.y
+echo creating parse.h
+$*
+elif [ parse.y -nt parse.h ]
+then
+echo updating parse.h
+$*
 else
 echo parse.h is up-to-date
 fi

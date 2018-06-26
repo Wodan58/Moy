@@ -2,6 +2,9 @@
 #  Generate table.c
 #
 PATH=.:usr/local/wbin:$PATH
+if [ ! -f table.c ]
+echo creating table.c
+else
 todo=0
 for i in src/*.c
 do
@@ -15,6 +18,8 @@ if [ $todo -eq 0 ]
 then
 echo table.c is up-to-date
 exit
+fi
+echo updating table.c
 fi
 for i in src/*.c
 do
