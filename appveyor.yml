@@ -14,8 +14,8 @@ install:
   # install flex/bison
   - if not exist %WINFLEXBISON_ARCHIVE% appveyor DownloadFile "https://sourceforge.net/projects/winflexbison/files/%WINFLEXBISON_ARCHIVE%"
   - 7z x -y %WINFLEXBISON_ARCHIVE%
-  - ren win_flex.exe flex.exe
-  - ren win_bixon.exe bison.exe
+  - if exist win_flex.exe copy win_flex.exe flex.exe
+  - if exist win_bison.exe copy win_bixon.exe bison.exe
   - flex --version
   - bison --version
   # install unix tools
