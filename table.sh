@@ -3,6 +3,7 @@
 #
 PATH=.:usr/local/wbin:$PATH
 if [ ! -f table.c ]
+then
 echo creating table.c
 else
 todo=0
