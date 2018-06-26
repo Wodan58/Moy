@@ -30,5 +30,5 @@ add_subdirectory(src)
 add_dependencies(joy parse.h)
 add_custom_target(parse.h
 		  DEPENDS parse.y
-		  COMMAND sh parse.sh ${BISON_EXECUTABLE} -doparse.c parse.y)
+		  COMMAND ${BISON_EXECUTABLE} -doparse.c parse.y)
 # add_subdirectory(test)
