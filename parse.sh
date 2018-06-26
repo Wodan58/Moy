@@ -2,8 +2,10 @@
 #  Generate parse.h
 #
 PATH=.:usr/local/wbin:$PATH
-if [ $3 -nt parse.h ]
+if [ parse.y -nt parse.h ]
 then
+echo Building parse.h
+echo $*
 $*
 else
 echo parse.h is up-to-date
