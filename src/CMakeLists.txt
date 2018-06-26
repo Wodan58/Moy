@@ -27,4 +27,3 @@ strftime.c string.c strtod.c strtol.c succ.c swap.c swapd.c swons.c system.c
 tailrec.c take.c tan.c tanh.c ternary.c time.c times.c treegenrec.c treerec.c
 treestep.c true.c trunc.c unary.c unary2.c unary3.c unary4.c uncons.c
 undeferror.c undefs.c unstack.c unswons.c user.c while.c x.c xor.c)
-add_dependencies(joy parse-h)

@@ -9,10 +9,9 @@ programs for many programming languages. JOY is one of those programming
 languages. From Rosetta Code 26 tasks are taken, one task for each
 character in the alphabet, and described in this document. The tasks are
 quite diverse, starting with facts about the language, small test
-programs for syntactic constructs, up to complete applications. The
-description in this document solves each task, shows how to incorporate
-the task in a complete program, and shows the result of running the
-program.
+programs demonstrating syntactic constructs, up to complete applications.
+The description in this document solves each task, shows how to incorporate
+the task in a complete program, and shows the result of running the program.
 
 V — variables
 =============
@@ -38,27 +37,32 @@ Assignment
 
 Values can be pushed on the stack:
 
-    42
+    3 2 1
 
-pushes the value `42` of type integer on top of the stack.
+pushes the value `3` `2` `1` of type integer on top of the stack.
+The stack now contains from top to bottom:
+
+    1 2 3
 
 Datatypes
 ---------
 
-Boolean (true, false); Character (‘A …); Integer (42, -42, …); Float
-(3.14); Set ({0 1 2}); String (“Hello”); List (\[0 1 2\]); File
-(stdin, stdout, stderr); Symbols.
+Boolean (true, false); Character ('A ...); Integer (1, -1, ...);
+Float (3.14); Set ({0 1 2}); String ("Hello"); List ([0 1 2]);
+File (stdin, stdout, stderr); Symbols.
 
 Stack
 -----
 
-Calling the stack by name pushes a copy of the stack on the stack. To
-continue the previous example:
+Calling the stack by name pushes a copy of the stack on the stack.
+To continue the previous example:
 
     stack
 
-pushes the list `[42]` on top of the stack. The stack now contains (from top to bottom):
-`[42] 42`.
+pushes the list `[1 2 3]` on top of the stack. The stack now contains
+(from top to bottom):
+
+    [1 2 3] 1 2 3
 
 H — hello world / text
 ======================
@@ -113,7 +117,7 @@ The task is to display the current date in the formats "2007-11-10" and
     ["-"] [2 at 'd 2 2 format]] [i] map
     [putchars] step '\n putch pop.
 
-    DEFINE weekdays == \[Monday Tuesday Wednesday Thursday Friday Saturday
+    DEFINE weekdays == [Monday Tuesday Wednesday Thursday Friday Saturday
     Sunday];
 
     months == [January February March April May June July August September
@@ -259,6 +263,7 @@ J — jensen's device
 ===================
 
 The task is to use call by name to calculate the 100th harmonic number.
+Not really call by name, but ...
 
     100 [0] [[1.0 swap /] dip +] primrec.
 
@@ -301,10 +306,10 @@ S — sorting algorithms/quicksort
 The task is to sort an array (or list) using the quicksort algorithm.
 
     DEFINE qsort == [small] # termination condition: 0 or 1 element
-    [] # do nothing
-    [uncons [>] split] # pivot and two lists
-    [enconcat] # insert the pivot after the recursion
-    binrec. # recursion on the two lists
+    []                      # do nothing
+    [uncons [>] split]      # pivot and two lists
+    [enconcat]              # insert the pivot after the recursion
+    binrec.                 # recursion on the two lists
 
 A — ackermann function
 ======================

@@ -1,7 +1,7 @@
 /*
     module  : manual.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/26/18
 */
 #include "runtime.h"
 
@@ -74,7 +74,7 @@ PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 	    printf("%s", optable[i].messg2);
 	    if (LATEX)
 		printf("#}");
-	    printf("\n\n");
+	    printf("\n");
 	}
     }
     if (HTML)

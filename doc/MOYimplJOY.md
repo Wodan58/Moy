@@ -5,9 +5,9 @@ Introduction
 ============
 
 This is a high level overview of MOY implementation of JOY in small
-pieces. When taken together, these pieces will give a picture of why and
-how MOY differs from the Joy1 implementation of JOY. MOY and Joy1 are
-implementations; the language is called JOY; 42minjoy is a minimal
+pieces. When taken together, these pieces will give a picture of why
+and how MOY differs from the Joy1 implementation of JOY. MOY and Joy1
+are implementations; the language is called JOY; 42minjoy is a minimal
 implementation of JOY.
 
 Execution model of JOY
@@ -26,8 +26,8 @@ This is how a JOY program gets executed:
 
 This description concerns itself mostly with JOY as an interpreted
 language. Now, when compiling JOY, only step 3) remains during the
-execution phase. The result, of course, will be the same as when JOY is
-interpreted.
+execution phase. The result, of course, will be the same as when JOY
+is interpreted.
 
 JOY compared to other Concatenative languages
 =============================================
@@ -72,12 +72,12 @@ Interface to C, implementation aware
 ====================================
 
 Another way to interface with C is to have the C functions \#include
-“runtime.h”. The C functions are now aware of the way that the stack is
+"runtime.h". The C functions are now aware of the way that the stack is
 implemented in JOY and can PUSH input parameters on the stack before
 calling the JOY procedure and also read output from the stack after the
 JOY procedure returns.
 
-In addition to that, it is possible to have definitions like A == A …
+In addition to that, it is possible to have definitions like A == A ...
 that cause the compiler to generate a declaration void do\_A(void); and
 no definition of do\_A. This definition has to be supplied by the
 programmer during the link phase. This is an example of JOY calling a C
@@ -111,8 +111,8 @@ Changes in MOY
 Not all of the built-ins of JOY are supported in MOY. Echo of input to
 output is not supported. It is used in JOY to build listings of input
 alongside the result of interpreting that input. And error messages can
-be as short as “syntax error”. To mention one example: when trying to
-redefine a built-in, MOY will react with “syntax error” without even
+be as short as "syntax error". To mention one example: when trying to
+redefine a built-in, MOY will react with "syntax error" without even
 mentioning in what line the error should be located. Because of these
 changes, MOY is not a full replacement of Joy1.
 
@@ -127,7 +127,7 @@ Writing out becomes necessary when seeing built-ins that can only be
 executed at runtime or when a function is called recursively or when
 there are not enough parameters on the compile-time stack available to
 allow executing a built-in. The MOY implementation has two compile
-options: –c and –o. The latter more thoroughly compiles the code and is
+options: -c and -o. The latter more thoroughly compiles the code and is
 used when benchmarking.
 
 Benchmarking
@@ -135,7 +135,7 @@ Benchmarking
 
 When compiling, the user expects that the resulting program will run
 faster than the interpreted program. That is indeed the case, when using
-the –o compile option, but the main slowdown is caused by the way that
+the -o compile option, but the main slowdown is caused by the way that
 the stack is organized. Any improvement there will benefit compiled
 programs as well as the interpreter.
 
@@ -172,16 +172,21 @@ Adding a new builtin
 Adding a new builtin, for example *over*, requires the change of 10
 files:
 
--   parse.y – DO\_OVER, a new token type
--   builtin.h – do\_over(), a function declaration
--   lexer.l – over, a new word as builtin
--   optable.c – "over", an explanation of the functionality
--   cmakelists.txt – over.c must be added to the build process
--   over.c – definition, a file that contains the definition of *over*
--   interp.c – DO\_OVER in the interpreter switch
--   aritysym.c – DO\_OVER in table of arities
--   print.c – "DO\_OVER" in opername
--   runtime.c – \#include over.c
+-   parse.y - DO\_OVER, a new token type
+-   builtin.h - do\_over(), a function declaration
+-   lexer.l - over, a new word as builtin
+-   optable.c - "over", an explanation of the functionality
+-   CMakeLists.txt - over.c must be added to the build process
+-   over.c - definition, a file that contains the definition of *over*
+-   interp.c - DO\_OVER in the interpreter switch
+-   aritysym.c - DO\_OVER in table of arities
+-   print.c - "DO\_OVER" in opername
+-   runtime.c - \#include over.c
+
+2018-06-26 - the requirement to update optable.c has been dropped.
+It is updated by the build environment. The downside is that the manual
+can only see literals and operators. The other categories are taken to
+be operators.
 
 Roadmap
 =======
