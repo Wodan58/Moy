@@ -2,8 +2,7 @@
 #  Generate table.c
 #
 PATH=.:usr/local/wbin:$PATH
-# CI needs 1
-todo=1
+todo=0
 for i in src/*.c
 do
 if [ $i -nt table.c ]

@@ -20,15 +20,12 @@ add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       arity.c aritysym.c compile.c history.c initmem.c initsym.c
 	       interp.c joy.c listing.c node.c optable.c outfile.c print.c
 	       scan.c symbol.c utils.c)
-add_dependencies(moy table.c)
-add_custom_target(table.c
-		  DEPENDS src/*.c
+add_dependencies(moy always)
+add_custom_target(always
+		  COMMAND sh parse.sh
 		  COMMAND sh table.sh)
 target_link_libraries(moy joy gc-lib)
 add_subdirectory(bdwgc)
 add_subdirectory(src)
-add_dependencies(joy parse.h)
-add_custom_target(parse.h
-		  DEPENDS parse.y
-		  COMMAND ${BISON_EXECUTABLE} -doparse.c parse.y)
-# add_subdirectory(test)
+add_dependencies(joy always)
+add_subdirectory(test)
