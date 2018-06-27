@@ -18,7 +18,7 @@ add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       scan.c symbol.c utils.c)
 add_dependencies(moy always)
 add_custom_target(always
-		  COMMAND sh parse.sh
+		  COMMAND sh parse.sh bison -doparse parse.y
 		  COMMAND sh table.sh)
 target_link_libraries(moy joy gc-lib)
 add_subdirectory(bdwgc)
