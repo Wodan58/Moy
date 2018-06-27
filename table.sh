@@ -1,26 +1,27 @@
 #
 #  Generate table.c
 #
-PATH=.:usr/local/wbin:$PATH
+echo checking table.c
+todo=0
 if [ ! -f table.c ]
 then
-echo creating table.c
+  echo creating table.c
+  todo=1
 else
-todo=0
-for i in src/*.c
-do
-if [ $i -nt table.c ]
-then
-todo=1
-break
+  for i in src/*.c
+  do
+    if [ $i -nt table.c ]
+    then
+      echo updating table.c
+      todo=1
+      break
+    fi
+  done
 fi
-done
 if [ $todo -eq 0 ]
 then
-echo table.c is up-to-date
-exit
-fi
-echo updating table.c
+  echo table.c is up-to-date
+  exit
 fi
 for i in src/*.c
 do
