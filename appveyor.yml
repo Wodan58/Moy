@@ -21,10 +21,10 @@ install:
   - copy usr\local\wbin\*.* \bin
   - copy usr\local\share\*.* \usr\local\share
   - copy usr\local\include\*.* \usr\local\include
-  - set PATH=\bin;%PATH%
 
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - set PATH=\bin;%PATH%
   - git clone https://github.com/ivmai/bdwgc.git
   - cmake -G "NMake Makefiles"
   - cmake --build . --config Release
