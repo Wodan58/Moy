@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.8
-    date    : 06/26/18
+    version : 1.9
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -13,24 +13,25 @@ Gives brief help on each symbol S in the list.
 */
 PRIVATE void do_helpdetail(void)
 {
+#ifndef NCHECK
     int i;
     char *name;
     Node *node;
     Operator op;
 
-#ifndef NCHECK
     if (optimizing)
 	del_history(1);
     COMPILE;
     ONEPARAM("HELP");
     LIST("HELP");
-#endif
     printf("\n");
     node = stk->u.lis;
     while (node) {
 	if (node->op == USR_) {
-	    printf("%s  ==\n    ", node->u.ent->name);
-	    writeterm(node->u.ent->u.body, stdout);
+	    i = node->u.num;
+	    name = dict_descr(i);
+	    printf("%s  ==\n    ", name);
+	    writeterm(dict_body(i), stdout);
 	    printf("\n\n");
 	    break;
 	} else {
@@ -47,4 +48,5 @@ PRIVATE void do_helpdetail(void)
 	node = node->next;
     }
     POP(stk);
+#endif
 }

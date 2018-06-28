@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.3
-    date    : 04/30/17
+    version : 1.4
+    date    : 06/28/18
 */
 #define ALEN		22
 #define SYMTABMAX	700
@@ -15,6 +15,7 @@
 #define IS_BUILTIN	32
 #define IS_ACTIVE	64
 #define IS_MARKED	128
+#define IS_DECLARED	256
 
 #define MID_SCOPE	0
 #define START_SCOPE	1
@@ -30,19 +31,8 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-typedef struct Entry {
-    char *name;
-    unsigned flags;
-    union {
-	Node *body;
-	void (*proc)(void);
-	struct Entry *member;
-    } u;
-    struct Entry *next;
-} Entry;
+typedef void (*proc_t)(void);
 
-/* symbol.c */
-extern Entry symtab[];
 extern unsigned symtabindex;
 
 /* compile.c */
@@ -60,20 +50,36 @@ void evaluate2(Node *code, int num);
 /* print.c */
 char *opername(int num);
 char *printname(int num);
-char *procname(void (*proc)(void));
 void writefactor(Node *node, FILE *stm);
 void writeterm(Node *code, FILE *stm);
 void writestack(Node *code, FILE *stm);
 
 /* symbol.c */
-Entry *lookup(char *name);
-Entry *enteratom(Entry *sym, Node *body);
-Entry *initmod(Entry *sym);
-void exitmod(Entry *sym);
-Entry *initpriv(void);
+void initmod(char *str);
+void exitmod(void);
+void initpriv(void);
 void stoppriv(void);
-void exitpriv(Entry *prev);
+void exitpriv(void);
+char *prefix(int *hide, int *local);
+char *iterate(char *name);
+
+/* dict.c */
+void init_dict(void);
+int lookup(char *name);
+void enteratom(char *name, Node *cur);
 void dump(void);
+unsigned dict_flags(int index);
+void dict_setflags(int index, unsigned flags);
+char *dict_name(int index);
+char *dict_nickname(int index);
+Node *dict_body(int index);
+int dict_size(void);
+char *dict_descr(int index);
+int check_anything_was_printed(void);
+void iterate_dict_and_write_struct(void);
+
+char *procname(proc_t proc);
+proc_t nameproc(char *name);
 
 /* arity.c */
 int arity(Node *cur);

@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -18,10 +18,10 @@ PRIVATE void do_body(void)
     ONEPARAM("body");
     USERDEF("body");
     if (OUTSIDE) {
-	stk->u.lis = stk->u.ent->u.body;
+	stk->u.lis = dict_body(stk->u.num);
 	stk->op = LIST_;
     } else
-	UNARY(LIST_NEWNODE, stk->u.ent->u.body);
+	UNARY(LIST_NEWNODE, dict_body(stk->u.num));
 #else
     POP(stk);
 #endif

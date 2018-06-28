@@ -2,26 +2,25 @@
 #  Generate table.c
 #
 echo checking table.c
-todo=0
 if [ ! -f table.c ]
 then
-  echo creating table.c
-  todo=1
+echo creating table.c
 else
-  for i in src/*.c
-  do
-    if [ $i -nt table.c ]
-    then
-      echo updating table.c
-      todo=1
-      break
-    fi
-  done
+todo=0
+for i in src/*.c
+do
+if [ $i -nt table.c ]
+then
+todo=1
+break
 fi
+done
 if [ $todo -eq 0 ]
 then
-  echo table.c is up-to-date
-  exit
+echo table.c is up-to-date
+exit
+fi
+echo updating table.c
 fi
 for i in src/*.c
 do

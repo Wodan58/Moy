@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.8
-    date    : 09/14/17
+    version : 1.9
+    date    : 06/28/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -16,21 +16,20 @@
 #include "joy.h"
 #include "symbol.h"
 
-#ifndef NCHECK
 #define PRIVATE
+
+#ifndef NCHECK
 #define STATIC
 #define COMPILE		if (compiling) { printstack(outfp); \
 			fprintf(outfp, "%s();", __func__); return; }
 #else
 #ifdef _MSC_VER
-#define PRIVATE		static
 #pragma warning( disable : 4244 4305 )
 #else
-#define PRIVATE		inline static
 #endif
-#define STATIC		static
 #define COMPILE
 #endif
+
 #include "builtin.h"
 
 #define INSIDE		stk >= memory && stk < &memory[MEMORYMAX - 1]

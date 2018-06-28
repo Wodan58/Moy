@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.13
-    date    : 10/23/17
+    version : 1.14
+    date    : 06/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -96,7 +96,7 @@ static void sprint(char *str)
 %n		1000
 %a		4000
 
-firstchar	[!$%&*+,/:<=>?@A-Z\\^_`a-z|~]
+firstchar	[-!$%&*+,/:<=>?@A-Z\\^_`a-z|~]
 nextchar	[-0-9=A-Z_a-z]
 restchar	{firstchar}{nextchar}*
 symbol		{restchar}(\.{restchar})*
@@ -350,13 +350,13 @@ include		{ yylval.num = DO_INCLUDE; return Symbol; }
 abort		{ yylval.num = DO_ABORT; return Symbol; }
 quit		{ yylval.num = DO_QUIT; return Symbol; }
 
-{symbol}	{ yylval.ent = lookup(yytext); return USR_; }
 {character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
 {string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
 {integer}	|
 {octal}		|
 {hexal}		{ yylval.num = strtol(yytext, 0, 0); return INTEGER_; }
 {float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
+{symbol}	{ yylval.str = strdup(yytext); return USR_; }
 {comment}	SkipComment();
 [ \t\n]+	|
 {linecom}	;

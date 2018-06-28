@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -11,9 +11,9 @@ Pushes the item whose name is "sym".
 */
 PRIVATE void do_intern(void)
 {
-    Entry *sym;
-    char id[ALEN];
 #ifndef NCHECK
+    int i;
+    char id[ALEN];
     char *ptr = 0;
 
     if (optimizing)
@@ -24,28 +24,26 @@ PRIVATE void do_intern(void)
 	COMPILE;
     ONEPARAM("intern");
     STRING("intern");
-#endif
     strncpy(id, stk->u.str, ALEN);
     id[ALEN - 1] = 0;
-#ifndef NCHECK
     if (id[0] == '-' || !strchr("(#)[]{}.;'\"0123456789", id[0]))
 	for (ptr = id + 1; *ptr; ptr++)
 	    if (!isalnum((int) *ptr) && !strchr("=_-", *ptr))
 		break;
     if (!ptr || *ptr)
 	execerror("valid name", id);
-#endif
-    sym = lookup(id);
+    i = lookup(id);
     if (OUTSIDE) {
-	if (sym->flags & IS_BUILTIN) {
+	if (dict_flags(i) & IS_BUILTIN) {
 	    stk->op = ANON_FUNCT_;
-	    stk->u.proc = sym->u.proc;
+	    stk->u.proc = (proc_t)dict_body(i);
 	} else {
 	    stk->op = USR_;
-	    stk->u.ent = sym;
+	    stk->u.num = i;
 	}
-    } else if (sym->flags & IS_BUILTIN)
-	UNARY(ANON_FUNCT_NEWNODE, sym->u.proc);
+    } else if (dict_flags(i) & IS_BUILTIN)
+	UNARY(ANON_FUNCT_NEWNODE, (proc_t)dict_body(i));
     else
-	UNARY(USR_NEWNODE, sym);
+	UNARY(USR_NEWNODE, i);
+#endif
 }

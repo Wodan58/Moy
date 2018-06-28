@@ -1,7 +1,7 @@
 /*
     module  : __symtabindex.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -15,6 +15,6 @@ PRIVATE void do___symtabindex(void)
     if (optimizing)
 	add_history(INTEGER_);
     COMPILE;
+    PUSH(INTEGER_, dict_size() - 1);
 #endif
-    PUSH(INTEGER_, symtabindex);
 }

@@ -1,9 +1,11 @@
 /*
     module  : name.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/28/18
 */
 #include "runtime.h"
+
+extern struct optable_t optable[];
 
 /**
 name  :  sym  ->  "sym"
@@ -12,9 +14,9 @@ for literals sym the result string is its type.
 */
 PRIVATE void do_name(void)
 {
+#ifndef NCHECK
     char *str;
 
-#ifndef NCHECK
     if (optimizing)
 	chg_history(STRING_);
     if (optimizing && VALID(stk))
@@ -22,11 +24,25 @@ PRIVATE void do_name(void)
     else
 	COMPILE;
     ONEPARAM("name");
-#endif
-    str = stk->op == USR_ ? stk->u.ent->name : opername(stk->op);
+    switch (stk->op) {
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+    case SET_:
+    case STRING_:
+    case LIST_:
+    case FLOAT_:
+    case FILE_:
+	str = optable[stk->op].name;
+	break;
+    default:
+	str = dict_descr(stk->u.num);
+	break;
+    }
     if (OUTSIDE) {
 	stk->u.str = str;
 	stk->op = STRING_;
     } else
 	UNARY(STRING_NEWNODE, str);
+#endif
 }

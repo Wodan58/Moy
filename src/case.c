@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -11,11 +11,12 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 
     *error = 0;
     switch (first->op) {
+#ifndef NCHECK
     case USR_:
-	name = first->u.ent->name;
+	name = dict_descr(first->u.num);
 	switch (second->op) {
 	case USR_:
-	    return strcmp(name, second->u.ent->name);
+	    return strcmp(name, dict_descr(second->u.num));
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -31,14 +32,17 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, printname(second->op));
+	    return strcmp(name, dict_descr(second->u.num));
 	}
 	break;
+#endif
     case ANON_FUNCT_:
 	name = procname(first->u.proc);
 	switch (second->op) {
+#ifndef NCHECK
 	case USR_:
-	    return strcmp(name, second->u.ent->name);
+	    return strcmp(name, dict_descr(second->u.num));
+#endif
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -54,7 +58,9 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, printname(second->op));
+#ifndef NCHECK
+	    return strcmp(name, dict_descr(second->u.num));
+#endif
 	    break;
 	}
 	break;
@@ -73,6 +79,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case SYMBOL_:
 	case STRING_:
 	case LIST_:
+	    return 1;	// not equal
 	    break;
 	case FLOAT_:
 	    return first->u.num - second->u.dbl;
@@ -104,8 +111,10 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     case STRING_:
 	name = first->u.str;
 	switch (second->op) {
+#ifndef NCHECK
 	case USR_:
-	    return strcmp(name, second->u.ent->name);
+	    return strcmp(name, dict_descr(second->u.num));
+#endif
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -121,10 +130,14 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, printname(second->op));
+#ifndef NCHECK
+	    return strcmp(name, dict_descr(second->u.num));
+#endif
+	    break;
 	}
 	break;
     case LIST_:
+	return 1;	// not equal
 	break;
     case FLOAT_:
 	switch (second->op) {
@@ -167,10 +180,11 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	}
 	break;
     default:
-	name = printname(first->op);
+#ifndef NCHECK
+	name = dict_descr(first->u.num);
 	switch (second->op) {
 	case USR_:
-	    return strcmp(name, second->u.ent->name);
+	    return strcmp(name, dict_descr(second->u.num));
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -186,8 +200,9 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, printname(second->op));
+	    return strcmp(name, dict_descr(second->u.num));
 	}
+#endif
 	break;
     }
     *error = 1;

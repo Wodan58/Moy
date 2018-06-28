@@ -1,12 +1,9 @@
 /*
     module  : node.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 06/28/18
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
+#include "runtime.h"
 
 #define MAXCOND		100
 
@@ -78,4 +75,29 @@ Node *reverse(Node *cur)
 	old = prev;
     }
     return old;
+}
+
+/*
+    Copy the stack to a list
+*/
+Node *stk2lst(void)
+{
+    Node *root = 0, **cur;
+
+    for (cur = &root; stk != memory; stk = stk->next) {
+	*cur = heapnode(stk->op, stk->u.ptr, 0);
+	cur = &(*cur)->next;
+    }
+    return root;
+}
+
+/*
+    Replace the stack by a list
+*/
+void lst2stk(Node *cur)
+{
+    if (cur) {
+	lst2stk(cur->next);
+	DUPLICATE(cur);
+    }
 }

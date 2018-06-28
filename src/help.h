@@ -1,31 +1,31 @@
 /*
     module  : help.h
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 06/28/18
 */
 #define LINEWIDTH	72
 
 PRIVATE void PROCEDURE(void)
 {
+#ifndef NCHECK
     char *ptr;
     int i, column = 0, leng;
 
-#ifndef NCHECK
     COMPILE;
-#endif
-    for (i = symtabindex - 1; i >= 0; i--)
-	if (symtab[i].name[0] REL '_' && (symtab[i].flags & IS_LOCAL) == 0) {
-	    ptr = symtab[i].name;
+    for (i = dict_size() - 1; i >= 0; i--) {
+	ptr = dict_descr(i);
+	if (*ptr REL '_' && (dict_flags(i) & IS_LOCAL) == 0) {
 	    leng = strlen(ptr) + 1;
 	    if (column + leng > LINEWIDTH) {
-		printf("\n");
+		putchar('\n');
 		column = 0;
 	    }
-	    printf("%s", ptr);
-	    putchar(' ');
+	    printf("%s ", ptr);
 	    column += leng;
 	}
+    }
     putchar('\n');
+#endif
 }
 
 #undef PROCEDURE

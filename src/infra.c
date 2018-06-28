@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 06/28/18
 */
 #include "runtime.h"
 
@@ -26,31 +26,6 @@ int put_infra(void)
     return 1;
 }
 #endif
-
-/*
-    Copy the stack to a list
-*/
-PRIVATE Node *stk2lst(void)
-{
-    Node *root = 0, **cur;
-
-    for (cur = &root; stk != memory; stk = stk->next) {
-	*cur = heapnode(stk->op, stk->u.ptr, 0);
-	cur = &(*cur)->next;
-    }
-    return root;
-}
-
-/*
-    Replace the stack by a list
-*/
-PRIVATE void lst2stk(Node *cur)
-{
-    if (cur) {
-	lst2stk(cur->next);
-	DUPLICATE(cur);
-    }
-}
 
 /**
 infra  :  L1 [P]  ->  L2

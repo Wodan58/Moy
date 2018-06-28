@@ -1,7 +1,7 @@
 /*
     module  : arity.c
-    version : 1.8
-    date    : 04/30/17
+    version : 1.9
+    date    : 06/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -29,15 +29,17 @@ static void PrintString(String *str, char *tmp)
 
 static void arityfactor(Node *cur, String *str)
 {
-    Entry *sym;
+    int index;
+    unsigned flags;
 
     switch (cur->op) {
     case USR_:
-	sym = cur->u.ent;
-	if ((sym->flags & IS_MARKED) == 0) {
-	    sym->flags |= IS_MARKED;
-	    arityterm(sym->u.body, str);
-	    sym->flags &= ~IS_MARKED;
+	index = cur->u.num;
+	flags = dict_flags(index);
+	if ((flags & IS_MARKED) == 0) {
+	    dict_setflags(index, flags | IS_MARKED);
+	    arityterm(dict_body(index), str);
+	    dict_setflags(index, flags);
 	}
 	break;
     default:

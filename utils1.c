@@ -1,6 +1,6 @@
 /*
-    module  : utils.c
-    version : 1.14
+    module  : utils1.c
+    version : 1.1
     date    : 06/28/18
 */
 #include "runtime.h"
@@ -25,12 +25,18 @@ void readfactor(int sym)
 	readterm(yylex());
 	break;
     case USR_:
-	temp.op = sym;
-	temp.u.num = lookup(yylval.str);
+	if ((temp.u.proc = nameproc(yylval.str)) != 0)
+	    temp.op = ANON_FUNCT_;
+	else {
+	    temp.op = SYMBOL_;
+	    temp.u.str = yylval.str;
+	}
 	DUPLICATE(&temp);
 	break;
     case Symbol:
-	temp.u.num = temp.op = yylval.num;
+	temp.op = ANON_FUNCT_;
+	yylval.str = printname(yylval.num);
+	temp.u.proc = nameproc(yylval.str);
 	DUPLICATE(&temp);
 	break;
     default:

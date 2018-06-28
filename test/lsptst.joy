@@ -1,4 +1,3 @@
-
 DEFINE y == [ dup cons ] swoncat dup cons i;
 ; swoncat == swap concat; sequor == [ pop true ] swap ifte
 ; second == rest first; putstrings == [ putchars ] step; putln == put newline
@@ -6,9 +5,10 @@ DEFINE y == [ dup cons ] swoncat dup cons i;
 while dup * <
 ; numerical == [ integer ] [ float ] sequor; newline == '\n putch
 ; lisp == [ "\nLisp interpreter\n" "\t\tTo include the Lisp library, type\n"
-"\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n" "GO\n\n" ] putstrings lib0
+"\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n" "GO\n\n" ] putstrings dummy lib0
 l-prompt putchars get [ dup [ EXIT ] first equal not ] [ eval putln l-prompt
 putchars get ] while pop pop "exit from Lisp interpreter\n" putchars
+; dummy == [ + * - / < > and or map prime filter include ] ;
 ; lib0 == [ [ [ FOLDR ] [ CLOSURE lib0 [ lis ini bin ] IF [ NULL lis ] ini [
 bin [ CAR lis ] [ FOLDR [ CDR lis ] ini bin ] ] ] ] [ [ FOLDL ] [
 CLOSURE lib0 [ lis ini bin ] IF [ NULL lis ] ini [ FOLDL [ CDR lis ] [

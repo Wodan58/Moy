@@ -1,18 +1,10 @@
 /*
     module  : interp.c
-    version : 1.7
-    date    : 06/25/18
+    version : 1.8
+    date    : 06/28/18
 */
-#ifdef RUNTIME
-#include "runtime.c"
-#else
 #include "runtime.h"
-#endif
-
-#if 0
-#define TRACE
-#define DEBUG
-#endif
+#include "runtime.c"
 
 #ifndef RUNTIME
 static unsigned direct;
@@ -20,20 +12,21 @@ static unsigned direct;
 
 void interprete(Node *code)
 {
-    Entry *sym;
+    int index;
     Node *node;
+    unsigned flags;
 #ifndef RUNTIME
     char *name;
 #endif
 
 start:
-#ifdef DEBUG
+#if 0
     fprintf(stderr, "code: ");
     writeterm(code, stderr);
     fprintf(stderr, ";\n");
 #endif
     for (; code; code = code->next) {
-#ifdef TRACE
+#ifdef DEBUG
 	if (debugging) {
 	    writestack(stk, stderr);
 	    fprintf(stderr, " . ");
@@ -61,30 +54,33 @@ start:
 #endif
 	    DUPLICATE(code);
 	    break;
-	case USR_:
-	    sym = code->u.ent;
-	    if ((node = sym->u.body) == 0 && undeferror) {
-		execerror("definition", sym->name);
-	    } else if (node && (sym->flags & IS_BUILTIN))
-		(*sym->u.proc)();
-	    else if (node) {
 #ifndef RUNTIME
+	case USR_:
+	    index = code->u.num;
+	    flags = dict_flags(index);
+	    if ((node = dict_body(index)) == 0 && undeferror)
+		execerror("definition", dict_name(index));
+	    else if (node && flags & IS_BUILTIN)
+		(*(proc_t)node)();
+	    else if (node) {
 		if (compiling) {
 		    if (direct)
 			printstack(outfp);
-		    if ((sym->flags & IS_ACTIVE) == 0) {
-			sym->flags |= IS_ACTIVE;
+		    flags |= IS_USED;
+		    if ((flags & IS_ACTIVE) == 0) {
+			dict_setflags(index, flags | IS_ACTIVE);
 			interprete(node);
-			sym->flags &= ~IS_ACTIVE;
 		    } else {
-			sym->flags |= IS_USED;
-			name = usrname(sym->name);
-			fprintf(declfp, "void do_%s(void);", name);
+			name = dict_nickname(index);
+			if ((flags & IS_DECLARED) == 0) {
+			    flags |= IS_DECLARED;
+			    fprintf(declfp, "void do_%s(void);", name);
+			}
 			fprintf(outfp, "do_%s();", name);
 		    }
+		    dict_setflags(index, flags);
 		    break;
 		}
-#endif
 		if (!code->next) {
 		    code = node;
 		    goto start;
@@ -92,6 +88,7 @@ start:
 		interprete(node);
 	    }
 	    continue;
+#endif
 	case ANON_FUNCT_:
 	    (*code->u.proc)();
 	    break;

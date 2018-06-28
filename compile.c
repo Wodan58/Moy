@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.25
-    date    : 05/26/17
+    version : 1.26
+    date    : 06/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -101,9 +101,9 @@ static unsigned ListLeng(Node *cur)
 
 static void PrintMember(Node *cur, int list, unsigned *pindex, FILE *fp)
 {
-    Entry *sym;
     char *name;
-    unsigned index = *pindex;
+    int offset;
+    unsigned flags, index = *pindex;
 
     if (!cur)
 	return;
@@ -146,18 +146,26 @@ static void PrintMember(Node *cur, int list, unsigned *pindex, FILE *fp)
 	fprintf(fp, ".op=FLOAT_");
 	break;
     case USR_:
-	sym = cur->u.ent;
-	name = usrname(sym->name);
-	if (sym->u.body) {
+	offset = cur->u.num;
+	flags = dict_flags(offset);
+	dict_setflags(offset, flags | IS_USED);
+	if (dict_body(offset)) {
+	    name = dict_nickname(offset);
 	    fprintf(fp, ".u.proc=do_%s,", name);
 	    fprintf(fp, ".op=ANON_FUNCT_");
 	} else {
+	    name = dict_name(offset);
 	    fprintf(fp, ".u.str=\"%s\",", name);
 	    fprintf(fp, ".op=SYMBOL_");
 	}
 	break;
     default:
-	fprintf(fp, ".u.proc=do_%s,", opername(cur->op));
+	name = printname(cur->op);
+	offset = lookup(name);
+	flags = dict_flags(offset);
+	dict_setflags(offset, flags | IS_USED);
+	name = opername(cur->op);
+	fprintf(fp, ".u.proc=do_%s,", name);
 	fprintf(fp, ".op=ANON_FUNCT_");
 	break;
     }
@@ -190,25 +198,35 @@ static unsigned PrintList(Node *cur, FILE *fp, int head)
 
 static void PrintDecl(Node *root)
 {
+    int index;
     Node *cur;
-    Entry *sym;
     char *name;
+    unsigned flags;
 
-    for (cur = root; cur; cur = cur->next)
+    for (cur = root; cur; cur = cur->next) {
+	if (cur->op >= DO_NOTHING && cur->op <= DO_QUIT) {
+	    name = printname(cur->op);
+	    index = lookup(name);
+	    flags = dict_flags(index);
+	    dict_setflags(index, flags | IS_USED);
+	}
 	switch (cur->op) {
 	case LIST_:
 	    PrintDecl(cur->u.lis);
 	    break;
 
 	case USR_:
-	    sym = cur->u.ent;
-	    if (sym->u.body) {
-		sym->flags |= IS_USED;
-		name = usrname(sym->name);
+	    index = cur->u.num;
+	    flags = dict_flags(index);
+	    if (dict_body(index) && (flags & IS_DECLARED) == 0) {
+		flags |= IS_DECLARED | IS_USED;
+		name = dict_nickname(index);
 		fprintf(declfp, "void do_%s(void);", name);
 	    }
+	    dict_setflags(index, flags | IS_USED);
 	    break;
 	}
+    }
 }
 
 static unsigned printnode(Node *node, FILE *fp)
@@ -256,7 +274,7 @@ static unsigned printnode(Node *node, FILE *fp)
 
 static void printrecur(Node *node, FILE *fp)
 {
-    if (node == memory)
+    if (!node || node == memory)
 	return;
     printrecur(node->next, fp);
     printnode(node, fp);
@@ -281,7 +299,8 @@ void initialise(void)
     if (!mainfunc)
 	mainfunc = "main";
     printf("/*\n * generated %s */\n", ctime(&t));
-    printf("#include \"runtime.c\"\n");
+    printf("#define NCHECK\n");
+    printf("#include \"runtime.h\"\n");
     initout();
     outfp = nextfile();
     fprintf(outfp, "int %s(int argc, char **argv) {", mainfunc);
@@ -291,34 +310,59 @@ void initialise(void)
 
 void finalise(void)
 {
-    Entry *sym;
-    Node *code;
+    static int end_of_main;
+    Node *body;
+    unsigned flags;
     char *name, *parm;
-    unsigned i, changed;
+    int i, j, leng, index, changed;
 
+    if (end_of_main)
+	fprintf(outfp, "}");
+    else {
+	end_of_main = 1;
+	fprintf(outfp, "return 0; /* main */ }");
+    }
     if (optimizing)
 	clr_history();
-    fprintf(outfp, "return 0; }");
-    do
-	for (changed = i = 0; i < symtabindex; i++)
-	    if ((symtab[i].flags & (IS_PRINTED | IS_USED)) == IS_USED) {
-		symtab[i].flags |= IS_PRINTED;
-		name = usrname(symtab[i].name);
-		code = symtab[i].u.body;
-		if (code->op == USR_) {
-		    sym = code->u.ent;
-		    parm = usrname(sym->name);
+    do {
+	leng = dict_size();
+	for (changed = i = 0; i < leng; i++) {
+	    flags = dict_flags(i);
+	    body = dict_body(i);
+	    if (!(flags & IS_BUILTIN) && body && (flags & IS_USED) &&
+		!(flags & IS_PRINTED)) {
+		dict_setflags(i, flags | IS_PRINTED);
+		name = dict_nickname(i);
+		if (body->op == USR_) {
+		    j = body->u.num;
+		    parm = dict_nickname(j);
 		    if (!strcmp(name, parm))
 			continue;
 		}
 		changed = 1;
 		fprintf(outfp, "void do_%s(void) {", name);
 		DeList();
-		evaluate(symtab[i].u.body);
+		evaluate(body);
 		fprintf(outfp, "}");
 	    }
-    while (changed);
+	}
+    } while (changed);
     fprintf(outfp, "\n");
     printout();
     closeout();
+
+    printf("struct {\nproc_t proc;\n");
+    printf("char *name;\n} table[] = {\n");
+    iterate_dict_and_write_struct();
+    printf("{ 0, 0 },\n};\n\n");
+    printf("char *procname(proc_t proc)\n{\n");
+    printf("int i;\n\nfor (i = 0; table[i].proc; i++)\n");
+    printf("if (proc == table[i].proc)\n");
+    printf("return table[i].name;\n");
+    printf("return 0;\n}\n\n");
+    printf("proc_t nameproc(char *name)\n{\n");
+    printf("int i;\n\nfor (i = 0; table[i].proc; i++)\n");
+    printf("if (!strcmp(name, table[i].name))\n");
+    printf("return table[i].proc;\n");
+    printf("return 0;\n}\n\n");
 }
