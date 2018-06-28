@@ -1,7 +1,7 @@
 /*
     module  : node.h
-    version : 1.2
-    date    : 09/14/17
+    version : 1.3
+    date    : 06/28/18
 */
 #define MEMORYMAX	300
 
@@ -21,3 +21,6 @@ Node *newnode(Operator op, void *u, Node *next);
 Node *dblnode(double dbl, Node *next);
 Node *heapnode(Operator op, void *u, Node *next);
 Node *reverse(Node *cur);
+Node *stk2lst(void);
+void lst2stk(Node *cur);
+double Compare(Node *first, Node *second, int *error);

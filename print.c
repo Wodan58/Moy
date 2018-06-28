@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.18
-    date    : 12/27/17
+    version : 1.19
+    date    : 06/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -132,23 +132,6 @@ static char *symname(char *str)
     return opername2(ptr);
 }
 
-char *procname(void (*proc)(void))
-{
-    char *name;
-    unsigned i;
-
-    for (i = 0; i < symtabindex; i++)
-	if (proc == symtab[i].u.proc) {
-	    name = symtab[i].name;
-	    break;
-	}
-    if (i == symtabindex)
-	return 0;
-    if (*name == '_')
-	name++;
-    return symname(name);
-}
-
 void writefactor(Node *node, FILE *stm)
 {
     char *ptr;
@@ -209,11 +192,11 @@ void writefactor(Node *node, FILE *stm)
 	    fprintf(stm, "file:%p", node->u.fil);
 	break;
     case USR_:
-	fprintf(stm, "%s", node->u.ent->name);
+	fprintf(stm, "%s", dict_descr(node->u.num));
 	break;
     case ANON_FUNCT_:
 	if ((ptr = procname(node->u.proc)) != 0)
-	    fprintf(stm, "%s", *ptr == '_' ? ptr + 1 : ptr);
+	    fprintf(stm, "%s", ptr);
 	else
 	    fprintf(stm, "%p", node->u.proc);
 	break;
