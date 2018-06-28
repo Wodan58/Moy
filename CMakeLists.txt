@@ -25,4 +25,4 @@ add_custom_target(always
 #		  COMMAND sh prims.sh
 #		  COMMAND sh trans.sh)
 add_subdirectory(bdwgc)
-add_subdirectory(test)
+# add_subdirectory(test)
