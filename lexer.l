@@ -1,7 +1,7 @@
 %{
 /*
     module  : lexer.l
-    version : 1.14
+    version : 1.15
     date    : 06/28/18
 */
 #include <stdio.h>
@@ -360,7 +360,7 @@ quit		{ yylval.num = DO_QUIT; return Symbol; }
 {comment}	SkipComment();
 [ \t\n]+	|
 {linecom}	;
-^\$.*		system(yytext + 1);
+^\$.*		(void)system(yytext + 1);
 ^\%INCLUDE.*	include(DelSpace(yytext + 8));
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 ^\%LISTING.*	moy_echo = atoi(yytext + 8);

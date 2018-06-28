@@ -1,7 +1,7 @@
 %{
 /*
     module  : parse.y
-    version : 1.19
+    version : 1.20
     date    : 06/28/18
 */
 #include <stdio.h>
@@ -250,7 +250,7 @@
 %token DO_QUIT		241
 
 %token MODULE		251
-%token <ent> JPRIVATE	252
+%token JPRIVATE		252
 %token JPUBLIC		253
 %token JEQUAL		254
 %token END		255
@@ -326,7 +326,7 @@ term : term factor { $2->next = $1; $$ = $2; } | factor ;
     A factor is a constant, or a list, or a set.
 */
 factor  : Symbol { $$ = newnode($1, (void *)$1, 0); }
-	| USR_ { $$ = newnode(USR_, (void *)lookup($1), 0); }
+	| USR_ { $$ = newnode(USR_, (void *)(long_t)lookup($1), 0); }
 	| BOOLEAN_ { $$ = newnode(BOOLEAN_, (void *)$1, 0); }
 	| CHAR_ { $$ = newnode(CHAR_, (void *)$1, 0); }
 	| INTEGER_ { $$ = newnode(INTEGER_, (void *)$1, 0); }

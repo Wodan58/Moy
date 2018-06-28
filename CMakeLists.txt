@@ -19,10 +19,10 @@ add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 target_link_libraries(moy gc-lib)
 add_dependencies(moy always)
 add_custom_target(always
-		  COMMAND sh banner.sh ${PROJECT_NAME} ${PROJECT_VERSION}
-		  COMMAND sh parse.sh bison -doparse.c parse.y
-		  COMMAND sh table.sh
-		  COMMAND sh prims.sh
-		  COMMAND sh trans.sh)
+		  COMMAND sh banner.sh ${PROJECT_NAME} ${PROJECT_VERSION})
+#		  COMMAND sh parse.sh bison -doparse.c parse.y
+#		  COMMAND sh table.sh
+#		  COMMAND sh prims.sh
+#		  COMMAND sh trans.sh)
 add_subdirectory(bdwgc)
 add_subdirectory(test)
