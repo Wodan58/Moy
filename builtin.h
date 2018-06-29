@@ -110,6 +110,7 @@ void do_ifset(void);
 void do_ifstring(void);
 void do_ifte(void);
 void do_in(void);
+void do_in1(void);
 void do_include(void);
 void do_index(void);
 void do_infra(void);

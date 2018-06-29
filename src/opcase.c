@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -22,11 +22,14 @@ PRIVATE void do_opcase(void)
     LIST("opcase");
     CHECKEMPTYLIST(stk->u.lis, "opcase");
 #endif
-    for (cur = stk->u.lis; cur->next && cur->op == LIST_; cur = cur->next)
+    for (cur = stk->u.lis; cur->next && cur->op == LIST_; cur = cur->next) {
 	if (cur->u.lis->op == stk->next->op)
-	    if (cur->u.lis->op != ANON_FUNCT_ ||
-		cur->u.lis->u.proc == stk->next->u.proc)
+	    if (cur->u.lis->op == USR_ || cur->u.lis->op == ANON_FUNCT_) {
+		if (cur->u.lis->u.ptr == stk->next->u.ptr)
+		    break;
+	    } else
 		break;
+    }
 #ifndef NCHECK
     CHECKLIST(cur->op, "opcase");
 #endif

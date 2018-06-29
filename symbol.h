@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.4
-    date    : 06/28/18
+    version : 1.6
+    date    : 06/29/18
 */
 #define ALEN		22
 #define SYMTABMAX	700
@@ -23,7 +23,7 @@
 #define INIT_SCOPE	3
 #define STOP_SCOPE	4
 
-typedef unsigned char Operator;
+typedef unsigned short Operator;
 
 typedef struct Node {
     YYSTYPE u;
@@ -35,9 +35,6 @@ typedef void (*proc_t)(void);
 
 extern unsigned symtabindex;
 
-/* compile.c */
-unsigned PrintHead(Node *node, FILE *fp);
-
 /* interp.c */
 void interprete(Node *code);
 void execute(Node *code);
@@ -46,6 +43,9 @@ void evaluate1(Node *code);
 void evaluate2(Node *code, int num);
 
 #include "node.h"
+
+/* compile.c */
+unsigned PrintHead(Node *node, FILE *fp);
 
 /* print.c */
 char *opername(int num);

@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.6
-    date    : 06/28/18
+    version : 1.7
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -248,8 +248,8 @@ Indexing on the value of X, execute the matching Y.
 */
 PRIVATE void do_case(void)
 {
+    int ok;
     Node *cur;
-    int error;
 
 #ifndef NCHECK
     if (optimizing && put_case())
@@ -262,7 +262,7 @@ PRIVATE void do_case(void)
     cur = stk->u.lis;
     POP(stk);
     for (; cur->next; cur = cur->next)
-	if (!Compare(cur->u.lis, stk, &error) && !error)
+	if (Compare(cur->u.lis, stk, &ok) == ok)
 	    break;
     if (cur->next) {
 	POP(stk);

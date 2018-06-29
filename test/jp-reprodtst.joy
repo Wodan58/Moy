@@ -1,37 +1,57 @@
-
-DEFINE str-uncons == [ str-first ] [ str-rest ] cleave
-; str-third == str-rest str-rest str-rest str-first
-; str-tenth == 10 [ str-rest ] times str-first
-; str-take == [ dup null ] [ pop pop [ ] ] [ [ str-uncons ] dip pred ] [ cons ]
-linrec
-; str-rest == second i
-; str-prim == 2 [ succ [ dup prime not ] [ succ ] while ] str-maker
-; str-pows == 1 [ 2 * ] str-maker
-; str-maker == dupd dup [ i ] dip [ str-maker ] cons cons [ ] cons cons
-; str-ints == 0 [ succ ] str-maker; str-first == first
-; str-drop == [ str-rest ] times; str-brak == [ ] [ [ ] cons ] str-maker
-; second == rest first; rep-uncons == [ rep-first ] [ rep-rest ] cleave
-; rep-third == rep-rest rep-rest rep-rest rep-first
-; rep-tenth == 10 [ rep-rest ] times rep-first
-; rep-take == [ dup null ] [ pop pop [ ] ] [ [ rep-uncons ] dip pred ] [ cons ]
-linrec
-; rep-rest == i; rep-prim == 2 [ succ [ dup prime not ] [ succ ] while ]
-rep-maker
-; rep-pows == 1 [ 2 * ] rep-maker
-; rep-n-th-pow == [ 0 1 ] [ [ succ [ 2 * ] dip ] infra ] rep-maker
-; rep-maker == [ infra dureco ] cons cons dureco
-; rep-ints == 0 [ succ ] rep-maker; rep-first == first first
-; rep-evns == 0 [ 2 + ] rep-maker; rep-drop == [ rep-rest ] times
-; rep-brak == [ ] [ [ ] cons ] rep-maker
-; prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ]
-while dup * <
-; dureco == dup rest cons.
+DEFINE
+str-uncons == [ str-first ] [ str-rest ] cleave ;
+str-third == str-rest str-rest str-rest str-first ;
+str-tenth == 10 [ str-rest ] times str-first ;
+str-take == [ dup null ] [ pop pop [ ] ] [ [ str-uncons ] dip pred ] [ cons ]
+linrec ;
+str-rest == second i ;
+str-prim == 2 [ succ [ dup prime not ] [ succ ] while ] str-maker ;
+str-pows == 1 [ 2 * ] str-maker ;
+str-maker == dupd dup [ i ] dip [ str-maker ] cons cons [ ] cons cons ;
+str-ints == 0 [ succ ] str-maker ;
+str-first == first ;
+str-drop == [ str-rest ] times ;
+str-brak == [ ] [ [ ] cons ] str-maker ;
+second == rest first ;
+rep-uncons == [ rep-first ] [ rep-rest ] cleave ;
+rep-third == rep-rest rep-rest rep-rest rep-first ;
+rep-tenth == 10 [ rep-rest ] times rep-first ;
+rep-take == [ dup null ] [ pop pop [ ] ] [ [ rep-uncons ] dip pred ] [ cons ]
+linrec ;
+rep-rest == i ;
+rep-prim == 2 [ succ [ dup prime not ] [ succ ] while ] rep-maker ;
+rep-pows == 1 [ 2 * ] rep-maker ;
+rep-n-th-pow == [ 0 1 ] [ [ succ [ 2 * ] dip ] infra ] rep-maker ;
+rep-maker == [ infra dureco ] cons cons dureco ;
+rep-ints == 0 [ succ ] rep-maker ;
+rep-first == first first ;
+rep-evns == 0 [ 2 + ] rep-maker ;
+rep-drop == [ rep-rest ] times ;
+rep-brak == [ ] [ [ ] cons ] rep-maker ;
+prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup *
+< ;
+dureco == dup rest cons ;
+END
 
 2 setecho .
-str-ints . str-pows . str-brak . str-brak str-third . str-pows .
-str-pows str-tenth . str-ints 5 str-take . str-pows 10 str-take .
-str-prim 10 str-drop 10 str-take . rep-ints . rep-pows . rep-evns .
-rep-evns rep-rest rep-rest rep-first . rep-brak . rep-brak rep-third .
-rep-pows . rep-pows rep-tenth . rep-ints 5 rep-take . rep-pows 10
-rep-take . rep-prim 10 rep-drop 10 rep-take . rep-n-th-pow 10 rep-drop 5
-rep-take .
+str-ints .
+str-pows .
+str-brak .
+str-brak str-third .
+str-pows .
+str-pows str-tenth .
+str-ints 5 str-take .
+str-pows 10 str-take .
+str-prim 10 str-drop 10 str-take .
+rep-ints .
+rep-pows .
+rep-evns .
+rep-evns rep-rest rep-rest rep-first .
+rep-brak .
+rep-brak rep-third .
+rep-pows .
+rep-pows rep-tenth .
+rep-ints 5 rep-take .
+rep-pows 10 rep-take .
+rep-prim 10 rep-drop 10 rep-take .
+rep-n-th-pow 10 rep-drop 5 rep-take .

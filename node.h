@@ -1,7 +1,7 @@
 /*
     module  : node.h
-    version : 1.3
-    date    : 06/28/18
+    version : 1.4
+    date    : 06/29/18
 */
 #define MEMORYMAX	300
 
@@ -14,8 +14,12 @@ extern Node *stk;
 register Node *stk asm("bl");
 #endif
 
+extern Node memory[];
+
+#if 0
 extern unsigned inside_condition;
 extern Node memory[], condition[], *condition_stack[], *cond_ptr;
+#endif
 
 Node *newnode(Operator op, void *u, Node *next);
 Node *dblnode(double dbl, Node *next);

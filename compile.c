@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.26
-    date    : 06/28/18
+    version : 1.29
+    date    : 06/29/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,20 +10,6 @@
 #include <time.h>
 #include "joy.h"
 #include "symbol.h"
-
-char *usrname(char *str)
-{
-    char *ptr;
-    unsigned i;
-
-    if (strchr(ptr = str, '-')) {
-	ptr = GC_strdup(str);
-	for (i = 0; ptr[i]; i++)
-	    if (ptr[i] == '-')
-		ptr[i] = '_';
-    }
-    return ptr;
-}
 
 static unsigned StringLeng(char *str)
 {
@@ -204,12 +190,6 @@ static void PrintDecl(Node *root)
     unsigned flags;
 
     for (cur = root; cur; cur = cur->next) {
-	if (cur->op >= DO_NOTHING && cur->op <= DO_QUIT) {
-	    name = printname(cur->op);
-	    index = lookup(name);
-	    flags = dict_flags(index);
-	    dict_setflags(index, flags | IS_USED);
-	}
 	switch (cur->op) {
 	case LIST_:
 	    PrintDecl(cur->u.lis);
@@ -266,7 +246,7 @@ static unsigned printnode(Node *node, FILE *fp)
 	fprintf(fp, "\");");
 	break;
     default:
-	fprintf(stderr, "unknown; %d\n", node->op);
+	execerror("valid datatype", "printnode");
 	break;
     }
     return list;

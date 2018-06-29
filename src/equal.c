@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -27,7 +27,7 @@ PRIVATE int equal_list_aux(Node *n1, Node *n2)
 
 PRIVATE int equal_aux(Node *n1, Node *n2)
 {
-    int error;
+    int ok;
 
     if (!n1 && !n2)
 	return 1;
@@ -35,7 +35,7 @@ PRIVATE int equal_aux(Node *n1, Node *n2)
 	return 0;
     if (n1->op == LIST_ && n2->op == LIST_)
 	return equal_list_aux(n1->u.lis, n2->u.lis);
-    return !Compare(n1, n2, &error) && !error;
+    return Compare(n1, n2, &ok) == ok;
 }
 
 PRIVATE void do_equal(void)

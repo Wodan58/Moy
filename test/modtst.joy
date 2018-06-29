@@ -1,19 +1,85 @@
+MODULE m2
+PRIVATE
+  b == "B" ;
+  a == "A" ;
+PUBLIC
+  ab == a b concat ;
+  ba == b a concat ;
+  HIDE
+    d == "D" ;
+    c == "C" ;
+  IN
+    cd == c d concat ;
+  END ;
+  abba == ab ba concat ;
+  HIDE
+    d == "D" ;
+    c == "C" ;
+  IN
+    abc == a b concat c concat ;
+  END ;
+  bcd == b cd concat ;
+END
+MODULE m1
+PRIVATE
+  b == "b" ;
+  a == "a" ;
+PUBLIC
+  ab == a b concat ;
+  ba == b a concat ;
+  abba == ab ba concat ;
+END
+DEFINE
+  zero == 0 0 pop ;
+  one == zero 1 + ;
+  four == two three + one - ;
+END
+HIDE
+  un == one ;
+  deux == zero one un + + ;
+IN
+  two == deux ;
+  three == zero un + deux + ;
+END
+HIDE
+  trois == two succ ;
+IN
+  six == trois three + ;
+  seven == trois drei + succ ;
+  five == cinq ;
+  cinq == two trois + ;
+END
+HIDE
+  twenty == 20 ;
+  thirty == 30 ;
+IN
+  fifty == twenty thirty + ;
+END
 
-MODULE m2 PRIVATE b == "B"; a == "A"
-PUBLIC ab == a b concat; ba == b a concat; 
-HIDE d == "D"; c == "C" IN cd == c d concat END; abba == ab ba concat; 
-HIDE d == "D"; c == "C" IN abc == a b concat c concat END; 
-bcd == b cd concat END
-MODULE m1 PRIVATE b == "b"; a == "a"
-PUBLIC ab == a b concat; ba == b a concat; abba == ab ba concat END
-DEFINE zero == 0 0 pop; one == zero 1 +; four == two three + one -.
-HIDE un == one; deux == zero one un + + IN two == deux
-; three == zero un + deux + END
-HIDE trois == two succ IN six == trois three +; seven == trois drei + succ
-; five == cinq; cinq == two trois + END
-HIDE twenty == 20; thirty == 30 IN fifty == twenty thirty + END
-
-2 setecho . 1 setundeferror . zero . one . two . three . four .
-five . six . seven . fifty . thirty . m1.ab . m1.ba . m1.abba . m1.a .
-m1.b . m2.ab . m2.ba . m2.abba . m2.cd . m2.abc . m2.bcd . m2.a . m2.b .
-m2.c . m2.d .
+2 setecho .
+1 setundeferror .
+zero .
+one .
+two .
+three .
+four .
+five .
+six .
+seven .
+fifty .
+thirty .
+m1.ab .
+m1.ba .
+m1.abba .
+m1.a .
+m1.b .
+m2.ab .
+m2.ba .
+m2.abba .
+m2.cd .
+m2.abc .
+m2.bcd .
+m2.a .
+m2.b .
+m2.c .
+m2.d .

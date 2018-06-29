@@ -1,12 +1,12 @@
 /*
     module  : optable.c
-    version : 1.15
-    date    : 06/26/18
+    version : 1.16
+    date    : 06/29/18
 */
 #include "runtime.h"
 
 struct optable_t optable[] = {
-	/* THESE NEED NOT BE DEFINED IN THE ORDER OF THEIR VALUES */
+	/* THESE MUST BE DEFINED IN THE ORDER OF THEIR VALUES */
 {"__ILLEGAL",		"->",
 "internal error, cannot happen - supposedly.\n"},
 

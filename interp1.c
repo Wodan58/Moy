@@ -1,7 +1,7 @@
 /*
     module  : interp1.c
-    version : 1.2
-    date    : 06/28/18
+    version : 1.3
+    date    : 06/29/18
 */
 #define NCHECK
 #define RUNTIME
@@ -12,6 +12,11 @@
  * dict_descr used in writefactor
  */
 char *dict_descr(int index)
+{
+    return "unknown";
+}
+
+char *dict_name(int index)
 {
     return "unknown";
 }

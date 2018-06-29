@@ -1,11 +1,14 @@
-
-DEFINE use-newton == [ [ - ] cons ] dip swoncat 1 swap newton
-; swoncat == swap concat
-; newton == dup deriv [ 2 pick 2 pick i abs 0.001 > ] [ [ dupd ] dip dup2 [ [ cleave / -
-] dip ] dip ] while pop pop
-; dup2 == dupd dup swapd
-; deriv == [ unary2 swap - 0.001 / ] cons [ dup 0.001 + ] swoncat
-; cube-root == [ dup dup * * ] use-newton.
+DEFINE
+use-newton == [ [ - ] cons ] dip swoncat 1 swap newton ;
+swoncat == swap concat ;
+newton == dup deriv [ 2 pick 2 pick i abs 0.001 > ] [ [ dupd ] dip dup2 [ [
+cleave / - ] dip ] dip ] while pop pop ;
+dup2 == dupd dup swapd ;
+deriv == [ unary2 swap - 0.001 / ] cons [ dup 0.001 + ] swoncat ;
+cube-root == [ dup dup * * ] use-newton ;
+END
 
 1001.1 cube-root .
-argc . argv . quit .
+argc .
+argv .
+quit .

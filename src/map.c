@@ -1,10 +1,11 @@
 /*
     module  : map.c
-    version : 1.15
-    date    : 06/25/18
+    version : 1.16
+    date    : 06/29/18
 */
 #include "runtime.h"
 
+#if 0
 /*
     Make a backup of the stack
 */
@@ -25,11 +26,11 @@ PRIVATE void restore(Node *cur)
     for (stk = memory; cur; cur = cur->next)
 	DUPLICATE(cur);
 }
+#endif
 
 #ifndef NCHECK
 int put_map(void)
 {
-    int arr;
     void *save;
     Node *prog;
     unsigned op, op1;
@@ -40,18 +41,17 @@ int put_map(void)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    arr = arity(prog);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* MAP-LIST */");
 	fprintf(outfp, "Node *cur, *back = 0, *save, *root = 0, *last = 0;");
 	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "DUPLICATE(cur);");
 	add_history(op1);
 	evaluate(prog);
@@ -61,8 +61,7 @@ int put_map(void)
 	fprintf(outfp, "last = root = heapnode(stk->op, stk->u.ptr, 0); else ");
 	fprintf(outfp, "last = last->next = heapnode(stk->op, stk->u.ptr, 0);");
 	fprintf(outfp, "stk = save;");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(LIST_, root); }");
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* MAP-STRING */");
@@ -72,18 +71,17 @@ int put_map(void)
 	fprintf(outfp, "cur = stk; POP(stk);");
 	fprintf(outfp, "str = cur->u.str;");
 	fprintf(outfp, "for (ptr = strdup(str); *str; str++) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	add_history(CHAR_);
 	evaluate(prog);
 	chg_history(STRING_);
 	fprintf(outfp, "ptr[i++] = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(STRING_, ptr); }");
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* MAP-SET */");
@@ -94,18 +92,17 @@ int put_map(void)
 	fprintf(outfp, "set = cur->u.set;");
 	fprintf(outfp, "for (zet = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(INTEGER_, i);");
 	add_history(INTEGER_);
 	evaluate(prog);
 	chg_history(SET_);
 	fprintf(outfp, "zet |= 1 << stk->u.num; stk = save;");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(SET_, zet); }");
     } else {
 	fprintf(outfp, "{ /* MAP-GENERIC */");
@@ -114,11 +111,11 @@ int put_map(void)
 	fprintf(outfp, "cur = stk; POP(stk); switch (cur->op) {");
 	fprintf(outfp, "case LIST_:");
 	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "DUPLICATE(cur);");
 	save = new_history();
 	add_history(INTEGER_);
@@ -127,42 +124,39 @@ int put_map(void)
 	fprintf(outfp, "last = root = heapnode(stk->op, stk->u.ptr, 0); else ");
 	fprintf(outfp, "last = last->next = heapnode(stk->op, stk->u.ptr, 0);");
 	fprintf(outfp, "stk = save;");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(LIST_, root); break;");
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = cur->u.str;");
 	fprintf(outfp, "for (ptr = strdup(str); *str; str++) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	old_history(save);
 	add_history(CHAR_);
 	evaluate(prog);
 	fprintf(outfp, "ptr[i++] = stk->u.num;");
 	fprintf(outfp, "stk = save;");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(STRING_, ptr); break;");
 	fprintf(outfp, "case SET_:");
 	fprintf(outfp, "set = cur->u.set;");
 	fprintf(outfp, "for (zet = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) back = backup(); else CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(INTEGER_, i);");
 	old_history(save);
 	add_history(INTEGER_);
 	evaluate(prog);
 	fprintf(outfp, "zet |= 1 << stk->u.num; stk = save;");
-	if (arr != 0 && arr != 1 && arr != 2)
-	    fprintf(outfp, "if (OUTSIDE) restore(back); else RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "} PUSH(SET_, zet); break; } }");
     }
     return 1;
@@ -176,7 +170,7 @@ collects results in sametype aggregate B.
 */
 PRIVATE void do_map(void)
 {
-    Node *prog, *cur,
+    Node *prog, *cur, temp,
 	 *root = 0, *last = 0, *save, *back = 0;
     int i = 0;
     char *str, *ptr;
@@ -196,11 +190,14 @@ PRIVATE void do_map(void)
     switch (cur->op) {
     case LIST_:
 	for (cur = cur->u.lis; cur; cur = cur->next) {
+#if 0
 	    if (OUTSIDE)
 		back = backup();
 	    else
 		CONDITION;
+#endif
 	    save = stk;
+	    temp = *stk;
 	    DUPLICATE(cur);
 	    exeterm(prog);
 #ifndef NCHECK
@@ -212,29 +209,38 @@ PRIVATE void do_map(void)
 	    else
 		last = last->next = heapnode(stk->op, stk->u.ptr, 0);
 	    stk = save;
+	    *stk = temp;
+#if 0
 	    if (OUTSIDE)
 		restore(back);
 	    else
 		RELEASE;
+#endif
 	}
 	PUSH(LIST_, root);
 	break;
     case STRING_:
 	str = cur->u.str;
 	for (ptr = GC_strdup(str); *str; str++) {
+#if 0
 	    if (OUTSIDE)
 		back = backup();
 	    else
 		CONDITION;
+#endif
 	    save = stk;
+	    temp = *stk;
 	    PUSH(CHAR_, (long_t)*str);
 	    exeterm(prog);
 	    ptr[i++] = stk->u.num;
 	    stk = save;
+	    *stk = temp;
+#if 0
 	    if (OUTSIDE)
 		restore(back);
 	    else
 		RELEASE;
+#endif
 	}
 	ptr[i] = 0;
 	PUSH(STRING_, ptr);
@@ -243,19 +249,25 @@ PRIVATE void do_map(void)
 	set = cur->u.set;
 	for (zet = 0; i < SETSIZE_; i++)
 	    if (set & (1 << i)) {
+#if 0
 		if (OUTSIDE)
 		    back = backup();
 		else
 		    CONDITION;
+#endif
 		save = stk;
+		temp = *stk;
 		PUSH(INTEGER_, i);
 		exeterm(prog);
 		zet |= 1 << stk->u.num;
 		stk = save;
+		*stk = temp;
+#if 0
 		if (OUTSIDE)
 		    restore(back);
 		else
 		    RELEASE;
+#endif
 	    }
 	PUSH(SET_, zet);
 	break;

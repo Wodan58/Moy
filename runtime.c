@@ -110,6 +110,7 @@
 #include "src/ifstring.c"
 #include "src/ifte.c"
 #include "src/in.c"
+#include "src/in1.c"
 #include "src/include.c"
 #include "src/index.c"
 #include "src/infra.c"

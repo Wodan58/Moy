@@ -1,13 +1,16 @@
 /*
     module  : inhas.h
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 06/29/18
 */
 PRIVATE void PROCEDURE(void)
 {
     Node *cur;
     char *str;
     int found = 0;
+#ifdef CORRECT_INHAS_COMPARE
+    int ok;
+#endif
 
 #ifndef NCHECK
     if (optimizing) {
@@ -22,9 +25,13 @@ PRIVATE void PROCEDURE(void)
 #endif
     switch (AGGR->op) {
     case LIST_:
-	cur = AGGR->u.lis;
-	while (cur && cur->u.num != ELEM->u.num)
-	    cur = cur->next;
+	for (cur = AGGR->u.lis; cur; cur = cur->next)
+#ifdef CORRECT_INHAS_COMPARE
+	    if (Compare(cur, ELEM, &ok) == ok)
+#else
+	    if (cur->u.num == ELEM->u.num)
+#endif
+		break;
 	found = cur != 0;
 	break;
     case STRING_:
@@ -49,6 +56,9 @@ PRIVATE void PROCEDURE(void)
 }
 
 #undef PROCEDURE
+#ifdef CORRECT_INHAS_COMPARE
+#undef CORRECT_INHAS_COMPARE
+#endif
 #undef NAME
 #undef AGGR
 #undef ELEM

@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.7
-    date    : 06/25/18
+    version : 1.8
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -19,8 +19,8 @@ PRIVATE void do_uncons(void)
 #ifndef NCHECK
     unsigned op = 0, op1;
 
-    if (optimizing && ((stk->op == LIST_ && stk->u.lis->op >= BOOLEAN_ &&
-	stk->u.lis->op < USR_) || stk->op == STRING_ || stk->op == SET_))
+    if (optimizing && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
+	stk->u.lis->op < SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
 	;
     else
 	COMPILE;
@@ -37,9 +37,9 @@ PRIVATE void do_uncons(void)
 #endif
 	if ((save = stk->u.lis) == 0) {
 	    if (OUTSIDE)
-		stk->u.num = stk->op = DO_NOTHING;
+		stk->u.num = stk->op = Nothing;
 	    else
-		GUNARY(DO_NOTHING, (void *)DO_NOTHING);
+		GUNARY(Nothing, (void *)Nothing);
 	    PUSH(LIST_, 0);
 	} else {
 	    if (OUTSIDE) {

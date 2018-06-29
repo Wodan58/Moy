@@ -117,6 +117,7 @@
 { "ifstring", "X [T] [E]  ->  ...", "If X is a string, executes T else executes E.\n" },
 { "ifte", "[B] [T] [F]  ->  ...", "Executes B. If that yields true, then executes T else executes F.\n" },
 { "in", "X A  ->  B", "Tests whether X is a member of aggregate A.\n" },
+{ "in1", "X A  ->  B", "Tests whether X is a member of aggregate A.\n" },
 { "include", "\"filnam.ext\"  ->", "Transfers input to file whose name is \"filnam.ext\".\nOn end-of-file returns to previous input file.\n" },
 { "index", "I A  ->  X", "X (= A[I]) is the member of A at position I (I = 0,1).\n" },
 { "infra", "L1 [P]  ->  L2", "Using list L1 as stack, executes P and returns a new list L2.\nThe first element of L1 is used as the top of stack,\nand after execution of P the top of stack becomes the first element of L2.\n" },

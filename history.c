@@ -1,7 +1,7 @@
 /*
     module  : history.c
-    version : 1.3
-    date    : 10/23/17
+    version : 1.4
+    date    : 06/29/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -46,6 +46,8 @@ void old_history(void *old)
 static char *histname(Operator op)
 {
     static char *datatype[] = {
+	"USR_",
+	"ANON_FUNCT_",
 	"BOOLEAN_",
 	"CHAR_",
 	"INTEGER_",
@@ -54,12 +56,10 @@ static char *histname(Operator op)
 	"LIST_",
 	"FLOAT_",
 	"FILE_",
-	"USR_",
-	"ANON_FUNCT_",
 	"SYMBOL_",
     };
-    if (op >= BOOLEAN_ && op <= SYMBOL_)
-	return datatype[op - BOOLEAN_];
+    if (op >= USR_ && op <= SYMBOL_)
+	return datatype[op - USR_];
     return printname(op);
 }
 

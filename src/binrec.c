@@ -1,14 +1,13 @@
 /*
     module  : binrec.c
-    version : 1.10
-    date    : 06/25/18
+    version : 1.11
+    date    : 06/29/18
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_binrec(void)
 {
-    int arr;
     void *save;
     Node *prog[4];
     unsigned ident;
@@ -32,16 +31,14 @@ int put_binrec(void)
     newfp = outfp = nextfile();
     fprintf(outfp, "void do_binrec_%d(void) {", ident);
     fprintf(outfp, "int num; Node *save, temp;");
-    if ((arr = arity(prog[0])) != 0)
-	fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
     set_history(0);
     evaluate2(prog[0], START_SCOPE);
     set_history(1);
     fprintf(outfp, "num = stk->u.num;");
     fprintf(outfp, "stk = save;");
-    if (arr != 0)
-	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
     save = new_history();
     evaluate(prog[1]);

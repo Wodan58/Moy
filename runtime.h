@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.9
-    date    : 06/28/18
+    version : 1.10
+    date    : 06/29/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -33,9 +33,14 @@
 #include "builtin.h"
 
 #define INSIDE		stk >= memory && stk < &memory[MEMORYMAX - 1]
+#define OUTSIDE		1
+#define CONDITION
+#define RELEASE
+#if 0
 #define OUTSIDE		!inside_condition
 #define CONDITION	condition_stack[inside_condition++] = cond_ptr
 #define RELEASE		cond_ptr = condition_stack[--inside_condition]
+#endif
 
 #define exeterm(x)	interprete(x)
 #define POP(x)		(x) = (x)->next

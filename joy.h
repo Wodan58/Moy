@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.16
-    date    : 06/22/18
+    version : 1.17
+    date    : 06/29/18
 */
 #define BIT_32
 
@@ -46,7 +46,6 @@ extern unsigned autoput, undeferror, echoflag, tracegc;
 extern FILE *yyin, *yyout;
 
 /* compile.c */
-char *usrname(char *str);
 void printstack(FILE *fp);
 void initialise(void);
 void finalise(void);

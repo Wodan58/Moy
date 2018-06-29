@@ -1,7 +1,7 @@
 /*
     module  : nothing.c
-    version : 1.3
-    date    : 06/25/18
+    version : 1.4
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -15,9 +15,9 @@ PRIVATE void do_nothing(void)
 
 #ifndef NCHECK
     if (optimizing)
-	add_history(DO_NOTHING);
+	add_history(Nothing);
     COMPILE;
 #endif
-    temp.u.num = temp.op = DO_NOTHING;
+    temp.u.num = temp.op = Nothing;
     DUPLICATE(&temp);
 }

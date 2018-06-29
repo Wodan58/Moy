@@ -1,7 +1,7 @@
 /*
     module  : node.c
-    version : 1.2
-    date    : 06/28/18
+    version : 1.3
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -11,10 +11,12 @@
 Node *stk;
 #endif
 
+#if 0
 unsigned inside_condition;
 
 Node condition[MAXCOND], *cond_ptr = condition,
     *condition_stack[MAXCOND];
+#endif
 
 Node memory[MEMORYMAX];
 
@@ -22,9 +24,11 @@ static Node *getnode(void)
 {
     Node *node;
 
+#if 0
     if (inside_condition)
 	if (cond_ptr < &condition[MAXCOND])
 	    return cond_ptr++;
+#endif
     if ((node = GC_malloc(sizeof(Node))) == 0)
 	execerror("memory", "allocator");
     return node;

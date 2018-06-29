@@ -1,7 +1,7 @@
 /*
     module  : someall.h
-    version : 1.12
-    date    : 10/23/17
+    version : 1.13
+    date    : 06/29/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -9,7 +9,6 @@
 
 int PUT_PROC(PROCEDURE)
 {
-    int arr;
     void *save;
     Node *prog;
     unsigned op, op1;
@@ -20,7 +19,6 @@ int PUT_PROC(PROCEDURE)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    arr = arity(prog);
     if ((op = pop_history(&op1)) == LIST_) {
 	fprintf(outfp, "{ /* SOMEALL-LIST */");
 	fprintf(outfp, "unsigned num = %d;", INITIAL);
@@ -28,16 +26,15 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "assert(stk->op == LIST_);");
 	fprintf(outfp, "list = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; list; list = list->next) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "DUPLICATE(list);");
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else if (op == STRING_) {
 	fprintf(outfp, "{ /* SOMEALL-STRING */");
@@ -46,16 +43,13 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "assert(stk->op == STRING_);");
 	fprintf(outfp, "char *str = stk->u.str; POP(stk);");
 	fprintf(outfp, "for (; *str; str++) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+	fprintf(outfp, "do_dup();");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else if (op == SET_) {
 	fprintf(outfp, "{ /* SOMEALL-SET */");
@@ -65,16 +59,15 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(INTEGER_, i);");
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; }", INITIAL);
     } else {
 	fprintf(outfp, "{ /* SOMEALL-GENERIC */");
@@ -86,51 +79,48 @@ int PUT_PROC(PROCEDURE)
 	fprintf(outfp, "case LIST_:");
 	fprintf(outfp, "list = stk->u.lis; POP(stk);");
 	fprintf(outfp, "for (; list; list = list->next) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "DUPLICATE(list);");
 	save = new_history();
 	add_history(INTEGER_);
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
 	fprintf(outfp, "for (; *str; str++) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	old_history(save);
 	add_history(CHAR_);
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
 	fprintf(outfp, "case SET_:");
 	fprintf(outfp, "set = stk->u.set; POP(stk);");
 	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
 	fprintf(outfp, "if (set & (1 << i)) {");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "CONDITION;");
 	fprintf(outfp, "save = stk;");
-	if (arr == 2)
-	    fprintf(outfp, "do_dup();");
+#if 0
+	fprintf(outfp, "do_dup();");
+#endif
 	fprintf(outfp, "PUSH(INTEGER_, i);");
 	old_history(save);
 	add_history(INTEGER_);
 	evaluate(prog);
 	fprintf(outfp, "num = stk->u.num; stk = save;");
-	if (arr != 1 && arr != 2)
-	    fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "RELEASE;");
 	fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
     }
     fprintf(outfp, "PUSH(BOOLEAN_, num); }");

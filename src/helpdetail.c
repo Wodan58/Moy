@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.9
-    date    : 06/28/18
+    version : 1.10
+    date    : 06/29/18
 */
 #include "runtime.h"
 
@@ -18,6 +18,7 @@ PRIVATE void do_helpdetail(void)
     char *name;
     Node *node;
     Operator op;
+    unsigned flags;
 
     if (optimizing)
 	del_history(1);
@@ -26,26 +27,25 @@ PRIVATE void do_helpdetail(void)
     LIST("HELP");
     printf("\n");
     node = stk->u.lis;
-    while (node) {
+    for (node = stk->u.lis; node; node = node->next) {
 	if (node->op == USR_) {
 	    i = node->u.num;
+	    flags = dict_flags(i);
 	    name = dict_descr(i);
-	    printf("%s  ==\n    ", name);
-	    writeterm(dict_body(i), stdout);
-	    printf("\n\n");
-	    break;
-	} else {
-	    if ((op = node->op) == BOOLEAN_)
-		op = node->u.num ? DO_TRUE : DO_FALSE;
-	    if (op == INTEGER_ && node->u.num == MAXINT_)
-		op = DO_MAXINT;
-	    name = opername(op);
+	    if ((flags & IS_BUILTIN) == 0) {
+		printf("%s  ==\n    ", name);
+		writeterm(dict_body(i), stdout);
+		printf("\n\n");
+		continue;
+	    }
 	    for (i = 0; optable[i].name; i++)
 		if (!strcmp(name, optable[i].name))
-		    printf("%s  :  %s.\n%s\n", name, optable[i].messg1,
-			   optable[i].messg2);
-	}
-	node = node->next;
+		    break;
+	} else if (node->op > USR_ && node->op < SYMBOL_)
+	    i = node->op;
+	else
+	    continue;
+	printf("%s  :  %s.\n%s\n", name, optable[i].messg1, optable[i].messg2);
     }
     POP(stk);
 #endif

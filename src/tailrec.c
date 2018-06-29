@@ -1,14 +1,13 @@
 /*
     module  : tailrec.c
-    version : 1.10
-    date    : 06/25/18
+    version : 1.11
+    date    : 06/29/18
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_tailrec(void)
 {
-    int arr;
     Node *prog[3];
     unsigned ident;
     FILE *oldfp, *newfp;
@@ -30,15 +29,13 @@ int put_tailrec(void)
     fprintf(outfp, "void do_tailrec_%d(void) {", ident);
     fprintf(outfp, "int num; Node *save;");
     fprintf(outfp, "for (;;) {");
-    if ((arr = arity(prog[0])) != 0)
-	fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
     set_history(0);
     evaluate2(prog[0], START_SCOPE);
     set_history(1);
     fprintf(outfp, "num = stk->u.num; stk = save;");
-    if (arr != 0)
-	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
     evaluate(prog[1]);
     fprintf(outfp, "break; }");

@@ -1,14 +1,13 @@
 /*
     module  : genrec.c
-    version : 1.11
-    date    : 06/25/18
+    version : 1.12
+    date    : 06/29/18
 */
 #include "runtime.h"
 
 #ifndef NCHECK
 int put_genrec(void)
 {
-    int arr;
     void *save;
     Node *prog[4];
     unsigned ident;
@@ -32,15 +31,13 @@ int put_genrec(void)
     fprintf(outfp, "void do_genrec_%d(void) {", ident);
     fprintf(outfp, "int num; Node code, *save;");
     fprintf(outfp, "code = *stk; POP(stk);");
-    if ((arr = arity(prog[0])) != 0)
-	fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
     set_history(0);
     evaluate2(prog[0], START_SCOPE);
     set_history(1);
     fprintf(outfp, "num = stk->u.num; stk = save;");
-    if (arr != 0)
-	fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
     save = new_history();
     evaluate(prog[1]);

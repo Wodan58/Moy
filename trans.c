@@ -117,6 +117,7 @@
 { "ifstring", "ifstring", do_ifstring },
 { "ifte", "ifte", do_ifte },
 { "in", "in", do_in },
+{ "in1", "in1", do_in1 },
 { "include", "include", do_include },
 { "index", "index", do_index },
 { "infra", "infra", do_infra },
