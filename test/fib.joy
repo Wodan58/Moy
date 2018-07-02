@@ -1,0 +1,4 @@
+(*
+    fib - benchmarking
+*)
+10 [ dup small ] [ ] [ pred dup pred ] [ + ] binrec (* put_int nl *) .

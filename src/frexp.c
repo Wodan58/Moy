@@ -1,9 +1,8 @@
 /*
     module  : frexp.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 frexp  :  F  ->  G I
@@ -15,15 +14,13 @@ PRIVATE void do_frexp(void)
     int exp;
 
 #ifndef NCHECK
-    if (optimizing)
-	add_history(INTEGER_);
-    if (optimizing && NUMERIC_1)
+    if (compiling && NUMERIC_1)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM("frexp");
     FLOAT("frexp");
-#endif
     if (OUTSIDE)
 	stk->u.dbl = frexp(FLOATVAL, &exp);
     else

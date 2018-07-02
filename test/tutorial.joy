@@ -1,0 +1,131 @@
+3 setecho .
+111 222 + .
+1 2 + 3 4 + * .
+DEFINE nl == 10 putch .
+2 2 + 2 2 * = (* put_bool nl *) .
+# DEFINE > == swap < .
+6 6 * 5 7 * > (* put_bool nl *) .
+true false or true and not (* put_bool nl *) .
+DEFINE reverse == [ ] swap shunt .
+DEFINE shunt == [ cnos ] step .
+DEFINE cnos == swap cons .
+[ 1 2 3 4 5 ] reverse .
+DEFINE concat1 == [ reverse ] c shunt .
+DEFINE c == [ swap ] dip i .
+[ peter paul ] [ mary jane ] concat1 .
+DEFINE last == dup rest1 null1 [ first1 ] [ rest1 last ] branch1 .
+DEFINE null1 == car nothing sametype .
+DEFINE car == uncons pop .
+DEFINE first1 == uncons pop .
+DEFINE rest1 == uncons swap pop .
+DEFINE branch1 == swap pair index i .
+DEFINE pair == [ ] cons cons .
+[ 11 false 'X 44 ] last .
+DEFINE member == swap contains .
+DEFINE contains == false swap [ = or ] cons fold1 .
+DEFINE fold1 == [ swap ] dip step .
+3 [ 1 5 3 4 2 ] member (* put_bool nl *) .
+3 [ 1 5 6 4 2 ] member (* put_bool nl *) .
+DEFINE sum == 0 [ + ] fold1 .
+DEFINE space == 32 .
+DEFINE product == 1 [ * ] fold1 .
+DEFINE putsp == put space putch .
+[ 1 2 3 4 ] dup sum put product .
+111 [ 222 333 ] cons .
+[ 11 22 33 44 55 ] uncons uncons put put .
+DEFINE put_list_chr == 91 putch space putch uncons swap putch [ space
+putch putch ] step space putch 93 putch .
+0 setautoput .
+[ 'a 'b ] [ 'd 'e 'f ] concat1 dup put_list_chr nl .
+uncons uncons 'c swap cons cons cons dup put_list_chr nl .
+DEFINE length == 0 [ pop 1 + ] fold1 .
+DEFINE putnl == put nl .
+dup length putnl .
+reverse length putnl .
+1 setautoput .
+# get get + .
+# 123 456
+111 222 [ + put ] i nl .
+111 [ put + ] reverse 222 swap i nl .
+3 7 100 [ * ] dip + .
+[ 1 2 3 ] [ dup * put ] step nl .
+2 [ dup * ] i .
+DEFINE twice == dup b .
+DEFINE b == [ i ] dip i .
+2 [ dup * ] twice .
+DEFINE thrice == dup [ twice ] dip i .
+2 [ dup * ] thrice .
+DEFINE square == dup * .
+DEFINE pred1 == 1 - .
+DEFINE times1 == dup 0 = [ pop pop ] [ [ dup [ i ] dip ] dip pred1
+times1 ] branch1 .
+2 [ square ] 0 times1 .
+2 [ square ] 1 times1 .
+2 [ square ] 2 times1 .
+2 [ square ] 3 times1 .
+2 [ square ] 4 times1 .
+2 [ square ] 5 times1 .
+[ 7 ] 10 times1 stack .
+DEFINE map1 == maprev reverse .
+DEFINE maprev == [ ] rollup1 shuntmap .
+DEFINE rollup1 == swap [ swap ] dip .
+DEFINE shuntmap == [ [ cnos ] b ] cons step .
+[ 1 2 3 ] [ dup * ] map .
+[ 1 2 3 ] 0 [ dup * + ] fold1 .
+DEFINE unit == [ ] cons .
+DEFINE construct2 == [ [ nullary1 ] cons dip swap ] map1 .
+DEFINE nullary1 == stack swap dip rest cons unstack .
+11 12 [ [ + ] [ * ] [ pop unit ] [ dup pair ] ] construct2 .
+DEFINE unpair == uncons uncons pop .
+[ [ pair [ square ] map1 unpair + ] [ pop ] [ ] ] construct2 .
+[ ] unstack 11111 .
+64 .
+64 .
+255 .
+65 putch nl .
+97 putch nl .
+'g putch nl .
+[ Smith Jones Robinson ] last .
+DEFINE definition == first body .
+[ last ] definition .
+[ Smith Jones Robinson ] [ last ] definition i .
+DEFINE cdr == uncons swap pop .
+DEFINE x1 == dup i .
+[ Smith Jones Robinson ]
+[ swap dup rest null1 [ car swap pop ] [ cdr swap x1 ] branch1 ] x1 .
+DEFINE y == fix i .
+DEFINE fix == [ duco ] first swap cons duco .
+DEFINE duco == dup cons .
+[ Smith Jones Robinson ]
+[ swap dup rest1 null1 [ car swap pop ] [ cdr swap i ] branch1 ] y .
+# DEFINE <= == succ < .
+DEFINE succ == 1 + .
+DEFINE factorial_rec == dup 1 <= [ pop 1 ] [ dup pred1 factorial_rec
+* ] branch1 .
+6 factorial_rec .
+DEFINE rolldown1 == [ swap ] dip swap .
+6 [ swap dup 1 <= [ pop pop 1 ] [ dup pred1 rolldown1 x1 * ] branch1 ]
+x1 .
+6 [ swap dup 1 <= [ pop pop 1 ] [ dup pred1 rolldown1 i * ] branch1 ]
+y .
+DEFINE small1 == uncons null1 swap pop .
+DEFINE quicksort == dup small1 [ ] [ partition quicksort [ quicksort ]
+dip concat1 ] branch1 .
+DEFINE partition == [ [ ] [ ] ] dip dup [ first1 > [ cnos ] [ swap
+[ cnos ] dip ] branch1 ] cons [ dup ] first1 cnos step .
+[ 1 9 2 8 3 7 4 6 5 ] quicksort .
+[ 5 6 4 7 3 8 2 9 1 ] quicksort .
+[ 1 2 3 4 5 6 7 8 9 ] quicksort .
+[ 9 8 7 6 5 4 3 2 1 ] quicksort .
+[ quicksort ] definition .
+DEFINE quicksort1 == dup small1 [ ] [ partition1 quicksort1 [
+quicksort1 ] dip concat1 ] branch1 .
+DEFINE partition1 == [ [ ] [ ] ] dip dup first1 [ first1 > [ cnos ]
+[ swap [ cnos ] dip ] branch1 ] cons [ first1 ] first1 cnos [ dup ]
+first1 cnos step .
+[ [ 1 Smith ] [ 3 Jones ] [ 2 Robinson ] [ 4 Brown ] ] quicksort1 .
+[ ] [ NURKS Peter 1989 year 3 major Computer Science ] cnos
+    [ ABELSON Mary 1990 year 2 major Logic ] cnos
+    [ ZEEMAN Fred 1988 year 2 major Accounting ] cnos
+    [ MORRIS Janna 1992 year 1 major undecided ] cnos
+quicksort1 [ putnl ] step .

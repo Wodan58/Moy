@@ -1,9 +1,8 @@
 /*
     module  : condnestrec.c
-    version : 1.7
-    date    : 06/25/18
+    version : 1.8
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_condnestrec(void);
@@ -24,13 +23,13 @@ PRIVATE void do_condnestrec(void)
     Node *prog;
 
 #ifndef NCHECK
-    if (optimizing && put_condnestrec())
+    if (compiling && put_condnestrec())
 	return;
     COMPILE;
+#endif
     ONEPARAM("condnestrec");
     LIST("condnestrec");
     CHECKEMPTYLIST(stk->u.lis, "condnestrec");
-#endif
     prog = stk->u.lis;
     POP(stk);
     condnestrec(prog);

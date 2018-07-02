@@ -1,33 +1,23 @@
 /*
     module  : dipped.h
-    version : 1.5
-    date    : 04/22/17
+    version : 1.6
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
     Node temp;
 
 #ifndef NCHECK
-    unsigned op = 0, op1;
-
-    if (optimizing) {
-	op = pop_history(&op1);
-	del_history(1);
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    PARAMCOUNT(NAME);
 #endif
+    PARAMCOUNT(NAME);
     temp = *stk;
     POP(stk);
     ARGUMENT();
     DUPLICATE(&temp);
-#ifndef NCHECK
-    if (optimizing)
-	add_history2(op, op1);
-#endif
 }
 
 #undef PROCEDURE

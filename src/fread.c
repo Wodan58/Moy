@@ -1,9 +1,8 @@
 /*
     module  : fread.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 fread  :  S I  ->  S L
@@ -17,18 +16,14 @@ PRIVATE void do_fread(void)
     unsigned char *buf;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history2(LIST_, INTEGER_);
     COMPILE;
+#endif
     TWOPARAMS("fread");
     INTEGER("fread");
-#endif
     count = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     FILE("fread");
-#endif
-    buf = GC_malloc_atomic(count);
+    buf = ck_malloc_sec(count);
     for (i = fread(buf, 1, count, stk->u.fil) - 1; i >= 0; i--)
 	cur = heapnode(INTEGER_, (void *)(long_t)buf[i], cur);
     PUSH(LIST_, cur);

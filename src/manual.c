@@ -1,9 +1,8 @@
 /*
     module  : manual.c
-    version : 1.6
-    date    : 06/26/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #define PLAIN (style == 0)
 #define HTML  (style == 1)
@@ -18,8 +17,6 @@
 	if (LATEX) printf("} ---] \\verb# #");			\
 	if (HTML) printf("</B><BR><BR>");			\
 	printf("\n\n"); }
-
-extern optable_t optable[];
 
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 {
@@ -36,13 +33,6 @@ PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 	    j = 2;
 	    HEADER(name, name, "operator");
 	}
-#if 0
-	HEADER(name, "nothing", "operand") else
-	HEADER(name, "id", "operator") else
-	HEADER(name, "null", "predicate") else
-	HEADER(name, "i", "combinator") else
-	HEADER(name, "help", "miscellaneous commands")
-#endif
 	if (name[0] != '_') {
 	    if (HTML)
 		printf("\n<DT>");

@@ -1,9 +1,8 @@
 /*
     module  : setautoput.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 setautoput  :  I  ->
@@ -13,12 +12,10 @@ if I = 1, put; if I = 2, stack).
 PRIVATE void do_setautoput(void)
 {
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
+#endif
     ONEPARAM("setautoput");
     NUMERICTYPE("setautoput");
-#endif
     autoput = stk->u.num;
     POP(stk);
 }

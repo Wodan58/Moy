@@ -1,9 +1,8 @@
 /*
     module  : pop.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 pop  :  X  ->
@@ -12,13 +11,11 @@ Removes X from top of the stack.
 PRIVATE void do_pop(void)
 {
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && VALID(stk))
+    if (compiling && VALID_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("pop");
 #endif
+    ONEPARAM("pop");
     POP(stk);
 }

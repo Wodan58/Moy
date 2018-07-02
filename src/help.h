@@ -1,10 +1,8 @@
 /*
     module  : help.h
-    version : 1.4
-    date    : 06/28/18
+    version : 1.5
+    date    : 07/02/18
 */
-#define LINEWIDTH	72
-
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
@@ -14,7 +12,7 @@ PRIVATE void PROCEDURE(void)
     COMPILE;
     for (i = dict_size() - 1; i >= 0; i--) {
 	ptr = dict_descr(i);
-	if (*ptr REL '_' && (dict_flags(i) & IS_LOCAL) == 0) {
+	if (*ptr REL '_' && !isdigit(*ptr)) {
 	    leng = strlen(ptr) + 1;
 	    if (column + leng > LINEWIDTH) {
 		putchar('\n');
@@ -30,4 +28,3 @@ PRIVATE void PROCEDURE(void)
 
 #undef PROCEDURE
 #undef REL
-#undef LINEWIDTH

@@ -1,9 +1,8 @@
 /*
     module  : strtol.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 strtol  :  S I  ->  J
@@ -17,22 +16,16 @@ PRIVATE void do_strtol(void)
     long_t num;
 
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(1);
-	chg_history(INTEGER_);
-    }
-    if (optimizing && INTEGER_1 && STRING_2)
+    if (compiling && INTEGER_1 && STRING_2)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS("strtol");
     INTEGER("strtol");
-#endif
     base = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     STRING("strtol");
-#endif
 #ifdef _MSC_VER
     num = strtol(stk->u.str, 0, base);
 #else

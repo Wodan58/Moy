@@ -1,9 +1,8 @@
 /*
     module  : first.c
-    version : 1.6
-    date    : 06/25/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 first  :  A  ->  F
@@ -14,23 +13,15 @@ PRIVATE void do_first(void)
     int i = 0;
 
 #ifndef NCHECK
-    unsigned op1;
-
-    if (optimizing)
-	pop_history(&op1);
-    if (optimizing && AGGREGATE(stk))
+    if (compiling && AGGREGATE_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("first");
 #endif
+    ONEPARAM("first");
     switch (stk->op) {
     case LIST_:
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(op1);
 	CHECKEMPTYLIST(stk->u.lis, "first");
-#endif
 	if (OUTSIDE) {
 	    stk->op = stk->u.lis->op;
 	    stk->u = stk->u.lis->u;
@@ -38,11 +29,7 @@ PRIVATE void do_first(void)
 	    GUNARY(stk->u.lis->op, stk->u.lis->u.ptr);
 	break;
     case STRING_:
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(CHAR_);
 	CHECKEMPTYSTRING(stk->u.str, "first");
-#endif
 	if (OUTSIDE) {
 	    stk->u.num = *stk->u.str;
 	    stk->op = CHAR_;
@@ -50,11 +37,7 @@ PRIVATE void do_first(void)
 	    UNARY(CHAR_NEWNODE, *stk->u.str);
 	break;
     case SET_:
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(INTEGER_);
 	CHECKEMPTYSET(stk->u.set, "first");
-#endif
 	while (!(stk->u.set & (1 << i)))
 	    i++;
 	if (OUTSIDE) {

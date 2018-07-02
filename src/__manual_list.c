@@ -1,11 +1,8 @@
 /*
     module  : __manual_list.c
-    version : 1.3
-    date    : 06/25/18
+    version : 1.4
+    date    : 07/02/18
 */
-#include "runtime.h"
-
-extern optable_t optable[];
 
 /**
 __manual_list  :  ->  L
@@ -17,8 +14,6 @@ PRIVATE void do___manual_list(void)
     Node *tmp, *cur = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	add_history2(LIST_, LIST_);
     COMPILE;
 #endif
     while (optable[++i].name);

@@ -33,7 +33,7 @@ prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup *
 dureco == dup rest cons ;
 END
 
-2 setecho .
+# 2 setecho .
 str-ints .
 str-pows .
 str-brak .

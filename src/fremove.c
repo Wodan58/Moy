@@ -1,9 +1,8 @@
 /*
     module  : fremove.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 fremove  :  P  ->  B
@@ -13,12 +12,10 @@ B is a boolean indicating success or failure.
 PRIVATE void do_fremove(void)
 {
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(BOOLEAN_);
     COMPILE;
+#endif
     ONEPARAM("fremove");
     STRING("fremove");
-#endif
     if (OUTSIDE) {
 	stk->next->u.num = !remove(stk->u.str);
 	stk->next->op = BOOLEAN_;

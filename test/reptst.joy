@@ -78,7 +78,7 @@ accu-product-list == [ ] [ [ * ] dip cons ] rep.inter ;
 accu-list == [ ] [ cons ] rep.inter ;
 END 
 
-2 setecho .
+# 2 setecho .
 selfr .
 selfr i i i .
 squaring .

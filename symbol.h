@@ -1,27 +1,15 @@
 /*
     module  : symbol.h
-    version : 1.6
-    date    : 06/29/18
+    version : 1.7
+    date    : 07/02/18
 */
-#define ALEN		22
-#define SYMTABMAX	700
-#define INPLINEMAX	1000
-
-#define IS_MODULE	1
-#define IS_LOCAL	2
-#define IS_UNKNOWN	4
-#define IS_USED		8
-#define IS_PRINTED	16
-#define IS_BUILTIN	32
-#define IS_ACTIVE	64
-#define IS_MARKED	128
-#define IS_DECLARED	256
-
-#define MID_SCOPE	0
-#define START_SCOPE	1
-#define END_SCOPE	2
-#define INIT_SCOPE	3
-#define STOP_SCOPE	4
+#define IS_UNDEFINED	0
+#define IS_BUILTIN	1
+#define IS_DEFINED	2
+#define IS_USED		4
+#define IS_ACTIVE	8
+#define IS_DECLARED	16
+#define IS_PRINTED	32
 
 typedef unsigned short Operator;
 
@@ -33,23 +21,21 @@ typedef struct Node {
 
 typedef void (*proc_t)(void);
 
-extern unsigned symtabindex;
+#include "node.h"
+
+/* memory.c */
+Node *getnode(void);
+void freemem(void);
 
 /* interp.c */
 void interprete(Node *code);
 void execute(Node *code);
-void evaluate(Node *code);
-void evaluate1(Node *code);
-void evaluate2(Node *code, int num);
-
-#include "node.h"
 
 /* compile.c */
-unsigned PrintHead(Node *node, FILE *fp);
+void PrintHead(Node *node, FILE *fp);
+void compile(Node *node);
 
 /* print.c */
-char *opername(int num);
-char *printname(int num);
 void writefactor(Node *node, FILE *stm);
 void writeterm(Node *code, FILE *stm);
 void writestack(Node *code, FILE *stm);
@@ -60,6 +46,7 @@ void exitmod(void);
 void initpriv(void);
 void stoppriv(void);
 void exitpriv(void);
+void initpub(void);
 char *prefix(int *hide, int *local);
 char *iterate(char *name);
 
@@ -80,6 +67,3 @@ void iterate_dict_and_write_struct(void);
 
 char *procname(proc_t proc);
 proc_t nameproc(char *name);
-
-/* arity.c */
-int arity(Node *cur);

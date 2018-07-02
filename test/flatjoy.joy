@@ -15,7 +15,7 @@ j2f-forwards == [ [ ] ] swap [ j2f-f ] step ;
 END
 
 0 __settracegc .
-2 setecho .
+# 2 setecho .
 P0 .
 P0 j2f-forwards .
 P0 j2f-forwards i .

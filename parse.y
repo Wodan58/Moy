@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.21
-    date    : 06/29/18
+    version : 1.22
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,19 +11,19 @@
 %}
 
 %token MODULE JPRIVATE JPUBLIC JEQUAL END
-%token Nothing
 
-%token <num> USR_	2
+%token <num> NOTHING_		1
+%token <num> USR_		2
 %token <proc> ANON_FUNCT_	3
-%token <num> BOOLEAN_	4
-%token <num> CHAR_	5
-%token <num> INTEGER_	6
-%token <set> SET_	7
-%token <str> STRING_	8
-%token <lis> LIST_	9
-%token <dbl> FLOAT_	10
-%token <fil> FILE_	11
-%token <str> SYMBOL_	12
+%token <num> BOOLEAN_		4
+%token <num> CHAR_		5
+%token <num> INTEGER_		6
+%token <set> SET_		7
+%token <str> STRING_		8
+%token <lis> LIST_		9
+%token <dbl> FLOAT_		10
+%token <fil> FILE_		11
+%token <str> SYMBOL_		12
 
 %type <num> char_or_int
 %type <set> opt_set set
@@ -69,7 +69,7 @@ private : JPRIVATE { initpriv(); } seq_definition { stoppriv(); } ;
 
 opt_public : public | /* empty */ ;
 
-public : JPUBLIC seq_definition ;
+public : JPUBLIC { initpub(); } seq_definition ;
 
 /*
     A definition sequence is one or more definitions, separated by ';' .

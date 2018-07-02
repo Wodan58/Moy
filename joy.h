@@ -1,8 +1,14 @@
 /*
     module  : joy.h
-    version : 1.17
-    date    : 06/29/18
+    version : 1.18
+    date    : 07/02/18
 */
+#ifdef _MSC_VER
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #define BIT_32
 
 #ifdef BIT_32
@@ -25,25 +31,30 @@ typedef unsigned long long	ulong_t;
 typedef double		real_t;
 #endif
 
-typedef struct optable_t {
-    char *name, *messg1, *messg2;
-} optable_t;
-
 #ifndef PARSER
 #include "joygc.h"
 #include "parse.h"
 #endif
 
+typedef struct optable_t {
+    char *name, *messg1, *messg2;
+} optable_t;
+
+/* optable.c */
+extern optable_t optable[];
+
 /* initsym.c */
-extern char **g_argv;
-extern int g_argc, error;
 extern FILE *outfp, *declfp;
-extern char *mainfunc;
-extern unsigned debugging, compiling, optimizing, identifier;
-extern unsigned autoput, undeferror, echoflag, tracegc;
+extern char **g_argv, *mainfunc;
+extern int g_argc, debugging, compiling, definition, identifier;
+extern int autoput, tracegc, undeferror;
 
 /* lexer.l */
+extern int yylineno;
 extern FILE *yyin, *yyout;
+
+int getechoflag(void);
+void setechoflag(int flag);
 
 /* compile.c */
 void printstack(FILE *fp);
@@ -52,24 +63,6 @@ void finalise(void);
 
 /* error.c */
 void execerror(char *message, const char *op);
-
-/* history.c */
-void add_history(unsigned op);
-void add_history2(unsigned op, unsigned op1);
-void prt_history(void);
-void clr_history(void);
-void set_history(int num);
-unsigned pop_history(unsigned *op);
-unsigned top_history(unsigned *op);
-unsigned sub_history(unsigned *op);
-void del_history(int num);
-void chg_history(unsigned op);
-void chg_history2(unsigned op, unsigned op2);
-void *new_history(void);
-void old_history(void *save);
-void *save_history(void *ptr, unsigned op, unsigned op1);
-void swap_history(void *ptr);
-int rest_history(void *ptr, unsigned *op, unsigned *op1);
 
 /* initmem.c */
 void initmem(void);
@@ -89,12 +82,6 @@ int yyerror(char *str);
 int yylex(void);
 void new_buffer(void);
 int old_buffer(void);
-
-/* listing.c */
-void NewScope(void);
-void OldScope(void);
-unsigned Listed(void *ptr, int *found);
-void DeList(void);
 
 /* outfile.c */
 void initout(void);

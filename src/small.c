@@ -1,9 +1,8 @@
 /*
     module  : small.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 small  :  X  ->  B
@@ -14,14 +13,12 @@ PRIVATE void do_small(void)
     int small = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(BOOLEAN_);
-    if (optimizing && VALID(stk))
+    if (compiling && VALID_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("small");
 #endif
+    ONEPARAM("small");
     switch (stk->op) {
     case BOOLEAN_:
     case INTEGER_:

@@ -1,16 +1,14 @@
 /*
     module  : unary3.c
-    version : 1.10
-    date    : 06/29/18
+    version : 1.11
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_unary3(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -21,17 +19,17 @@ int put_unary3(void)
     fprintf(outfp, "second = *stk; POP(stk); first = *stk; POP(stk);");
     fprintf(outfp, "top = stk->next;");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, START_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[0] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&first);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, MID_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[1] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&second);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, END_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[2] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&result[0]);");
@@ -50,12 +48,12 @@ PRIVATE void do_unary3(void)
     Node *prog, first, second, *top, result[3];
 
 #ifndef NCHECK
-    if (optimizing && put_unary3())
+    if (compiling && put_unary3())
 	return;
     COMPILE;
+#endif
     FOURPARAMS("unary3");
     ONEQUOTE("unary3");
-#endif
     prog = stk->u.lis;
     POP(stk);
     second = *stk;

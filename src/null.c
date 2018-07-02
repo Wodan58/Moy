@@ -1,9 +1,8 @@
 /*
     module  : null.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 null  :  X  ->  B
@@ -14,14 +13,12 @@ PRIVATE void do_null(void)
     int num = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(BOOLEAN_);
-    if (optimizing && VALID(stk))
+    if (compiling && VALID_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("null");
 #endif
+    ONEPARAM("null");
     switch (stk->op) {
     case STRING_:
 	num = !*stk->u.str;

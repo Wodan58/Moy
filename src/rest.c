@@ -1,9 +1,8 @@
 /*
     module  : rest.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 rest  :  A  ->  R
@@ -15,17 +14,15 @@ PRIVATE void do_rest(void)
     char *str;
 
 #ifndef NCHECK
-    if (optimizing && AGGREGATE(stk))
+    if (compiling && AGGREGATE_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("rest");
 #endif
+    ONEPARAM("rest");
     switch (stk->op) {
     case LIST_:
-#ifndef NCHECK
 	CHECKEMPTYLIST(stk->u.lis, "rest");
-#endif
 	if (OUTSIDE)
 	    stk->u.lis = stk->u.lis->next;
 	else
@@ -33,18 +30,14 @@ PRIVATE void do_rest(void)
 	break;
     case STRING_:
 	str = stk->u.str;
-#ifndef NCHECK
 	CHECKEMPTYSTRING(str, "rest");
-#endif
 	if (OUTSIDE)
 	    stk->u.str = ++str;
 	else
 	    UNARY(STRING_NEWNODE, ++str);
 	break;
     case SET_:
-#ifndef NCHECK
 	CHECKEMPTYSET(stk->u.set, "rest");
-#endif
 	while (!(stk->u.set & (1 << i)))
 	    i++;
 	if (OUTSIDE)

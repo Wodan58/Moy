@@ -1,9 +1,8 @@
 /*
     module  : formatf.c
-    version : 1.7
-    date    : 06/25/18
+    version : 1.8
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 formatf  :  F C I J  ->  S
@@ -18,42 +17,32 @@ PRIVATE void do_formatf(void)
     char spec, format[7], *result;
 
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(3);
-	chg_history(STRING_);
-    }
-    if (optimizing && INTEGER_1 && INTEGER_2 && CHAR_3 && FLOAT_4)
+    if (compiling && INTEGER_1 && INTEGER_2 && CHAR_3 && FLOAT_4)
 	;
     else
 	COMPILE;
+#endif
     FOURPARAMS("formatf");
     INTEGER("formatf");
     INTEGER2("formatf");
-#endif
     prec = stk->u.num;
     POP(stk);
     width = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     CHARACTER("formatf");
-#endif
     spec = stk->u.num;
     POP(stk);
-#ifdef RUNTIME_CHECKS
     if (!strchr("eEfgG", spec))
 	execerror("one of: e E f g G", "formatf");
-#endif
     strcpy(format, "%*.*lg");
     format[5] = spec;
-#ifndef NCHECK
     FLOAT("formatf");
-#endif
 #ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
     leng = snprintf(0, 0, format, width, prec, stk->u.dbl) + 1;
 #endif
-    result = GC_malloc_atomic(leng + 1);
+    result = ck_malloc_sec(leng + 1);
 #ifdef _MSC_VER
     sprintf(result, format, width, prec, stk->u.dbl);
 #else

@@ -1,9 +1,8 @@
 /*
     module  : ldexp.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 ldexp  :  F I  ->  G
@@ -14,20 +13,16 @@ PRIVATE void do_ldexp(void)
     int exp;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && INTEGER_1 && NUMERIC_2)
+    if (compiling && INTEGER_1 && NUMERIC_2)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS("ldexp");
     INTEGER("ldexp");
-#endif
     exp = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     FLOAT("ldexp");
-#endif
     if (OUTSIDE)
 	stk->u.dbl = ldexp(FLOATVAL, exp);
     else

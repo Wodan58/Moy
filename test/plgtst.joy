@@ -138,7 +138,7 @@ END
 
 "\ntesting the propositional logic library in file  plglib.joy\n\n" putchars .
 0 __settracegc .
-1 setecho .
+# 1 setecho .
 [ raining or not raining ] m-show .
 [ raining or not windy ] m-show .
 [ [ p and q ] imp [ p or q ] ] m-show .

@@ -1,9 +1,8 @@
 /*
     module  : opcase.c
-    version : 1.5
-    date    : 06/29/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 opcase  :  X [..[X Xs]..]  ->  X [Xs]
@@ -14,14 +13,14 @@ PRIVATE void do_opcase(void)
     Node *cur;
 
 #ifndef NCHECK
-    if (optimizing && LIST_1 && VALID(stk->next))
+    if (compiling && LIST_1 && VALID_2)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM("opcase");
     LIST("opcase");
     CHECKEMPTYLIST(stk->u.lis, "opcase");
-#endif
     for (cur = stk->u.lis; cur->next && cur->op == LIST_; cur = cur->next) {
 	if (cur->u.lis->op == stk->next->op)
 	    if (cur->u.lis->op == USR_ || cur->u.lis->op == ANON_FUNCT_) {
@@ -30,9 +29,7 @@ PRIVATE void do_opcase(void)
 	    } else
 		break;
     }
-#ifndef NCHECK
     CHECKLIST(cur->op, "opcase");
-#endif
     cur = cur->next ? cur->u.lis->next : cur->u.lis;
     if (OUTSIDE) {
 	stk->u.lis = cur;

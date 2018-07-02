@@ -104,7 +104,7 @@ END
 
 "\ntesting the grammar library in file  grmlib.joy\n\n" putchars .
 0 __settracegc .
-1 setecho .
+# 1 setecho .
 8 [ "The" _ [ "cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ]
 gen-put .
 7 [ "The" _ ? [ ? "very" _ "big" ] _ "tree" ] gen-put .
@@ -121,7 +121,7 @@ gen-accumulate .
 7 [ $ term ] gen-accumulate size .
 7 [ $ factor ] gen-accumulate size .
 7 [ $ factor ] gen-putchars-sp-step .
-1 setecho .
+# 1 setecho .
 [ "big" "tree" ] tree prs-test .
 [ "peter" "smith" ] names prs-test .
 [ "paul" "jones" ] names prs-test .

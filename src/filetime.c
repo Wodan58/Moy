@@ -1,9 +1,8 @@
 /*
     module  : filetime.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 #include <sys/stat.h>
 
 /**
@@ -15,11 +14,9 @@ PRIVATE void do_filetime(void)
     struct stat buf;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(INTEGER_);
     COMPILE;
-    ONEPARAM("filetime");
 #endif
+    ONEPARAM("filetime");
     if (stat(stk->u.str, &buf) == -1)
 	buf.st_mtime = 0;
     if (OUTSIDE) {

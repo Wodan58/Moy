@@ -1,9 +1,8 @@
 /*
     module  : app3.c
-    version : 1.1
-    date    : 06/25/18
+    version : 1.2
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 app3  :  X1 X2 X3 [P]  ->  R1 R2 R3

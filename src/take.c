@@ -1,9 +1,8 @@
 /*
     module  : take.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 take  :  A N  ->  B
@@ -17,14 +16,12 @@ PRIVATE void do_take(void)
     Node *root = 0, *cur, *last;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && INTEGER_1 && AGGREGATE(stk->next))
+    if (compiling && INTEGER_1 && AGGREGATE_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS("take");
 #endif
+    TWOPARAMS("take");
     num = stk->u.num;
     POP(stk);
     switch (stk->op) {
@@ -47,7 +44,7 @@ PRIVATE void do_take(void)
 	}
 	break;
     case STRING_:
-	str = GC_malloc_atomic(num + 1);
+	str = ck_malloc_sec(num + 1);
 	strncpy(str, stk->u.str, num);
 	str[num] = 0;
 	if (OUTSIDE)

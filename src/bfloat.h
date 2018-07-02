@@ -1,20 +1,18 @@
 /*
     module  : bfloat.h
-    version : 1.4
-    date    : 04/08/17
+    version : 1.5
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && NUMERIC_1 && NUMERIC_2)
+    if (compiling && NUMERIC_1 && NUMERIC_2)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS(NAME);
     FLOAT2(NAME);
-#endif
     if (OUTSIDE) {
 	stk->next->u.dbl = FUNC(FLOATVAL2, FLOATVAL);
 	stk->next->op = FLOAT_;

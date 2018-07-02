@@ -1,9 +1,8 @@
 /*
     module  : rolldownd.c
-    version : 1.3
-    date    : 06/25/18
+    version : 1.4
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 rolldownd  :  X Y Z W  ->  Y Z X W

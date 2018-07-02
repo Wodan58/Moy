@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.29
-    date    : 06/29/18
+    version : 1.30
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -68,152 +68,131 @@ static char *PrintString(char *str)
     unsigned leng;
 
     leng = StringLeng(str);
-    ptr = GC_malloc_atomic(leng + 1);
+    ptr = ck_malloc_sec(leng + 1);
     StringPrint(ptr, str);
     return ptr;
 }
 
-static unsigned ListLeng(Node *cur)
+static Node *copy(Node *node)
 {
-    unsigned leng;
+    Node *root = 0, **cur;
 
-    for (leng = 0; cur; cur = cur->next) {
-	leng++;
-	if (cur->op == LIST_)
-	    leng += ListLeng(cur->u.lis);
+    for (cur = &root; node; node = node->next) {
+	if ((*cur = malloc(sizeof(Node))) == 0)
+	    return 0;
+	**cur = *node;
+	cur = &(*cur)->next;
+	*cur = 0;
     }
-    return leng;
+    return root;
 }
 
-static void PrintMember(Node *cur, int list, unsigned *pindex, FILE *fp)
+static void printlist(Node *node, FILE *fp)
 {
-    char *name;
-    int offset;
-    unsigned flags, index = *pindex;
-
-    if (!cur)
-	return;
-    fprintf(fp, "{");
-    switch (cur->op) {
-    case BOOLEAN_:
-	fprintf(fp, ".u.num=%d,", cur->u.num != 0);
-	fprintf(fp, ".op=BOOLEAN_");
-	break;
-    case CHAR_:
-	fprintf(fp, ".u.num=%d,", (int)cur->u.num);
-	fprintf(fp, ".op=CHAR_");
-	break;
-    case INTEGER_:
-	fprintf(fp, ".u.num=%lld,", (long long)cur->u.num);
-	fprintf(fp, ".op=INTEGER_");
-	break;
-    case SET_:
-	fprintf(fp, ".u.num=%llu,", (unsigned long long)cur->u.num);
-	fprintf(fp, ".op=SET_");
-	break;
-    case STRING_:
-	fprintf(fp, ".u.str=%s,", PrintString(cur->u.str));
-	fprintf(fp, ".op=STRING_");
-	break;
-    case LIST_:
-	if (cur->u.lis)
-	    fprintf(fp, ".u.lis=L%d+%d,", list, index + 1);
-	fprintf(fp, ".op=LIST_");
-	if (cur->next)
-	    fprintf(fp, ",.next=L%d+%d", list,
-			index + 1 + ListLeng(cur->u.lis));
-	fprintf(fp, "},\n");
-	*pindex = index + 1;
-	for (cur = cur->u.lis; cur; cur = cur->next)
-	    PrintMember(cur, list, pindex, fp);
-	return;
-    case FLOAT_:
-	fprintf(fp, ".u.dbl=%g,", cur->u.dbl);
-	fprintf(fp, ".op=FLOAT_");
-	break;
-    case USR_:
-	offset = cur->u.num;
-	flags = dict_flags(offset);
-	dict_setflags(offset, flags | IS_USED);
-	if (dict_body(offset)) {
-	    name = dict_nickname(offset);
-	    fprintf(fp, ".u.proc=do_%s,", name);
-	    fprintf(fp, ".op=ANON_FUNCT_");
-	} else {
-	    name = dict_name(offset);
-	    fprintf(fp, ".u.str=\"%s\",", name);
-	    fprintf(fp, ".op=SYMBOL_");
-	}
-	break;
-    default:
-	name = printname(cur->op);
-	offset = lookup(name);
-	flags = dict_flags(offset);
-	dict_setflags(offset, flags | IS_USED);
-	name = opername(cur->op);
-	fprintf(fp, ".u.proc=do_%s,", name);
-	fprintf(fp, ".op=ANON_FUNCT_");
-	break;
-    }
-    if (cur->next)
-	fprintf(fp, ",.next=L%d+%d", list, index + 1);
-    fprintf(fp, "},\n");
-    *pindex = index + 1;
-}
-
-static unsigned PrintList(Node *cur, FILE *fp, int head)
-{
-    int found;
-    unsigned list, leng, index = 0;
-
-    if (!cur)
-	return 0;
-    list = Listed(cur, &found);
-    if (!found) {
-	leng = ListLeng(cur);
-	fprintf(fp, "static Node L%d[%d] = {\n", list, leng);
-	for (; cur; cur = cur->next) {
-	    PrintMember(cur, list, &index, fp);
-	    if (head)
-		break;
-	}
-	fprintf(fp, "};");
-    }
-    return list;
-}
-
-static void PrintDecl(Node *root)
-{
-    int index;
     Node *cur;
+    int index;
     char *name;
     unsigned flags;
 
-    for (cur = root; cur; cur = cur->next) {
+    node = reverse(copy(node));
+    for (cur = node; cur; cur = cur->next) {
 	switch (cur->op) {
-	case LIST_:
-	    PrintDecl(cur->u.lis);
-	    break;
-
-	case USR_:
+	case USR_ :
 	    index = cur->u.num;
-	    flags = dict_flags(index);
-	    if (dict_body(index) && (flags & IS_DECLARED) == 0) {
-		flags |= IS_DECLARED | IS_USED;
+	    if (dict_body(index) == 0) {
+		name = dict_name(index);
+		fprintf(fp, "list = SYM_NEWNODE(\"%s\", list);", name);
+	    } else {
+		flags = dict_flags(index);
 		name = dict_nickname(index);
-		fprintf(declfp, "void do_%s(void);", name);
+		if ((flags & IS_BUILTIN) == 0) {
+		    if ((flags & IS_DECLARED) == 0) {
+			flags |= IS_DECLARED;
+			fprintf(declfp, "void do_%s(void);", name);
+		    }
+		}
+		dict_setflags(index, flags |= IS_USED);
+		fprintf(fp, "list = ANON_FUNCT_NEWNODE(do_%s, list);", name);
 	    }
-	    dict_setflags(index, flags | IS_USED);
+	    break;
+	case ANON_FUNCT_ :
+	    name = procname(cur->u.proc);
+	    fprintf(fp, "list = ANON_FUNCT_NEWNODE(do_%s, list);", name);
+	    break;
+	case BOOLEAN_ :
+	    fprintf(fp, "list = BOOLEAN_NEWNODE(%d, list);", cur->u.num != 0);
+	    break;
+	case CHAR_ :
+	    fprintf(fp, "list = CHAR_NEWNODE(%d, list);", cur->u.num);
+	    break;
+	case INTEGER_ :
+	    fprintf(fp, "list = INTEGER_NEWNODE(%d, list);", cur->u.num);
+	    break;
+	case SET_ :
+	    fprintf(fp, "list = SET_NEWNODE(%d, list);", cur->u.num);
+	    break;
+	case STRING_ :
+	    if (!cur->u.str)
+		fprintf(fp, "list = STRING_NEWNODE(0, list);");
+	    else {
+		name = PrintString(cur->u.str);
+		fprintf(fp, "list = STRING_NEWNODE(%s, list);", name);
+	    }
+	    break;
+	case LIST_ :
+	    if (!cur->u.lis)
+		fprintf(fp, "list = LIST_NEWNODE(0, list);");
+	    else {
+		fprintf(fp, "{ Node *list = 0;");
+		printlist(cur->u.lis, fp);
+		fprintf(fp, "PUSH(LIST_, list); }");
+		fprintf(fp, "list = LIST_NEWNODE(stk->u.lis, list);");
+		fprintf(fp, "POP(stk);");
+	    }
+	    break;
+	case FLOAT_ :
+	    fprintf(fp, "list = FLOAT_NEWNODE(%f, list);", cur->u.dbl);
+	    break;
+	default :
+	    execerror("valid datatype", "printlist");
 	    break;
 	}
     }
 }
 
-static unsigned printnode(Node *node, FILE *fp)
+static void printnode(Node *node, FILE *fp)
 {
-    unsigned list = 0;
+    Node *cur;
+    int index;
+    char *name;
+    unsigned flags;
 
     switch (node->op) {
+    case USR_ :
+	index = node->u.num;
+	if ((cur = dict_body(index)) == 0) {
+	    name = dict_name(index);
+	    fprintf(fp, "PUSH(SYMBOL_, \"%s\");", name);
+	} else {
+	    flags = dict_flags(index);
+	    name = dict_nickname(index);
+	    if ((flags & IS_BUILTIN) == 0) {
+		if ((flags & IS_ACTIVE) == 0 && (flags & IS_USED) == 0) {
+		    dict_setflags(index, flags | IS_ACTIVE);
+		    compile(cur);
+		    flags = dict_flags(index);
+		    dict_setflags(index, flags & ~IS_ACTIVE);
+		    break;
+		}
+		if ((flags & IS_DECLARED) == 0) {
+		    flags |= IS_DECLARED;
+		    fprintf(declfp, "void do_%s(void);", name);
+		}
+	    }
+	    dict_setflags(index, flags | IS_USED);
+	    fprintf(outfp, "do_%s();", name);
+	}
+	break;
     case BOOLEAN_:
 	fprintf(fp, "PUSH(BOOLEAN_, %d);", node->u.num != 0);
 	break;
@@ -227,49 +206,53 @@ static unsigned printnode(Node *node, FILE *fp)
 	fprintf(fp, "PUSH(SET_, %llu);", (unsigned long long)node->u.set);
 	break;
     case STRING_:
-	fprintf(fp, "PUSH(STRING_,%s);", PrintString(node->u.str));
+	fprintf(fp, "PUSH(STRING_, %s);", PrintString(node->u.str));
 	break;
     case LIST_:
-	PrintDecl(node->u.lis);
-	if ((list = PrintList(node->u.lis, fp, 0)) == 0)
-	    fprintf(fp, "PUSH(LIST_,0);");
-	else
-	    fprintf(fp, "PUSH(LIST_, L%d);", list);
+	if (!node->u.lis)
+	    fprintf(fp, "PUSH(LIST_, 0);");
+	else {
+	    fprintf(fp, "{ Node *list = 0;");
+	    printlist(node->u.lis, fp);
+	    fprintf(fp, "PUSH(LIST_, list); }");
+	}
 	break;
     case FLOAT_:
 	fprintf(fp, "DBL_PUSH((real_t)%g);", node->u.dbl);
 	break;
-    case USR_:
     case SYMBOL_:
-	fprintf(fp, "PUSH(SYMBOL_,\"");
-	writefactor(node, fp);
-	fprintf(fp, "\");");
+	fprintf(fp, "PUSH(SYMBOL_, \"%s\");", node->u.str);
 	break;
     default:
 	execerror("valid datatype", "printnode");
 	break;
     }
-    return list;
+}
+
+void PrintHead(Node *node, FILE *fp)
+{
+    printnode(node, fp);
 }
 
 static void printrecur(Node *node, FILE *fp)
 {
-    if (!node || node == memory)
-	return;
-    printrecur(node->next, fp);
-    printnode(node, fp);
-}
-
-unsigned PrintHead(Node *node, FILE *fp)
-{
-    PrintDecl(node->u.lis);
-    return PrintList(node->u.lis, fp, 1);
+    if (node) {
+	printrecur(node->next, fp);
+	printnode(node, fp);
+    }
 }
 
 void printstack(FILE *fp)
 {
     printrecur(stk, fp);
-    stk = memory;
+    stk = 0;
+}
+
+void compile(Node *node)
+{
+    printstack(outfp);
+    for (; node; node = node->next)
+	printnode(node, outfp);
 }
 
 void initialise(void)
@@ -279,7 +262,6 @@ void initialise(void)
     if (!mainfunc)
 	mainfunc = "main";
     printf("/*\n * generated %s */\n", ctime(&t));
-    printf("#define NCHECK\n");
     printf("#include \"runtime.h\"\n");
     initout();
     outfp = nextfile();
@@ -294,23 +276,21 @@ void finalise(void)
     Node *body;
     unsigned flags;
     char *name, *parm;
-    int i, j, leng, index, changed;
+    int i, j, leng, changed;
 
     if (end_of_main)
 	fprintf(outfp, "}");
     else {
 	end_of_main = 1;
-	fprintf(outfp, "return 0; /* main */ }");
+	fprintf(outfp, "return 0; }");
     }
-    if (optimizing)
-	clr_history();
     do {
 	leng = dict_size();
 	for (changed = i = 0; i < leng; i++) {
 	    flags = dict_flags(i);
 	    body = dict_body(i);
-	    if (!(flags & IS_BUILTIN) && body && (flags & IS_USED) &&
-		!(flags & IS_PRINTED)) {
+	    if ((flags & IS_BUILTIN) == 0 && body && (flags & IS_USED) &&
+		(flags & IS_PRINTED) == 0) {
 		dict_setflags(i, flags | IS_PRINTED);
 		name = dict_nickname(i);
 		if (body->op == USR_) {
@@ -321,28 +301,26 @@ void finalise(void)
 		}
 		changed = 1;
 		fprintf(outfp, "void do_%s(void) {", name);
-		DeList();
-		evaluate(body);
+		compile(body);
 		fprintf(outfp, "}");
 	    }
 	}
     } while (changed);
-    fprintf(outfp, "\n");
     printout();
     closeout();
 
-    printf("struct {\nproc_t proc;\n");
-    printf("char *name;\n} table[] = {\n");
+    printf("struct { proc_t proc; ");
+    printf("char *name; } table[] = {");
     iterate_dict_and_write_struct();
-    printf("{ 0, 0 },\n};\n\n");
-    printf("char *procname(proc_t proc)\n{\n");
-    printf("int i;\n\nfor (i = 0; table[i].proc; i++)\n");
-    printf("if (proc == table[i].proc)\n");
-    printf("return table[i].name;\n");
-    printf("return 0;\n}\n\n");
-    printf("proc_t nameproc(char *name)\n{\n");
-    printf("int i;\n\nfor (i = 0; table[i].proc; i++)\n");
-    printf("if (!strcmp(name, table[i].name))\n");
-    printf("return table[i].proc;\n");
-    printf("return 0;\n}\n\n");
+    printf("{ 0, 0 }, };");
+    printf("char *procname(proc_t proc) {");
+    printf("int i; for (i = 0; table[i].proc; i++)");
+    printf("if (proc == table[i].proc)");
+    printf("return table[i].name;");
+    printf("return 0; }");
+    printf("proc_t nameproc(char *name) {");
+    printf("int i; for (i = 0; table[i].proc; i++)");
+    printf("if (!strcmp(name, table[i].name))");
+    printf("return table[i].proc;");
+    printf("return 0; }\n");
 }

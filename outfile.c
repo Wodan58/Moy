@@ -1,12 +1,11 @@
 /*
     module  : outfile.c
-    version : 1.2
-    date    : 06/22/18
+    version : 1.3
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <stdlib.h>
-
-#define MAXOUT		10
+#include "decl.h"
 
 static int avail[MAXOUT];
 static FILE *tmpfp[MAXOUT];

@@ -1,18 +1,18 @@
 /*
     module  : predsucc.h
-    version : 1.3
-    date    : 03/12/17
+    version : 1.4
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
-    if (optimizing && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
+    if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM(NAME);
     NUMERICTYPE(NAME);
-#endif
     if (OUTSIDE)
 	stk->u.num = stk->u.num OPER 1;
     else if (stk->op == CHAR_)

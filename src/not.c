@@ -1,9 +1,8 @@
 /*
     module  : not.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 not  :  X  ->  Y
@@ -14,18 +13,12 @@ PRIVATE void do_not(void)
     int num = 0;
 
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	op = top_history(&op1);
-	chg_history(op == SET_ ? SET_ : BOOLEAN_);
-    }
-    if (optimizing && VALID(stk))
+    if (compiling && VALID_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("not");
 #endif
+    ONEPARAM("not");
     switch (stk->op) {
     case SET_:
 	if (OUTSIDE)

@@ -50,7 +50,7 @@ extern int yydebug;
     JPUBLIC = 260,
     JEQUAL = 261,
     END = 262,
-    Nothing = 263,
+    NOTHING_ = 1,
     USR_ = 2,
     ANON_FUNCT_ = 3,
     BOOLEAN_ = 4,

@@ -1,7 +1,7 @@
 /*
     module  : nary.h
-    version : 1.9
-    date    : 06/29/18
+    version : 1.10
+    date    : 07/02/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -11,7 +11,6 @@ int PUT_PROC(PROCEDURE)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -20,7 +19,7 @@ int PUT_PROC(PROCEDURE)
     fprintf(outfp, "{ /* %s */", NAME);
     fprintf(outfp, "Node temp, *top = %s;", TOPSTR);
     fprintf(outfp, "CONDITION;");
-    evaluate(prog);
+    compile(prog);
     fprintf(outfp, "temp = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&temp); }");
@@ -33,21 +32,19 @@ PRIVATE void PROCEDURE(void)
     Node *prog, *top, temp;
 
 #ifndef NCHECK
-    if (optimizing && PUT_PROC(PROCEDURE))
+    if (compiling && PUT_PROC(PROCEDURE))
 	return;
     COMPILE;
+#endif
     PARAMCOUNT(NAME);
     ONEQUOTE(NAME);
-#endif
     prog = stk->u.lis;
     POP(stk);
     top = TOP;
     CONDITION;
     exeterm(prog);
-#ifndef NCHECK
-    if (stk == memory)
+    if (!stk)
 	execerror("value to push", NAME);
-#endif
     temp = *stk;
     RELEASE;
     stk = top;

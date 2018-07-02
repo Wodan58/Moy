@@ -1,9 +1,8 @@
 /*
     module  : rollup.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 rollup  :  X Y Z  ->  Z X Y
@@ -14,22 +13,12 @@ PRIVATE void do_rollup(void)
     Node temp, *node, *next;
 
 #ifndef NCHECK
-    unsigned op0, op1, op2, op3, op4, op5;
-
-    if (optimizing) {
-	op0 = pop_history(&op1);	// Z
-	op2 = pop_history(&op3);	// Y
-	op4 = pop_history(&op5);	// X
-	add_history2(op0, op1);		// Z
-	add_history2(op4, op5);		// X
-	add_history2(op2, op3);		// Y
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
+    if (compiling && VALID_1 && VALID_2 && VALID_3)
 	;
     else
 	COMPILE;
-    THREEPARAMS("rollup");
 #endif
+    THREEPARAMS("rollup");
     temp = *stk;
     node = stk->next;
     next = node->next;

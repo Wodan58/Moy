@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.16
-    date    : 06/29/18
+    version : 1.17
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,20 +10,27 @@
 #include <stdlib.h>
 #include "joy.h"
 #include "symbol.h"
-
-#define MAXLINE		1000
+#include "decl.h"
 
 static int moy_echo;
 static char buf[MAXLINE];
 
 #ifdef FLEX_SCANNER
-#define MAX_INCLUDE_DEPTH	10
-
 int include_stack_ptr;
-YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+YY_BUFFER_STATE include_stack[MAX_INCLUDE];
 
 static int input(void);
 #endif
+
+int getechoflag(void)
+{
+    return moy_echo;
+}
+
+void setechoflag(int flag)
+{
+    moy_echo = flag;
+}
 
 static void putline(void)
 {
@@ -51,7 +58,7 @@ static void SkipComment(void)
 void new_buffer(void)
 {
 #ifdef FLEX_SCANNER
-    if (include_stack_ptr >= MAX_INCLUDE_DEPTH)
+    if (include_stack_ptr >= MAX_INCLUDE)
 	execerror("fewer include files", "redirect");
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));

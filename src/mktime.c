@@ -1,9 +1,8 @@
 /*
     module  : mktime.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 PRIVATE void decode_time(struct tm *t)
 {
@@ -61,15 +60,13 @@ PRIVATE void do_mktime(void)
     struct tm t;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(INTEGER_);
-    if (optimizing && LIST_1)
+    if (compiling && LIST_1)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM("mktime");
     LIST("mktime");
-#endif
     decode_time(&t);
     PUSH(INTEGER_, mktime(&t));
 }

@@ -1,9 +1,8 @@
 /*
     module  : intern.c
-    version : 1.9
-    date    : 06/28/18
+    version : 1.10
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 intern  :  "sym"  ->  sym
@@ -16,9 +15,7 @@ PRIVATE void do_intern(void)
     char id[ALEN];
     char *ptr = 0;
 
-    if (optimizing)
-	chg_history(USR_);
-    if (optimizing && STRING_1)
+    if (compiling && STRING_1)
 	;
     else
 	COMPILE;

@@ -1,11 +1,8 @@
 /*
     module  : equal.c
-    version : 1.6
-    date    : 06/29/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
-
-PRIVATE double Compare(Node *first, Node *second, int *error);
 
 /**
 equal  :  T U  ->  B
@@ -41,16 +38,12 @@ PRIVATE int equal_aux(Node *n1, Node *n2)
 PRIVATE void do_equal(void)
 {
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(1);
-	chg_history(BOOLEAN_);
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS("equal");
 #endif
+    TWOPARAMS("equal");
     if (OUTSIDE) {
 	stk->next->u.num = equal_aux(stk, stk->next);
 	stk->next->op = BOOLEAN_;

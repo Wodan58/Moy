@@ -1,22 +1,19 @@
 /*
     module  : i.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_i(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
     POP(stk);
-    printstack(outfp);
-    evaluate1(prog);
+    compile(prog);
     return 1;
 }
 #endif
@@ -30,12 +27,12 @@ PRIVATE void do_i(void)
     Node *prog;
 
 #ifndef NCHECK
-    if (optimizing && put_i())
+    if (compiling && put_i())
 	return;
     COMPILE;
+#endif
     ONEPARAM("i");
     ONEQUOTE("i");
-#endif
     prog = stk->u.lis;
     POP(stk);
     exeterm(prog);

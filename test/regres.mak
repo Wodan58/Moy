@@ -19,10 +19,10 @@ jp-joytst:
 	-../moy $@.joy | diff -w - OUT/$@.out
 
 lsptst:
-	-../moy $@.joy | diff -w - OUT/$@.out
+	-cat $@.joy $@.inp | ../moy | diff -w - OUT/$@.out
 
 joytut:
-	-../moy $@.joy | diff -w - OUT/$@.out
+	-cat $@.joy $@.inp | ../moy | diff -w - OUT/$@.out
 
 laztst:
 	-../moy $@.joy | diff -w - OUT/$@.out

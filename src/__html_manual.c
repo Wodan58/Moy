@@ -1,9 +1,8 @@
 /*
     module  : __html_manual.c
-    version : 1.1
-    date    : 06/25/18
+    version : 1.2
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
 

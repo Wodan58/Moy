@@ -1,9 +1,8 @@
 /*
     module  : unswons.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 unswons  :  A  ->  R F
@@ -17,20 +16,12 @@ PRIVATE void do_unswons(void)
     ulong_t set;
 
 #ifndef NCHECK
-    unsigned op1;
-
-    if (optimizing) {
-	top_history(&op1);
-	add_history(op1);
-    }
     COMPILE;
-    ONEPARAM("unswons");
 #endif
+    ONEPARAM("unswons");
     switch (stk->op) {
     case LIST_:
-#ifndef NCHECK
 	CHECKEMPTYLIST(stk->u.lis, "unswons");
-#endif
 	save = stk->u.lis;
 	if (OUTSIDE)
 	    stk->u.lis = stk->u.lis->next;
@@ -40,9 +31,7 @@ PRIVATE void do_unswons(void)
 	break;
     case STRING_:
 	str = stk->u.str;
-#ifndef NCHECK
 	CHECKEMPTYSTRING(str, "unswons");
-#endif
 	if (OUTSIDE)
 	    stk->u.str = str + 1;
 	else
@@ -51,9 +40,7 @@ PRIVATE void do_unswons(void)
 	break;
     case SET_:
 	set = stk->u.set;
-#ifndef NCHECK
 	CHECKEMPTYSET(set, "unswons");
-#endif
 	while (!(set & (1 << i)))
 	    i++;
 	if (OUTSIDE)

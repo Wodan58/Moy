@@ -1,9 +1,8 @@
 /*
     module  : concat.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 concat  :  S T  ->  U
@@ -16,16 +15,14 @@ PRIVATE void do_concat(void)
     Node *cur = 0, *root = 0, *last = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && stk->next != memory && stk->op == stk->next->op &&
-	AGGREGATE(stk) && AGGREGATE(stk->next))
+    if (compiling && VALID_2 && AGGREGATE_1 && AGGREGATE_2 &&
+	stk->op == stk->next->op)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS("concat");
     SAME2TYPES("concat");
-#endif
     switch (stk->op) {
     case LIST_:
 	if (!stk->next->u.lis) {
@@ -50,7 +47,7 @@ PRIVATE void do_concat(void)
 	break;
     case STRING_:
 	i = strlen(stk->next->u.str);
-	str = GC_malloc_atomic(i + strlen(stk->u.str) + 1);
+	str = ck_malloc_sec(i + strlen(stk->u.str) + 1);
 	strcpy(str, stk->next->u.str);
 	strcpy(str + i, stk->u.str);
 	if (OUTSIDE) {

@@ -1,9 +1,8 @@
 /*
     module  : enconcat.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 enconcat  :  X S T  ->  U
@@ -13,14 +12,14 @@ with X inserted between S and T (== swapd cons concat).
 PRIVATE void do_enconcat(void)
 {
 #ifndef NCHECK
-    if (optimizing && stk->op == stk->next->op &&
-	AGGREGATE(stk) && AGGREGATE(stk->next) && VALID(stk->next->next))
+    if (compiling && VALID_3 && AGGREGATE_1 && AGGREGATE_2 &&
+	stk->op == stk->next->op)
 	;
     else
 	COMPILE;
+#endif
     THREEPARAMS("enconcat");
     SAME2TYPES("enconcat");
-#endif
     do_swapd();
     do_cons();
     do_concat();

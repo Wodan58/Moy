@@ -1,7 +1,7 @@
 /*
     module  : initmem.c
-    version : 1.10
-    date    : 09/14/17
+    version : 1.11
+    date    : 07/02/18
 */
 #include "runtime.h"
 
@@ -14,7 +14,7 @@ static Node *backup(void)
 {
     Node *root = 0, *cur;
 
-    for (cur = stk; cur != memory; cur = cur->next)
+    for (cur = stk; cur; cur = cur->next)
 	root = heapnode(cur->op, cur->u.ptr, root);
     return root;
 }
@@ -24,22 +24,13 @@ static Node *backup(void)
 */
 static void restore(Node *cur)
 {
-    for (stk = memory; cur; cur = cur->next)
+    for (stk = 0; cur; cur = cur->next)
 	DUPLICATE(cur);
 }
 
 void initmem(void)
 {
-    static unsigned char init;
-
-    if (!init) {
-	init = 1;
-	stk = &memory[MEMORYMAX];
-	while (--stk > memory)
-	    stk->next = stk - 1;
-	stk->next = memory;
-    }
-    stk = memory;
+    stk = 0;
 }
 
 void savemem(void)

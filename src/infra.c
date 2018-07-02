@@ -1,16 +1,14 @@
 /*
     module  : infra.c
-    version : 1.9
-    date    : 06/28/18
+    version : 1.10
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_infra(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -20,7 +18,7 @@ int put_infra(void)
     fprintf(outfp, "Node *list, *save;");
     fprintf(outfp, "list = stk->u.lis; POP(stk);");
     fprintf(outfp, "save = stk2lst(); lst2stk(list);");
-    evaluate(prog);
+    compile(prog);
     fprintf(outfp, "list = stk2lst(); lst2stk(save);");
     fprintf(outfp, "PUSH(LIST_, list); }");
     return 1;
@@ -50,13 +48,13 @@ PRIVATE void do_infra(void)
 10. Put the collected list onto the restored stack
 */
 #ifndef NCHECK
-    if (optimizing && put_infra())
+    if (compiling && put_infra())
 	return;
     COMPILE;
+#endif
     TWOPARAMS("infra");
     ONEQUOTE("infra");
     LIST2("infra");
-#endif
     prog = stk->u.lis;		// 1
     POP(stk);
     list = stk->u.lis;		// 2

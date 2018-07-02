@@ -1,29 +1,20 @@
 /*
     module  : comprel.h
-    version : 1.5
-    date    : 12/27/17
+    version : 1.6
+    date    : 07/02/18
 */
-PRIVATE double Compare(Node *first, Node *second, int *error);
-
 PRIVATE void PROCEDURE(void)
 {
     double cmp;
     int i, j, error, comp = 0;
 
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	del_history(1);
-	op = top_history(&op1);
-	chg_history(op == SET_ ? SET_ : BOOLEAN_);
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS(NAME);
 #endif
+    TWOPARAMS(NAME);
     if (stk->op == SET_) {
 	i = stk->next->u.num;
 	j = stk->u.num;

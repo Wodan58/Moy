@@ -1,22 +1,19 @@
 /*
     module  : app1.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_app1(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
     POP(stk);
-    printstack(outfp);
-    evaluate(prog);
+    compile(prog);
     return 1;
 }
 #endif
@@ -30,12 +27,12 @@ PRIVATE void do_app1(void)
     Node *prog;
 
 #ifndef NCHECK
-    if (optimizing && put_app1())
+    if (compiling && put_app1())
 	return;
     COMPILE;
+#endif
     TWOPARAMS("app1");
     ONEQUOTE("app1");
-#endif
     prog = stk->u.lis;
     POP(stk);
     exeterm(prog);

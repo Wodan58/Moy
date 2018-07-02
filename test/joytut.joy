@@ -104,5 +104,3 @@ expecting == [ over over equal ] [ pop pop praise [ succ ] dip ] [
 END
 
 joytut quit .
-
-%INCLUDE joytut.inp

@@ -1,9 +1,8 @@
 /*
     module  : casting.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 casting  :  X Y  ->  Z
@@ -12,18 +11,12 @@ Z takes the value from X and the type from Y.
 PRIVATE void do_casting(void)
 {
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	op = pop_history(&op1);
-	chg_history2(op, op1);
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS("casting");
 #endif
+    TWOPARAMS("casting");
     if (OUTSIDE) {
 	stk->next->op = stk->op;
 	POP(stk);

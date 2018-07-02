@@ -1,16 +1,14 @@
 /*
     module  : unary4.c
-    version : 1.10
-    date    : 06/29/18
+    version : 1.11
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_unary4(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -21,22 +19,22 @@ int put_unary4(void)
     fprintf(outfp, "third = *stk; POP(stk); second = *stk; POP(stk);");
     fprintf(outfp, "first = *stk; POP(stk); top = stk->next;");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, START_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[0] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&first);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, MID_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[1] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&second);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, MID_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[2] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&third);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, END_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[3] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&result[0]);");
@@ -56,12 +54,12 @@ PRIVATE void do_unary4(void)
     Node *prog, first, second, third, *top, result[4];
 
 #ifndef NCHECK
-    if (optimizing && put_unary4())
+    if (compiling && put_unary4())
 	return;
     COMPILE;
+#endif
     FIVEPARAMS("unary4");
     ONEQUOTE("unary4");
-#endif
     prog = stk->u.lis;
     POP(stk);
     third = *stk;

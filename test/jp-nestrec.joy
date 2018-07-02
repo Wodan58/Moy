@@ -46,7 +46,7 @@ ack == [ [ [ dup 0 = ] [ pop 1 + ] ] [ [ over 0 = ] [ popd 1 - 1 swap ] [ ] ] [
 [ dup rollup [ 1 - ] dip ] [ swap 1 - ack ] ] ] condlinrec ;
 END
 
-2 setecho .
+# 2 setecho .
 0 __settracegc .
 [ 0 1 2 3 4 5 6 ] [ r-fact ] map .
 [ -7 42 99 100 101 102 345 ] [ r-mcc91 ] map .

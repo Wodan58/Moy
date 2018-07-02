@@ -1,9 +1,8 @@
 /*
     module  : uncons.c
-    version : 1.8
-    date    : 06/29/18
+    version : 1.9
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 uncons  :  A  ->  F R
@@ -17,29 +16,23 @@ PRIVATE void do_uncons(void)
     ulong_t set;
 
 #ifndef NCHECK
-    unsigned op = 0, op1;
-
-    if (optimizing && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
-	stk->u.lis->op < SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
+    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op >= NOTHING_ &&
+	stk->u.lis->op <= SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
 	;
     else
 	COMPILE;
-    if (optimizing)
-	op = pop_history(&op1);
-    ONEPARAM("uncons");
 #endif
+    ONEPARAM("uncons");
     switch (stk->op) {
     case LIST_:
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(op1);
-//	CHECKEMPTYLIST(stk->u.lis, "uncons");
+#if 0
+	CHECKEMPTYLIST(stk->u.lis, "uncons");
 #endif
 	if ((save = stk->u.lis) == 0) {
 	    if (OUTSIDE)
-		stk->u.num = stk->op = Nothing;
+		stk->u.num = stk->op = NOTHING_;
 	    else
-		GUNARY(Nothing, (void *)Nothing);
+		GUNARY(NOTHING_, (void *)NOTHING_);
 	    PUSH(LIST_, 0);
 	} else {
 	    if (OUTSIDE) {
@@ -52,11 +45,7 @@ PRIVATE void do_uncons(void)
 	break;
     case STRING_:
 	str = stk->u.str;
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(CHAR_);
 	CHECKEMPTYSTRING(str, "uncons");
-#endif
 	if (OUTSIDE) {
 	    stk->u.num = *str;
 	    stk->op = CHAR_;
@@ -66,11 +55,7 @@ PRIVATE void do_uncons(void)
 	break;
     case SET_:
 	set = stk->u.set;
-#ifndef NCHECK
-	if (optimizing)
-	    add_history(INTEGER_);
 	CHECKEMPTYSET(set, "uncons");
-#endif
 	while (!(set & (1 << i)))
 	    i++;
 	if (OUTSIDE) {
@@ -85,8 +70,4 @@ PRIVATE void do_uncons(void)
 	BADAGGREGATE("uncons");
 #endif
     }
-#ifndef NCHECK
-    if (optimizing)
-	add_history2(op, op1);
-#endif
 }

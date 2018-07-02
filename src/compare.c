@@ -1,9 +1,8 @@
 /*
     module  : compare.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 compare  :  A B  ->  I

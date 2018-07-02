@@ -1,9 +1,8 @@
 /*
     module  : index.c
-    version : 1.3
-    date    : 06/25/18
+    version : 1.4
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 index  :  I A  ->  X
@@ -14,21 +13,9 @@ PRIVATE void do_index(void)
     Node *list;
 
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	op = pop_history(&op1);
-	del_history(1);
-	if (op == LIST_)
-	    add_history(op1);
-	else if (op == STRING_)
-	    add_history(CHAR_);
-	else
-	    add_history(INTEGER_);
-    }
     COMPILE;
-    TWOPARAMS("index");
 #endif
+    TWOPARAMS("index");
     list = stk->u.lis;
     if (stk->next->u.num)
 	list = list->next;

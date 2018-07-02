@@ -1,9 +1,8 @@
 /*
     module  : sign.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 sign  :  N1  ->  N2
@@ -23,13 +22,13 @@ PRIVATE double fsgn(double f)
 PRIVATE void do_sign(void)
 {
 #ifndef NCHECK
-    if (optimizing && NUMERIC_1)
+    if (compiling && NUMERIC_1)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM("sign");
     FLOAT("sign");
-#endif
     if (OUTSIDE) {
 	if (stk->op == FLOAT_)
 	    stk->u.dbl = fsgn(stk->u.dbl);

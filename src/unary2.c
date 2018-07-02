@@ -1,16 +1,14 @@
 /*
     module  : unary2.c
-    version : 1.11
-    date    : 06/29/18
+    version : 1.12
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_unary2(void)
 {
     Node *prog;
 
-    del_history(1);
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
@@ -20,12 +18,12 @@ int put_unary2(void)
     fprintf(outfp, "Node temp, *top, result[2];");
     fprintf(outfp, "temp = *stk; POP(stk); top = stk->next;");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, START_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[0] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&temp);");
     fprintf(outfp, "CONDITION;");
-    evaluate2(prog, END_SCOPE);
+    compile(prog);
     fprintf(outfp, "result[1] = *stk;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "stk = top; DUPLICATE(&result[0]);");
@@ -44,12 +42,12 @@ PRIVATE void do_unary2(void)
     Node *prog, temp, *top, result[2];
 
 #ifndef NCHECK
-    if (optimizing && put_unary2())
+    if (compiling && put_unary2())
 	return;
     COMPILE;
+#endif
     THREEPARAMS("unary2");
     ONEQUOTE("unary2");
-#endif
     prog = stk->u.lis;
     POP(stk);
     temp = *stk;

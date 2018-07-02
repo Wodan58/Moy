@@ -13,7 +13,7 @@ step ] [ [ ] cons i ] ] opcase i ] step ;
 END
 
 0 __settracegc .
-1 setecho .
+# 1 setecho .
 2 3 + "\nfinal answer = " putchars .
 [ 2 3 + ] joy0s "\nfinal answer = " putchars .
 [ [ 2 3 + ] joy0s ] joy0s "\nfinal answer = " putchars .

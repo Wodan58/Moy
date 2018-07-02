@@ -1,9 +1,8 @@
 /*
     module  : drop.c
-    version : 1.6
-    date    : 06/25/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 drop  :  A N  ->  B
@@ -16,14 +15,12 @@ PRIVATE void do_drop(void)
     ulong_t set;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
-    if (optimizing && INTEGER_1 && AGGREGATE(stk->next))
+    if (compiling && INTEGER_1 && AGGREGATE_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS("drop");
 #endif
+    TWOPARAMS("drop");
     num = stk->u.num;
     POP(stk);
     switch (stk->op) {

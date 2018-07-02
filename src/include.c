@@ -1,9 +1,8 @@
 /*
     module  : include.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 include  :  "filnam.ext"  ->
@@ -15,12 +14,10 @@ PRIVATE void do_include(void)
     char *str;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
+#endif
     ONEPARAM("include");
     STRING("include");
-#endif
     str = stk->u.str;
     POP(stk);
     include(str);

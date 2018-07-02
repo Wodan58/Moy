@@ -1,7 +1,7 @@
 /*
     module  : unmktime.h
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -11,15 +11,13 @@ PRIVATE void PROCEDURE(void)
     time_t timval;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history2(LIST_, INTEGER_);
-    if (optimizing && INTEGER_1)
+    if (compiling && INTEGER_1)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM(NAME);
     INTEGER(NAME);
-#endif
     timval = stk->u.num;
     t = FUNC(&timval);
     wday = t->tm_wday;

@@ -1,9 +1,8 @@
 /*
     module  : swap.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 swap  :  X Y  ->  Y X
@@ -14,20 +13,12 @@ PRIVATE void do_swap(void)
     Node temp, *node;
 
 #ifndef NCHECK
-    unsigned op0, op1, op2, op3;
-
-    if (optimizing) {
-	op0 = pop_history(&op1);	// Y
-	op2 = pop_history(&op3);	// X
-	add_history2(op0, op1);		// Y
-	add_history2(op2, op3);		// X
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS("swap");
 #endif
+    TWOPARAMS("swap");
     temp = *stk;
     node = stk->next;
     if (OUTSIDE) {

@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.7
-    date    : 06/28/18
+    version : 1.8
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,16 +10,13 @@
 #include <time.h>
 #include "joy.h"
 #include "symbol.h"
+#include "decl.h"
 
-#define MAXSTR		100
-
-char **g_argv;
-int g_argc, error;
 clock_t startclock;
 FILE *outfp, *declfp;
-char *mainfunc;
-unsigned debugging, compiling, optimizing, identifier;
-unsigned autoput = 1, undeferror = 1, echoflag, tracegc;
+char **g_argv, *mainfunc;
+int g_argc, debugging, compiling, identifier, definition;
+int autoput = INIAUTOPUT, tracegc = INITRACEGC, undeferror = INIUNDEFERR;
 
 void initsym(int argc, char **argv)
 {
@@ -28,6 +25,7 @@ void initsym(int argc, char **argv)
 
     setbuf(stdout, 0);
     startclock = clock();
+    setechoflag(INIECHOFLAG);
     if (argc > 1) {
 	rv = 1;
 	if (argv[1][0] == '-') {
@@ -37,9 +35,6 @@ void initsym(int argc, char **argv)
 		case 'c' : compiling = 1;
 			   break;
 		case 'd' : debugging = 1;
-			   break;
-		case 'o' : compiling = 1;
-			   optimizing = 1;
 			   break;
 	    }
 	    if (compiling && !strcmp(argv[2], "-f")) {
@@ -57,6 +52,6 @@ void initsym(int argc, char **argv)
     }
     g_argc = argc - rv;
     g_argv = &argv[rv];
-    initmem();
     init_dict();
+    stk = 0;
 }

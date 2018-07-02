@@ -1,21 +1,20 @@
 /*
     module  : stop.c
-    version : 1.3
-    date    : 06/25/18
+    version : 1.4
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 PRIVATE void do_stop(void)
 {
     int written = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
 #endif
-    if (stk == memory)
+    if (!stk) {
+	freemem();
 	return;
+    }
     if (autoput == 2) {
 	writeterm(stk, stdout);
 	written = 1;
@@ -27,4 +26,6 @@ PRIVATE void do_stop(void)
 	putchar('\n');
 	fflush(stdout);
     }
+    if (!stk)
+	freemem();
 }

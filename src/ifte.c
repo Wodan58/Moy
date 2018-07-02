@@ -1,17 +1,14 @@
 /*
     module  : ifte.c
-    version : 1.12
-    date    : 06/29/18
+    version : 1.13
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_ifte(void)
 {
-    void *save;
     Node *prog[3];
 
-    del_history(3);
     if (!(LIST_1 && LIST_2 && LIST_3))
 	return 0;
     prog[2] = stk->u.lis;
@@ -25,17 +22,13 @@ int put_ifte(void)
     fprintf(outfp, "int num; Node *save;");
     fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
-    set_history(0);
-    evaluate2(prog[0], START_SCOPE);
-    set_history(1);
+    compile(prog[0]);
     fprintf(outfp, "num = stk->u.num; stk = save;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
-    save = new_history();
-    evaluate(prog[1]);
-    old_history(save);
+    compile(prog[1]);
     fprintf(outfp, "} else {");
-    evaluate2(prog[2], END_SCOPE);
+    compile(prog[2]);
     fprintf(outfp, "} }");
     return 1;
 }
@@ -50,12 +43,12 @@ PRIVATE void do_ifte(void)
     Node *prog[3], *save;
 
 #ifndef NCHECK
-    if (optimizing && put_ifte())
+    if (compiling && put_ifte())
 	return;
     COMPILE;
+#endif
     THREEPARAMS("ifte");
     THREEQUOTES("ifte");
-#endif
     prog[2] = stk->u.lis;
     POP(stk);
     prog[1] = stk->u.lis;

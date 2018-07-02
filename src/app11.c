@@ -1,9 +1,8 @@
 /*
     module  : app11.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 app11  :  X Y [P]  ->  R
@@ -13,9 +12,9 @@ PRIVATE void do_app11(void)
 {
 #ifndef NCHECK
     COMPILE;
+#endif
     THREEPARAMS("app11");
     ONEQUOTE("app11");
-#endif
     do_app1();
     if (OUTSIDE) {
 	stk[-1].op = stk->op;

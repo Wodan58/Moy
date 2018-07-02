@@ -1,9 +1,8 @@
 /*
     module  : fopen.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 fopen  :  P M  ->  S
@@ -13,15 +12,11 @@ and stream object S is pushed; if the open fails, file:NULL is pushed.
 PRIVATE void do_fopen(void)
 {
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(1);
-	chg_history(FILE_);
-    }
     COMPILE;
+#endif
     TWOPARAMS("fopen");
     STRING("fopen");
     STRING2("fopen");
-#endif
     if (OUTSIDE) {
 	stk->next->u.fil = fopen(stk->next->u.str, stk->u.str);
 	stk->next->op = FILE_;

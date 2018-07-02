@@ -1,30 +1,19 @@
 /*
     module  : consswons.h
-    version : 1.6
-    date    : 04/15/17
+    version : 1.7
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
     char *str;
 
 #ifndef NCHECK
-    unsigned op0, op1, op2, op3;
-
-    if (optimizing) {
-	op0 = pop_history(&op1);
-	op2 = pop_history(&op3);
-#if PROCEDURE == do_cons
-	add_history2(op0, op2);
-#else
-	add_history2(op2, op1);
-#endif
-    }
-    if (optimizing && AGGREGATE(AGGR) && VALID(ELEM))
+    if (compiling && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS(NAME);
 #endif
+    TWOPARAMS(NAME);
     switch (AGGR->op) {
     case LIST_:
 	if (OUTSIDE) {
@@ -39,7 +28,7 @@ PRIVATE void PROCEDURE(void)
 	if (ELEM->op != CHAR_)
 	    execerror("character", NAME);
 #endif
-	str = GC_malloc_atomic(strlen(AGGR->u.str) + 2);
+	str = ck_malloc_sec(strlen(AGGR->u.str) + 2);
 	str[0] = (char)ELEM->u.num;
 	strcpy(str + 1, AGGR->u.str);
 	if (OUTSIDE) {

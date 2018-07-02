@@ -1,9 +1,8 @@
 /*
     module  : div.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 div  :  I J  ->  K L
@@ -18,14 +17,14 @@ PRIVATE void do_div(void)
 #endif
 
 #ifndef NCHECK
-    if (optimizing && INTEGER_1 && INTEGER_2 && stk->u.num)
+    if (compiling && INTEGER_1 && INTEGER_2 && stk->u.num)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS("div");
     INTEGERS2("div");
     CHECKZERO("div");
-#endif
 #ifdef _MSC_VER
     result = ldiv(stk->next->u.num, stk->u.num);
 #else

@@ -1,27 +1,19 @@
 /*
     module  : dict.c
-    version : 1.1
-    date    : 06/28/18
+    version : 1.2
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <limits.h>
-#ifdef _MSC_VER
-#include <io.h>
-#endif
 #include "joy.h"
 #include "symbol.h"
 #include "builtin.h"
 #include "vector.h"
 #include "khash.h"
-
-#define MAXNUM		20
-#define MAXSTR		100
-#define IS_DEFINED	0
-
-typedef void (*proc_t)(void);
+#include "decl.h"
 
 typedef struct entry_t {
     char *name, *print;
@@ -37,8 +29,8 @@ typedef struct dict_t {
     char *name, *print;
     unsigned flags;
     union {
-	Node *body;
 	proc_t proc;
+	Node *body;
     };
 } dict_t;
 
@@ -64,6 +56,14 @@ void dict_setflags(int index, unsigned flags)
 
     pdic = vec_index(dict, index);
     pdic->flags = flags;
+}
+
+char *dict_descr(int index)
+{
+    dict_t *pdic;
+
+    pdic = vec_index(dict, index);
+    return pdic->name;
 }
 
 char *dict_name(int index)
@@ -97,14 +97,6 @@ Node *dict_body(int index)
 int dict_size(void)
 {
     return vec_size(dict);
-}
-
-char *dict_descr(int index)
-{
-    dict_t *pdic;
-
-    pdic = vec_index(dict, index);
-    return pdic->name;
 }
 
 char *procname(proc_t proc)
@@ -143,7 +135,7 @@ void init_dict(void)
 static void initialise_entry(dict_t *pdic)
 {
     memset(pdic, 0, sizeof(dict_t));
-    pdic->flags = IS_DEFINED;
+    pdic->flags = IS_UNDEFINED;
 }
 
 static int is_c_identifier(char *str)
@@ -192,12 +184,12 @@ static char *qualify(char *name)
     if (hide && local) {
 	sprintf(buf, "%d", hide);
 	leng = strlen(buf) + strlen(name) + 2;
-	str = malloc(leng);
+	str = ck_malloc_sec(leng);
 	sprintf(str, "%s.%s", buf, name);
 	name = str;
     } else if (module) {
 	leng = strlen(module) + strlen(name) + 2;
-	str = malloc(leng);
+	str = ck_malloc_sec(leng);
 	sprintf(str, "%s.%s", module, name);
 	name = str;
     }
@@ -266,7 +258,7 @@ void enteratom(char *name, Node *cur)
 	replace(pdic->name, str, index);
 	pdic->name = str;
     }
-    if (pdic->flags == IS_BUILTIN)
+    if (pdic->flags & IS_BUILTIN)
 	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", pdic->name);
     pdic->flags = IS_DEFINED;
     pdic->body = cur;
@@ -285,7 +277,7 @@ void dump(void)
     leng = vec_size(dict);
     for (i = 0; i < leng; i++) {
 	pdic = vec_index(dict, i);
-	if (pdic->flags == IS_BUILTIN)
+	if (pdic->flags & IS_BUILTIN)
 	    fprintf(fp, "%s\t%p\n", pdic->name, pdic->proc);
 	else if (pdic->body) {
 	    fprintf(fp, "%s == ", pdic->name);

@@ -1,7 +1,7 @@
 /*
     module  : inhas.h
-    version : 1.6
-    date    : 06/29/18
+    version : 1.7
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -13,16 +13,12 @@ PRIVATE void PROCEDURE(void)
 #endif
 
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(1);
-	chg_history(BOOLEAN_);
-    }
-    if (optimizing && VALID(AGGR) && VALID(ELEM))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
-    TWOPARAMS(NAME);
 #endif
+    TWOPARAMS(NAME);
     switch (AGGR->op) {
     case LIST_:
 	for (cur = AGGR->u.lis; cur; cur = cur->next)

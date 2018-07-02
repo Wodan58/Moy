@@ -1,9 +1,8 @@
 /*
     module  : srand.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 srand  :  I  ->
@@ -12,12 +11,10 @@ Sets the random integer seed to integer I.
 PRIVATE void do_srand(void)
 {
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
+#endif
     ONEPARAM("srand");
     INTEGER("srand");
-#endif
     srand(stk->u.num);
     POP(stk);
 }

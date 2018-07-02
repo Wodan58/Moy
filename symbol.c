@@ -1,16 +1,14 @@
 /*
     module  : symbol.c
-    version : 1.12
-    date    : 06/28/18
+    version : 1.13
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "joy.h"
 #include "symbol.h"
-
-#define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
-#define MAXNUM		20
+#include "decl.h"
 
 static char *module;
 static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide;
@@ -20,11 +18,13 @@ static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide;
  */
 void initmod(char *str)
 {
+    definition = 1;
     module = str;
 }
 
 void exitmod(void)
 {
+    definition = 0;
     module = 0;
 }
 
@@ -33,6 +33,7 @@ void exitmod(void)
  */
 void initpriv(void)
 {
+    definition = 1;
     if (++hide_index >= DISPLAYMAX)
 	execerror("index", "display");
     hide_stack[hide_index] = ++hide_count;
@@ -44,10 +45,23 @@ void stoppriv(void)
     inside_hide = 0;
 }
 
+/*
+ * exitpriv clears the defintion flag.
+ */
 void exitpriv(void)
 {
+    if (!module)
+	definition = 0;
     if (hide_index)
 	hide_index--;
+}
+
+/*
+ * initpub sets the definition flag.
+ */
+void initpub(void)
+{
+    definition = 1;
 }
 
 /*
@@ -78,14 +92,14 @@ char *iterate(char *name)
     if (index) {
 	sprintf(buf, "%d", hide_stack[index--]);
 	leng = strlen(buf) + strlen(ptr) + 2;
-	str = malloc(leng);
+	str = ck_malloc_sec(leng);
 	sprintf(str, "%s.%s", buf, ptr);
 	return str;
     }
     if (module && !done) {
 	done = 1;
 	leng = strlen(module) + strlen(ptr) + 2;
-	str = malloc(leng);
+	str = ck_malloc_sec(leng);
 	sprintf(str, "%s.%s", module, ptr);
 	return str;
     }

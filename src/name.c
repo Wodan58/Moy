@@ -1,11 +1,8 @@
 /*
     module  : name.c
-    version : 1.6
-    date    : 06/28/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
-
-extern struct optable_t optable[];
 
 /**
 name  :  sym  ->  "sym"
@@ -17,9 +14,7 @@ PRIVATE void do_name(void)
 #ifndef NCHECK
     char *str;
 
-    if (optimizing)
-	chg_history(STRING_);
-    if (optimizing && VALID(stk))
+    if (compiling && VALID_1)
 	;
     else
 	COMPILE;

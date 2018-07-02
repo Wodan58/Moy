@@ -1,9 +1,8 @@
 /*
     module  : x.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 x  :  [P] x  ->  ...
@@ -13,8 +12,8 @@ PRIVATE void do_x(void)
 {
 #ifndef NCHECK
     COMPILE;
+#endif
     ONEPARAM("x");
     ONEQUOTE("x");
-#endif
     exeterm(stk->u.lis);
 }

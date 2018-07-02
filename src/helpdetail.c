@@ -1,11 +1,8 @@
 /*
     module  : helpdetail.c
-    version : 1.10
-    date    : 06/29/18
+    version : 1.11
+    date    : 07/02/18
 */
-#include "runtime.h"
-
-extern optable_t optable[];
 
 /**
 helpdetail  :  [ S1 S2 .. ]  ->
@@ -20,8 +17,6 @@ PRIVATE void do_helpdetail(void)
     Operator op;
     unsigned flags;
 
-    if (optimizing)
-	del_history(1);
     COMPILE;
     ONEPARAM("HELP");
     LIST("HELP");

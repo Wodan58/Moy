@@ -1,19 +1,17 @@
 /*
     module  : fileget.h
-    version : 1.4
-    date    : 04/09/17
+    version : 1.5
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
     Node temp;
 
 #ifndef NCHECK
-    if (optimizing)
-	add_history(CONSTRUCTOR);
     COMPILE;
+#endif
     ONEPARAM(NAME);
     FILE(NAME);
-#endif
     temp.op = CONSTRUCTOR;
     temp.u.ptr = (void *)EXPR;
     DUPLICATE(&temp);

@@ -1,9 +1,8 @@
 /*
     module  : choice.c
-    version : 1.6
-    date    : 06/25/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 choice  :  B T F  ->  X
@@ -12,19 +11,12 @@ If B is true, then X = T else X = F.
 PRIVATE void do_choice(void)
 {
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	del_history(1);
-	op = pop_history(&op1);
-	chg_history2(op, op1);
-    }
-    if (optimizing && VALID(stk) && VALID(stk->next) && VALID(stk->next->next))
+    if (compiling && VALID_1 && VALID_2 && VALID_3)
 	;
     else
 	COMPILE;
-    THREEPARAMS("choice");
 #endif
+    THREEPARAMS("choice");
     if (OUTSIDE) {
 	if (stk->next->next->u.num) {
 	    stk->next->next->u = stk->next->u;

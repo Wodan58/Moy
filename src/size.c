@@ -1,9 +1,8 @@
 /*
     module  : size.c
-    version : 1.6
-    date    : 06/25/18
+    version : 1.7
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 size  :  A  ->  I
@@ -16,14 +15,12 @@ PRIVATE void do_size(void)
     size_t size = 0;
 
 #ifndef NCHECK
-    if (optimizing)
-	chg_history(INTEGER_);
-    if (optimizing && AGGREGATE(stk))
+    if (compiling && AGGREGATE_1)
 	;
     else
 	COMPILE;
-    ONEPARAM("size");
 #endif
+    ONEPARAM("size");
     switch (stk->op) {
     case LIST_:
 	for (cur = stk->u.lis; cur; cur = cur->next)

@@ -38,7 +38,7 @@ Boole == [ "Yes, yes" ] [ "No, no" ] ;
 END
 
 0 __settracegc .
-2 setecho .
+# 2 setecho .
 Peano C0 .
 Peano [ C0 ] Csucc .
 Peano [ [ C0 ] Csucc ] Csucc .

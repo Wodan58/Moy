@@ -1,4 +1,6 @@
-regres: gcd test modtst flatjoy jp-reprodtst jp-joytst lsptst joytut laztst reptst jp-nestrec jp-church mtrtst symtst grmtst plgtst
+regres: gcd test modtst flatjoy jp-reprodtst jp-joytst joytut laztst reptst jp-nestrec jp-church mtrtst symtst grmtst plgtst
+
+# lsptst
 
 gcd:
 	-./$@1 24 54 | diff -w - OUT/gcd.out

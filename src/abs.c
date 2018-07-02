@@ -1,9 +1,8 @@
 /*
     module  : abs.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 abs  :  N1  ->  N2
@@ -13,13 +12,13 @@ or float N2 is the absolute value (0.0 ..) of float N1.
 PRIVATE void do_abs(void)
 {
 #ifndef NCHECK
-    if (optimizing && NUMERIC_1)
+    if (compiling && NUMERIC_1)
 	;
     else
 	COMPILE;
+#endif
     ONEPARAM("abs");
     FLOAT("abs");
-#endif
     if (OUTSIDE) {
 	if (stk->op == FLOAT_)
 	    stk->u.dbl = fabs(stk->u.dbl);

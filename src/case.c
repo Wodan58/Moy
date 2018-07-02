@@ -1,10 +1,8 @@
 /*
     module  : case.c
-    version : 1.7
-    date    : 06/29/18
+    version : 1.8
+    date    : 07/02/18
 */
-#include "runtime.h"
-
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {
     char *name;
@@ -213,30 +211,23 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 int put_case(void)
 {
     Node *cur;
-    void *save;
-    unsigned item;
 
-    del_history(2);
     if (!LIST_1)
 	return 0;
     cur = stk->u.lis;
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CASE */");
-    fprintf(outfp, "int num = 0, error; for (;;) {");
+    fprintf(outfp, "int num = 0, ok; for (;;) {");
     for (; cur->next; cur = cur->next) {
-	evaluate2(0, INIT_SCOPE);
-	item = PrintHead(cur, outfp);
-	fprintf(outfp, "if (!Compare(L%d, stk, &error)", item);
-	fprintf(outfp, "&& !error) { POP(stk);");
-	save = new_history();
-	evaluate(cur->u.lis->next);
-	old_history(save);
+	PrintHead(cur, outfp);
+	fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
+	fprintf(outfp, "POP(stk); POP(stk);");
+	compile(cur->u.lis->next);
 	fprintf(outfp, "num = 1; break; }");
-	evaluate2(0, STOP_SCOPE);
     }
-    fprintf(outfp, "break; } if (!num) {");
-    evaluate(cur->u.lis);
+    fprintf(outfp, "break; } if (!num) { POP(stk);");
+    compile(cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
 }
@@ -252,13 +243,13 @@ PRIVATE void do_case(void)
     Node *cur;
 
 #ifndef NCHECK
-    if (optimizing && put_case())
+    if (compiling && put_case())
 	return;
     COMPILE;
+#endif
     TWOPARAMS("case");
     LIST("case");
     CHECKEMPTYLIST(stk->u.lis, "case");
-#endif
     cur = stk->u.lis;
     POP(stk);
     for (; cur->next; cur = cur->next)

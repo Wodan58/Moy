@@ -1,19 +1,16 @@
 /*
     module  : binrec.c
-    version : 1.11
-    date    : 06/29/18
+    version : 1.12
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_binrec(void)
 {
-    void *save;
     Node *prog[4];
     unsigned ident;
     FILE *oldfp, *newfp;
 
-    del_history(4);
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
     prog[3] = stk->u.lis;
@@ -33,23 +30,19 @@ int put_binrec(void)
     fprintf(outfp, "int num; Node *save, temp;");
     fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
-    set_history(0);
-    evaluate2(prog[0], START_SCOPE);
-    set_history(1);
+    compile(prog[0]);
     fprintf(outfp, "num = stk->u.num;");
     fprintf(outfp, "stk = save;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
-    save = new_history();
-    evaluate(prog[1]);
-    old_history(save);
+    compile(prog[1]);
     fprintf(outfp, "} else {");
-    evaluate2(prog[2], MID_SCOPE);
+    compile(prog[2]);
     fprintf(outfp, "temp = *stk; POP(stk);\n");
     fprintf(outfp, "do_binrec_%d();", ident);
     fprintf(outfp, "DUPLICATE(&temp);");
     fprintf(outfp, "do_binrec_%d();", ident);
-    evaluate2(prog[3], END_SCOPE);
+    compile(prog[3]);
     fprintf(outfp, "} }\n");
     closefile(newfp);
     outfp = oldfp;
@@ -92,12 +85,12 @@ PRIVATE void do_binrec(void)
     Node *prog[4];
 
 #ifndef NCHECK
-    if (optimizing && put_binrec())
+    if (compiling && put_binrec())
 	return;
     COMPILE;
+#endif
     FOURPARAMS("binrec");
     FOURQUOTES("binrec");
-#endif
     prog[3] = stk->u.lis;
     POP(stk);
     prog[2] = stk->u.lis;

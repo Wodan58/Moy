@@ -1,9 +1,8 @@
 /*
     module  : format.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 format  :  N C I J  ->  S
@@ -18,42 +17,32 @@ PRIVATE void do_format(void)
     char spec, format[8], *result;
 
 #ifndef NCHECK
-    if (optimizing) {
-	del_history(3);
-	chg_history(STRING_);
-    }
-    if (optimizing && INTEGER_1 && INTEGER_2 && CHAR_3 && NUMERIC_4)
+    if (compiling && INTEGER_1 && INTEGER_2 && CHAR_3 && NUMERIC_4)
 	;
     else
 	COMPILE;
+#endif
     FOURPARAMS("format");
     INTEGER("format");
     INTEGER2("format");
-#endif
     prec = stk->u.num;
     POP(stk);
     width = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     CHARACTER("format");
-#endif
     spec = stk->u.num;
     POP(stk);
-#ifndef NCHECK
     if (!strchr("dioxX", spec))
 	execerror("one of: d i o x X", "format");
-#endif
     strcpy(format, "%*.*lld");
     format[6] = spec;
-#ifndef NCHECK
     NUMERICTYPE("format");
-#endif
 #ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
     leng = snprintf(0, 0, format, width, prec, (long long)stk->u.num) + 1;
 #endif
-    result = GC_malloc_atomic(leng + 1);
+    result = ck_malloc_sec(leng + 1);
 #ifdef _MSC_VER
     sprintf(result, format, width, prec, (long long)stk->u.num);
 #else

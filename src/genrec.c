@@ -1,19 +1,16 @@
 /*
     module  : genrec.c
-    version : 1.12
-    date    : 06/29/18
+    version : 1.13
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_genrec(void)
 {
-    void *save;
     Node *prog[4];
     unsigned ident;
     FILE *oldfp, *newfp;
 
-    del_history(4);
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
     prog[3] = stk->u.lis;
@@ -33,21 +30,17 @@ int put_genrec(void)
     fprintf(outfp, "code = *stk; POP(stk);");
     fprintf(outfp, "CONDITION;");
     fprintf(outfp, "save = stk;");
-    set_history(0);
-    evaluate2(prog[0], START_SCOPE);
-    set_history(1);
+    compile(prog[0]);
     fprintf(outfp, "num = stk->u.num; stk = save;");
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num) {");
-    save = new_history();
-    evaluate(prog[1]);
-    old_history(save);
+    compile(prog[1]);
     fprintf(outfp, "} else {");
-    evaluate2(prog[2], MID_SCOPE);
+    compile(prog[2]);
     fprintf(outfp, "PUSH(LIST_, code.u.lis); NULLARY(LIST_NEWNODE,");
     fprintf(outfp, "ANON_FUNCT_NEWNODE(do_genrec_%d, 0));", ident);
     fprintf(outfp, "do_cons();");
-    evaluate2(prog[3], END_SCOPE);
+    compile(prog[3]);
     fprintf(outfp, "} }");
     closefile(newfp);
     outfp = oldfp;
@@ -88,12 +81,12 @@ static void genrec(void)
 PRIVATE void do_genrec(void)
 {
 #ifndef NCHECK
-    if (optimizing && put_genrec())
+    if (compiling && put_genrec())
 	return;
     COMPILE;
+#endif
     FOURPARAMS("genrec");
     FOURQUOTES("genrec");
-#endif
     do_cons();
     do_cons();
     do_cons();

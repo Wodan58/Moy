@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.20
-    date    : 06/29/18
+    version : 1.21
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,16 +10,6 @@
 #include "joy.h"
 #include "symbol.h"
 
-char *opername(int num)
-{
-    return dict_name(num);
-}
-
-char *printname(int num)
-{
-    return dict_descr(num);
-}
-
 void writefactor(Node *node, FILE *stm)
 {
     char *ptr;
@@ -27,6 +17,18 @@ void writefactor(Node *node, FILE *stm)
     unsigned i, j;
 
     switch (node->op) {
+    case NOTHING_:
+	fprintf(stm, "nothing");
+	break;
+    case USR_:
+	fprintf(stm, "%s", dict_descr(node->u.num));
+	break;
+    case ANON_FUNCT_:
+	if ((ptr = procname(node->u.proc)) != 0)
+	    fprintf(stm, "%s", ptr);
+	else
+	    fprintf(stm, "%p", node->u.proc);
+	break;
     case BOOLEAN_:
 	fprintf(stm, "%s", node->u.num ? "true" : "false");
 	break;
@@ -60,9 +62,9 @@ void writefactor(Node *node, FILE *stm)
 	fputc('"', stm);
 	break;
     case LIST_:
-	fprintf(stm, "%s", "[");
+	fprintf(stm, "%s", "[ ");
 	writeterm(node->u.lis, stm);
-	fprintf(stm, "%s", "]");
+	fprintf(stm, "%s", " ]");
 	break;
     case FLOAT_:
 	fprintf(stm, "%g", node->u.dbl);
@@ -78,15 +80,6 @@ void writefactor(Node *node, FILE *stm)
 	    fprintf(stm, "file:stderr");
 	else
 	    fprintf(stm, "file:%p", node->u.fil);
-	break;
-    case USR_:
-	fprintf(stm, "%s", dict_descr(node->u.num));
-	break;
-    case ANON_FUNCT_:
-	if ((ptr = procname(node->u.proc)) != 0)
-	    fprintf(stm, "%s", ptr);
-	else
-	    fprintf(stm, "%p", node->u.proc);
 	break;
     case SYMBOL_:
 	fprintf(stm, "%s", node->u.str);
@@ -109,9 +102,9 @@ void writeterm(Node *code, FILE *stm)
 
 void writestack(Node *code, FILE *stm)
 {
-    if (code != memory) {
+    if (code) {
 	if (code == code->next)
-	    fprintf(stm, "ERROR ");
+	    execerror("non-circular stack", "writestack");
 	else {
 	    writestack(code->next, stm);
 	    putc(' ', stm);

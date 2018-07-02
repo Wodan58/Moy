@@ -1,9 +1,8 @@
 /*
     module  : system.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 system  :  "command"  ->
@@ -16,12 +15,10 @@ PRIVATE void do_system(void)
     char *str;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
+#endif
     ONEPARAM("system");
     STRING("system");
-#endif
     str = stk->u.str;
     POP(stk);
     system(str);

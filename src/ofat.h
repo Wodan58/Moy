@@ -1,7 +1,7 @@
 /*
     module  : ofat.h
-    version : 1.5
-    date    : 04/09/17
+    version : 1.6
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -9,35 +9,14 @@ PRIVATE void PROCEDURE(void)
     Node *cur;
 
 #ifndef NCHECK
-    unsigned op0, op1, op2, op3;
-
-    if (optimizing) {
-	op0 = pop_history(&op1);
-	op2 = pop_history(&op3);
-	if (op0 == LIST_ || op0 == STRING_ || op0 == SET_) {
-	    if (op0 == LIST_)
-		add_history(op1);
-	    else if (op0 == STRING_)
-		add_history(CHAR_);
-	    else
-		add_history(INTEGER_);
-	} else {
-	    if (op2 == LIST_)
-		add_history(op3);
-	    else if (op2 == STRING_)
-		add_history(CHAR_);
-	    else
-		add_history(INTEGER_);
-	}
-    }
-    if (optimizing && AGGREGATE(AGGR) && VALID(INDEX))
+    if (compiling && VALID_1 && VALID_2)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS(NAME);
     if (INDEX->op != INTEGER_ || INDEX->u.num < 0)
 	execerror("non-negative integer", NAME);
-#endif
     switch (AGGR->op) {
     case LIST_:
 	cur = AGGR->u.lis;

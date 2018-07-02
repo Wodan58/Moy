@@ -1,9 +1,8 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : in1.c
+    version : 1.1
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 in1  :  X A  ->  B

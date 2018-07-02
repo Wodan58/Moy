@@ -1,9 +1,8 @@
 /*
     module  : app12.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 app12  :  X Y1 Y2 [P]  ->  R1 R2
@@ -13,8 +12,8 @@ PRIVATE void do_app12(void)
 {
 #ifndef NCHECK
     COMPILE;
-    THREEPARAMS("app12");
 #endif
+    THREEPARAMS("app12");
     do_unary2();
     if (OUTSIDE) {
 	stk[-2].op = stk[-1].op;

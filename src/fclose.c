@@ -1,9 +1,8 @@
 /*
     module  : fclose.c
-    version : 1.5
-    date    : 06/25/18
+    version : 1.6
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 fclose  :  S  ->
@@ -14,12 +13,10 @@ PRIVATE void do_fclose(void)
     FILE *fp;
 
 #ifndef NCHECK
-    if (optimizing)
-	del_history(1);
     COMPILE;
+#endif
     ONEPARAM("fclose");
     FILE("fclose");
-#endif
     if ((fp = stk->u.fil) != 0)
 	fclose(fp);
     POP(stk);

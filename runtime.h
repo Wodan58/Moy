@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.10
-    date    : 06/29/18
+    version : 1.11
+    date    : 07/02/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -10,37 +10,25 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <time.h>
 #include <math.h>
 #include "joy.h"
 #include "symbol.h"
+#include "builtin.h"
+#include "decl.h"
 
-#define PRIVATE
+extern clock_t startclock;
 
 #ifndef NCHECK
-#define STATIC
 #define COMPILE		if (compiling) { printstack(outfp); \
 			fprintf(outfp, "%s();", __func__); return; }
-#else
-#ifdef _MSC_VER
-#pragma warning( disable : 4244 4305 )
-#else
-#endif
-#define COMPILE
 #endif
 
-#include "builtin.h"
-
-#define INSIDE		stk >= memory && stk < &memory[MEMORYMAX - 1]
+#define PRIVATE
+#define INSIDE		0
 #define OUTSIDE		1
 #define CONDITION
 #define RELEASE
-#if 0
-#define OUTSIDE		!inside_condition
-#define CONDITION	condition_stack[inside_condition++] = cond_ptr
-#define RELEASE		cond_ptr = condition_stack[--inside_condition]
-#endif
 
 #define exeterm(x)	interprete(x)
 #define POP(x)		(x) = (x)->next
@@ -75,25 +63,25 @@
      (stk->op == FLOAT_ && stk->next->op == INTEGER_) ||	\
      (stk->op == INTEGER_ && stk->next->op == FLOAT_))
 #define ONEPARAM(NAME)						\
-    if (stk == memory)						\
+    if (!stk)							\
 	execerror("one parameter",NAME)
 #define TWOPARAMS(NAME)						\
-    if (stk == memory || stk->next == memory)			\
+    if (!stk || !stk->next)					\
 	execerror("two parameters",NAME)
 #define THREEPARAMS(NAME)					\
-    if (stk == memory || stk->next == memory			\
-		      || stk->next->next == memory)		\
+    if (!stk || !stk->next					\
+	     || !stk->next->next)				\
 	execerror("three parameters",NAME)
 #define FOURPARAMS(NAME)					\
-    if (stk == memory || stk->next == memory			\
-		      || stk->next->next == memory		\
-		      || stk->next->next->next == memory)	\
+    if (!stk || !stk->next					\
+	     || !stk->next->next				\
+	     || !stk->next->next->next)				\
 	execerror("four parameters",NAME)
 #define FIVEPARAMS(NAME)					\
-    if (stk == memory || stk->next == memory			\
-		      || stk->next->next == memory		\
-		      || stk->next->next->next == memory	\
-		      || stk->next->next->next->next == memory)	\
+    if (!stk || !stk->next					\
+	     || !stk->next->next				\
+	     || !stk->next->next->next				\
+	     || !stk->next->next->next->next)			\
 	execerror("five parameters",NAME)
 #define ONEQUOTE(NAME)						\
     if (stk->op != LIST_)					\
@@ -210,40 +198,65 @@
 #define GTERNARY(TYPE,VALUE)					\
     stk = newnode(TYPE,VALUE,stk->next->next->next)
 
-#define NUMERIC_1	(stk->op == INTEGER_ || stk->op == FLOAT_)
-#define NUMERIC_2	(stk->next->op == INTEGER_ || stk->next->op == FLOAT_)
-#define NUMERIC_3	(stk->next->next->op == INTEGER_ || \
-			 stk->next->next->op == FLOAT_)
-#define NUMERIC_4	(stk->next->next->next->op == INTEGER_ || \
-			 stk->next->next->next->op == FLOAT_)
-#define FLOAT_1		(stk->op == FLOAT_)
-#define FLOAT_2		(stk->next->op == FLOAT_)
-#define FLOAT_3		(stk->next->next->op == FLOAT_)
-#define FLOAT_4		(stk->next->next->next->op == FLOAT_)
-#define INTEGER_1	(stk->op == INTEGER_)
-#define INTEGER_2	(stk->next->op == INTEGER_)
-#define INTEGER_3	(stk->next->next->op == INTEGER_)
-#define INTEGER_4	(stk->next->next->next->op == INTEGER_)
-#define CHAR_1		(stk->op == CHAR_)
-#define CHAR_2		(stk->next->op == CHAR_)
-#define CHAR_3		(stk->next->next->op == CHAR_)
-#define CHAR_4		(stk->next->next->next->op == CHAR_)
-#define BOOLEAN_1	(stk->op == BOOLEAN_)
-#define BOOLEAN_2	(stk->next->op == BOOLEAN_)
-#define BOOLEAN_3	(stk->next->next->op == BOOLEAN_)
-#define BOOLEAN_4	(stk->next->next->next->op == BOOLEAN_)
-#define STRING_1	(stk->op == STRING_)
-#define STRING_2	(stk->next->op == STRING_)
-#define STRING_3	(stk->next->next->op == STRING_)
-#define STRING_4	(stk->next->next->next->op == STRING_)
-#define SET_1		(stk->op == SET_)
-#define SET_2		(stk->next->op == SET_)
-#define SET_3		(stk->next->next->op == SET_)
-#define SET_4		(stk->next->next->next->op == SET_)
-#define LIST_1		(stk->op == LIST_)
-#define LIST_2		(stk->next->op == LIST_)
-#define LIST_3		(stk->next->next->op == LIST_)
-#define LIST_4		(stk->next->next->next->op == LIST_)
-#define VALID(x)	((x)->op)
-#define AGGREGATE(x)	((x)->op >= SET_ && (x)->op <= LIST_)
+#define PARAM_1(arg)	(stk && (arg))
+#define PARAM_2(arg)	(stk && stk->next && (arg))
+#define PARAM_3(arg)	(stk && stk->next && stk->next->next && (arg))
+#define PARAM_4(arg)	(stk && stk->next && stk->next->next && \
+			 stk->next->next->next && (arg))
+
+#define NUMERIC_1	(PARAM_1(stk->op == INTEGER_ || stk->op == FLOAT_))
+#define NUMERIC_2	(PARAM_2(stk->next->op == INTEGER_ || \
+			 stk->next->op == FLOAT_))
+#define NUMERIC_3	(PARAM_3(stk->next->next->op == INTEGER_ || \
+			 stk->next->next->op == FLOAT_))
+#define NUMERIC_4	(PARAM_4(stk->next->next->next->op == INTEGER_ || \
+			 stk->next->next->next->op == FLOAT_))
+
+#define FLOAT_1		(PARAM_1(stk->op == FLOAT_))
+#define FLOAT_2		(PARAM_2(stk->next->op == FLOAT_))
+#define FLOAT_3		(PARAM_3(stk->next->next->op == FLOAT_))
+#define FLOAT_4		(PARAM_4(stk->next->next->next->op == FLOAT_))
+
+#define INTEGER_1	(PARAM_1(stk->op == INTEGER_))
+#define INTEGER_2	(PARAM_2(stk->next->op == INTEGER_))
+#define INTEGER_3	(PARAM_3(stk->next->next->op == INTEGER_))
+#define INTEGER_4	(PARAM_4(stk->next->next->next->op == INTEGER_))
+
+#define CHAR_1		(PARAM_1(stk->op == CHAR_))
+#define CHAR_2		(PARAM_2(stk->next->op == CHAR_))
+#define CHAR_3		(PARAM_3(stk->next->next->op == CHAR_))
+#define CHAR_4		(PARAM_4(stk->next->next->next->op == CHAR_))
+
+#define BOOLEAN_1	(PARAM_1(stk->op == BOOLEAN_))
+#define BOOLEAN_2	(PARAM_2(stk->next->op == BOOLEAN_))
+#define BOOLEAN_3	(PARAM_3(stk->next->next->op == BOOLEAN_))
+#define BOOLEAN_4	(PARAM_4(stk->next->next->next->op == BOOLEAN_))
+
+#define STRING_1	(PARAM_1(stk->op == STRING_))
+#define STRING_2	(PARAM_2(stk->next->op == STRING_))
+#define STRING_3	(PARAM_3(stk->next->next->op == STRING_))
+#define STRING_4	(PARAM_4(stk->next->next->next->op == STRING_))
+
+#define SET_1		(PARAM_1(stk->op == SET_))
+#define SET_2		(PARAM_2(stk->next->op == SET_))
+#define SET_3		(PARAM_3(stk->next->next->op == SET_))
+#define SET_4		(PARAM_4(stk->next->next->next->op == SET_))
+
+#define LIST_1		(PARAM_1(stk->op == LIST_))
+#define LIST_2		(PARAM_2(stk->next->op == LIST_))
+#define LIST_3		(PARAM_3(stk->next->next->op == LIST_))
+#define LIST_4		(PARAM_4(stk->next->next->next->op == LIST_))
+
+#define VALID_1		(PARAM_1(stk->op))
+#define VALID_2		(PARAM_2(stk->next->op))
+#define VALID_3		(PARAM_3(stk->next->next->op))
+#define VALID_4		(PARAM_4(stk->next->next->next->op))
+
+#define AGGREGATE_1	(PARAM_1(stk->op >= SET_ && stk->op <= LIST_))
+#define AGGREGATE_2	(PARAM_2(stk->next->op >= SET_ && \
+			 stk->next->op <= LIST_))
+#define AGGREGATE_3	(PARAM_3(stk->next->next->op >= SET_ && \
+			 stk->next->next->op <= LIST_))
+#define AGGREGATE_4	(PARAM_4(stk->next->next->next->op >= SET_ && \
+			 stk->next->next->next->op <= LIST_))
 #endif

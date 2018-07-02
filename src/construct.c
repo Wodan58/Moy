@@ -1,47 +1,33 @@
 /*
     module  : construct.c
-    version : 1.9
-    date    : 06/25/18
+    version : 1.10
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 #ifndef NCHECK
 int put_construct(void)
 {
-    void *save[3];
-    unsigned op, op1;
     Node *cur, *prog;
 
-    save[2] = 0;
-    del_history(2);
     if (!(LIST_1 && LIST_2))
 	return 0;
     cur = stk->u.lis;
     POP(stk);
     prog = stk->u.lis;
     POP(stk);
+    printstack(outfp);
     fprintf(outfp, "{ /* CONSTRUCT */");
     fprintf(outfp, "Node *save[2], *root = 0;");
     fprintf(outfp, "save[0] = stk;");
-    save[0] = new_history();
-    evaluate2(prog, START_SCOPE);
+    compile(prog);
     for (; cur; cur = cur->next) {
 	fprintf(outfp, "CONDITION; save[1] = stk;");
-	save[1] = new_history();
-	evaluate2(cur->u.lis, MID_SCOPE);
-	op = top_history(&op1);
-	save[2] = save_history(save[2], op, op1);
-	old_history(save[1]);
+	compile(cur->u.lis);
 	fprintf(outfp, "root = heapnode(stk->op, stk->u.ptr, root);");
 	fprintf(outfp, "stk = save[1]; RELEASE;");
     }
-    old_history(save[0]);
-    swap_history(save[2]);
-    while (rest_history(save[2], &op, &op1))
-	add_history2(op, op1);
     fprintf(outfp, "stk = save[0]; while (root) {");
     fprintf(outfp, "DUPLICATE(root); root = root->next; } }");
-    evaluate2(0, STOP_SCOPE);
     return 1;
 }
 #endif
@@ -56,12 +42,12 @@ PRIVATE void do_construct(void)
     Node *cur, *prog, *root = 0, *save[2];
 
 #ifndef NCHECK
-    if (optimizing && put_construct())
+    if (compiling && put_construct())
 	return;
     COMPILE;
+#endif
     TWOPARAMS("construct");
     TWOQUOTES("construct");
-#endif
     cur = stk->u.lis;
     POP(stk);
     prog = stk->u.lis;

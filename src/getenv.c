@@ -1,9 +1,8 @@
 /*
     module  : getenv.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 getenv  :  "variable"  ->  "value"
@@ -13,9 +12,9 @@ PRIVATE void do_getenv(void)
 {
 #ifndef NCHECK
     COMPILE;
+#endif
     ONEPARAM("getenv");
     STRING("getenv");
-#endif
     if (OUTSIDE)
 	stk->u.str = getenv(stk->u.str);
     else

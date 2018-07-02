@@ -1,7 +1,7 @@
 /*
     module  : error.c
-    version : 1.1
-    date    : 03/12/17
+    version : 1.2
+    date    : 07/02/18
 */
 #include "runtime.h"
 

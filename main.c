@@ -1,18 +1,14 @@
 /*
     module  : main.c
-    version : 1.8
-    date    : 06/25/18
+    version : 1.9
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <setjmp.h>
-#ifdef _MSC_VER
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
 #include "joy.h"
+#include "symbol.h"
 
 static jmp_buf begin;
 
@@ -20,7 +16,8 @@ void execerror(char *message, const char *op)
 {
     if (!strncmp(op, "do_", 3))
 	op += 3;
-    fprintf(stderr, "run time error: %s needed for %s\n", message, op);
+    fprintf(stderr, "run time error: %s needed for %s in line %d\n",
+	    message, op, yylineno);
     longjmp(begin, 1);
 }
 

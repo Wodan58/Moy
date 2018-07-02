@@ -1,14 +1,13 @@
 /*
     module  : scan.c
-    version : 1.4
-    date    : 04/30/17
+    version : 1.5
+    date    : 07/02/18
 */
 #include <stdio.h>
 #include <ctype.h>
 #include "joy.h"
 #include "symbol.h"
-
-#define INPSTACKMAX	10
+#include "decl.h"
 
 static int ilevel;
 static FILE *infile[INPSTACKMAX];

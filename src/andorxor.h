@@ -1,26 +1,19 @@
 /*
     module  : andorxor.h
-    version : 1.4
-    date    : 04/08/17
+    version : 1.5
+    date    : 07/02/18
 */
 PRIVATE void PROCEDURE(void)
 {
 #ifndef NCHECK
-    unsigned op, op1;
-
-    if (optimizing) {
-	del_history(1);
-	op = top_history(&op1);
-	chg_history(op == SET_ ? SET_ : BOOLEAN_);
-    }
-    if (optimizing && stk->op == stk->next->op &&
+    if (compiling && VALID_1 && VALID_2 && stk->op == stk->next->op &&
 	stk->op >= BOOLEAN_ && stk->op <= SET_)
 	;
     else
 	COMPILE;
+#endif
     TWOPARAMS(NAME);
     SAME2TYPES(NAME);
-#endif
     switch (stk->next->op) {
     case SET_:
 	if (OUTSIDE) {

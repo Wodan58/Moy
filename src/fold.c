@@ -1,9 +1,8 @@
 /*
     module  : fold.c
-    version : 1.4
-    date    : 06/25/18
+    version : 1.5
+    date    : 07/02/18
 */
-#include "runtime.h"
 
 /**
 fold  :  A V0 [P]  ->  V
@@ -13,12 +12,12 @@ and combines with binary operator P to produce value V.
 PRIVATE void do_fold(void)
 {
 #ifndef NCHECK
-    if (optimizing && LIST_1 && VALID(stk->next) && VALID(stk->next->next))
+    if (compiling && LIST_1 && VALID_2 && VALID_3)
 	;
     else
 	COMPILE;
-    THREEPARAMS("fold");
 #endif
+    THREEPARAMS("fold");
     do_swapd();
     do_step();
 }
