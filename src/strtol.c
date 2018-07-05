@@ -1,9 +1,18 @@
 /*
     module  : strtol.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_strtol(void)
+{
+    int base;
 
+    TRACE;
+    base = do_pop();
+    stk[-1] = strtol((char *)stk[-1], 0, base);
+}
+#else
 /**
 strtol  :  S I  ->  J
 String S is converted to the integer J using base I.
@@ -37,3 +46,4 @@ PRIVATE void do_strtol(void)
     } else
 	UNARY(INTEGER_NEWNODE, num);
 }
+#endif

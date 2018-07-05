@@ -4,12 +4,12 @@ vv-bin-v == mapr2 ;
 vv-bin-m == [ map popd ] cons cons map ;
 vv-2bin-s == [ mapr2 uncons ] dip step ;
 vs-bin-v == cons map ;
-v-zdiag-m == [ dup small ] [ [ dup null ] [ ] [ [ ] cons ] ifte ] [ uncons ]
+v-zdiag-m == [ dup small_lst ] [ [ dup null ] [ ] [ [ ] cons ] ifte ] [ uncons ]
 [ dup [ first rest 0 swons cons ] dip [ 0 swons ] map cons ] linrec ;
-v-negate-v == 0 swap [ over swap - ] sv-bin-v ;
-v-invert-v == 1.0 swap [ over swap / ] sv-bin-v ;
+v-negate-v == 0.0 swap [ over swap .- ] sv-bin-v ;
+v-invert-v == 1.0 swap [ over swap ./ ] sv-bin-v ;
 v-e-diag-m == dup [ [ swons cons ] cons [ first rest ] swoncat ] dip [ swons ]
-cons [ map cons ] cons [ dip ] swoncat cons [ dup ] swoncat [ [ dup small ]
+cons [ map cons ] cons [ dip ] swoncat cons [ dup ] swoncat [ [ dup small_lst ]
 [ [ dup null ] [ ] [ [ ] cons ] ifte ] [ uncons ] ] dip linrec ;
 v-1row-m == [ ] cons ;
 v-1col-m == [ ] swap [ dupd swons ] sv-bin-v ;
@@ -22,7 +22,7 @@ swoncat == swap concat ;
 sv-bin-v == map popd ;
 sm-bin-m == [ (* sv-bin-v *) map ] cons map popd ;
 sindeg == radians sin ;
-radians == pi * 180 / ;
+radians == pi .* 180.0 ./ ;
 putlist == "[ " putchars [ dup null ] [ pop ] [ unswons put [ "\n  " putchars
 put ] step ] ifte "]\n" putchars ;
 pop2 == pop pop ;
@@ -37,6 +37,7 @@ ms-bin-m == cons [ map ] cons map ;
 mm-vercat-m == concat ;
 mm-mul-m == transpose [ [ [ [ * ] mapr2 ] unary 0 [ + ] fold ] map popd ] cons
 map ;
+mm-fmul-m == transpose [ [ [ [ .* ] mapr2 ] unary 0.0 [ .+ ] fold ] map popd ] cons map ;
 mm-horcat-m == [ concat ] mapr2 ;
 mm-bin-m == [ mapr2 ] cons mapr2 ;
 mm-add-m == [ + ] mm-bin-m ;
@@ -53,18 +54,19 @@ cosdeg == radians cos ;
 cartproduct == [ [ ] ] dip2 [ pairlist swap [ swons ] dip ] pairstep ;
 END
 
+1 setundeferror .
 "output from test file  mtrtst.joy  (* MATRICES and VECTORS *)\n" putchars .
 "user input is indented by one tab\n" putchars .
 0 __settracegc .
 # 2 setecho .
 5 "hello" n-e-vector .
 5 1 n-e-vector .
-5 [ 1 2 3 ] [ + ] sv-bin-v .
-3.13 [ 10 20 30 ] [ * ] sv-bin-v .
-5 [ 1 2 3 4 5 6 7 8 9 10 ] [ - ] sv-bin-v .
+5 [ 1 2 3 ] [ over + ] sv-bin-v .
+3.13 [ 10.0 20.0 30.0 ] [ over .* ] sv-bin-v .
+5 [ 1 2 3 4 5 6 7 8 9 10 ] [ over swap - ] sv-bin-v .
 [ 1 2 3 4 5 6 7 8 9 10 ] 5 [ - ] vs-bin-v .
 [ { 1 2 3 } { 4 5 6 } { 7 8 9 } ] { 2 4 6 8 } [ and ] vs-bin-v .
-3.14 [ [ id ] [ dup dup * ] [ dup dup dup * * ] ] [ i ] sv-bin-v .
+3.14 [ [ dup ] [ dup dup .* ] [ dup dup dup .* .* ] ] [ i ] sv-bin-v .
 [ 1 2 3 4 ] [ dup ] [ * ] concat [ i ] vs-bin-v .
 [ 1.1 2.2 3.3 4.4 5.5 ] v-negate-v .
 [ 1.1 2.2 3.3 4.4 5.5 ] v-invert-v .
@@ -76,7 +78,7 @@ END
 [ { 1 2 3 } { 2 3 4 } ] [ { 1 3 4 } { 4 5 6 } ] [ and ] vv-bin-v .
 [ true false false true ] [ true true false false ] [ and ] vv-bin-v .
 [ 1 2 3 ] [ 1 2 3 ] [ * ] [ + ] vv-2bin-s .
-[ 1.1 2.2 3.3 ] [ 3.3 4.4 5.5 ] [ * ] [ + ] vv-2bin-s .
+[ 1.1 2.2 3.3 ] [ 3.3 4.4 5.5 ] [ .* ] [ .+ ] vv-2bin-s .
 [ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ and ] [ or ] vv-2bin-s .
 [ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ or ] [ and ] vv-2bin-s .
 [ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ and ] [ and ] vv-2bin-s .
@@ -91,30 +93,30 @@ END
 4 1 n-e-vector v-zdiag-m .
 4 1 n-e-vector 0 v-e-diag-m .
 4 'i n-e-vector 'o v-e-diag-m .
-[ 1 2 3 ] [ 10 20 ] [ + ] vv-bin-m .
-[ 1.1 2.2 ] [ 3.3 4.4 5.5 6.6 ] [ + ] vv-bin-m .
-[ 1.1 2.2 ] [ 4.4 5.5 6.6 7.7 ] [ * ] vv-bin-m .
-[ { 1 2 3 } { 4 5 } ] [ { 1 } { 2 3 } { 3 4 } ] [ or ] vv-bin-m .
-[ { 1 2 3 } { 4 5 } ] [ { 1 } { 2 3 } { 3 4 } ] [ and ] vv-bin-m .
+[ 1 2 3 ] [ 10 20 ] [ over + ] vv-bin-m .
+[ 1.1 2.2 ] [ 3.3 4.4 5.5 6.6 ] [ over .+ ] vv-bin-m .
+[ 1.1 2.2 ] [ 4.4 5.5 6.6 7.7 ] [ over .* ] vv-bin-m .
+[ { 1 2 3 } { 4 5 } ] [ { 1 } { 2 3 } { 3 4 } ] [ over or ] vv-bin-m .
+[ { 1 2 3 } { 4 5 } ] [ { 1 } { 2 3 } { 3 4 } ] [ over and ] vv-bin-m .
 [ 1 2 3 4 ] [ [ id ] [ dup * ] [ dup dup * * ] ] [ dupd i ] vv-bin-m .
 [ 0.0 30.0 45.0 ] [ [ sindeg ] [ cosdeg ] [ tandeg ] ] [ dupd i ] vv-bin-m .
-[ peter paul ] [ [ smith ] [ jones ] ] [ cons ] vv-bin-m .
-[ peter paul ] [ [ smith ] [ jones ] ] [ cons ] vv-bin-m size .
+[ peter paul ] [ [ smith ] [ jones ] ] [ over swap cons ] vv-bin-m .
+[ peter paul ] [ [ smith ] [ jones ] ] [ over swap cons ] vv-bin-m size .
 [ peter paul ] [ smith jones ] cartproduct .
 [ peter paul ] [ smith jones ] cartproduct size .
 [ [ 1 2 ] [ 3 4 ] ] [ [ 5 6 ] [ 7 8 ] ] mm-vercat-m .
 [ [ 1 2 ] [ 3 4 ] ] [ [ 5 6 ] [ 7 8 ] ] mm-horcat-m .
 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] [ 10 11 12 ] ] m-transpose-m .
-[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ + ] ms-cbin-m .
-[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ - ] ms-bin-m .
-[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ * ] ms-cbin-m .
-[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 0 [ * ] ms-cbin-m .
+[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ over + ] ms-cbin-m .
+[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ over over - ] ms-bin-m .
+[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 10 [ over * ] ms-cbin-m .
+[ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 0 [ over * ] ms-cbin-m .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 7 [ popd ] ms-bin-m .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] [ succ ] [ i ] ms-bin-m .
 [ [ { 1 2 } { 3 4 } ] [ { 5 6 } { 7 8 } ] ] { 1 3 5 7 } [ and ] ms-bin-m .
-5 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] [ - ] sm-bin-m .
-[ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] 5 [ - ] ms-bin-m .
-0 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] [ pop ] sm-bin-m .
+5 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] [ over swap - ] sm-bin-m .
+[ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] 5 [ over swap - ] ms-bin-m .
+0 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] [ pop dup ] sm-bin-m .
 [ [ 1 2 3 ] [ 4 5 6 ] ] [ [ 10 20 30 ] [ 40 50 60 ] ] mm-add-m .
 [ [ 1 2 3 ] [ 4 5 6 ] ] [ [ 10 20 30 ] [ 40 50 60 ] ] [ + ] mm-bin-m .
 [ [ 1 2 3 ] [ 4 5 6 ] ] [ [ 10 20 30 ] [ 40 50 60 ] ] [ * ] mm-bin-m .
@@ -129,7 +131,8 @@ id2 m-transpose-m .
 id2 [ [ 1 2 3 ] [ 4 5 6 ] ] mm-mul-m .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] id2 mm-mul-m .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] id2 [ * ] [ + ] mm-2bin-m .
+0 setautoput .
 [ [ 1.1 2.2 ] [ 3.3 4.4 ] [ 5.5 6.6 ] ] dup m-print [ [ 1.1 2.2 ] [ 3.3 4.4 ] ]
-dup m-print mm-mul-m m-print .
+dup m-print mm-fmul-m m-print .
 [ [ { 1 2 } { 3 4 } ] [ { 4 5 } { 6 7 } ] ] dup m-print [ [ { 1 3 5 } { 6 } ]
 [ { 2 } { 3 4 5 } ] ] dup m-print [ and ] [ or ] mm-2bin-m m-print .

@@ -1,9 +1,15 @@
 /*
     module  : body.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_body(void)
+{
+    TRACE;
+    do_push(0);
+}
+#else
 /**
 body  :  U  ->  [P]
 Quotation [P] is the body of user-defined symbol U.
@@ -22,3 +28,4 @@ PRIVATE void do_body(void)
     POP(stk);
 #endif
 }
+#endif

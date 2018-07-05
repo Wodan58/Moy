@@ -1,9 +1,19 @@
 /*
     module  : unswons.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_unswons(void)
+{
+    code_t *cur;
 
+    TRACE;
+    cur = (code_t *)stk[-1];
+    stk[-1] = (node_t)cur->next;
+    do_push(cur->num);
+}
+#else
 /**
 unswons  :  A  ->  R F
 R and F are the rest and the first of non-empty aggregate A.
@@ -55,3 +65,4 @@ PRIVATE void do_unswons(void)
 #endif
     }
 }
+#endif

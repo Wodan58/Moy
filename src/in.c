@@ -1,9 +1,20 @@
 /*
     module  : in.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_in(void)
+{
+    code_t *cur;
 
+    TRACE;
+    for (cur = (code_t *)do_pop(); cur; cur = cur->next)
+	if (stk[-1] == cur->num)
+	    break;
+    stk[-1] = cur != 0;
+}
+#else
 /**
 in  :  X A  ->  B
 Tests whether X is a member of aggregate A.
@@ -14,3 +25,4 @@ Tests whether X is a member of aggregate A.
 #define AGGR		stk
 #define ELEM		stk->next
 #include "inhas.h"
+#endif

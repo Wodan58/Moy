@@ -3,7 +3,7 @@ verb-phrase == [ "is" _ ? "not" _ $ adjective | "sleeps" | [ "eats" | "sits" _
 	       "on" ] _ $ noun-phrase ] ;
 tree == [ "big" _ "tree" ] ;
 term == [ $ factor _ * [ "*" _ $ factor ] ] ;
-string2charlist == [ dup null ] [ pop [ ] ] [ uncons ] [ cons ] linrec ;
+string2charlist == [ dup null_str ] [ pop [ ] ] [ uncons_str ] [ cons ] linrec ;
 space == '\032 putch ;
 shunt == [ swons ] step ;
 sequand == [ pop false ] ifte ;

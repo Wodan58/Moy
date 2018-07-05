@@ -1,7 +1,7 @@
 /*
     module  : setundeferror.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
 
 /**
@@ -11,9 +11,6 @@ Sets flag that controls behavior of undefined functions
 */
 PRIVATE void do_setundeferror(void)
 {
-#ifndef NCHECK
-    COMPILE;
-#endif
     ONEPARAM("undeferror");
     NUMERICTYPE("undeferror");
     undeferror = stk->u.num;

@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/05/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -16,6 +16,11 @@
 #include "symbol.h"
 #include "builtin.h"
 #include "decl.h"
+
+typedef struct table_t {
+    proc_t proc;
+    char *name;
+} table_t;
 
 extern clock_t startclock;
 

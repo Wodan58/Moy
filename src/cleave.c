@@ -1,9 +1,27 @@
 /*
     module  : cleave.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_cleave(void)
+{
+    code_t *prog[2];
+    node_t temp, result[2];
 
+    TRACE;
+    prog[1] = (code_t *)do_pop();
+    prog[0] = (code_t *)do_pop();
+    temp = stk[-1];		// copy X
+    execute(prog[0]);
+    result[0] = stk[-1];	// first result
+    stk[-1] = temp;		// restore X
+    execute(prog[1]);
+    result[1] = stk[-1];	// second result
+    stk[-1] = result[0];
+    do_push(result[1]);
+}
+#else
 #ifndef NCHECK
 int put_cleave(void)
 {
@@ -17,13 +35,21 @@ int put_cleave(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CLEAVE */");
-    fprintf(outfp, "Node result[2], temp;");
-    fprintf(outfp, "temp = *stk;");
+#ifdef NEW_VERSION
+    fprintf(outfp, "node_t temp, result[2]; TRACE; temp = stk[-1];");
+    compile(prog[0]);
+    fprintf(outfp, "result[0] = stk[-1]; stk[-1] = temp;");
+    compile(prog[1]);
+    fprintf(outfp, "result[1] = stk[-1]; stk[-1] = result[0];");
+    fprintf(outfp, "do_push(result[1]); }");
+#else
+    fprintf(outfp, "Node result[2], temp = *stk;");
     compile(prog[0]);
     fprintf(outfp, "result[0] = *stk; *stk = temp;");
     compile(prog[1]);
     fprintf(outfp, "result[1] = *stk; *stk = result[0];");
     fprintf(outfp, "DUPLICATE(&result[1]); }");
+#endif
     return 1;
 }
 #endif
@@ -56,3 +82,4 @@ PRIVATE void do_cleave(void)
     *stk = result[0];		// push results
     DUPLICATE(&result[1]);
 }
+#endif

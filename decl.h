@@ -1,8 +1,9 @@
 /*
     module  : decl.h
-    version : 1.1
-    date    : 07/02/18
+    version : 1.2
+    date    : 07/05/18
 */
+#define NEW_VERSION
 #define MAXNUM		20
 #define MAXSTR		128
 #define MAXLINE		1000

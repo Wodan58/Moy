@@ -1,9 +1,21 @@
 /*
     module  : times.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_times(void)
+{
+    int num;
+    code_t *prog;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    num = do_pop();
+    while (num--)
+	execute(prog);
+}
+#else
 #ifndef NCHECK
 int put_times(void)
 {
@@ -15,7 +27,11 @@ int put_times(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* TIMES */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "int num; TRACE; num = do_pop();");
+#else
     fprintf(outfp, "unsigned num = stk->u.num; POP(stk);");
+#endif
     fprintf(outfp, "while (num--) {");
     compile(prog);
     fprintf(outfp, "} }");
@@ -47,3 +63,4 @@ PRIVATE void do_times(void)
     while (num--)
 	exeterm(prog);
 }
+#endif

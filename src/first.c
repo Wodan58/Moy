@@ -1,9 +1,18 @@
 /*
     module  : first.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_first(void)
+{
+    code_t *cur;
 
+    TRACE;
+    cur = (code_t *)stk[-1];
+    stk[-1] = cur->num;
+}
+#else
 /**
 first  :  A  ->  F
 F is the first member of the non-empty aggregate A.
@@ -52,3 +61,4 @@ PRIVATE void do_first(void)
 #endif
     }
 }
+#endif

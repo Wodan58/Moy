@@ -1,9 +1,17 @@
 /*
     module  : fold.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_fold(void)
+{
+    void do_swapd(void), do_step(void);
 
+    do_swapd();
+    do_step();
+}
+#else
 /**
 fold  :  A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
@@ -21,3 +29,4 @@ PRIVATE void do_fold(void)
     do_swapd();
     do_step();
 }
+#endif

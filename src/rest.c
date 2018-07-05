@@ -1,9 +1,18 @@
 /*
     module  : rest.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_rest(void)
+{
+    code_t *cur;
 
+    TRACE;
+    cur = (code_t *)stk[-1];
+    stk[-1] = (node_t)cur->next;
+}
+#else
 /**
 rest  :  A  ->  R
 R is the non-empty aggregate A with its first member removed.
@@ -51,3 +60,4 @@ PRIVATE void do_rest(void)
 #endif
     }
 }
+#endif

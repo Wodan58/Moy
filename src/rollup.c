@@ -1,9 +1,20 @@
 /*
     module  : rollup.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_rollup(void)
+{
+    node_t temp;
 
+    TRACE;
+    temp = stk[-1];
+    stk[-1] = stk[-2];
+    stk[-2] = stk[-3];
+    stk[-3] = temp;
+}
+#else
 /**
 rollup  :  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
@@ -35,3 +46,4 @@ PRIVATE void do_rollup(void)
     GNULLARY(next->op, next->u.ptr);
     GNULLARY(node->op, node->u.ptr);
 }
+#endif

@@ -1,9 +1,31 @@
 /*
     module  : equal.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+int equal(code_t *first, code_t *second)
+{
+    for (; first && second; first = first->next, second = second->next) {
+	if (first->num > start_of_heap && second->num > start_of_heap) {
+	    if (!equal(first->list, second->list))
+		return 0;
+	} else if (first->num != second->num)
+	    return 0;
+    }
+    return !first && !second;
+}
 
+void do_equal(void)
+{
+    TRACE;
+    if (stk[-2] > start_of_heap && stk[-1] > start_of_heap)
+	stk[-2] = equal((code_t *)stk[-2], (code_t *)stk[-1]);
+    else
+	stk[-2] = stk[-2] == stk[-1];
+    stk--;
+}
+#else
 /**
 equal  :  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
@@ -51,3 +73,4 @@ PRIVATE void do_equal(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, equal_aux(stk, stk->next));
 }
+#endif

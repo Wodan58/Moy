@@ -1,9 +1,18 @@
 /*
     module  : enconcat.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_enconcat(void)
+{
+    void do_swapd(void);
 
+    do_swapd();
+    do_cons();
+    do_concat();
+}
+#else
 /**
 enconcat  :  X S T  ->  U
 Sequence U is the concatenation of sequences S and T
@@ -24,3 +33,4 @@ PRIVATE void do_enconcat(void)
     do_cons();
     do_concat();
 }
+#endif

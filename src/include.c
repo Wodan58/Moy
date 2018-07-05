@@ -1,9 +1,15 @@
 /*
     module  : include.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_include(void)
+{
+    TRACE;
+    include((char *)do_pop());
+}
+#else
 /**
 include  :  "filnam.ext"  ->
 Transfers input to file whose name is "filnam.ext".
@@ -22,3 +28,4 @@ PRIVATE void do_include(void)
     POP(stk);
     include(str);
 }
+#endif

@@ -1,9 +1,20 @@
 /*
     module  : of.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_of(void)
+{
+    int i;
+    code_t *cur;
 
+    TRACE;
+    for (cur = (code_t *)do_pop(), i = stk[-1]; i > 0; i--)
+	cur = cur->next;
+    stk[-1] = cur->num;
+}
+#else
 /**
 of  :  I A  ->  X
 X (= A[I]) is the I-th member of aggregate A.
@@ -13,3 +24,4 @@ X (= A[I]) is the I-th member of aggregate A.
 #define AGGR		stk
 #define	INDEX		stk->next
 #include "ofat.h"
+#endif

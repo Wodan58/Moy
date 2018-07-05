@@ -1,9 +1,15 @@
 /*
     module  : i.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_i(void)
+{
+    TRACE;
+    execute((code_t *)do_pop());
+}
+#else
 #ifndef NCHECK
 int put_i(void)
 {
@@ -37,3 +43,4 @@ PRIVATE void do_i(void)
     POP(stk);
     exeterm(prog);
 }
+#endif

@@ -1,9 +1,22 @@
 /*
     module  : cond.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_cond(void)
+{
+    code_t *cur;
 
+    TRACE;
+    for (cur = (code_t *)do_pop(); cur->next; cur = cur->next) {
+	execute(cur->list->list);
+	if (do_pop())
+	    break;
+    }
+    execute(cur->next ? cur->list->next : cur->list);
+}
+#else
 #ifndef NCHECK
 int put_cond(void)
 {
@@ -15,14 +28,22 @@ int put_cond(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* COND */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "int num = 0; TRACE; for (;;) {");
+#else
     fprintf(outfp, "int num = 0; Node *save; for (;;) {");
+#endif
     for (; cur->next; cur = cur->next) {
+#ifndef NEW_VERSION
+	fprintf(outfp, "CONDITION; save = stk;");
+#endif
 	list = cur->u.lis->u.lis;
-	fprintf(outfp, "CONDITION;");
-	fprintf(outfp, "save = stk;");
 	compile(list);
-	fprintf(outfp, "num = stk->u.num; stk = save;");
-	fprintf(outfp, "RELEASE;");
+#ifdef NEW_VERSION
+	fprintf(outfp, "num = do_pop();");
+#else
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+#endif
 	fprintf(outfp, "if (num) {");
 	compile(cur->u.lis->next);
 	fprintf(outfp, "break; }");
@@ -68,3 +89,4 @@ PRIVATE void do_cond(void)
     }
     exeterm(num ? cur->u.lis->next : cur->u.lis);
 }
+#endif

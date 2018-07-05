@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.2
-    date    : 07/02/18
+    version : 1.3
+    date    : 07/05/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -102,7 +102,6 @@ int dict_size(void)
 char *procname(proc_t proc)
 {
     int i;
-    char *name;
 
     for (i = 0; table[i].name; i++)
 	if (proc == table[i].proc)

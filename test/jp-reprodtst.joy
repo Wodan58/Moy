@@ -34,6 +34,7 @@ dureco == dup rest cons ;
 END
 
 # 2 setecho .
+1 setundeferror .
 str-ints .
 str-pows .
 str-brak .

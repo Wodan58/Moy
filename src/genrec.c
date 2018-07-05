@@ -1,15 +1,15 @@
 /*
     module  : genrec.c
-    version : 1.13
-    date    : 07/02/18
+    version : 1.14
+    date    : 07/05/18
 */
 
 #ifndef NCHECK
 int put_genrec(void)
 {
+    static int ident;
+    FILE *oldfp;
     Node *prog[4];
-    unsigned ident;
-    FILE *oldfp, *newfp;
 
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
@@ -21,10 +21,10 @@ int put_genrec(void)
     fprintf(outfp, "do_cons();");
     fprintf(outfp, "do_cons();");
     fprintf(outfp, "do_cons();");
-    fprintf(declfp, "void do_genrec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_genrec_%d(void);", ++ident);
     fprintf(outfp, "do_genrec_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
+    outfp = nextfile();
     fprintf(outfp, "void do_genrec_%d(void) {", ident);
     fprintf(outfp, "int num; Node code, *save;");
     fprintf(outfp, "code = *stk; POP(stk);");
@@ -42,7 +42,7 @@ int put_genrec(void)
     fprintf(outfp, "do_cons();");
     compile(prog[3]);
     fprintf(outfp, "} }");
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }

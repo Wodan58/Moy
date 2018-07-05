@@ -1,11 +1,10 @@
-3 setecho .
 111 222 + .
 1 2 + 3 4 + * .
 DEFINE nl == 10 putch .
-2 2 + 2 2 * = (* put_bool nl *) .
+2 2 + 2 2 * = put_bool nl .
 # DEFINE > == swap < .
-6 6 * 5 7 * > (* put_bool nl *) .
-true false or true and not (* put_bool nl *) .
+6 6 * 5 7 * > put_bool nl .
+true false or true and not put_bool nl .
 DEFINE reverse == [ ] swap shunt .
 DEFINE shunt == [ cnos ] step .
 DEFINE cnos == swap cons .
@@ -24,12 +23,11 @@ DEFINE pair == [ ] cons cons .
 DEFINE member == swap contains .
 DEFINE contains == false swap [ = or ] cons fold1 .
 DEFINE fold1 == [ swap ] dip step .
-3 [ 1 5 3 4 2 ] member (* put_bool nl *) .
-3 [ 1 5 6 4 2 ] member (* put_bool nl *) .
+3 [ 1 5 3 4 2 ] member put_bool nl .
+3 [ 1 5 6 4 2 ] member put_bool nl .
 DEFINE sum == 0 [ + ] fold1 .
 DEFINE space == 32 .
 DEFINE product == 1 [ * ] fold1 .
-DEFINE putsp == put space putch .
 [ 1 2 3 4 ] dup sum put product .
 111 [ 222 333 ] cons .
 [ 11 22 33 44 55 ] uncons uncons put put .

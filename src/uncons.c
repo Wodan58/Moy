@@ -1,9 +1,23 @@
 /*
     module  : uncons.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_uncons(void)
+{
+    code_t *cur;
 
+    TRACE;
+    if ((cur = (code_t *)stk[-1]) == 0) {
+	stk[-1] = start_of_text;
+	do_push(0);
+    } else {
+	stk[-1] = cur->num;
+	do_push((node_t)cur->next);
+    }
+}
+#else
 /**
 uncons  :  A  ->  F R
 F and R are the first and the rest of non-empty aggregate A.
@@ -71,3 +85,4 @@ PRIVATE void do_uncons(void)
 #endif
     }
 }
+#endif

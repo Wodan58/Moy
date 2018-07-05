@@ -1,10 +1,18 @@
 /*
     module  : comprel.h
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
 PRIVATE void PROCEDURE(void)
 {
+#ifdef RUNTIME
+    TRACE;
+    if (stk[-2] > start_of_data && stk[-2] < start_of_heap)
+	stk[-2] = strcmp((char *)stk[-2], (char *)stk[-1]) OPR 0;
+    else
+	stk[-2] = stk[-2] OPR stk[-1];
+    stk--;
+#else
     double cmp;
     int i, j, error, comp = 0;
 
@@ -37,6 +45,7 @@ PRIVATE void PROCEDURE(void)
 	POP(stk);
 	PUSH(CONSTRUCTOR, (long_t)comp);
     }
+#endif
 }
 
 #undef PROCEDURE

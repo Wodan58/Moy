@@ -1,7 +1,7 @@
 /*
     module  : nary.h
-    version : 1.10
-    date    : 07/02/18
+    version : 1.11
+    date    : 07/05/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -16,13 +16,15 @@ int PUT_PROC(PROCEDURE)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
+#ifndef NEW_VERSION
     fprintf(outfp, "{ /* %s */", NAME);
-    fprintf(outfp, "Node temp, *top = %s;", TOPSTR);
-    fprintf(outfp, "CONDITION;");
+    fprintf(outfp, "Node temp, *top = %s; CONDITION;", TOPSTR);
+#endif
     compile(prog);
-    fprintf(outfp, "temp = *stk;");
-    fprintf(outfp, "RELEASE;");
-    fprintf(outfp, "stk = top; DUPLICATE(&temp); }");
+#ifndef NEW_VERSION
+    fprintf(outfp, "temp = *stk; RELEASE; stk = top;");
+    fprintf(outfp, "DUPLICATE(&temp); }");
+#endif
     return 1;
 }
 #endif

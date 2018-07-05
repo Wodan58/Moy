@@ -1,9 +1,21 @@
 /*
     module  : step.c
-    version : 1.8
-    date    : 07/02/18
+    version : 1.9
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_step(void)
+{
+    code_t *prog, *cur;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    for (cur = (code_t *)do_pop(); cur; cur = cur->next) {
+	do_push(cur->num);
+	execute(prog);
+    }
+}
+#else
 #ifndef NCHECK
 int put_step(void)
 {
@@ -15,6 +27,13 @@ int put_step(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* STEP */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "code_t *cur; TRACE;");
+    fprintf(outfp, "for (cur = (code_t *)do_pop(); cur; cur = cur->next) {");
+    fprintf(outfp, "do_push(cur->num);");
+    compile(prog);
+    fprintf(outfp, "} }");
+#else
     fprintf(outfp, "char *str; ulong_t set; unsigned i; Node *cur;");
     fprintf(outfp, "cur = stk; POP(stk);");
     fprintf(outfp, "switch (cur->op) {");
@@ -34,6 +53,7 @@ int put_step(void)
     fprintf(outfp, "PUSH(INTEGER_, i);");
     compile(prog);
     fprintf(outfp, "} break; } }");
+#endif
     return 1;
 }
 #endif
@@ -88,3 +108,4 @@ PRIVATE void do_step(void)
 #endif
     }
 }
+#endif

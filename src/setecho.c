@@ -1,7 +1,7 @@
 /*
     module  : setecho.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
 
 /**
@@ -11,9 +11,6 @@ I = 0: no echo, 1: echo, 2: with tab, 3: and linenumber.
 */
 PRIVATE void do_setecho(void)
 {
-#ifndef NCHECK
-    COMPILE;
-#endif
     ONEPARAM("setecho");
     NUMERICTYPE("setecho");
     setechoflag(stk->u.num);

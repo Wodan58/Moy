@@ -1,25 +1,25 @@
 /*
     module  : treestep.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
 
 #ifndef NCHECK
 int put_treestep(void)
 {
+    static int ident;
     Node *prog;
-    unsigned ident;
-    FILE *oldfp, *newfp;
+    FILE *oldfp;
 
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(declfp, "void do_treestep_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_treestep_%d(void);", ++ident);
     fprintf(outfp, "do_treestep_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
+    outfp = nextfile();
     fprintf(outfp, "void do_treestep_%d(void) {", ident);
     fprintf(outfp, "Node *cur;");
     fprintf(outfp, "if (stk->op != LIST_) {");
@@ -29,7 +29,7 @@ int put_treestep(void)
     fprintf(outfp, "cur = stk->u.lis; POP(stk);");
     fprintf(outfp, "for (; cur; cur = cur->next) {");
     fprintf(outfp, "do_treestep_%d(); } } }", ident);
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }

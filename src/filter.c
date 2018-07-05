@@ -1,9 +1,30 @@
 /*
     module  : filter.c
-    version : 1.16
-    date    : 07/02/18
+    version : 1.17
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_filter(void)
+{
+    code_t *prog, *list, *root = 0, *cur;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    for (list = (code_t *)do_pop(); list; list = list->next) {
+	do_push(list->num);
+	execute(prog);
+	if (do_pop()) {
+	    if (!root)
+		cur = root = joy_code();
+	    else
+		cur = cur->next = joy_code();
+	    cur->num = list->num;
+	}
+	(void)do_pop();
+    }
+    do_push((node_t)root);
+}
+#else
 #ifndef NCHECK
 int put_filter(void)
 {
@@ -15,6 +36,20 @@ int put_filter(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* FILTER */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "code_t *list, *root = 0, *cur; TRACE;");
+    fprintf(outfp, "for (list = (code_t *)do_pop(); list; list = list->next)");
+    fprintf(outfp, "{ do_push(list->num);");
+    compile(prog);
+    fprintf(outfp, "if (do_pop()) {");
+    fprintf(outfp, "if (!root)");
+    fprintf(outfp, "cur = root = joy_code();");
+    fprintf(outfp, "else ");
+    fprintf(outfp, "cur = cur->next = joy_code();");
+    fprintf(outfp, "cur->num = list->num;");
+    fprintf(outfp, "} (void)do_pop(); }");
+    fprintf(outfp, "do_push((node_t)root);");
+#else
     fprintf(outfp, "int i = 0;");
     fprintf(outfp, "char *str, *ptr;");
     fprintf(outfp, "ulong_t set, zet = 0;");
@@ -49,6 +84,7 @@ int put_filter(void)
     fprintf(outfp, "zet |= 1 << i;");
     fprintf(outfp, "stk = save; RELEASE; }");
     fprintf(outfp, "PUSH(SET_, yes_set); break; } }");
+#endif
     return 1;
 }
 #endif
@@ -131,3 +167,4 @@ PRIVATE void do_filter(void)
 #endif
     }
 }
+#endif

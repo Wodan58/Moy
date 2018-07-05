@@ -1,9 +1,18 @@
 /*
     module  : rotate.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_rotate(void)
+{
+    node_t temp;
 
+    temp = stk[-1];
+    stk[-1] = stk[-3];
+    stk[-3] = temp;
+}
+#else
 /**
 rotate  :  X Y Z  ->  Z Y X
 Interchanges X and Z.
@@ -33,3 +42,4 @@ PRIVATE void do_rotate(void)
     GNULLARY(node->op, node->u.ptr);
     GNULLARY(next->op, next->u.ptr);
 }
+#endif

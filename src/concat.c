@@ -1,9 +1,30 @@
 /*
     module  : concat.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_concat(void)
+{
+    code_t *first, *second, *root = 0, *cur = 0;
 
+    TRACE;
+    second = (code_t *)do_pop();
+    first = (code_t *)stk[-1];
+    for (; first; first = first->next) {
+	if (!root)
+	    cur = root = joy_code();
+	else
+	    cur = cur->next = joy_code();
+	cur->num = first->num;
+    }
+    if (cur)
+	cur->next = second;
+    else
+	root = second;
+    stk[-1] = (node_t)root;
+}
+#else
 /**
 concat  :  S T  ->  U
 Sequence U is the concatenation of sequences S and T.
@@ -69,3 +90,4 @@ PRIVATE void do_concat(void)
 #endif
     }
 }
+#endif

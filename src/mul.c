@@ -1,9 +1,16 @@
 /*
     module  : mul.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_mul(void)
+{
+    TRACE;
+    stk[-2] *= stk[-1];
+    stk--;
+}
+#else
 /**
 *  :  I J  ->  K
 Integer K is the product of integers I and J.  Also supports float.
@@ -32,3 +39,4 @@ PRIVATE void do_mul(void)
     else
 	BINARY(INTEGER_NEWNODE, stk->next->u.num * stk->u.num);
 }
+#endif

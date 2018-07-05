@@ -4,7 +4,6 @@ shunt == [ swons ] step ;
 sequand == [ pop false ] ifte ;
 second == rest first ;
 s == swoncat ;
-reverse == [ [ ] ] [ "" ] iflist swap shunt ;
 r-show == Rev2Tre taut-show-all ;
 putln == put newline ;
 prs-trace == pop ;

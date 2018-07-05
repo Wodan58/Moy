@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/05/18
 */
 
 /**
@@ -14,7 +14,6 @@ PRIVATE void do_helpdetail(void)
     int i;
     char *name;
     Node *node;
-    Operator op;
     unsigned flags;
 
     COMPILE;

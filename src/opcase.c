@@ -1,9 +1,15 @@
 /*
     module  : opcase.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_opcase(void)
+{
+    TRACE;
+    do_push(0);
+}
+#else
 /**
 opcase  :  X [..[X Xs]..]  ->  X [Xs]
 Indexing on type of X, returns the list [Xs].
@@ -37,3 +43,4 @@ PRIVATE void do_opcase(void)
     } else
 	UNARY(LIST_NEWNODE, cur);
 }
+#endif

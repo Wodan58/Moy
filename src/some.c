@@ -1,9 +1,27 @@
 /*
     module  : some.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_some(void)
+{
+    int num = 0;
+    code_t *prog, *list;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    for (list = (code_t *)do_pop(); list; list = list->next) {
+	do_push(list->num);
+	execute(prog);
+	num = do_pop();
+	do_pop();
+	if (num)
+	    break;
+    }
+    do_push(num);
+}
+#else
 /**
 some  :  A [B]  ->  X
 Applies test B to members of aggregate A, X = true if some pass.
@@ -11,5 +29,8 @@ Applies test B to members of aggregate A, X = true if some pass.
 #define PROCEDURE	do_some
 #define NAME		"some"
 #define INITIAL		0
+#define SOME
 #include "someall.h"
+#undef SOME
 /* some.c */
+#endif

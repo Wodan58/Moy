@@ -1,8 +1,23 @@
 /*
     module  : case.c
-    version : 1.8
-    date    : 07/02/18
+    version : 1.9
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_case(void)
+{
+    code_t *cur;
+
+    for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
+	if (cur->num == stk[-1])
+	    break;
+    if (cur->next) {
+	(void)do_pop();
+	execute(cur->list->next);
+    } else
+	execute(cur->list);
+}
+#else
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {
     char *name;
@@ -218,6 +233,16 @@ int put_case(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CASE */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "int num = 0; for (;;) {");
+    for (; cur->next; cur = cur->next) {
+	PrintHead(cur, outfp);
+	fprintf(outfp, "if (stk[-1] == stk[-2]) { do_pop(); do_pop();");
+	compile(cur->u.lis->next);
+	fprintf(outfp, "num = 1; break; }");
+    }
+    fprintf(outfp, "break; } if (!num) { do_pop();");
+#else
     fprintf(outfp, "int num = 0, ok; for (;;) {");
     for (; cur->next; cur = cur->next) {
 	PrintHead(cur, outfp);
@@ -227,6 +252,7 @@ int put_case(void)
 	fprintf(outfp, "num = 1; break; }");
     }
     fprintf(outfp, "break; } if (!num) { POP(stk);");
+#endif
     compile(cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
@@ -261,3 +287,4 @@ PRIVATE void do_case(void)
     } else
 	exeterm(cur->u.lis);
 }
+#endif

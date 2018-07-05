@@ -1,15 +1,15 @@
 /*
     module  : treerec.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
 
 #ifndef NCHECK
 int put_treerec(void)
 {
+    static int ident;
+    FILE *oldfp;
     Node *prog[2];
-    unsigned ident;
-    FILE *oldfp, *newfp;
 
     if (!(LIST_1 && LIST_2))
 	return 0;
@@ -17,10 +17,10 @@ int put_treerec(void)
     prog[0] = stk->next->u.lis;
     printstack(outfp);
     fprintf(outfp, "do_cons();");
-    fprintf(declfp, "void do_treerec_%d(void);", ident = ++identifier);
+    fprintf(declfp, "void do_treerec_%d(void);", ++ident);
     fprintf(outfp, "do_treerec_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
+    outfp = nextfile();
     fprintf(outfp, "void do_treerec_%d(void) {", ident);
     fprintf(outfp, "if (stk->next->op == LIST_) {");
     fprintf(outfp, "NULLARY(LIST_NEWNODE,");
@@ -30,7 +30,7 @@ int put_treerec(void)
     fprintf(outfp, "} else { POP(stk);");
     compile(prog[0]);
     fprintf(outfp, "} }");
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }

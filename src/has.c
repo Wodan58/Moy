@@ -1,9 +1,21 @@
 /*
     module  : has.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_has(void)
+{
+    node_t num;
+    code_t *cur;
 
+    TRACE;
+    for (num = do_pop(), cur = (code_t *)stk[-1]; cur; cur = cur->next)
+	if (num == cur->num)
+	    break;
+    stk[-1] = cur != 0;
+}
+#else
 /**
 has  :  A X  ->  B
 Tests whether aggregate A has X as a member.
@@ -14,3 +26,4 @@ Tests whether aggregate A has X as a member.
 #define AGGR		stk->next
 #define ELEM		stk
 #include "inhas.h"
+#endif

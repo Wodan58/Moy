@@ -32,7 +32,7 @@ END
 DEFINE
 trace == "trace: " putchars state putln ;
 times10-c == [ 10 * ] rep.exe-c ;
-ten-powers-log10 == 1.0 [ 10 * ] [ [ ] cons [ dup log10 ] infra ]
+ten-powers-log10 == 1.0 [ 10.0 .* ] [ [ ] cons [ dup log10 ] infra ]
 rep.f-stream-d ;
 swoncat == swap concat ;
 steps == "steps: " putchars state putln ;
@@ -40,8 +40,12 @@ state == first first ;
 squaring == [ dup * ] rep.exe ;
 selfr == rep.self ;
 qtest == qsort-fix-c i state ;
+qtest_str == qsort-fix-c_str i state ;
 qsort-fix-c == qsort-bin rep.fix-c ;
-qsort-bin == [ over small ] [ ] [ uncons [ over over > ] split ] [ enconcat ]
+qsort-fix-c_str == qsort-bin_str rep.fix-c ;
+qsort-bin == [ over small_lst ] [ ] [ uncons [ over over > ] split ] [ enconcat ]
+rep._binary ;
+qsort-bin_str == [ over small_str ] [ ] [ uncons_str [ over over > ] split_str ] [ enconcat_str ]
 rep._binary ;
 putln == put newline ;
 primes-d == 2 [ succ [ dup prime not ] [ succ ] while ] rep.n-stream-d ;
@@ -62,8 +66,8 @@ length-lin == [ over null ] [ pop 0 ] [ rest ] [ succ ] rep.linear ;
 length-fix-a == length-lin rep.fix-a ;
 integers-from == [ succ ] rep.n-stream ;
 integers == rep.ints ;
-halving-d == 1.0 [ 2 / ] rep.n-stream-d ;
-halving == 1.0 [ 2 / ] rep.n-stream ;
+halving-d == 1.0 [ 2.0 ./ ] rep.n-stream-d ;
+halving == 1.0 [ 2.0 ./ ] rep.n-stream ;
 fact0 == [ [ over null ] [ pop pop 1 ] [ [ dup pred ] dip i * ] ifte ] ;
 fact-lin == [ over null ] [ pop 1 ] [ dup pred ] [ * ] rep.linear ;
 fact-fix-c == fact rep.fix-c ;
@@ -78,6 +82,7 @@ accu-product-list == [ ] [ [ * ] dip cons ] rep.inter ;
 accu-list == [ ] [ cons ] rep.inter ;
 END 
 
+1 setundeferror .
 # 2 setecho .
 selfr .
 selfr i i i .
@@ -144,4 +149,4 @@ nfib-fix .
 [ 10 5 3 2 4 1 8 7 9 6 15 13 12 14 11 18 17 19 16 20 ] qtest . .
 [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ] qtest . .
 [ 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 ] qtest . .
-"You can also sort strings, of course" qtest . .
+"You can also sort strings, of course" qtest_str . put_str .

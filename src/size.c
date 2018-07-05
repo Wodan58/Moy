@@ -1,9 +1,15 @@
 /*
     module  : size.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_size(void)
+{
+    TRACE;
+    stk[-1] = joy_leng((code_t *)stk[-1]);
+}
+#else
 /**
 size  :  A  ->  I
 Integer I is the number of elements of aggregate A.
@@ -45,3 +51,4 @@ PRIVATE void do_size(void)
     } else
 	UNARY(INTEGER_NEWNODE, size);
 }
+#endif

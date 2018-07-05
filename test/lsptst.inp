@@ -1,6 +1,6 @@
-123.456
-false
-"hello world"
+# 123.456
+# false
+# "hello world"
 [ QUOTE [ Peter Paul Mary ] ]
 [ QUOTE [ 1 2 3 4 5 ] ]
 [ CAR [ QUOTE [ Peter Paul Mary ] ] ]

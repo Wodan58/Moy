@@ -1,15 +1,44 @@
 /*
     module  : binrec.c
-    version : 1.12
-    date    : 07/02/18
+    version : 1.13
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void binrec(code_t *prog[])
+{
+    node_t temp;
 
+    execute(prog[0]);
+    if (do_pop())
+	execute(prog[1]);
+    else {
+	execute(prog[2]);
+	temp = do_pop();
+	binrec(prog);
+	do_push(temp);
+	binrec(prog);
+	execute(prog[3]);
+    }
+}
+
+void do_binrec(void)
+{
+    code_t *prog[4];
+
+    TRACE;
+    prog[3] = (code_t *)do_pop();
+    prog[2] = (code_t *)do_pop();
+    prog[1] = (code_t *)do_pop();
+    prog[0] = (code_t *)do_pop();
+    binrec(prog);
+}
+#else
 #ifndef NCHECK
 int put_binrec(void)
 {
+    static int ident;
+    FILE *oldfp;
     Node *prog[4];
-    unsigned ident;
-    FILE *oldfp, *newfp;
 
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
@@ -22,29 +51,37 @@ int put_binrec(void)
     prog[0] = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(declfp, "void do_binrec_%d(void);", ident = ++identifier);
-    fprintf(outfp, "do_binrec_%d();", ident);
+    fprintf(declfp, "void binrec_%d(void);", ++ident);
+    fprintf(outfp, "binrec_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
-    fprintf(outfp, "void do_binrec_%d(void) {", ident);
-    fprintf(outfp, "int num; Node *save, temp;");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
+    outfp = nextfile();
+    fprintf(outfp, "void binrec_%d(void) {", ident);
+#ifdef NEW_VERSION
+    fprintf(outfp, "node_t temp;");
     compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num;");
-    fprintf(outfp, "stk = save;");
-    fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "if (do_pop()) {");
+    compile(prog[1]);
+    fprintf(outfp, "} else {");
+    compile(prog[2]);
+    fprintf(outfp, "temp = do_pop(); binrec_%d();", ident);
+    fprintf(outfp, "do_push(temp);");
+#else
+    fprintf(outfp, "int num; Node *save, temp;");
+    fprintf(outfp, "CONDITION; save = stk;");
+    compile(prog[0]);
+    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
     fprintf(outfp, "if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
     fprintf(outfp, "temp = *stk; POP(stk);\n");
-    fprintf(outfp, "do_binrec_%d();", ident);
+    fprintf(outfp, "binrec_%d();", ident);
     fprintf(outfp, "DUPLICATE(&temp);");
-    fprintf(outfp, "do_binrec_%d();", ident);
+#endif
+    fprintf(outfp, "binrec_%d();", ident);
     compile(prog[3]);
     fprintf(outfp, "} }\n");
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }
@@ -101,3 +138,4 @@ PRIVATE void do_binrec(void)
     POP(stk);
     binrec(prog);
 }
+#endif

@@ -1,9 +1,37 @@
 /*
     module  : split.c
-    version : 1.16
-    date    : 07/02/18
+    version : 1.17
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_split(void)
+{
+    code_t *prog, *list, *root = 0, *cur, *head = 0, *tail;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    for (list = (code_t *)do_pop(); list; list = list->next) {
+	do_push(list->num);
+	execute(prog);
+	if (do_pop()) {
+	    if (!root)
+		cur = root = joy_code();
+	    else
+		cur = cur->next = joy_code();
+	    cur->num = list->num;
+	} else {
+	    if (!head)
+		tail = head = joy_code();
+	    else
+		tail = tail->next = joy_code();
+	    tail->num = list->num;
+	}
+	(void)do_pop();
+    }
+    do_push((node_t)root);
+    do_push((node_t)head);
+}
+#else
 #ifndef NCHECK
 int put_split(void)
 {
@@ -15,6 +43,18 @@ int put_split(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* SPLIT */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "code_t *list, *root = 0, *cur, *head = 0, *tail; TRACE;");
+    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+    fprintf(outfp, "list = list->next) { do_push(list->num);");
+    execute(prog);
+    fprintf(outfp, "if (do_pop()) { if (!root) cur = root = joy_code();");
+    fprintf(outfp, " else cur = cur->next = joy_code(); cur->num = list->num;");
+    fprintf(outfp, "} else { if (!head) tail = head = joy_code();");
+    fprintf(outfp, " else tail = tail->next = joy_code();");
+    fprintf(outfp, "tail->num = list->num; } do_pop(); }");
+    fprintf(outfp, "do_push((node_t)root); do_push((node_t)head); }");
+#else
     fprintf(outfp, "unsigned i, yes = 0, no = 0;");
     fprintf(outfp, "char *str, *yes_str, *no_str;");
     fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
@@ -62,6 +102,7 @@ int put_split(void)
     fprintf(outfp, "stk = save; RELEASE; }");
     fprintf(outfp, "PUSH(SET_, yes_set);");
     fprintf(outfp, "PUSH(SET_, no_set); break; } }");
+#endif
     return 1;
 }
 #endif
@@ -158,3 +199,4 @@ PRIVATE void do_split(void)
 #endif
     }
 }
+#endif

@@ -1,9 +1,15 @@
 /*
     module  : leaf.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_leaf(void)
+{
+    TRACE;
+    stk[-1] = stk[-1] < start_of_heap;
+}
+#else
 /**
 leaf  :  X  ->  B
 Tests whether X is not a list.
@@ -13,3 +19,4 @@ Tests whether X is not a list.
 #define REL		!=
 #define TYP		LIST_
 #include "type.h"
+#endif

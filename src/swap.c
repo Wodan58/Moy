@@ -1,9 +1,19 @@
 /*
     module  : swap.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_swap(void)
+{
+    node_t temp;
 
+    TRACE;
+    temp = stk[-1];
+    stk[-1] = stk[-2];
+    stk[-2] = temp;
+}
+#else
 /**
 swap  :  X Y  ->  Y X
 Interchanges X and Y on top of the stack.
@@ -31,3 +41,4 @@ PRIVATE void do_swap(void)
     GBINARY(temp.op, temp.u.ptr);
     GNULLARY(node->op, node->u.ptr);
 }
+#endif

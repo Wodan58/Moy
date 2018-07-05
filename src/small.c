@@ -1,9 +1,18 @@
 /*
     module  : small.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_small(void)
+{
+    TRACE;
+    if (stk[-1] > start_of_data && stk[-1] < start_of_heap)
+	stk[-1] = !stk[-1] || strlen((char *)stk[-1]) < 2;
+    else
+	stk[-1] = stk[-1] < 2;
+}
+#else
 /**
 small  :  X  ->  B
 Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
@@ -51,3 +60,4 @@ PRIVATE void do_small(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, small);
 }
+#endif

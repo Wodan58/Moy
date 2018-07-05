@@ -1,9 +1,15 @@
 /*
     module  : not.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_not(void)
+{
+    TRACE;
+    stk[-1] = !stk[-1];
+}
+#else
 /**
 not  :  X  ->  Y
 Y is the complement of set X, logical negation for truth values.
@@ -54,3 +60,4 @@ PRIVATE void do_not(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, num);
 }
+#endif

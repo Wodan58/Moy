@@ -1,9 +1,24 @@
 /*
     module  : while.c
-    version : 1.12
-    date    : 07/02/18
+    version : 1.13
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_while(void)
+{
+    code_t *prog[2];
 
+    TRACE;
+    prog[1] = (code_t *)do_pop();
+    prog[0] = (code_t *)do_pop();
+    for (;;) {
+	execute(prog[0]);
+	if (!do_pop())
+	    break;
+	execute(prog[1]);
+    }
+}
+#else
 #ifndef NCHECK
 int put_while(void)
 {
@@ -16,16 +31,22 @@ int put_while(void)
     prog[0] = stk->u.lis;
     POP(stk);
     printstack(outfp);
+#ifdef NEW_VERSION
+    fprintf(outfp, "for (;;) { /* WHILE */");
+    compile(prog[0]);
+    fprintf(outfp, "if (!do_pop()) break;");
+    compile(prog[1]);
+    fprintf(outfp, "}");
+#else
     fprintf(outfp, "{ /* WHILE */");
     fprintf(outfp, "int num; Node *save; for (;;) {");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
+    fprintf(outfp, "CONDITION; save = stk;");
     compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
-    fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
     fprintf(outfp, "if (!num) break;");
     compile(prog[1]);
     fprintf(outfp, "} }");
+#endif
     return 1;
 }
 #endif
@@ -62,3 +83,4 @@ PRIVATE void do_while(void)
 	exeterm(prog);
     }
 }
+#endif

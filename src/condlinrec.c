@@ -1,14 +1,37 @@
 /*
     module  : condlinrec.c
-    version : 1.13
-    date    : 07/02/18
+    version : 1.14
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void condnestrec(code_t *root)
+{
+    code_t *cur;
 
+    for (cur = root; cur->next; cur = cur->next) {
+	execute(cur->list->list);
+	if (do_pop())
+	    break;
+    }
+    cur = cur->next ? cur->list->next : cur->list;
+    execute(cur->list);
+    while ((cur = cur->next) != 0) {
+	condnestrec(root);
+	execute(cur->list);
+    }
+}
+
+void do_condlinrec(void)
+{
+    TRACE;
+    condnestrec((code_t *)do_pop());
+}
+#else
 #ifndef NCHECK
 int put_condnestrec(void)
 {
-    unsigned ident;
-    FILE *oldfp, *newfp;
+    static int ident;
+    FILE *oldfp;
     Node *root, *cur, *list, *node;
 
     if (!LIST_1)
@@ -16,24 +39,31 @@ int put_condnestrec(void)
     root = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(declfp, "void do_condnestrec_%d(void);", ident = ++identifier);
-    fprintf(outfp, "do_condnestrec_%d();", ident);
+    fprintf(declfp, "void condnestrec_%d(void);", ++ident);
+    fprintf(outfp, "condnestrec_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
-    fprintf(outfp, "void do_condnestrec_%d(void) {", ident);
+    outfp = nextfile();
+    fprintf(outfp, "void condnestrec_%d(void) {", ident);
+#ifdef NEW_VERSION
+    fprintf(outfp, "code_t *cur;");
+#else
     fprintf(outfp, "Node *save; int num;");
+#endif
     for (cur = root; cur->next; cur = cur->next) {
+#ifndef NEW_VERSION
+	fprintf(outfp, "CONDITION; save = stk;");
+#endif
 	list = cur->u.lis->u.lis;
-	fprintf(outfp, "CONDITION;");
-	fprintf(outfp, "save = stk;");
 	compile(list);
-	fprintf(outfp, "num = stk->u.num; stk = save;");
-	fprintf(outfp, "RELEASE;");
-	fprintf(outfp, "if (num) {");
+#ifdef NEW_VERSION
+	fprintf(outfp, "if (do_pop()) {");
+#else
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+#endif
 	node = cur->u.lis->next;
 	compile(node->u.lis);
 	while ((node = node->next) != 0) {
-	    fprintf(outfp, "do_condnestrec_%d();", ident);
+	    fprintf(outfp, "condnestrec_%d();", ident);
 	    compile(node->u.lis);
 	}
 	fprintf(outfp, "return; }");
@@ -41,11 +71,11 @@ int put_condnestrec(void)
     cur = cur->u.lis;
     compile(cur->u.lis);
     while ((cur = cur->next) != 0) {
-	fprintf(outfp, "do_condnestrec_%d();", ident);
+	fprintf(outfp, "condnestrec_%d();", ident);
 	compile(cur->u.lis);
     }
     fprintf(outfp, "}");
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }
@@ -100,3 +130,4 @@ PRIVATE void do_condlinrec(void)
     POP(stk);
     condnestrec(prog);
 }
+#endif

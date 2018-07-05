@@ -1,9 +1,21 @@
 /*
     module  : dip.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_dip(void)
+{
+    node_t temp;
+    code_t *prog;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    temp = do_pop();
+    execute(prog);
+    do_push(temp);
+}
+#else
 #ifndef NCHECK
 int put_dip(void)
 {
@@ -14,10 +26,16 @@ int put_dip(void)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(outfp, "{ /* DIP */");
+    fprintf(outfp, "{ /* DIP */ TRACE;");
+#ifdef NEW_VERSION
+    fprintf(outfp, "node_t temp = do_pop();");
+    compile(prog);
+    fprintf(outfp, "do_push(temp); }");
+#else
     fprintf(outfp, "Node temp = *stk; POP(stk);");
     compile(prog);
     fprintf(outfp, "DUPLICATE(&temp); }");
+#endif
     return 1;
 }
 #endif
@@ -44,3 +62,4 @@ PRIVATE void do_dip(void)
     exeterm(prog);
     DUPLICATE(&temp);
 }
+#endif

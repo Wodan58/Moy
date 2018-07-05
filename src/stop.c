@@ -1,9 +1,18 @@
 /*
     module  : stop.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_stop(void)
+{
+    TRACE;
+    if (autoput && stk > memory) {
+	do_put();
+	putchar('\n');
+    }
+}
+#else
 PRIVATE void do_stop(void)
 {
     int written = 0;
@@ -29,3 +38,4 @@ PRIVATE void do_stop(void)
     if (!stk)
 	freemem();
 }
+#endif

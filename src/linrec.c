@@ -1,15 +1,39 @@
 /*
     module  : linrec.c
-    version : 1.12
-    date    : 07/02/18
+    version : 1.13
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void linrec(code_t *prog[])
+{
+    execute(prog[0]);
+    if (do_pop())
+	execute(prog[1]);
+    else {
+	execute(prog[2]);
+	linrec(prog);
+	execute(prog[3]);
+    }
+}
 
+void do_linrec(void)
+{
+    code_t *prog[4];
+
+    TRACE;
+    prog[3] = (code_t *)do_pop();
+    prog[2] = (code_t *)do_pop();
+    prog[1] = (code_t *)do_pop();
+    prog[0] = (code_t *)do_pop();
+    linrec(prog);
+}
+#else
 #ifndef NCHECK
 int put_linrec(void)
 {
+    static int ident;
+    FILE *oldfp;
     Node *prog[4];
-    unsigned ident;
-    FILE *oldfp, *newfp;
 
     if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
 	return 0;
@@ -22,25 +46,27 @@ int put_linrec(void)
     prog[0] = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    fprintf(declfp, "void do_linrec_%d(void);", ident = ++identifier);
-    fprintf(outfp, "do_linrec_%d();", ident);
+    fprintf(declfp, "void linrec_%d(void);", ++ident);
+    fprintf(outfp, "linrec_%d();", ident);
     oldfp = outfp;
-    newfp = outfp = nextfile();
-    fprintf(outfp, "void do_linrec_%d(void) {", ident);
-    fprintf(outfp, "int num; Node *save;");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
+    outfp = nextfile();
+    fprintf(outfp, "void linrec_%d(void) {", ident);
+#ifdef NEW_VERSION
     compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
-    fprintf(outfp, "RELEASE;");
+    fprintf(outfp, "if (do_pop()) {");
+#else
+    fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
+    compile(prog[0]);
+    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
     fprintf(outfp, "if (num) {");
+#endif
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
-    fprintf(outfp, "do_linrec_%d();", ident);
+    fprintf(outfp, "linrec_%d();", ident);
     compile(prog[3]);
     fprintf(outfp, "} }\n");
-    closefile(newfp);
+    closefile(outfp);
     outfp = oldfp;
     return 1;
 }
@@ -92,3 +118,4 @@ PRIVATE void do_linrec(void)
     POP(stk);
     linrec(prog);
 }
+#endif

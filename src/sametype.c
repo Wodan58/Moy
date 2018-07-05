@@ -1,9 +1,16 @@
 /*
     module  : sametype.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
-
+#ifdef RUNTIME
+void do_sametype(void)
+{
+    TRACE;
+    stk[-2] = stk[-2] == stk[-1];
+    stk--;
+}
+#else
 /**
 sametype  :  X Y  ->  B
 Tests whether X and Y have the same type.
@@ -24,3 +31,4 @@ PRIVATE void do_sametype(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, stk->op == stk->next->op);
 }
+#endif

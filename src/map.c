@@ -1,9 +1,27 @@
 /*
     module  : map.c
-    version : 1.17
-    date    : 07/02/18
+    version : 1.18
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_map(void)
+{
+    code_t *prog, *list, *root = 0, *cur;
 
+    TRACE;
+    prog = (code_t *)do_pop();
+    for (list = (code_t *)do_pop(); list; list = list->next) {
+	do_push(list->num);
+	execute(prog);
+	if (!root)
+	    cur = root = joy_code();
+	else
+	    cur = cur->next = joy_code();
+	cur->num = do_pop();
+    }
+    do_push((node_t)root);
+}
+#else
 #ifndef NCHECK
 int put_map(void)
 {
@@ -15,6 +33,15 @@ int put_map(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* MAP */");
+#ifdef NEW_VERSION
+    fprintf(outfp, "code_t *list, *root = 0, *cur; TRACE;");
+    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+    fprintf(outfp, "list = list->next) { do_push(list->num);");
+    compile(prog);
+    fprintf(outfp, "if (!root) cur = root = joy_code();");
+    fprintf(outfp, "else cur = cur->next = joy_code();");
+    fprintf(outfp, "cur->num = do_pop(); } do_push((node_t)root); }");
+#else
     fprintf(outfp, "char *str, *ptr; ulong_t set, zet; int i = 0;");
     fprintf(outfp, "Node *cur, *save, temp, *root = 0, *last = 0;");
     fprintf(outfp, "cur = stk; POP(stk); switch (cur->op) {");
@@ -47,6 +74,7 @@ int put_map(void)
     fprintf(outfp, "zet |= 1 << stk->u.num;");
     fprintf(outfp, "if ((stk = save) != 0) *stk = temp; RELEASE;");
     fprintf(outfp, "} PUSH(SET_, zet); break; } }");
+#endif
     return 1;
 }
 #endif
@@ -127,3 +155,4 @@ PRIVATE void do_map(void)
 #endif
     }
 }
+#endif

@@ -1,9 +1,20 @@
 /*
     module  : rolldown.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_rolldown(void)
+{
+    node_t temp;
 
+    TRACE;
+    temp = stk[-3];
+    stk[-3] = stk[-2];
+    stk[-2] = stk[-1];
+    stk[-1] = temp;
+}
+#else
 /**
 rolldown  :  X Y Z  ->  Y Z X
 Moves Y and Z down, moves X up.
@@ -36,3 +47,4 @@ PRIVATE void do_rolldown(void)
     GNULLARY(temp.op, temp.u.ptr);
     GNULLARY(next->op, next->u.ptr);
 }
+#endif

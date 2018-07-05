@@ -1,9 +1,19 @@
 /*
     module  : intern.c
-    version : 1.10
-    date    : 07/02/18
+    version : 1.11
+    date    : 07/05/18
 */
+#ifdef RUNTIME
+void do_intern(void)
+{
+    char *name;
+    proc_t proc;
 
+    name = (char *)stk[-1];
+    proc = nameproc(name);
+    stk[-1] = (node_t)proc;
+}
+#else
 /**
 intern  :  "sym"  ->  sym
 Pushes the item whose name is "sym".
@@ -44,3 +54,4 @@ PRIVATE void do_intern(void)
 	UNARY(USR_NEWNODE, i);
 #endif
 }
+#endif

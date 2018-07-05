@@ -1,7 +1,7 @@
 /*
     module  : someall.h
-    version : 1.14
-    date    : 07/02/18
+    version : 1.15
+    date    : 07/05/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b
@@ -9,15 +9,31 @@
 
 int PUT_PROC(PROCEDURE)
 {
-    void *save;
     Node *prog;
-    unsigned op, op1;
 
     if (!LIST_1)
 	return 0;
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
+#ifdef NEW_VERSION
+#ifdef SOME
+    fprintf(outfp, "{ /* SOME */");
+    fprintf(outfp, "int num = 0; code_t *list; TRACE;");
+    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+    fprintf(outfp, "list = list->next) { do_push(list->num);");
+    compile(prog);
+    fprintf(outfp, "num = do_pop(); do_pop(); if (num) break;");
+#else
+    fprintf(outfp, "{ /* ALL */");
+    fprintf(outfp, "int num = 1; code_t *list; TRACE;");
+    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+    fprintf(outfp, "list = list->next) { do_push(list->num);");
+    compile(prog);
+    fprintf(outfp, "num = do_pop(); do_pop(); if (!num) break;");
+#endif
+    fprintf(outfp, "} do_push(num); }");
+#else
     fprintf(outfp, "{ /* SOMEALL */");
     fprintf(outfp, "unsigned i, num = %d;", INITIAL);
     fprintf(outfp, "char *str;");
@@ -56,6 +72,7 @@ int PUT_PROC(PROCEDURE)
     fprintf(outfp, "RELEASE;");
     fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
     fprintf(outfp, "PUSH(BOOLEAN_, num); }");
+#endif
     return 1;
 }
 #endif
