@@ -1,9 +1,11 @@
 /*
     module  : utils1.c
-    version : 1.3
-    date    : 07/02/18
+    version : 1.4
+    date    : 07/05/18
 */
 #include "runtime.h"
+
+YYSTYPE yylval;
 
 void readfactor(int sym)
 {

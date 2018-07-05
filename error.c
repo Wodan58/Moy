@@ -1,11 +1,11 @@
 /*
     module  : error.c
-    version : 1.2
-    date    : 07/02/18
+    version : 1.3
+    date    : 07/05/18
 */
-#include "runtime.h"
-
-YYSTYPE yylval;
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 void execerror(char *message, const char *op)
 {
