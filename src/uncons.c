@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.10
-    date    : 07/05/18
+    version : 1.11
+    date    : 07/06/18
 */
 #ifdef RUNTIME
 void do_uncons(void)
@@ -30,7 +30,7 @@ PRIVATE void do_uncons(void)
     ulong_t set;
 
 #ifndef NCHECK
-    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op >= NOTHING_ &&
+    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
 	stk->u.lis->op <= SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
 	;
     else

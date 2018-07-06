@@ -1,9 +1,13 @@
 /*
     module  : name.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/06/18
 */
-
+#ifdef RUNTIME
+void do_name(void)
+{
+}
+#else
 /**
 name  :  sym  ->  "sym"
 For operators and combinators, the string "sym" is the name of item sym,
@@ -20,6 +24,9 @@ PRIVATE void do_name(void)
 	COMPILE;
     ONEPARAM("name");
     switch (stk->op) {
+    case USR_:
+	str = dict_descr(stk->u.num);
+	break;
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
@@ -30,8 +37,11 @@ PRIVATE void do_name(void)
     case FILE_:
 	str = optable[stk->op].name;
 	break;
+    case SYMBOL_:
+	str = stk->u.str;
+	break;
     default:
-	str = dict_descr(stk->u.num);
+	BADDATA("name");
 	break;
     }
     if (OUTSIDE) {
@@ -41,3 +51,4 @@ PRIVATE void do_name(void)
 	UNARY(STRING_NEWNODE, str);
 #endif
 }
+#endif

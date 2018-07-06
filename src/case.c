@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.9
-    date    : 07/05/18
+    version : 1.10
+    date    : 07/06/18
 */
 #ifdef RUNTIME
 void do_case(void)
@@ -87,13 +87,13 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case BOOLEAN_:
 	case CHAR_:
 	case INTEGER_:
-	    return first->u.num - second->u.num;
 	case SET_:
+	    return first->u.num - second->u.num;
 	case SYMBOL_:
 	case STRING_:
-	case LIST_:
-	    return 1;	// not equal
 	    break;
+	case LIST_:
+	    return first->u.num - second->u.num;
 	case FLOAT_:
 	    return first->u.num - second->u.dbl;
 	case FILE_:
@@ -105,10 +105,10 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	switch (second->op) {
 	case USR_:
 	case ANON_FUNCT_:
+	    break;
 	case BOOLEAN_:
 	case CHAR_:
 	case INTEGER_:
-	    break;
 	case SET_:
 	    return first->u.set - second->u.set;
 	case SYMBOL_:
@@ -150,7 +150,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	}
 	break;
     case LIST_:
-	return 1;	// not equal
+	return first->u.num - second->u.num;
 	break;
     case FLOAT_:
 	switch (second->op) {

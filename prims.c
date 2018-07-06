@@ -145,7 +145,7 @@
 #include "src/fsub.c"
 #include "src/fdiv.c"
 #include "src/fgreater.c"
-// #include "src/name.c"
+#include "src/name.c"
 // #include "src/neg.c"
 #include "src/neql.c"
 #include "src/not.c"
