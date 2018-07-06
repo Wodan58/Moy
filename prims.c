@@ -153,7 +153,7 @@
 #include "src/nothing.c"
 #include "src/null.c"
 #include "src/null_str.c"
-// #include "src/nullary.c"
+#include "src/nullary.c"
 #include "src/of.c"
 #include "src/opcase.c"
 #include "src/or.c"

@@ -1,13 +1,13 @@
 /*
     module  : integer.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/06/18
 */
 #ifdef RUNTIME
 void do_integer(void)
 {
     TRACE;
-    stk[-1] = abs(stk[-1]) < start_of_data;
+    stk[-1] = stk[-1] && abs(stk[-1]) < start_of_data;
 }
 #else
 /**

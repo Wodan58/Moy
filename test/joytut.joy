@@ -1,4 +1,5 @@
 DEFINE
+factorial == [ dup 1 <= ] [ pop 1 ] [ dup pred factorial * ] ifte ;
 toc-repeat-sections == toc-ask-for-section [ dup 0 >= ] [ toc-do-section
 		       toc-ask-for-section ] while ;
 toc-one-heading == toc-of-tutorial of second putchars newline newline ;
@@ -96,11 +97,12 @@ get-list == get [ dup list not ] [ pop "A list is expected:\n" putchars get ]
 while ;
 get-integer == get [ dup integer not ] [ pop "An integer is expected:\n"
 putchars get ] while ;
-expecting-from == [ [ over over equal ] some ] [ pop pop praise [ succ ] dip ]
-[ "No, the right answer must be one of the following:\n\t" putchars [ put "  "
-putchars ] step pop newline ] ifte succ ;
+expecting-from == [ [ [ over over equal ] some ] nullary ] [ pop pop praise [
+succ ] dip ] [ "No, the right answer must be one of the following:\n\t"
+putchars [ put "  " putchars ] step pop newline ] ifte succ ;
 expecting == [ over over equal ] [ pop pop praise [ succ ] dip ] [
 "No, the right answer is:  " putchars put pop newline ] ifte succ ;
 END
 
+5 factorial pop .
 joytut quit .
