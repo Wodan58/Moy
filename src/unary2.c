@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.13
-    date    : 07/05/18
+    version : 1.14
+    date    : 07/07/18
 */
 #ifdef RUNTIME
 void do_unary2(void)
@@ -44,7 +44,7 @@ int put_unary2(void)
     fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
     compile(prog);
     fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-    fprintf(ouffp, "DUPLICATE(&temp); CONDITION;");
+    fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
     compile(prog);
     fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
     fprintf(outfp, "DUPLICATE(&result[0]);");

@@ -195,6 +195,7 @@
 // #include "src/sinh.c"
 #include "src/size.c"
 #include "src/small.c"
+#include "src/small_int.c"
 #include "src/small_lst.c"
 #include "src/small_str.c"
 #include "src/some.c"

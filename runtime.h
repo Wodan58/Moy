@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.12
-    date    : 07/05/18
+    version : 1.13
+    date    : 07/07/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -22,6 +22,7 @@ typedef struct table_t {
     char *name;
 } table_t;
 
+extern table_t table[];
 extern clock_t startclock;
 
 #ifndef NCHECK
@@ -61,6 +62,43 @@ extern clock_t startclock;
 #define FLOATVAL2	\
 	(stk->next->op == FLOAT_ ? stk->next->u.dbl : (double)stk->next->u.num)
 
+#ifdef NCHECK
+#define FLOATABLE
+#define FLOATABLE2
+#define ONEPARAM(NAME)
+#define TWOPARAMS(NAME)
+#define THREEPARAMS(NAME)
+#define FOURPARAMS(NAME)
+#define FIVEPARAMS(NAME)
+#define ONEQUOTE(NAME)
+#define TWOQUOTES(NAME)
+#define THREEQUOTES(NAME)
+#define FOURQUOTES(NAME)
+#define SAME2TYPES(NAME)
+#define STRING(NAME)
+#define STRING2(NAME)
+#define INTEGER(NAME)
+#define INTEGER2(NAME)
+#define CHARACTER(NAME)
+#define INTEGERS2(NAME)
+#define NUMERICTYPE(NAME)
+#define NUMERIC2(NAME)
+#define FLOAT(NAME)
+#define FLOAT2(NAME)
+#define FILE(NAME)
+#define CHECKZERO(NAME)
+#define LIST(NAME)
+#define LIST2(NAME)
+#define USERDEF(NAME)
+#define CHECKLIST(OPR,NAME)
+#define CHECKSETMEMBER(NODE,NAME)
+#define CHECKEMPTYSET(SET,NAME)
+#define CHECKEMPTYSTRING(STRING,NAME)
+#define CHECKEMPTYLIST(LIST,NAME)
+#define INDEXTOOLARGE(NAME)
+#define BADAGGREGATE(NAME)
+#define BADDATA(NAME)
+#else
 #define FLOATABLE						\
     (stk->op == INTEGER_ || stk->op == FLOAT_)
 #define FLOATABLE2						\
@@ -175,6 +213,7 @@ extern clock_t startclock;
     execerror("aggregate parameter",NAME)
 #define BADDATA(NAME)						\
     execerror("different type",NAME)
+#endif
 
 #define USR_NEWNODE(u,r)	newnode(USR_, (void *)(u), r)
 #define ANON_FUNCT_NEWNODE(u,r)	newnode(ANON_FUNCT_, (void *)(u), r)

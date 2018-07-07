@@ -1,12 +1,12 @@
 /*
     module  : swons_set.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/07/18
 */
 #ifdef RUNTIME
 void do_swons_set(void)
 {
-    DEBUG;
+    TRACE;
     stk[-2] |= 1 << stk[-1];
     stk--;
 }
