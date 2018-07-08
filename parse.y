@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.22
-    date    : 07/02/18
+    version : 1.23
+    date    : 07/08/18
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,6 @@
 
 %token MODULE JPRIVATE JPUBLIC JEQUAL END
 
-%token <num> NOTHING_		1
 %token <num> USR_		2
 %token <proc> ANON_FUNCT_	3
 %token <num> BOOLEAN_		4

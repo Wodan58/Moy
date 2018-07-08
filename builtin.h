@@ -150,7 +150,6 @@ void do_neg(void);
 void do_neql(void);
 void do_not(void);
 void do_not_set(void);
-void do_nothing(void);
 void do_null(void);
 void do_null_lst(void);
 void do_null_str(void);

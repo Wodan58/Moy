@@ -50,7 +50,6 @@ extern int yydebug;
     JPUBLIC = 260,
     JEQUAL = 261,
     END = 262,
-    NOTHING_ = 1,
     USR_ = 2,
     ANON_FUNCT_ = 3,
     BOOLEAN_ = 4,
@@ -70,7 +69,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 32 "parse.y" /* yacc.c:1909  */
+#line 31 "parse.y" /* yacc.c:1909  */
 
     long_t num;
     ulong_t set;
@@ -81,7 +80,7 @@ union YYSTYPE
     void (*proc)(void);
     void *ptr;
 
-#line 85 "parse.h" /* yacc.c:1909  */
+#line 84 "parse.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

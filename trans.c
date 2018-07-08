@@ -152,7 +152,6 @@
 { "neg", "neg", do_neg },
 { "not", "not", do_not },
 { "not_set", "not_set", do_not_set },
-{ "nothing", "nothing", do_nothing },
 { "null", "null", do_null },
 { "null_lst", "null_lst", do_null_lst },
 { "null_str", "null_str", do_null_str },

@@ -150,7 +150,6 @@
 { "neg", "I  ->  J", "Integer J is the negative of integer I.  Also supports float.\n" },
 { "not", "X  ->  Y", "Y is the complement of set X, logical negation for truth values.\n" },
 { "not_set", "X  ->  Y", "Y is the complement of set X, logical negation for truth values.\n" },
-{ "nothing", "->  nothing", "Pushes the value nothing.\n" },
 { "null", "X  ->  B", "Tests for empty aggregate X or zero numeric.\n" },
 { "null_lst", "X  ->  B", "Tests for empty aggregate X or zero numeric.\n" },
 { "null_str", "X  ->  B", "Tests for empty aggregate X or zero numeric.\n" },

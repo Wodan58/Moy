@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.21
-    date    : 07/02/18
+    version : 1.22
+    date    : 07/08/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -17,9 +17,6 @@ void writefactor(Node *node, FILE *stm)
     unsigned i, j;
 
     switch (node->op) {
-    case NOTHING_:
-	fprintf(stm, "nothing");
-	break;
     case USR_:
 	fprintf(stm, "%s", dict_descr(node->u.num));
 	break;

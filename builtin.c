@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/08/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -232,8 +232,6 @@ void print_node(node_t cur)
 	;
     else if (abs(cur) >= 0 && abs(cur) < start_of_prog)
 	printf("%d ", cur);
-    else if (cur == start_of_text)
-	printf("nothing ");
     else if (cur > start_of_text && cur < start_of_data) {
 	if ((ptr = procname((proc_t)cur)) == 0)
 	    printf("%p ", cur);

@@ -1,7 +1,7 @@
 /*
     module  : uncons_str.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/08/18
 */
 #ifdef RUNTIME
 void do_uncons_str(void)
@@ -10,10 +10,7 @@ void do_uncons_str(void)
 
     TRACE;
     str = (char *)stk[-1];
-    if (str)
-	stk[-1] = *str++;
-    else
-	stk[-1] = start_of_text;
+    stk[-1] = *str++;
     do_push((node_t)str);
 }
 #else
@@ -29,7 +26,7 @@ PRIVATE void do_uncons_str(void)
     ulong_t set;
 
 #ifndef NCHECK
-    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op >= NOTHING_ &&
+    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
 	stk->u.lis->op <= SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
 	;
     else
@@ -38,23 +35,14 @@ PRIVATE void do_uncons_str(void)
     ONEPARAM("uncons");
     switch (stk->op) {
     case LIST_:
-#if 0
 	CHECKEMPTYLIST(stk->u.lis, "uncons");
-#endif
-	if ((save = stk->u.lis) == 0) {
-	    if (OUTSIDE)
-		stk->u.num = stk->op = NOTHING_;
-	    else
-		GUNARY(NOTHING_, (void *)NOTHING_);
-	    PUSH(LIST_, 0);
-	} else {
-	    if (OUTSIDE) {
-		stk->op = stk->u.lis->op;
-		stk->u = stk->u.lis->u;
-	    } else
-		GUNARY(stk->u.lis->op, stk->u.lis->u.ptr);
-	    PUSH(LIST_, save->next);
-	}
+	save = stk->u.lis;
+	if (OUTSIDE) {
+	    stk->op = stk->u.lis->op;
+	    stk->u = stk->u.lis->u;
+	} else
+	    GUNARY(stk->u.lis->op, stk->u.lis->u.ptr);
+	PUSH(LIST_, save->next);
 	break;
     case STRING_:
 	str = stk->u.str;

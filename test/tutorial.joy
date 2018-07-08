@@ -40,7 +40,6 @@ interpreter and seems to have no other purpose.
 LIBRA
 put_bool == [ [ "true" ] [ "false" ] ] index i put ;
 nl == 10 putch ;
-# > == swap < ;
 reverse == [ ] swap shunt ;
 step1 == [ dup ] dip1 swap [ ] = [ [ step2 ] [ pop pop ] ] index i ;
 step2 == [ uncons ] dip1 dup [ swap ] dip1 [ i ] first1 rollup1 [ step1 ]
@@ -51,7 +50,6 @@ concat1 == [ reverse ] c shunt ;
 dip1 == swap [ i ] first1 swap [ ] cons [ first1 ] cons cons cons i ;
 c == [ swap ] dip1 i ;
 last == dup rest1 null1 [ first1 ] [ rest1 last ] branch1 ;
-# null1 == car nothing sametype ;
 null1 == 0 = ;
 car == uncons pop ;
 first1 == uncons pop ;
@@ -87,11 +85,9 @@ x1 == dup i ;
 y == fix i ;
 fix == [ duco ] first1 swap cons duco ;
 duco == dup cons ;
-# <= == succ < ;
-# succ == 1 + ;
 factorial_rec == dup 2 < [ pop 1 ] [ dup pred1 factorial_rec * ] branch1 ;
 rolldown1 == [ swap ] dip1 swap ;
-small1 == uncons null1 swap pop ;
+small1 == dup null1 [ [ uncons null1 ] [ true ] ] index i swap pop ;
 quicksort == dup small1 [ ] [ partition quicksort [ quicksort ] dip1 concat1 ] branch1 ;
 partition == [ [ ] [ ] ] dip1 dup [ first1 > [ cnos ] [ swap [ cnos ] dip1 ] branch1 ] cons [ dup ] first1 cnos step1 ;
 quicksort1 == dup small1 [ ] [ partition1 quicksort1 [ quicksort1 ] dip1 concat1 ] branch1 ;
@@ -151,9 +147,9 @@ reverse length putnl .
 [ Smith Jones Robinson ]
 [ swap dup rest1 null1 [ car swap pop ] [ cdr swap i ] branch1 ] y .
 6 factorial_rec .
-6 [ swap dup 1 <= [ pop pop 1 ] [ dup pred1 rolldown1 x1 * ] branch1 ]
+6 [ swap dup 2 < [ pop pop 1 ] [ dup pred1 rolldown1 x1 * ] branch1 ]
 x1 .
-6 [ swap dup 1 <= [ pop pop 1 ] [ dup pred1 rolldown1 i * ] branch1 ]
+6 [ swap dup 2 < [ pop pop 1 ] [ dup pred1 rolldown1 i * ] branch1 ]
 y .
 [ 1 9 2 8 3 7 4 6 5 ] quicksort .
 [ 5 6 4 7 3 8 2 9 1 ] quicksort .

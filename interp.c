@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.10
-    date    : 07/02/18
+    version : 1.11
+    date    : 07/08/18
 */
 #include "runtime.h"
 #include "runtime.c"
@@ -42,7 +42,6 @@ start:
 	case ANON_FUNCT_:
 	    (*node->u.proc)();
 	    break;
-	case NOTHING_:
 	case BOOLEAN_:
 	case CHAR_:
 	case INTEGER_:
