@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.13
-    date    : 07/07/18
+    version : 1.14
+    date    : 07/09/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -37,30 +37,13 @@ extern clock_t startclock;
 #define RELEASE
 
 #define exeterm(x)	interprete(x)
-#define POP(x)		(x) = (x)->next
-#define DUPLICATE(x)	do { \
-			    if (OUTSIDE && INSIDE) { \
-				stk[1].op = (x)->op; \
-				stk[1].u = (x)->u; \
-				++stk; \
-			    } else \
-				stk = newnode((x)->op, (x)->u.ptr, stk); \
-			} while (0)
-#define PUSH(x,y)	do { \
-			    Node temp; \
-			    temp.op = (x); \
-			    temp.u.ptr = (void *)(y); \
-			    DUPLICATE(&temp); \
-			} while (0)
-#define DBL_PUSH(x)	do { \
-			    Node temp; \
-			    temp.op = FLOAT_; \
-			    temp.u.dbl = (x); \
-			    DUPLICATE(&temp); \
-			} while (0)
+#define POP(x)		(x) = (x)->next;
+#define DUPLICATE(x)	stk = newnode((x)->op, (x)->u.ptr, stk);
+#define PUSH(x,y)	stk = newnode((x), (void *)(long_t)(y), stk);
+#define DBL_PUSH(x)	stk = dblnode((double)(x), stk);
 #define FLOATVAL	(stk->op == FLOAT_ ? stk->u.dbl : (double)stk->u.num)
-#define FLOATVAL2	\
-	(stk->next->op == FLOAT_ ? stk->next->u.dbl : (double)stk->next->u.num)
+#define FLOATVAL2	(stk->next->op == FLOAT_ ? stk->next->u.dbl : \
+			(double)stk->next->u.num)
 
 #ifdef NCHECK
 #define FLOATABLE
