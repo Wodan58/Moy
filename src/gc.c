@@ -1,8 +1,10 @@
 /*
     module  : gc.c
-    version : 1.3
-    date    : 07/02/18
+    version : 1.4
+    date    : 07/10/18
 */
+#ifndef GC_X
+#define GC_C
 
 /**
 gc  :  ->
@@ -15,3 +17,4 @@ PRIVATE void do_gc(void)
 #endif
     ck_collect();
 }
+#endif

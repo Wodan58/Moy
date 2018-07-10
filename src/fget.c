@@ -1,8 +1,10 @@
 /*
     module  : fget.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef FGET_X
+#define FGET_C
 
 /**
 fget  :  S  ->  S F
@@ -19,3 +21,4 @@ PRIVATE void do_fget(void)
     redirect(stk->u.fil);
     readfactor(yylex());
 }
+#endif

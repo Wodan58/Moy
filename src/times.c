@@ -1,8 +1,11 @@
 /*
     module  : times.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef TIMES_X
+#define TIMES_C
+
 #ifdef RUNTIME
 void do_times(void)
 {
@@ -63,4 +66,5 @@ PRIVATE void do_times(void)
     while (num--)
 	exeterm(prog);
 }
+#endif
 #endif

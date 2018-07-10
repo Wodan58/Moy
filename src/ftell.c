@@ -1,8 +1,10 @@
 /*
     module  : ftell.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef FTELL_X
+#define FTELL_C
 
 /**
 ftell  :  S  ->  S I
@@ -13,3 +15,4 @@ I is the current position of stream S.
 #define CONSTRUCTOR	INTEGER_
 #define EXPR		ftell(stk->u.fil)
 #include "fileget.h"
+#endif

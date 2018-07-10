@@ -1,8 +1,10 @@
 /*
     module  : fputch.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FPUTCH_X
+#define FPUTCH_C
 
 /**
 fputch  :  S C  ->  S
@@ -22,3 +24,4 @@ PRIVATE void do_fputch(void)
     FILE("fputch");
     putc(ch, stk->u.fil);
 }
+#endif

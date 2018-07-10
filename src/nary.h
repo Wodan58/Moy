@@ -1,7 +1,7 @@
 /*
     module  : nary.h
-    version : 1.11
-    date    : 07/05/18
+    version : 1.12
+    date    : 07/10/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b

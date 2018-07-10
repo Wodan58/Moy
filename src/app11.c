@@ -1,8 +1,10 @@
 /*
     module  : app11.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef APP11_X
+#define APP11_C
 
 /**
 app11  :  X Y [P]  ->  R
@@ -23,3 +25,4 @@ PRIVATE void do_app11(void)
     } else
 	stk->next = stk->next->next;
 }
+#endif

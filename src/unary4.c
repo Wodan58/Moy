@@ -1,8 +1,10 @@
 /*
     module  : unary4.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/10/18
 */
+#ifndef UNARY4_X
+#define UNARY4_C
 
 #ifndef NCHECK
 int put_unary4(void)
@@ -97,3 +99,4 @@ PRIVATE void do_unary4(void)
     DUPLICATE(&result[2]);
     DUPLICATE(&result[3]);
 }
+#endif

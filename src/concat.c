@@ -1,8 +1,11 @@
 /*
     module  : concat.c
-    version : 1.10
-    date    : 07/05/18
+    version : 1.11
+    date    : 07/10/18
 */
+#ifndef CONCAT_X
+#define CONCAT_C
+
 #ifdef RUNTIME
 void do_concat(void)
 {
@@ -90,4 +93,5 @@ PRIVATE void do_concat(void)
 #endif
     }
 }
+#endif
 #endif

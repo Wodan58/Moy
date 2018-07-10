@@ -1,8 +1,11 @@
 /*
     module  : list.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef LIST_X
+#define LIST_C
+
 #ifdef RUNTIME
 void do_list(void)
 {
@@ -19,4 +22,5 @@ Tests whether X is a list.
 #define REL		==
 #define TYP		LIST_
 #include "type.h"
+#endif
 #endif

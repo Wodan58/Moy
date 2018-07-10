@@ -1,8 +1,11 @@
 /*
     module  : opcase.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef OPCASE_X
+#define OPCASE_C
+
 #ifdef RUNTIME
 void do_opcase(void)
 {
@@ -43,4 +46,5 @@ PRIVATE void do_opcase(void)
     } else
 	UNARY(LIST_NEWNODE, cur);
 }
+#endif
 #endif

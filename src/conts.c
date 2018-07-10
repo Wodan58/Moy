@@ -1,8 +1,10 @@
 /*
     module  : conts.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef CONTS_X
+#define CONTS_C
 
 /**
 conts  :  ->  [[P] [Q] ..]
@@ -15,3 +17,4 @@ PRIVATE void do_conts(void)
 #endif
     PUSH(LIST_, 0);
 }
+#endif

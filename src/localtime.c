@@ -1,8 +1,10 @@
 /*
     module  : localtime.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef LOCALTIME_X
+#define LOCALTIME_C
 
 /**
 localtime  :  I  ->  T
@@ -16,3 +18,4 @@ weekday is 1 = Monday ... 7 = Sunday.
 #define NAME		"localtime"
 #define FUNC		localtime
 #include "unmktime.h"
+#endif

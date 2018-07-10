@@ -1,8 +1,10 @@
 /*
     module  : iffloat.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef IFFLOAT_X
+#define IFFLOAT_C
 
 /**
 iffloat  :  X [T] [E]  ->  ...
@@ -13,3 +15,4 @@ If X is a float, executes T else executes E.
 #define TYP		FLOAT_
 #include "iftype.h"
 /* iffloat.c */
+#endif

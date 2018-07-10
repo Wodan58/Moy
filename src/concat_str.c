@@ -1,8 +1,11 @@
 /*
     module  : concat_str.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef CONCAT_STR_X
+#define CONCAT_STR_C
+
 #ifdef RUNTIME
 void do_concat_str(void)
 {
@@ -87,4 +90,5 @@ PRIVATE void do_concat_str(void)
 #endif
     }
 }
+#endif
 #endif

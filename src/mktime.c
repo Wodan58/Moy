@@ -1,8 +1,10 @@
 /*
     module  : mktime.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef MKTIME_X
+#define MKTIME_C
 
 PRIVATE void decode_time(struct tm *t)
 {
@@ -70,3 +72,4 @@ PRIVATE void do_mktime(void)
     decode_time(&t);
     PUSH(INTEGER_, mktime(&t));
 }
+#endif

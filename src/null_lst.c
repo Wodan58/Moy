@@ -1,8 +1,11 @@
 /*
     module  : null_lst.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef NULL_LST_X
+#define NULL_LST_C
+
 #ifdef RUNTIME
 void do_null_lst(void)
 {
@@ -60,4 +63,5 @@ PRIVATE void do_null_lst(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, num);
 }
+#endif
 #endif

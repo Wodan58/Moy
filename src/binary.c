@@ -1,8 +1,10 @@
 /*
     module  : binary.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef BINARY_X
+#define BINARY_C
 
 /**
 binary  :  X Y [P]  ->  R
@@ -17,3 +19,4 @@ exactly two are removed from the stack.
 #define TOPSTR		"stk->next->next"
 #define ARITY		2
 #include "nary.h"
+#endif

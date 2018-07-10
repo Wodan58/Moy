@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.2
-    date    : 07/08/18
+    version : 1.3
+    date    : 07/10/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -26,11 +26,15 @@ void trace(const char *str);
 
 #include "prims.h"
 
+#ifdef VECTOR
+Stack *theStack;
+#else
 #ifdef _MSC_VER
 node_t *stk;
 #endif
 
 node_t memory[MEMORYMAX];
+#endif
 
 typedef struct table_t {
     proc_t proc;
@@ -139,7 +143,11 @@ void joy_init(int argc, char *argv[])
 /*
  * Initialise stack.
  */
+#ifdef VECTOR
+    vec_init(theStack);
+#else
     stk = memory;
+#endif
 }
 
 code_t *joy_code(void)
@@ -165,12 +173,22 @@ size_t joy_leng(code_t *cur)
 
 code_t *stk2lst(void)
 {
+#ifdef VECTOR
+    int i, j;
+#endif
     node_t *mem;
     code_t *root = 0, *cur;
 
+#ifdef VECTOR
+    for (j = vec_size(theStack), i = 0; i < j; i++) {
+#else
     for (mem = memory; mem < stk; mem++) {
+#endif
 	if ((cur = joy_code()) == 0)
 	    return 0;
+#ifdef VECTOR
+	mem = vec_index(theStack, i);
+#endif
 	cur->num = *mem;
 	cur->next = root;
 	root = cur;
@@ -178,14 +196,33 @@ code_t *stk2lst(void)
     return root;
 }
 
+#ifdef VECTOR
+void lst2stk_aux(code_t *cur)
+{
+    node_t *node;
+
+    if (!cur)
+	vec_clear(theStack);
+    else {
+	lst2stk_aux(cur->next);
+	node = vec_push(theStack);
+	*node = cur->num;
+    }
+}
+#endif
+
 void lst2stk(code_t *cur)
 {
     size_t leng;
 
     leng = joy_leng(cur);
+#ifdef VECTOR
+    lst2stk_aux(cur);
+#else
     for (stk = memory + leng; cur; cur = cur->next)
 	*--stk = cur->num;
     stk = memory + leng;
+#endif
 }
 
 void execute(code_t *cur)
@@ -203,12 +240,26 @@ Puts X on top of the stack.
 */
 void do_push(node_t temp)
 {
+#ifdef VECTOR
+    node_t *node;
+
+    node = vec_push(theStack);
+    *node = temp;
+#else
     *stk++ = temp;
+#endif
 }
 
 void do_push_dbl(float dbl)
 {
+#ifdef VECTOR
+    node_t *node;
+
+    node = vec_push(theStack);
+    memcpy(node, &dbl, sizeof(node_t));
+#else
     memcpy(stk++, &dbl, sizeof(node_t));
+#endif
 }
 
 int print_dbl(node_t cur)
@@ -252,12 +303,22 @@ void print_list(code_t *cur)
 
 void trace(const char *str)
 {
+#ifdef VECTOR
+    int i, j;
+#endif
     node_t *cur;
 
     if (!strncmp(str, "do_", 3))
 	str += 3;
-    for (putchar('\t'), cur = memory; cur < stk; cur++)
+    putchar('\t');
+#ifdef VECTOR
+    for (j = vec_size(theStack), i = 0; i < j; i++) {
+	cur = vec_index(theStack, i);
+#else
+    for (cur = memory; cur < stk; cur++) {
+#endif
 	print_node(*cur);
+    }
     printf(": %s\n", str);
 }
 

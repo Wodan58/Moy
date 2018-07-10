@@ -1,8 +1,11 @@
 /*
     module  : putch.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef PUTCH_X
+#define PUTCH_C
+
 #ifdef RUNTIME
 void do_putch(void)
 {
@@ -27,4 +30,5 @@ PRIVATE void do_putch(void)
     printf("%c", (int)stk->u.num);
     POP(stk);
 }
+#endif
 #endif

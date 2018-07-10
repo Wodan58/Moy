@@ -1,8 +1,11 @@
 /*
     module  : uncons_str.c
-    version : 1.2
-    date    : 07/08/18
+    version : 1.3
+    date    : 07/10/18
 */
+#ifndef UNCONS_STR_X
+#define UNCONS_STR_C
+
 #ifdef RUNTIME
 void do_uncons_str(void)
 {
@@ -72,4 +75,5 @@ PRIVATE void do_uncons_str(void)
 #endif
     }
 }
+#endif
 #endif

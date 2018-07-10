@@ -1,8 +1,11 @@
 /*
     module  : unary2.c
-    version : 1.14
-    date    : 07/07/18
+    version : 1.15
+    date    : 07/10/18
 */
+#ifndef UNARY2_X
+#define UNARY2_C
+
 #ifdef RUNTIME
 void do_unary2(void)
 {
@@ -89,4 +92,5 @@ PRIVATE void do_unary2(void)
     DUPLICATE(&result[0]);
     DUPLICATE(&result[1]);
 }
+#endif
 #endif

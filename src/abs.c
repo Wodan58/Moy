@@ -1,8 +1,10 @@
 /*
     module  : abs.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef ABS_X
+#define ABS_C
 
 /**
 abs  :  N1  ->  N2
@@ -29,3 +31,4 @@ PRIVATE void do_abs(void)
     else if (stk->u.num < 0)
 	UNARY(INTEGER_NEWNODE, -stk->u.num);
 }
+#endif

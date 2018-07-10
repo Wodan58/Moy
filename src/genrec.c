@@ -1,8 +1,10 @@
 /*
     module  : genrec.c
-    version : 1.14
-    date    : 07/05/18
+    version : 1.15
+    date    : 07/10/18
 */
+#ifndef GENREC_X
+#define GENREC_C
 
 #ifndef NCHECK
 int put_genrec(void)
@@ -92,3 +94,4 @@ PRIVATE void do_genrec(void)
     do_cons();
     genrec();
 }
+#endif

@@ -1,14 +1,17 @@
 /*
     module  : plus.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef PLUS_X
+#define PLUS_C
+
 #ifdef RUNTIME
 void do_plus(void)
 {
     TRACE;
     stk[-2] += stk[-1];
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -21,4 +24,5 @@ Also supports float.
 #define OPER		+
 #include "plusminus.h"
 /* plus.c */
+#endif
 #endif

@@ -1,8 +1,10 @@
 /*
     module  : manual.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef MANUAL_X
+#define MANUAL_C
 
 #define PLAIN (style == 0)
 #define HTML  (style == 1)
@@ -82,3 +84,4 @@ PRIVATE void do_manual(void)
 #endif
     make_manual(0);
 }
+#endif

@@ -1,8 +1,11 @@
 /*
     module  : leaf.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef LEAF_X
+#define LEAF_C
+
 #ifdef RUNTIME
 void do_leaf(void)
 {
@@ -19,4 +22,5 @@ Tests whether X is not a list.
 #define REL		!=
 #define TYP		LIST_
 #include "type.h"
+#endif
 #endif

@@ -1,8 +1,10 @@
 /*
     module  : fremove.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FREMOVE_X
+#define FREMOVE_C
 
 /**
 fremove  :  P  ->  B
@@ -23,3 +25,4 @@ PRIVATE void do_fremove(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, !remove(stk->u.str));
 }
+#endif

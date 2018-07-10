@@ -1,8 +1,10 @@
 /*
     module  : casting.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef CASTING_X
+#define CASTING_C
 
 /**
 casting  :  X Y  ->  Z
@@ -23,3 +25,4 @@ PRIVATE void do_casting(void)
     } else
 	GBINARY(stk->op, stk->next->u.ptr);
 }
+#endif

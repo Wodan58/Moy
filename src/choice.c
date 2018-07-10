@@ -1,8 +1,10 @@
 /*
     module  : choice.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef CHOICE_X
+#define CHOICE_C
 
 /**
 choice  :  B T F  ->  X
@@ -32,3 +34,4 @@ PRIVATE void do_choice(void)
     else
 	GTERNARY(stk->op, stk->u.ptr);
 }
+#endif

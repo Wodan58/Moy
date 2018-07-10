@@ -1,8 +1,11 @@
 /*
     module  : name.c
-    version : 1.8
-    date    : 07/06/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef NAME_X
+#define NAME_C
+
 #ifdef RUNTIME
 void do_name(void)
 {
@@ -51,4 +54,5 @@ PRIVATE void do_name(void)
 	UNARY(STRING_NEWNODE, str);
 #endif
 }
+#endif
 #endif

@@ -1,8 +1,10 @@
 /*
     module  : modf.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef MODF_X
+#define MODF_C
 
 /**
 modf  :  F  ->  G H
@@ -27,3 +29,4 @@ PRIVATE void do_modf(void)
 	UNARY(FLOAT_NEWNODE, modf(FLOATVAL, &exp));
     DBL_PUSH(exp);
 }
+#endif

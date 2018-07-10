@@ -1,8 +1,10 @@
 /*
     module  : format.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef FORMAT_X
+#define FORMAT_C
 
 /**
 format  :  N C I J  ->  S
@@ -54,3 +56,4 @@ PRIVATE void do_format(void)
     } else
 	UNARY(STRING_NEWNODE, result);
 }
+#endif

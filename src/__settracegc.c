@@ -1,8 +1,11 @@
 /*
     module  : __settracegc.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef __SETTRACEGC_X
+#define __SETTRACEGC_C
+
 #ifdef RUNTIME
 void do___settracegc(void)
 {
@@ -22,4 +25,5 @@ PRIVATE void do___settracegc(void)
     NUMERICTYPE("settracegc");
     POP(stk);
 }
+#endif
 #endif

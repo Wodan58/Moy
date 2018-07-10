@@ -1,8 +1,11 @@
 /*
     module  : some.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef SOME_X
+#define SOME_C
+
 #ifdef RUNTIME
 void do_some(void)
 {
@@ -33,4 +36,5 @@ Applies test B to members of aggregate A, X = true if some pass.
 #include "someall.h"
 #undef SOME
 /* some.c */
+#endif
 #endif

@@ -1,8 +1,11 @@
 /*
     module  : not.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef NOT_X
+#define NOT_C
+
 #ifdef RUNTIME
 void do_not(void)
 {
@@ -60,4 +63,5 @@ PRIVATE void do_not(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, num);
 }
+#endif
 #endif

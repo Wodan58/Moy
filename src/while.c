@@ -1,8 +1,11 @@
 /*
     module  : while.c
-    version : 1.13
-    date    : 07/05/18
+    version : 1.14
+    date    : 07/10/18
 */
+#ifndef WHILE_X
+#define WHILE_C
+
 #ifdef RUNTIME
 void do_while(void)
 {
@@ -83,4 +86,5 @@ PRIVATE void do_while(void)
 	exeterm(prog);
     }
 }
+#endif
 #endif

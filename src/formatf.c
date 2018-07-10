@@ -1,8 +1,10 @@
 /*
     module  : formatf.c
-    version : 1.8
-    date    : 07/02/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef FORMATF_X
+#define FORMATF_C
 
 /**
 formatf  :  F C I J  ->  S
@@ -54,3 +56,4 @@ PRIVATE void do_formatf(void)
     } else
 	UNARY(STRING_NEWNODE, result);
 }
+#endif

@@ -1,8 +1,10 @@
 /*
     module  : ldexp.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef LDEXP_X
+#define LDEXP_C
 
 /**
 ldexp  :  F I  ->  G
@@ -28,3 +30,4 @@ PRIVATE void do_ldexp(void)
     else
 	UNARY(FLOAT_NEWNODE, ldexp(FLOATVAL, exp));
 }
+#endif

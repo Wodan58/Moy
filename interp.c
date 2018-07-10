@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.11
-    date    : 07/08/18
+    version : 1.12
+    date    : 07/10/18
 */
 #include "runtime.h"
 #include "runtime.c"
@@ -10,6 +10,9 @@ void interprete(Node *node)
 {
     int index;
     Node *code;
+#ifndef NCHECK
+    unsigned flags;
+#endif
 
 start:
     for (; node; node = node->next) {
@@ -26,9 +29,10 @@ start:
 	case USR_:
 	    index = node->u.num;
 	    if ((code = dict_body(index)) != 0) {
-		if (dict_flags(index) & IS_BUILTIN)
+		if ((flags = dict_flags(index)) & IS_BUILTIN) {
+		    dict_setflags(index, flags | IS_USED);
 		    (*(proc_t)code)();
-		else {
+		} else {
 		    if (!node->next) {
 			node = code;
 			goto start;

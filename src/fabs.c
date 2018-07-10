@@ -1,8 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : fabs.c
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef FABS_X
+#define FABS_C
+
 #ifdef RUNTIME
 void do_fabs(void)
 {
@@ -39,4 +42,5 @@ PRIVATE void do_fabs(void)
     else if (stk->u.num < 0)
 	UNARY(INTEGER_NEWNODE, -stk->u.num);
 }
+#endif
 #endif

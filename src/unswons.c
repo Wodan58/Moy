@@ -1,8 +1,11 @@
 /*
     module  : unswons.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef UNSWONS_X
+#define UNSWONS_C
+
 #ifdef RUNTIME
 void do_unswons(void)
 {
@@ -65,4 +68,5 @@ PRIVATE void do_unswons(void)
 #endif
     }
 }
+#endif
 #endif

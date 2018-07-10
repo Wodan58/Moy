@@ -1,23 +1,12 @@
 /*
     module  : case.c
-    version : 1.10
-    date    : 07/06/18
+    version : 1.11
+    date    : 07/10/18
 */
-#ifdef RUNTIME
-void do_case(void)
-{
-    code_t *cur;
+#ifndef CASE_X
+#define CASE_C
 
-    for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
-	if (cur->num == stk[-1])
-	    break;
-    if (cur->next) {
-	(void)do_pop();
-	execute(cur->list->next);
-    } else
-	execute(cur->list);
-}
-#else
+#ifndef RUNTIME
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {
     char *name;
@@ -221,6 +210,23 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     *error = 1;
     return 0;
 }
+#endif
+
+#ifdef RUNTIME
+void do_case(void)
+{
+    code_t *cur;
+
+    for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
+	if (cur->num == stk[-1])
+	    break;
+    if (cur->next) {
+	(void)do_pop();
+	execute(cur->list->next);
+    } else
+	execute(cur->list);
+}
+#else
 
 #ifndef NCHECK
 int put_case(void)
@@ -287,4 +293,5 @@ PRIVATE void do_case(void)
     } else
 	exeterm(cur->u.lis);
 }
+#endif
 #endif

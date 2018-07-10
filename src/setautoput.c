@@ -1,8 +1,11 @@
 /*
     module  : setautoput.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef SETAUTOPUT_X
+#define SETAUTOPUT_C
+
 #ifdef RUNTIME
 void do_setautoput(void)
 {
@@ -25,4 +28,5 @@ PRIVATE void do_setautoput(void)
     autoput = stk->u.num;
     POP(stk);
 }
+#endif
 #endif

@@ -1,8 +1,10 @@
 /*
     module  : fput.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FPUT_X
+#define FPUT_C
 
 /**
 fput  :  S X  ->  S
@@ -25,3 +27,4 @@ PRIVATE void do_fput(void)
     writefactor(&temp, fp);
     putc(' ', fp);
 }
+#endif

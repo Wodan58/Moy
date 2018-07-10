@@ -1,8 +1,10 @@
 /*
     module  : fwrite.c
-    version : 1.8
-    date    : 07/02/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef FWRITE_X
+#define FWRITE_C
 
 /**
 fwrite  :  S L  ->  S
@@ -29,3 +31,4 @@ PRIVATE void do_fwrite(void)
     FILE("fwrite");
     fwrite(buf, leng, 1, stk->u.fil);
 }
+#endif

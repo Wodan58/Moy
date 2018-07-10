@@ -1,14 +1,17 @@
 /*
     module  : has_set.c
-    version : 1.2
-    date    : 07/07/18
+    version : 1.3
+    date    : 07/10/18
 */
+#ifndef HAS_SET_X
+#define HAS_SET_C
+
 #ifdef RUNTIME
 void do_has_set(void)
 {
     TRACE;
     stk[-2] = (stk[-2] & 1 << stk[-1]) != 0;
-    stk--;
+    do_pop();
 }
 #else
 /**
@@ -21,4 +24,5 @@ Tests whether aggregate A has X as a member.
 #define AGGR		stk->next
 #define ELEM		stk
 #include "inhas.h"
+#endif
 #endif

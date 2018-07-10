@@ -1,8 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : fmul.c
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef FMUL_X
+#define FMUL_C
+
 #ifdef RUNTIME
 void do_fmul(void)
 {
@@ -13,7 +16,7 @@ void do_fmul(void)
     memcpy(&dbl2, &stk[-1], sizeof(float));
     dbl1 *= dbl2;
     memcpy(&stk[-2], &dbl1, sizeof(node_t));
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -44,4 +47,5 @@ PRIVATE void do_fmul(void)
     else
 	BINARY(INTEGER_NEWNODE, stk->next->u.num * stk->u.num);
 }
+#endif
 #endif

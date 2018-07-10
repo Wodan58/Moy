@@ -1,8 +1,11 @@
 /*
     module  : all.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef ALL_X
+#define ALL_C
+
 #ifdef RUNTIME
 void do_all(void)
 {
@@ -31,4 +34,5 @@ Applies test B to members of aggregate A, X = true if all pass.
 #define INITIAL		1
 #include "someall.h"
 /* all.c */
+#endif
 #endif

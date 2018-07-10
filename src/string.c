@@ -1,8 +1,11 @@
 /*
     module  : string.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef STRING_X
+#define STRING_C
+
 #ifdef RUNTIME
 void do_string(void)
 {
@@ -19,4 +22,5 @@ Tests whether X is a string.
 #define REL		==
 #define TYP		STRING_
 #include "type.h"
+#endif
 #endif

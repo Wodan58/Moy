@@ -1,8 +1,11 @@
 /*
     module  : step_str.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef STEP_STR_X
+#define STEP_STR_C
+
 #ifdef RUNTIME
 void do_step_str(void)
 {
@@ -112,4 +115,5 @@ PRIVATE void do_step_str(void)
 #endif
     }
 }
+#endif
 #endif

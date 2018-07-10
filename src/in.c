@@ -1,8 +1,11 @@
 /*
     module  : in.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef IN_X
+#define IN_C
+
 #ifdef RUNTIME
 void do_in(void)
 {
@@ -25,4 +28,5 @@ Tests whether X is a member of aggregate A.
 #define AGGR		stk
 #define ELEM		stk->next
 #include "inhas.h"
+#endif
 #endif

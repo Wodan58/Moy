@@ -1,8 +1,10 @@
 /*
     module  : frename.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FRENAME_X
+#define FRENAME_C
 
 /**
 frename  :  P1 P2  ->  B
@@ -24,3 +26,4 @@ PRIVATE void do_frename(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, !rename(stk->next->u.str, stk->u.str));
 }
+#endif

@@ -1,8 +1,11 @@
 /*
     module  : condnestrec.c
-    version : 1.9
-    date    : 07/05/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef CONDNESTREC_X
+#define CONDNESTREC_C
+
 #ifdef RUNTIME
 void do_condnestrec(void)
 {
@@ -15,6 +18,12 @@ int put_condnestrec(void);
 #endif
 
 PRIVATE void condnestrec(Node *root);
+
+#ifndef CONDLINREC_C
+#undef CONDLINREC_X
+#include "condlinrec.c"
+#define CONDLINREC_X
+#endif
 
 /**
 condnestrec  :  [ [C1] [C2] .. [D] ]  ->  ...
@@ -40,4 +49,5 @@ PRIVATE void do_condnestrec(void)
     POP(stk);
     condnestrec(prog);
 }
+#endif
 #endif

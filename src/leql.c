@@ -1,8 +1,10 @@
 /*
     module  : leql.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef LEQL_X
+#define LEQL_C
 
 /**
 <=  :  X Y  ->  B
@@ -15,3 +17,4 @@ Tests whether X less than or equal to Y.  Also supports float.
 #define OPR		<=
 #define SETCMP		!(i&~j)
 #include "comprel.h"
+#endif

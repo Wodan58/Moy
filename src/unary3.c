@@ -1,8 +1,10 @@
 /*
     module  : unary3.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.12
+    date    : 07/10/18
 */
+#ifndef UNARY3_X
+#define UNARY3_C
 
 #ifndef NCHECK
 int put_unary3(void)
@@ -82,3 +84,4 @@ PRIVATE void do_unary3(void)
     DUPLICATE(&result[1]);
     DUPLICATE(&result[2]);
 }
+#endif

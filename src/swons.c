@@ -1,8 +1,11 @@
 /*
     module  : swons.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef SWONS_X
+#define SWONS_C
+
 #ifdef RUNTIME
 void do_swons(void)
 {
@@ -24,4 +27,5 @@ Aggregate B is A with a new member X (first member for sequences).
 #define AGGR		stk->next
 #define ELEM		stk
 #include "consswons.h"
+#endif
 #endif

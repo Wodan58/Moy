@@ -1,8 +1,11 @@
 /*
     module  : linrec.c
-    version : 1.13
-    date    : 07/05/18
+    version : 1.14
+    date    : 07/10/18
 */
+#ifndef LINREC_X
+#define LINREC_C
+
 #ifdef RUNTIME
 void linrec(code_t *prog[])
 {
@@ -118,4 +121,5 @@ PRIVATE void do_linrec(void)
     POP(stk);
     linrec(prog);
 }
+#endif
 #endif

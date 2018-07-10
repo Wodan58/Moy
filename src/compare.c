@@ -1,8 +1,10 @@
 /*
     module  : compare.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef COMPARE_X
+#define COMPARE_C
 
 /**
 compare  :  A B  ->  I
@@ -15,3 +17,4 @@ The values correspond to the predicates <=, =, >=.
 #define OPR		+
 #define SETCMP		i-j<0?-1:i-j>0
 #include "comprel.h"
+#endif

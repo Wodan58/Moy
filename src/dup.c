@@ -1,14 +1,20 @@
 /*
     module  : dup.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef DUP_X
+#define DUP_C
+
 #ifdef RUNTIME
 void do_dup(void)
 {
     TRACE;
+    do_push(stk[-1]);
+#if 0
     stk++;
     stk[-1] = stk[-2];
+#endif
 }
 #else
 /**
@@ -26,4 +32,5 @@ PRIVATE void do_dup(void)
     ONEPARAM("dup");
     DUPLICATE(stk);
 }
+#endif
 #endif

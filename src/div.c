@@ -1,8 +1,10 @@
 /*
     module  : div.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef DIV_X
+#define DIV_C
 
 /**
 div  :  I J  ->  K L
@@ -38,3 +40,4 @@ PRIVATE void do_div(void)
     BINARY(INTEGER_NEWNODE, result.quot);
     NULLARY(INTEGER_NEWNODE, result.rem);
 }
+#endif

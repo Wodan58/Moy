@@ -1,8 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : fadd.c
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef FADD_X
+#define FADD_C
+
 #ifdef RUNTIME
 void do_fadd(void)
 {
@@ -13,7 +16,7 @@ void do_fadd(void)
     memcpy(&dbl2, &stk[-1], sizeof(float));
     dbl1 += dbl2;
     memcpy(&stk[-2], &dbl1, sizeof(node_t));
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -26,4 +29,5 @@ Also supports float.
 #define OPER		+
 #include "plusminus.h"
 /* plus.c */
+#endif
 #endif

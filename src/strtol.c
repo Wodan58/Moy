@@ -1,8 +1,11 @@
 /*
     module  : strtol.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef STRTOL_X
+#define STRTOL_C
+
 #ifdef RUNTIME
 void do_strtol(void)
 {
@@ -46,4 +49,5 @@ PRIVATE void do_strtol(void)
     } else
 	UNARY(INTEGER_NEWNODE, num);
 }
+#endif
 #endif

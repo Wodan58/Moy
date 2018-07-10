@@ -1,8 +1,10 @@
 /*
     module  : trunc.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef TRUNC_X
+#define TRUNC_C
 
 /**
 trunc  :  F  ->  I
@@ -24,3 +26,4 @@ PRIVATE void do_trunc(void)
     } else
 	UNARY(INTEGER_NEWNODE, (long_t) FLOATVAL);
 }
+#endif

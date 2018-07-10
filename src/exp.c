@@ -1,8 +1,10 @@
 /*
     module  : exp.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef EXP_X
+#define EXP_C
 
 /**
 exp  :  F  ->  G
@@ -13,3 +15,4 @@ G is e (2.718281828...) raised to the Fth power.
 #define FUNC		exp
 #include "ufloat.h"
 /* exp.c */
+#endif

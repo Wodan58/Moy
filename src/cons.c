@@ -1,8 +1,11 @@
 /*
     module  : cons.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef CONS_X
+#define CONS_C
+
 #ifdef RUNTIME
 void do_cons(void)
 {
@@ -24,4 +27,5 @@ Aggregate B is A with a new member X (first member for sequences).
 #define AGGR		stk
 #define ELEM		stk->next
 #include "consswons.h"
+#endif
 #endif

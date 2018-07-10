@@ -1,8 +1,10 @@
 /*
     module  : sign.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef SIGN_X
+#define SIGN_C
 
 /**
 sign  :  N1  ->  N2
@@ -39,3 +41,4 @@ PRIVATE void do_sign(void)
     else if (stk->u.num < 0 || stk->u.num > 1)
 	UNARY(INTEGER_NEWNODE, stk->u.num > 0 ? 1 : -1);
 }
+#endif

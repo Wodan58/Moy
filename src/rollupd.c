@@ -1,8 +1,11 @@
 /*
     module  : rollupd.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef ROLLUPD_X
+#define ROLLUPD_C
+
 #ifdef RUNTIME
 void do_rollupd(void)
 {
@@ -15,6 +18,13 @@ void do_rollupd(void)
     stk[-4] = temp;
 }
 #else
+
+#ifndef ROLLUP_C
+#undef ROLLUP_X
+#include "rollup.c"
+#define ROLLUP_X
+#endif
+
 /**
 rollupd  :  X Y Z W  ->  Z X Y W
 As if defined by:   rollupd  ==  [rollup] dip
@@ -24,4 +34,5 @@ As if defined by:   rollupd  ==  [rollup] dip
 #define PARAMCOUNT	FOURPARAMS
 #define ARGUMENT	do_rollup
 #include "dipped.h"
+#endif
 #endif

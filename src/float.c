@@ -1,8 +1,11 @@
 /*
     module  : float.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef FLOAT_X
+#define FLOAT_C
+
 #ifdef RUNTIME
 void do_float(void)
 {
@@ -24,4 +27,5 @@ Tests whether R is a float.
 #define REL		==
 #define TYP		FLOAT_
 #include "type.h"
+#endif
 #endif

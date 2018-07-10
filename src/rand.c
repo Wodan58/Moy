@@ -1,8 +1,10 @@
 /*
     module  : rand.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef RAND_X
+#define RAND_C
 
 /**
 rand  :  ->  I
@@ -15,3 +17,4 @@ PRIVATE void do_rand(void)
 #endif
     PUSH(INTEGER_, rand());
 }
+#endif

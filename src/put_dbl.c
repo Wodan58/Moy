@@ -1,8 +1,11 @@
 /*
     module  : put_dbl.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef PUT_DBL_X
+#define PUT_DBL_C
+
 #ifdef RUNTIME
 void do_put_dbl(void)
 {
@@ -37,4 +40,5 @@ PRIVATE void do_put_dbl(void)
     putchar(' ');
     POP(stk);
 }
+#endif
 #endif

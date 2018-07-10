@@ -1,8 +1,10 @@
 /*
     module  : getenv.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef GETENV_X
+#define GETENV_C
 
 /**
 getenv  :  "variable"  ->  "value"
@@ -20,3 +22,4 @@ PRIVATE void do_getenv(void)
     else
 	UNARY(STRING_NEWNODE, getenv(stk->u.str));
 }
+#endif

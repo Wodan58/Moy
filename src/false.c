@@ -1,8 +1,10 @@
 /*
     module  : false.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FALSE_X
+#define FALSE_C
 
 /**
 false  :  ->  false
@@ -12,3 +14,5 @@ PRIVATE void do_false(void)
 {
     PUSH(BOOLEAN_, 0);
 }
+/* false.c */
+#endif

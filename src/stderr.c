@@ -1,8 +1,10 @@
 /*
     module  : stderr.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef STDERR_X
+#define STDERR_C
 
 /**
 stderr  :  ->  S
@@ -15,3 +17,4 @@ PRIVATE void do_stderr(void)
 #endif
     PUSH(FILE_, stderr);
 }
+#endif

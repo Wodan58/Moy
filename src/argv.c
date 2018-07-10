@@ -1,8 +1,11 @@
 /*
     module  : argv.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef ARGV_X
+#define ARGV_C
+
 #ifdef RUNTIME
 void do_argv(void)
 {
@@ -35,4 +38,5 @@ PRIVATE void do_argv(void)
 	cur = heapnode(STRING_, (void *)g_argv[i], cur);
     PUSH(LIST_, cur);
 }
+#endif
 #endif

@@ -1,8 +1,11 @@
 /*
     module  : quit.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef QUIT_X
+#define QUIT_C
+
 #ifdef RUNTIME
 void do_quit(void)
 {
@@ -21,4 +24,5 @@ PRIVATE void do_quit(void)
 #endif
     exit(0);
 }
+#endif
 #endif

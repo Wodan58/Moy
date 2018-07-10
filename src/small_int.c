@@ -1,8 +1,11 @@
 /*
     module  : small_int.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef SMALL_INT_X
+#define SMALL_INT_C
+
 #ifdef RUNTIME
 void do_small_int(void)
 {
@@ -57,4 +60,5 @@ PRIVATE void do_small_int(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, small);
 }
+#endif
 #endif

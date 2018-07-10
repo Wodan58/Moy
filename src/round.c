@@ -1,8 +1,10 @@
 /*
     module  : round.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef ROUND_X
+#define ROUND_C
 
 PRIVATE double round2(double num)
 {
@@ -20,3 +22,4 @@ G is F rounded to the nearest integer.
 #define FUNC		round2
 #include "ufloat.h"
 /* round.c */
+#endif

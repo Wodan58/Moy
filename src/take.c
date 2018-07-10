@@ -1,8 +1,10 @@
 /*
     module  : take.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef TAKE_X
+#define TAKE_C
 
 /**
 take  :  A N  ->  B
@@ -71,3 +73,4 @@ PRIVATE void do_take(void)
 #endif
     }
 }
+#endif

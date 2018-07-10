@@ -1,8 +1,11 @@
 /*
     module  : map.c
-    version : 1.18
-    date    : 07/05/18
+    version : 1.19
+    date    : 07/10/18
 */
+#ifndef MAP_X
+#define MAP_C
+
 #ifdef RUNTIME
 void do_map(void)
 {
@@ -155,4 +158,5 @@ PRIVATE void do_map(void)
 #endif
     }
 }
+#endif
 #endif

@@ -1,8 +1,11 @@
 /*
     module  : first.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef FIRST_X
+#define FIRST_C
+
 #ifdef RUNTIME
 void do_first(void)
 {
@@ -61,4 +64,5 @@ PRIVATE void do_first(void)
 #endif
     }
 }
+#endif
 #endif

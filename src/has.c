@@ -1,8 +1,11 @@
 /*
     module  : has.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef HAS_X
+#define HAS_C
+
 #ifdef RUNTIME
 void do_has(void)
 {
@@ -26,4 +29,5 @@ Tests whether aggregate A has X as a member.
 #define AGGR		stk->next
 #define ELEM		stk
 #include "inhas.h"
+#endif
 #endif

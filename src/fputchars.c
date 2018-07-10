@@ -1,8 +1,10 @@
 /*
     module  : fputchars.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FPUTCHARS_X
+#define FPUTCHARS_C
 
 /**
 fputchars  :  S "abc.."  ->  S
@@ -32,3 +34,4 @@ fputstring  :  S "abc.."  ->  S
 
 
 /* fputchars.c */
+#endif

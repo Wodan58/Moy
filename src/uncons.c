@@ -1,8 +1,11 @@
 /*
     module  : uncons.c
-    version : 1.12
-    date    : 07/08/18
+    version : 1.13
+    date    : 07/10/18
 */
+#ifndef UNCONS_X
+#define UNCONS_C
+
 #ifdef RUNTIME
 void do_uncons(void)
 {
@@ -72,4 +75,5 @@ PRIVATE void do_uncons(void)
 #endif
     }
 }
+#endif
 #endif

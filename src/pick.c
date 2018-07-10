@@ -1,8 +1,11 @@
 /*
     module  : pick.c
-    version : 1.3
-    date    : 07/05/18
+    version : 1.4
+    date    : 07/10/18
 */
+#ifndef PICK_X
+#define PICK_C
+
 #ifdef RUNTIME
 void do_pick(void)
 {
@@ -32,4 +35,5 @@ PRIVATE void do_pick(void)
 	;
     DUPLICATE(look);
 }
+#endif
 #endif

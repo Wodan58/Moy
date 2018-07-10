@@ -1,8 +1,10 @@
 /*
     module  : drop.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef DROP_X
+#define DROP_C
 
 /**
 drop  :  A N  ->  B
@@ -58,3 +60,4 @@ PRIVATE void do_drop(void)
 #endif
     }
 }
+#endif

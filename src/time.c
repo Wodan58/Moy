@@ -1,8 +1,10 @@
 /*
     module  : time.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef TIME_X
+#define TIME_C
 
 /**
 time  :  ->  I
@@ -15,3 +17,4 @@ PRIVATE void do_time(void)
 #endif
     PUSH(INTEGER_, time(0));
 }
+#endif

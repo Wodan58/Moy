@@ -1,8 +1,11 @@
 /*
     module  : rotate.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef ROTATE_X
+#define ROTATE_C
+
 #ifdef RUNTIME
 void do_rotate(void)
 {
@@ -42,4 +45,5 @@ PRIVATE void do_rotate(void)
     GNULLARY(node->op, node->u.ptr);
     GNULLARY(next->op, next->u.ptr);
 }
+#endif
 #endif

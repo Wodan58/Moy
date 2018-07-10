@@ -1,8 +1,11 @@
 /*
     module  : condlinrec.c
-    version : 1.14
-    date    : 07/05/18
+    version : 1.15
+    date    : 07/10/18
 */
+#ifndef CONDLINREC_X
+#define CONDLINREC_C
+
 #ifdef RUNTIME
 void condnestrec(code_t *root)
 {
@@ -130,4 +133,5 @@ PRIVATE void do_condlinrec(void)
     POP(stk);
     condnestrec(prog);
 }
+#endif
 #endif

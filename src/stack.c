@@ -1,8 +1,11 @@
 /*
     module  : stack.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef STACK_X
+#define STACK_C
+
 #ifdef RUNTIME
 void do_stack(void)
 {
@@ -25,4 +28,5 @@ PRIVATE void do_stack(void)
 	node = heapnode(cur->op, cur->u.ptr, node);
     PUSH(LIST_, reverse(node));
 }
+#endif
 #endif

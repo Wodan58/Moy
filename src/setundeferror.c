@@ -1,8 +1,10 @@
 /*
     module  : setundeferror.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef SETUNDEFERROR_X
+#define SETUNDEFERROR_C
 
 /**
 setundeferror  :  I  ->
@@ -16,3 +18,4 @@ PRIVATE void do_setundeferror(void)
     undeferror = stk->u.num;
     POP(stk);
 }
+#endif

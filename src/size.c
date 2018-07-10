@@ -1,8 +1,11 @@
 /*
     module  : size.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef SIZE_X
+#define SIZE_C
+
 #ifdef RUNTIME
 void do_size(void)
 {
@@ -51,4 +54,5 @@ PRIVATE void do_size(void)
     } else
 	UNARY(INTEGER_NEWNODE, size);
 }
+#endif
 #endif

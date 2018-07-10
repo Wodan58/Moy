@@ -1,8 +1,11 @@
 /*
     module  : split.c
-    version : 1.17
-    date    : 07/05/18
+    version : 1.18
+    date    : 07/10/18
 */
+#ifndef SPLIT_X
+#define SPLIT_C
+
 #ifdef RUNTIME
 void do_split(void)
 {
@@ -199,4 +202,5 @@ PRIVATE void do_split(void)
 #endif
     }
 }
+#endif
 #endif

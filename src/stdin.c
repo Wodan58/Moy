@@ -1,8 +1,10 @@
 /*
     module  : stdin.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef STDIN_X
+#define STDIN_C
 
 /**
 stdin  :  ->  S
@@ -15,3 +17,4 @@ PRIVATE void do_stdin(void)
 #endif
     PUSH(FILE_, stdin);
 }
+#endif

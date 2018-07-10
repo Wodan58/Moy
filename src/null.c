@@ -1,8 +1,11 @@
 /*
     module  : null.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef NULL_X
+#define NULL_C
+
 #ifdef RUNTIME
 void do_null(void)
 {
@@ -60,4 +63,5 @@ PRIVATE void do_null(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, num);
 }
+#endif
 #endif

@@ -1,8 +1,11 @@
 /*
     module  : swapd.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef SWAPD_X
+#define SWAPD_C
+
 #ifdef RUNTIME
 void do_swapd(void)
 {
@@ -14,6 +17,12 @@ void do_swapd(void)
     stk[-3] = temp;
 }
 #else
+
+#ifndef SWAP_C
+#include "swap.c"
+#define SWAP_X
+#endif
+
 /**
 swapd  :  X Y Z  ->  Y X Z
 As if defined by:   swapd  ==  [swap] dip
@@ -23,4 +32,5 @@ As if defined by:   swapd  ==  [swap] dip
 #define PARAMCOUNT	THREEPARAMS
 #define ARGUMENT	do_swap
 #include "dipped.h"
+#endif
 #endif

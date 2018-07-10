@@ -1,13 +1,32 @@
 /*
     module  : enconcat_str.c
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef ENCONCAT_STR_X
+#define ENCONCAT_STR_C
+
+#ifndef SWAPD_C
+#undef SWAPD_X
+#include "swapd.c"
+#define SWAPD_X
+#endif
+
+#ifndef CONS_STR_C
+#undef CONS_STR_X
+#include "cons_str.c"
+#define CONS_STR_X
+#endif
+
+#ifndef CONCAT_STR_C
+#undef CONCAT_STR_X
+#include "concat_str.c"
+#define CONCAT_STR_X
+#endif
+
 #ifdef RUNTIME
 void do_enconcat_str(void)
 {
-    void do_swapd(void);
-
     do_swapd();
     do_cons_str();
     do_concat_str();
@@ -33,4 +52,5 @@ PRIVATE void do_enconcat_str(void)
     do_cons();
     do_concat();
 }
+#endif
 #endif

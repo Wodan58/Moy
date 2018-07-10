@@ -1,8 +1,11 @@
 /*
     module  : put.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef PUT_X
+#define PUT_C
+
 #ifdef RUNTIME
 void do_put(void)
 {
@@ -24,4 +27,5 @@ PRIVATE void do_put(void)
     putchar(' ');
     POP(stk);
 }
+#endif
 #endif

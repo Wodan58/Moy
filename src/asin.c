@@ -1,8 +1,10 @@
 /*
     module  : asin.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef ASIN_X
+#define ASIN_C
 
 /**
 asin  :  F  ->  G
@@ -13,3 +15,4 @@ G is the arc sine of F.
 #define FUNC		asin
 #include "ufloat.h"
 /* asin.c */
+#endif

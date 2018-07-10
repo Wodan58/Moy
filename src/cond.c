@@ -1,8 +1,11 @@
 /*
     module  : cond.c
-    version : 1.12
-    date    : 07/05/18
+    version : 1.13
+    date    : 07/10/18
 */
+#ifndef COND_X
+#define COND_C
+
 #ifdef RUNTIME
 void do_cond(void)
 {
@@ -89,4 +92,5 @@ PRIVATE void do_cond(void)
     }
     exeterm(num ? cur->u.lis->next : cur->u.lis);
 }
+#endif
 #endif

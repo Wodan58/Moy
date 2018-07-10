@@ -1,8 +1,10 @@
 /*
     module  : __dump.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef __DUMP_X
+#define __DUMP_C
 
 /**
 __dump  :  ->  [..]
@@ -15,3 +17,4 @@ PRIVATE void do___dump(void)
 #endif
     PUSH(LIST_, 0);
 }
+#endif

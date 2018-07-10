@@ -1,7 +1,7 @@
 /*
     module  : prims.h
-    version : 1.1
-    date    : 07/05/18
+    version : 1.2
+    date    : 07/10/18
 */
 typedef intptr_t node_t;
 
@@ -19,10 +19,20 @@ typedef struct code_t {
     struct code_t *next;
 } code_t;
 
+#ifdef VECTOR
+#include "vector.h"
+
+typedef vector(node_t) Stack;
+
+extern Stack *theStack;
+
+#define stk	vec_index(theStack, vec_size(theStack))
+#else
 #ifdef _MSC_VER
 extern node_t *stk;
 #else
 register node_t *stk asm("bl");
+#endif
 #endif
 
 code_t *joy_code(void);

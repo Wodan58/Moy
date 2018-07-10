@@ -1,8 +1,10 @@
 /*
     module  : gmtime.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef GMTIME_X
+#define GMTIME_C
 
 /**
 gmtime  :  I  ->  T
@@ -15,3 +17,4 @@ isdst is false; weekday is 1 = Monday ... 7 = Sunday.
 #define NAME		"gmtime"
 #define FUNC		gmtime
 #include "unmktime.h"
+#endif

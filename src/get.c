@@ -1,8 +1,11 @@
 /*
     module  : get.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef GET_X
+#define GET_C
+
 #ifdef RUNTIME
 void do_get(void)
 {
@@ -21,4 +24,5 @@ PRIVATE void do_get(void)
 #endif
     readfactor(yylex());
 }
+#endif
 #endif

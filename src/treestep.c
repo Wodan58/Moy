@@ -1,8 +1,10 @@
 /*
     module  : treestep.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef TREESTEP_X
+#define TREESTEP_C
 
 #ifndef NCHECK
 int put_treestep(void)
@@ -67,3 +69,4 @@ PRIVATE void do_treestep(void)
     POP(stk);
     treestep(item, prog);
 }
+#endif

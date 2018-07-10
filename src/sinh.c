@@ -1,8 +1,10 @@
 /*
     module  : sinh.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef SINH_X
+#define SINH_C
 
 /**
 sinh  :  F  ->  G
@@ -13,3 +15,4 @@ G is the hyperbolic sine of F.
 #define FUNC		sinh
 #include "ufloat.h"
 /* sinh.c */
+#endif

@@ -1,8 +1,11 @@
 /*
     module  : putchars.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef PUTCHARS_X
+#define PUTCHARS_C
+
 #ifdef RUNTIME
 void do_putchars(void)
 {
@@ -24,4 +27,5 @@ PRIVATE void do_putchars(void)
     printf("%s", stk->u.str);
     POP(stk);
 }
+#endif
 #endif

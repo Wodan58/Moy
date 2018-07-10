@@ -1,14 +1,17 @@
 /*
     module  : or.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef OR_X
+#define OR_C
+
 #ifdef RUNTIME
 void do_or(void)
 {
     TRACE;
     stk[-2] |= stk[-1];
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -20,4 +23,5 @@ Z is the union of sets X and Y, logical disjunction for truth values.
 #define OPER1		|
 #define OPER2		||
 #include "andorxor.h"
+#endif
 #endif

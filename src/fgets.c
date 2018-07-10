@@ -1,8 +1,10 @@
 /*
     module  : fgets.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef FGETS_X
+#define FGETS_C
 
 /**
 fgets  :  S  ->  S L
@@ -27,3 +29,4 @@ PRIVATE void do_fgets(void)
     }
     PUSH(STRING_, buf);
 }
+#endif

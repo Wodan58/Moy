@@ -1,8 +1,11 @@
 /*
     module  : swap.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef SWAP_X
+#define SWAP_C
+
 #ifdef RUNTIME
 void do_swap(void)
 {
@@ -41,4 +44,5 @@ PRIVATE void do_swap(void)
     GBINARY(temp.op, temp.u.ptr);
     GNULLARY(node->op, node->u.ptr);
 }
+#endif
 #endif

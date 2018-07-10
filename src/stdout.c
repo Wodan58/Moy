@@ -1,8 +1,10 @@
 /*
     module  : stdout.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef STDOUT_X
+#define STDOUT_C
 
 /**
 stdout  :  ->  S
@@ -15,3 +17,4 @@ PRIVATE void do_stdout(void)
 #endif
     PUSH(FILE_, stdout);
 }
+#endif

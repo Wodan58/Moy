@@ -1,8 +1,11 @@
 /*
     module  : equal.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef EQUAL_X
+#define EQUAL_C
+
 #ifdef RUNTIME
 int equal(code_t *first, code_t *second)
 {
@@ -23,9 +26,16 @@ void do_equal(void)
 	stk[-2] = equal((code_t *)stk[-2], (code_t *)stk[-1]);
     else
 	stk[-2] = stk[-2] == stk[-1];
-    stk--;
+    (void)do_pop();
 }
 #else
+
+#ifndef CASE_C
+#undef CASE_X
+#include "case.c"
+#define CASE_X
+#endif
+
 /**
 equal  :  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
@@ -73,4 +83,5 @@ PRIVATE void do_equal(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, equal_aux(stk, stk->next));
 }
+#endif
 #endif

@@ -1,8 +1,10 @@
 /*
     module  : iflogical.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef IFLOGICAL_X
+#define IFLOGICAL_C
 
 /**
 iflogical  :  X [T] [E]  ->  ...
@@ -13,3 +15,4 @@ If X is a logical or truth value, executes T else executes E.
 #define TYP		BOOLEAN_
 #include "iftype.h"
 /* iflogical.c */
+#endif

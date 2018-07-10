@@ -1,8 +1,10 @@
 /*
     module  : __memoryindex.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef __MEMORYINDEX_X
+#define __MEMORYINDEX_C
 
 /**
 __memoryindex  :  ->  I
@@ -15,3 +17,4 @@ PRIVATE void do___memoryindex(void)
 #endif
     PUSH(INTEGER_, 0);
 }
+#endif

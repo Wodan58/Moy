@@ -1,14 +1,17 @@
 /*
     module  : mul.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef MUL_X
+#define MUL_C
+
 #ifdef RUNTIME
 void do_mul(void)
 {
     TRACE;
     stk[-2] *= stk[-1];
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -39,4 +42,5 @@ PRIVATE void do_mul(void)
     else
 	BINARY(INTEGER_NEWNODE, stk->next->u.num * stk->u.num);
 }
+#endif
 #endif

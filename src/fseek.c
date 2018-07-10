@@ -1,8 +1,10 @@
 /*
     module  : fseek.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FSEEK_X
+#define FSEEK_C
 
 /**
 fseek  :  S P W  ->  S B
@@ -28,3 +30,4 @@ PRIVATE void do_fseek(void)
     whence = fseek(stk->u.fil, pos, whence) != 0;
     PUSH(BOOLEAN_, whence);
 }
+#endif

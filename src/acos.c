@@ -1,8 +1,10 @@
 /*
     module  : acos.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef ACOS_X
+#define ACOS_C
 
 /**
 acos  :  F  ->  G
@@ -13,3 +15,4 @@ G is the arc cosine of F.
 #define FUNC		acos
 #include "ufloat.h"
 /* acos.c */
+#endif

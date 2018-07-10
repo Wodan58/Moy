@@ -1,8 +1,10 @@
 /*
     module  : treegenrec.c
-    version : 1.9
-    date    : 07/05/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef TREEGENREC_X
+#define TREEGENREC_C
 
 #ifndef NCHECK
 int put_treegenrec(void)
@@ -75,3 +77,4 @@ PRIVATE void do_treegenrec(void)
     do_cons();
     treegenrec();
 }
+#endif

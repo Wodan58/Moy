@@ -1,8 +1,11 @@
 /*
     module  : abort.c
-    version : 1.4
-    date    : 07/05/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef ABORT_X
+#define ABORT_C
+
 #ifdef RUNTIME
 void do_abort(void)
 {
@@ -21,4 +24,5 @@ PRIVATE void do_abort(void)
 #endif
     exit(1);
 }
+#endif
 #endif

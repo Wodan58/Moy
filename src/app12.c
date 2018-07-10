@@ -1,8 +1,10 @@
 /*
     module  : app12.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef APP12_X
+#define APP12_C
 
 /**
 app12  :  X Y1 Y2 [P]  ->  R1 R2
@@ -24,3 +26,4 @@ PRIVATE void do_app12(void)
     } else
 	stk->next->next = stk->next->next->next;
 }
+#endif

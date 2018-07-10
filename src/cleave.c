@@ -1,8 +1,11 @@
 /*
     module  : cleave.c
-    version : 1.12
-    date    : 07/05/18
+    version : 1.13
+    date    : 07/10/18
 */
+#ifndef CLEAVE_X
+#define CLEAVE_C
+
 #ifdef RUNTIME
 void do_cleave(void)
 {
@@ -82,4 +85,5 @@ PRIVATE void do_cleave(void)
     *stk = result[0];		// push results
     DUPLICATE(&result[1]);
 }
+#endif
 #endif

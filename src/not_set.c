@@ -1,8 +1,11 @@
 /*
     module  : not_set.c
-    version : 1.2
-    date    : 07/07/18
+    version : 1.3
+    date    : 07/10/18
 */
+#ifndef NOT_SET_X
+#define NOT_SET_C
+
 #ifdef RUNTIME
 void do_not_set(void)
 {
@@ -60,4 +63,5 @@ PRIVATE void do_not_set(void)
     } else
 	UNARY(BOOLEAN_NEWNODE, num);
 }
+#endif
 #endif

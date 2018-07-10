@@ -1,14 +1,17 @@
 /*
     module  : sametype.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef SAMETYPE_X
+#define SAMETYPE_C
+
 #ifdef RUNTIME
 void do_sametype(void)
 {
     TRACE;
     stk[-2] = stk[-2] == stk[-1];
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -31,4 +34,5 @@ PRIVATE void do_sametype(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, stk->op == stk->next->op);
 }
+#endif
 #endif

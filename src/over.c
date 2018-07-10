@@ -1,14 +1,20 @@
 /*
     module  : over.c
-    version : 1.3
-    date    : 07/05/18
+    version : 1.4
+    date    : 07/10/18
 */
+#ifndef OVER_X
+#define OVER_C
+
 #ifdef RUNTIME
 void do_over(void)
 {
     TRACE;
+    do_push(stk[-2]);
+#if 0
     stk++;
     stk[-1] = stk[-3];
+#endif
 }
 #else
 /**
@@ -26,4 +32,5 @@ PRIVATE void do_over(void)
     TWOPARAMS("over");
     DUPLICATE(stk->next);
 }
+#endif
 #endif

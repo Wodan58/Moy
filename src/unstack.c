@@ -1,8 +1,11 @@
 /*
     module  : unstack.c
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef UNSTACK_X
+#define UNSTACK_C
+
 #ifdef RUNTIME
 void do_unstack(void)
 {
@@ -26,4 +29,5 @@ PRIVATE void do_unstack(void)
     for (cur = reverse(stk->u.lis), stk = 0; cur; cur = cur->next)
 	DUPLICATE(cur);
 }
+#endif
 #endif

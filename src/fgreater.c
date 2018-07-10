@@ -1,8 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : fgreater.c
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef FGREATER_X
+#define FGREATER_C
+
 #ifdef RUNTIME
 void do_fgreater(void)
 {
@@ -12,7 +15,7 @@ void do_fgreater(void)
     memcpy(&dbl1, &stk[-2], sizeof(float));
     memcpy(&dbl2, &stk[-1], sizeof(float));
     stk[-2] = dbl1 > dbl2;
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -26,4 +29,5 @@ Tests whether X greater than Y.  Also supports float.
 #define OPR		>
 #define SETCMP		i!=j&&!(j&~i)
 #include "comprel.h"
+#endif
 #endif

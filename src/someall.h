@@ -1,7 +1,7 @@
 /*
     module  : someall.h
-    version : 1.15
-    date    : 07/05/18
+    version : 1.16
+    date    : 07/10/18
 */
 #ifndef NCHECK
 #define CAT(a, b)	a ## b

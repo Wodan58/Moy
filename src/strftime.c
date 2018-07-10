@@ -1,10 +1,18 @@
 /*
     module  : strftime.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef STRFTIME_X
+#define STRFTIME_C
 
 PRIVATE void decode_time(struct tm *t);
+
+#ifndef MKTIME_C
+#undef MKTIME_X
+#include "mktime.c"
+#define MKTIME_X
+#endif
 
 /**
 strftime  :  T S1  ->  S2
@@ -34,3 +42,4 @@ PRIVATE void do_strftime(void)
     strftime(result, length, fmt, &t);
     PUSH(STRING_, result);
 }
+#endif

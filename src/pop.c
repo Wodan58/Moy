@@ -1,12 +1,22 @@
 /*
     module  : pop.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef POP_X
+#define POP_C
+
 #ifdef RUNTIME
 node_t do_pop(void)
 {
+#ifdef VECTOR
+    node_t *node;
+
+    node = vec_pop(theStack);
+    return *node;
+#else
     return *--stk;
+#endif
 }
 #else
 /**
@@ -24,4 +34,5 @@ PRIVATE void do_pop(void)
     ONEPARAM("pop");
     POP(stk);
 }
+#endif
 #endif

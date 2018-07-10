@@ -1,8 +1,10 @@
 /*
     module  : __symtabmax.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef __SYMTABMAX_X
+#define __SYMTABMAX_C
 
 /**
 __symtabmax  :  ->  I
@@ -15,3 +17,4 @@ PRIVATE void do___symtabmax(void)
 #endif
     PUSH(INTEGER_, SYMTABMAX);
 }
+#endif

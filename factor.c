@@ -1,7 +1,7 @@
 /*
     module  : factor.c
-    version : 1.2
-    date    : 07/05/18
+    version : 1.3
+    date    : 07/10/18
 */
 #include <stdio.h>
 #include "joy.h"
@@ -18,6 +18,8 @@ void readfactor(int sym)
 	while ((sym = yylex()) != '}')
 	    if (sym == CHAR_ || sym == INTEGER_)
 		set |= 1 << yylval.num;
+	    else
+		execerror("numeric", "set");
 	do_push(set);
 	break;
     case '[':

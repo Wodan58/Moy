@@ -1,8 +1,10 @@
 /*
     module  : __manual_list.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef __MANUAL_LIST_X
+#define __MANUAL_LIST_C
 
 /**
 __manual_list  :  ->  L
@@ -25,3 +27,4 @@ PRIVATE void do___manual_list(void)
     }
     PUSH(LIST_, cur);
 }
+#endif

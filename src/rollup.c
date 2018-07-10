@@ -1,8 +1,11 @@
 /*
     module  : rollup.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef ROLLUP_X
+#define ROLLUP_C
+
 #ifdef RUNTIME
 void do_rollup(void)
 {
@@ -46,4 +49,5 @@ PRIVATE void do_rollup(void)
     GNULLARY(next->op, next->u.ptr);
     GNULLARY(node->op, node->u.ptr);
 }
+#endif
 #endif

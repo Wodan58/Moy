@@ -1,8 +1,11 @@
 /*
     module  : tailrec.c
-    version : 1.13
-    date    : 07/05/18
+    version : 1.14
+    date    : 07/10/18
 */
+#ifndef TAILREC_X
+#define TAILREC_C
+
 #ifdef RUNTIME
 void tailrec(code_t *prog[])
 {
@@ -114,4 +117,5 @@ PRIVATE void do_tailrec(void)
     POP(stk);
     tailrec(prog);
 }
+#endif
 #endif

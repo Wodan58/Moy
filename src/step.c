@@ -1,8 +1,11 @@
 /*
     module  : step.c
-    version : 1.9
-    date    : 07/05/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef STEP_X
+#define STEP_C
+
 #ifdef RUNTIME
 void do_step(void)
 {
@@ -108,4 +111,5 @@ PRIVATE void do_step(void)
 #endif
     }
 }
+#endif
 #endif

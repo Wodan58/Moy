@@ -1,17 +1,15 @@
 /*
     module  : intern.c
-    version : 1.11
-    date    : 07/05/18
+    version : 1.12
+    date    : 07/10/18
 */
+#ifndef INTERN_X
+#define INTERN_C
+
 #ifdef RUNTIME
 void do_intern(void)
 {
-    char *name;
-    proc_t proc;
-
-    name = (char *)stk[-1];
-    proc = nameproc(name);
-    stk[-1] = (node_t)proc;
+    stk[-1] = (node_t)nameproc((char *)stk[-1]);
 }
 #else
 /**
@@ -54,4 +52,5 @@ PRIVATE void do_intern(void)
 	UNARY(USR_NEWNODE, i);
 #endif
 }
+#endif
 #endif

@@ -1,8 +1,16 @@
 /*
     module  : comprel.h
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef RUNTIME
+#ifndef CASE_C
+#undef CASE_X
+#include "case.c"
+#define CASE_X
+#endif
+#endif
+
 PRIVATE void PROCEDURE(void)
 {
 #ifdef RUNTIME
@@ -11,7 +19,7 @@ PRIVATE void PROCEDURE(void)
 	stk[-2] = strcmp((char *)stk[-2], (char *)stk[-1]) OPR 0;
     else
 	stk[-2] = stk[-2] OPR stk[-1];
-    stk--;
+    (void)do_pop();
 #else
     double cmp;
     int i, j, error, comp = 0;

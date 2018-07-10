@@ -1,8 +1,10 @@
 /*
     module  : construct.c
-    version : 1.10
-    date    : 07/02/18
+    version : 1.11
+    date    : 07/10/18
 */
+#ifndef CONSTRUCT_X
+#define CONSTRUCT_C
 
 #ifndef NCHECK
 int put_construct(void)
@@ -66,3 +68,4 @@ PRIVATE void do_construct(void)
     for (cur = root; cur; cur = cur->next)
 	DUPLICATE(cur);
 }
+#endif

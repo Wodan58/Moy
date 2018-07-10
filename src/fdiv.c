@@ -1,8 +1,11 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : fdiv.c
+    version : 1.2
+    date    : 07/10/18
 */
+#ifndef FDIV_X
+#define FDIV_C
+
 #ifdef RUNTIME
 void do_fdiv(void)
 {
@@ -13,7 +16,7 @@ void do_fdiv(void)
     memcpy(&dbl2, &stk[-1], sizeof(float));
     dbl1 /= dbl2;
     memcpy(&stk[-2], &dbl1, sizeof(node_t));
-    stk--;
+    (void)do_pop();
 }
 #else
 /**
@@ -47,4 +50,5 @@ PRIVATE void do_fdiv(void)
     else
 	BINARY(INTEGER_NEWNODE, stk->next->u.num / stk->u.num);
 }
+#endif
 #endif

@@ -1,8 +1,11 @@
 /*
     module  : index.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef INDEX_X
+#define INDEX_C
+
 #ifdef RUNTIME
 void do_index(void)
 {
@@ -37,4 +40,5 @@ PRIVATE void do_index(void)
     } else
 	GBINARY(list->op, list->u.ptr);
 }
+#endif
 #endif

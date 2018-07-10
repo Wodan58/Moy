@@ -1,8 +1,11 @@
 /*
     module  : infra.c
-    version : 1.11
-    date    : 07/05/18
+    version : 1.12
+    date    : 07/10/18
 */
+#ifndef INFRA_X
+#define INFRA_C
+
 #ifdef RUNTIME
 void do_infra(void)
 {
@@ -88,4 +91,5 @@ PRIVATE void do_infra(void)
     lst2stk(save);		// 9
     PUSH(LIST_, list);		// 10
 }
+#endif
 #endif

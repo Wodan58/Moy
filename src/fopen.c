@@ -1,8 +1,10 @@
 /*
     module  : fopen.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FOPEN_X
+#define FOPEN_C
 
 /**
 fopen  :  P M  ->  S
@@ -24,3 +26,4 @@ PRIVATE void do_fopen(void)
     } else
 	BINARY(FILE_NEWNODE, fopen(stk->next->u.str, stk->u.str));
 }
+#endif

@@ -1,8 +1,11 @@
 /*
     module  : at.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef AT_X
+#define AT_C
+
 #ifdef RUNTIME
 void do_at(void)
 {
@@ -24,4 +27,5 @@ X (= A[I]) is the member of A at position I.
 #define AGGR		stk->next
 #define	INDEX		stk
 #include "ofat.h"
+#endif
 #endif

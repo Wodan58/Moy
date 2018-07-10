@@ -1,8 +1,11 @@
 /*
     module  : binrec.c
-    version : 1.13
-    date    : 07/05/18
+    version : 1.14
+    date    : 07/10/18
 */
+#ifndef BINREC_X
+#define BINREC_C
+
 #ifdef RUNTIME
 void binrec(code_t *prog[])
 {
@@ -138,4 +141,5 @@ PRIVATE void do_binrec(void)
     POP(stk);
     binrec(prog);
 }
+#endif
 #endif

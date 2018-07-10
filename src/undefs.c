@@ -1,8 +1,10 @@
 /*
     module  : undefs.c
-    version : 1.8
-    date    : 07/02/18
+    version : 1.9
+    date    : 07/10/18
 */
+#ifndef UNDEFS_X
+#define UNDEFS_C
 
 /**
 undefs  :  ->  [..]
@@ -24,3 +26,4 @@ PRIVATE void do_undefs(void)
     PUSH(LIST_, root);
 #endif
 }
+#endif

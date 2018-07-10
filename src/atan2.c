@@ -1,8 +1,10 @@
 /*
     module  : atan2.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef ATAN2_X
+#define ATAN2_C
 
 /**
 atan2  :  F G  ->  H
@@ -13,3 +15,4 @@ H is the arc tangent of F / G.
 #define FUNC		atan2
 #include "bfloat.h"
 /* atan2.c */
+#endif

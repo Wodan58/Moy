@@ -1,8 +1,10 @@
 /*
     module  : neg.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef NEG_X
+#define NEG_C
 
 /**
 neg  :  I  ->  J
@@ -28,3 +30,4 @@ PRIVATE void do_neg(void)
     else if (stk->u.num)
 	UNARY(INTEGER_NEWNODE, -stk->u.num);
 }
+#endif

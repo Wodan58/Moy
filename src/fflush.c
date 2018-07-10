@@ -1,8 +1,10 @@
 /*
     module  : fflush.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef FFLUSH_X
+#define FFLUSH_C
 
 /**
 fflush  :  S  ->  S
@@ -17,3 +19,4 @@ PRIVATE void do_fflush(void)
     FILE("fflush");
     fflush(stk->u.fil);
 }
+#endif

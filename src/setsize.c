@@ -1,8 +1,10 @@
 /*
     module  : setsize.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef SETSIZE_X
+#define SETSIZE_C
 
 /**
 setsize  :  ->  setsize
@@ -16,3 +18,4 @@ PRIVATE void do_setsize(void)
 #endif
     PUSH(INTEGER_, SETSIZE_);
 }
+#endif

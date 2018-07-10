@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.3
-    date    : 07/05/18
+    version : 1.4
+    date    : 07/10/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -257,9 +257,11 @@ void enteratom(char *name, Node *cur)
 	replace(pdic->name, str, index);
 	pdic->name = str;
     }
-    if (pdic->flags & IS_BUILTIN)
+    if (pdic->flags & IS_BUILTIN) {
 	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", pdic->name);
-    pdic->flags = IS_DEFINED;
+	pdic->flags & ~IS_BUILTIN;
+    }
+    pdic->flags |= IS_DEFINED;
     pdic->body = cur;
 }
 
@@ -277,7 +279,8 @@ void dump(void)
     for (i = 0; i < leng; i++) {
 	pdic = vec_index(dict, i);
 	if (pdic->flags & IS_BUILTIN)
-	    fprintf(fp, "%s\t%p\n", pdic->name, pdic->proc);
+	    fprintf(fp, "%s\t%p\t%d\n", pdic->name, pdic->proc,
+		    (pdic->flags & IS_USED) ? 1 : 0);
 	else if (pdic->body) {
 	    fprintf(fp, "%s == ", pdic->name);
 	    writeterm(pdic->body, fp);

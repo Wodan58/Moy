@@ -1,8 +1,10 @@
 /*
     module  : fread.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef FREAD_X
+#define FREAD_C
 
 /**
 fread  :  S I  ->  S L
@@ -28,3 +30,4 @@ PRIVATE void do_fread(void)
 	cur = heapnode(INTEGER_, (void *)(long_t)buf[i], cur);
     PUSH(LIST_, cur);
 }
+#endif

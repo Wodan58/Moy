@@ -1,8 +1,10 @@
 /*
     module  : __symtabindex.c
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef __SYMTABINDEX_X
+#define __SYMTABINDEX_C
 
 /**
 __symtabindex  :  ->  I
@@ -15,3 +17,4 @@ PRIVATE void do___symtabindex(void)
     PUSH(INTEGER_, dict_size() - 1);
 #endif
 }
+#endif

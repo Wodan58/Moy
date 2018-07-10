@@ -1,8 +1,10 @@
 /*
     module  : strtod.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef STRTOD_X
+#define STRTOD_C
 
 /**
 strtod  :  S  ->  R
@@ -24,3 +26,4 @@ PRIVATE void do_strtod(void)
     } else
 	UNARY(FLOAT_NEWNODE, strtod(stk->u.str, 0));
 }
+#endif

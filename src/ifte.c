@@ -1,8 +1,11 @@
 /*
     module  : ifte.c
-    version : 1.14
-    date    : 07/05/18
+    version : 1.15
+    date    : 07/10/18
 */
+#ifndef IFTE_X
+#define IFTE_C
+
 #ifdef RUNTIME
 void do_ifte(void)
 {
@@ -77,4 +80,5 @@ PRIVATE void do_ifte(void)
     RELEASE;
     exeterm(prog[0]);
 }
+#endif
 #endif

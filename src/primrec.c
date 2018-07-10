@@ -1,8 +1,10 @@
 /*
     module  : primrec.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 07/10/18
 */
+#ifndef PRIMREC_X
+#define PRIMREC_C
 
 #ifndef NCHECK
 int put_primrec(void)
@@ -98,3 +100,4 @@ PRIVATE void do_primrec(void)
     while (num--)
 	exeterm(prog);
 }
+#endif

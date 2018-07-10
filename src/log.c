@@ -1,8 +1,10 @@
 /*
     module  : log.c
-    version : 1.4
-    date    : 07/02/18
+    version : 1.5
+    date    : 07/10/18
 */
+#ifndef LOG_X
+#define LOG_C
 
 /**
 log  :  F  ->  G
@@ -13,3 +15,4 @@ G is the natural logarithm of F.
 #define FUNC		log
 #include "ufloat.h"
 /* log.c */
+#endif

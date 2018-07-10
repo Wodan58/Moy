@@ -1,8 +1,11 @@
 /*
     module  : filter.c
-    version : 1.17
-    date    : 07/05/18
+    version : 1.18
+    date    : 07/10/18
 */
+#ifndef FILTER_X
+#define FILTER_C
+
 #ifdef RUNTIME
 void do_filter(void)
 {
@@ -167,4 +170,5 @@ PRIVATE void do_filter(void)
 #endif
     }
 }
+#endif
 #endif

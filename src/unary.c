@@ -1,13 +1,51 @@
 /*
     module  : unary.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef UNARY_X
+#define UNARY_C
+
 #ifdef RUNTIME
+
+#ifndef STACK_C
+#undef STACK_X
+#include "stack.c"
+#define STACK_X
+#endif
+
+#ifndef SWAP_C
+#undef SWAP_X
+#include "swap.c"
+#define SWAP_X
+#endif
+
+#ifndef DIP_C
+#undef DIP_X
+#include "dip.c"
+#define DIP_X
+#endif
+
+#ifndef REST_C
+#undef REST_X
+#include "rest.c"
+#define REST_X
+#endif
+
+#ifndef CONS_C
+#undef CONS_X
+#include "cons.c"
+#define CONS_X
+#endif
+
+#ifndef UNSTACK_C
+#undef UNSTACK_X
+#include "unstack.c"
+#define UNSTACK_X
+#endif
+
 void do_unary(void)
 {
-    void do_unstack(void);
-
     TRACE;
     do_stack();
     do_swap();
@@ -16,7 +54,6 @@ void do_unary(void)
     do_rest();
     do_cons();
     do_unstack();
-//  execute((code_t *)do_pop());
 }
 #else
 /**
@@ -32,4 +69,5 @@ exactly one is removed from the stack.
 #define TOPSTR		"stk->next"
 #define ARITY		1
 #include "nary.h"
+#endif
 #endif

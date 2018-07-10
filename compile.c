@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.31
-    date    : 07/05/18
+    version : 1.32
+    date    : 07/10/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -362,21 +362,40 @@ void initialise(void)
 
     if (!mainfunc)
 	mainfunc = "main";
-    printf("/*\n * generated %s */\n", ctime(&t));
-#ifdef NEW_VERSION
-    printf("#include \"builtin.c\"\n");
-#else
-    printf("#include \"runtime.h\"\n");
-#endif
+    declfp = stdout;
+    fprintf(declfp, "/*\n * generated %s */\n", ctime(&t));
     initout();
     outfp = nextfile();
-    fprintf(outfp, "int %s(int argc, char **argv) {", mainfunc);
+#ifdef NEW_VERSION
+    fprintf(outfp, "\n#include \"builtin.c\"\n");
+#else
+    fprintf(outfp, "\n#include \"runtime.h\"\n");
+#endif
+    fprintf(outfp, "\nint/* MAIN */%s(int argc, char **argv) {", mainfunc);
 #ifdef NEW_VERSION
     fprintf(outfp, "joy_init(argc, argv);");
 #else
     fprintf(outfp, "initsym(argc, argv);");
 #endif
-    declfp = stdout;
+}
+
+void declare(void)
+{
+    char *name;
+    unsigned flags;
+    int i, j, leng;
+
+    leng = dict_size();
+    for (i = 0; i < leng; i++) {
+	flags = dict_flags(i);
+	if ((flags & IS_BUILTIN) && !(flags & IS_USED)) {
+	    fprintf(declfp, "#define ");
+	    name = dict_nickname(i);
+	    for (j = 0; name[j]; j++)
+		fputc(toupper(name[j]), declfp);
+	    fprintf(declfp, "_X\n");
+	}
+    }
 }
 
 void finalise(void)
@@ -416,6 +435,7 @@ void finalise(void)
 	    }
 	}
     } while (changed);
+    declare();
     printout();
     closeout();
     printf("table_t table[] = {");

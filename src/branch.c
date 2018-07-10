@@ -1,8 +1,10 @@
 /*
     module  : branch.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef BRANCH_X
+#define BRANCH_C
 
 #ifndef NCHECK
 int put_branch(void)
@@ -50,3 +52,4 @@ PRIVATE void do_branch(void)
     POP(stk);
     exeterm(num ? prog[0] : prog[1]);
 }
+#endif

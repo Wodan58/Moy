@@ -1,8 +1,10 @@
 /*
     module  : system.c
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 07/10/18
 */
+#ifndef SYSTEM_X
+#define SYSTEM_C
 
 /**
 system  :  "command"  ->
@@ -23,3 +25,4 @@ PRIVATE void do_system(void)
     POP(stk);
     system(str);
 }
+#endif

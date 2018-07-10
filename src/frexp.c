@@ -1,8 +1,10 @@
 /*
     module  : frexp.c
-    version : 1.6
-    date    : 07/02/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FREXP_X
+#define FREXP_C
 
 /**
 frexp  :  F  ->  G I
@@ -27,3 +29,4 @@ PRIVATE void do_frexp(void)
 	UNARY(FLOAT_NEWNODE, frexp(FLOATVAL, &exp));
     PUSH(INTEGER_, exp);
 }
+#endif

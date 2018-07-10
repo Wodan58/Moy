@@ -1,13 +1,26 @@
 /*
     module  : fold.c
-    version : 1.6
-    date    : 07/05/18
+    version : 1.7
+    date    : 07/10/18
 */
+#ifndef FOLD_X
+#define FOLD_C
+
+#ifndef SWAPD_C
+#undef SWAPD_X
+#include "swapd.c"
+#define SWAPD_X
+#endif
+
+#ifndef STEP_C
+#undef STEP_X
+#include "step.c"
+#define STEP_X
+#endif
+
 #ifdef RUNTIME
 void do_fold(void)
 {
-    void do_swapd(void), do_step(void);
-
     do_swapd();
     do_step();
 }
@@ -29,4 +42,5 @@ PRIVATE void do_fold(void)
     do_swapd();
     do_step();
 }
+#endif
 #endif

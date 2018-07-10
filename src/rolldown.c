@@ -1,8 +1,11 @@
 /*
     module  : rolldown.c
-    version : 1.7
-    date    : 07/05/18
+    version : 1.8
+    date    : 07/10/18
 */
+#ifndef ROLLDOWN_X
+#define ROLLDOWN_C
+
 #ifdef RUNTIME
 void do_rolldown(void)
 {
@@ -47,4 +50,5 @@ PRIVATE void do_rolldown(void)
     GNULLARY(temp.op, temp.u.ptr);
     GNULLARY(next->op, next->u.ptr);
 }
+#endif
 #endif
