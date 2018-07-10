@@ -1,15 +1,16 @@
 /*
     module  : symbol.h
-    version : 1.8
-    date    : 07/05/18
+    version : 1.9
+    date    : 07/10/18
 */
 #define IS_UNDEFINED	0
-#define IS_BUILTIN	1
-#define IS_DEFINED	2
-#define IS_USED		4
-#define IS_ACTIVE	8
-#define IS_DECLARED	16
-#define IS_PRINTED	32
+#define IS_ORIGINAL	1
+#define IS_BUILTIN	2
+#define IS_DEFINED	4
+#define IS_USED		8
+#define IS_ACTIVE	16
+#define IS_DECLARED	32
+#define IS_PRINTED	64
 
 typedef unsigned short Operator;
 

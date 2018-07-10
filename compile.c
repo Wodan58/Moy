@@ -1,6 +1,6 @@
 /*
     module  : compile.c
-    version : 1.32
+    version : 1.33
     date    : 07/10/18
 */
 #include <stdio.h>
@@ -388,7 +388,8 @@ void declare(void)
     leng = dict_size();
     for (i = 0; i < leng; i++) {
 	flags = dict_flags(i);
-	if ((flags & IS_BUILTIN) && !(flags & IS_USED)) {
+	if (((flags & IS_ORIGINAL) && !(flags & IS_BUILTIN)) ||
+	    ((flags & IS_ORIGINAL) && !(flags & IS_USED))) {
 	    fprintf(declfp, "#define ");
 	    name = dict_nickname(i);
 	    for (j = 0; name[j]; j++)

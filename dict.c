@@ -1,6 +1,6 @@
 /*
     module  : dict.c
-    version : 1.4
+    version : 1.6
     date    : 07/10/18
 */
 #include <stdio.h>
@@ -124,7 +124,7 @@ void init_dict(void)
 	pdic = vec_push(dict);
 	pdic->name = table[i].name;
 	pdic->print = table[i].print;
-	pdic->flags = IS_BUILTIN;
+	pdic->flags = IS_ORIGINAL | IS_BUILTIN;
 	pdic->proc = table[i].proc;
 	key = kh_put(symtab, hash, pdic->name, &rv);
 	kh_value(hash, key) = i;
@@ -259,7 +259,7 @@ void enteratom(char *name, Node *cur)
     }
     if (pdic->flags & IS_BUILTIN) {
 	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", pdic->name);
-	pdic->flags & ~IS_BUILTIN;
+	pdic->flags &= ~IS_BUILTIN;
     }
     pdic->flags |= IS_DEFINED;
     pdic->body = cur;

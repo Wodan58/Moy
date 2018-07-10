@@ -41,65 +41,71 @@ LIBRA
 put_bool == [ [ "true" ] [ "false" ] ] index i put ;
 nl == 10 putch ;
 reverse == [ ] swap shunt ;
-step1 == [ dup ] dip1 swap [ ] = [ [ step2 ] [ pop pop ] ] index i ;
-step2 == [ uncons ] dip1 dup [ swap ] dip1 [ i ] first1 rollup1 [ step1 ]
-	 cons cons cons cons [ [ ] cons [ first1 ] first1 ] dip1 cons i ;
-shunt == [ cnos ] step1 ;
+step == [ dup ] dip swap [ ] = [ [ step2 ] [ pop pop ] ] index i ;
+step2 == [ uncons ] dip dup [ swap ] dip [ i ] first rollup [ step ]
+	 cons cons cons cons [ [ ] cons [ first ] first ] dip cons i ;
+shunt == [ cnos ] step ;
 cnos == swap cons ;
-concat1 == [ reverse ] c shunt ;
-dip1 == swap [ i ] first1 swap [ ] cons [ first1 ] cons cons cons i ;
-c == [ swap ] dip1 i ;
-last == dup rest1 null1 [ first1 ] [ rest1 last ] branch1 ;
-null1 == 0 = ;
+concat == [ reverse ] c shunt ;
+dip == swap [ i ] first swap [ ] cons [ first ] cons cons cons i ;
+c == [ swap ] dip i ;
+last == dup rest null [ first ] [ rest last ] branch ;
+null == 0 = ;
 car == uncons pop ;
-first1 == uncons pop ;
-rest1 == uncons swap pop ;
-branch1 == swap pair index i ;
+first == uncons pop ;
+rest == uncons swap pop ;
+branch == swap pair index i ;
 pair == [ ] cons cons ;
 member == swap contains ;
-contains == false swap [ = or ] cons fold1 ;
-fold1 == [ swap ] dip1 step1 ;
-sum == 0 [ + ] fold1 ;
+contains == false swap [ = or ] cons fold ;
+fold == [ swap ] dip step ;
+sum == 0 [ + ] fold ;
 space == 32 ;
-product == 1 [ * ] fold1 ;
-put_list_chr == 91 putch space putch uncons swap putch [ space putch putch ] step1 space putch 93 putch ;
-length == 0 [ pop 1 + ] fold1 ;
+product == 1 [ * ] fold ;
+put_list_chr == 91 putch space putch uncons swap putch [ space putch putch ]
+		step space putch 93 putch ;
+length == 0 [ pop 1 + ] fold ;
 putnl == put nl ;
 twice == dup b ;
-b == [ i ] dip1 i ;
-thrice == dup [ twice ] dip1 i ;
+b == [ i ] dip i ;
+thrice == dup [ twice ] dip i ;
 square == dup * ;
-pred1 == 1 - ;
-times1 == dup 0 = [ pop pop ] [ [ dup [ i ] dip1 ] dip1 pred1 times1 ] branch1 ;
-map1 == maprev reverse ;
-maprev == [ ] rollup1 shuntmap ;
-rollup1 == swap [ swap ] dip1 ;
-shuntmap == [ [ cnos ] b ] cons step1 ;
+pred == 1 - ;
+times == dup 0 = [ pop pop ] [ [ dup [ i ] dip ] dip pred times ] branch ;
+map == maprev reverse ;
+maprev == [ ] rollup shuntmap ;
+rollup == swap [ swap ] dip ;
+shuntmap == [ [ cnos ] b ] cons step ;
 unit == [ ] cons ;
-construct2 == [ [ nullary1 ] cons dip1 swap ] map1 ;
-nullary1 == stack swap dip1 rest1 cons unstack ;
+construct2 == [ [ nullary ] cons dip swap ] map ;
+nullary == stack swap dip rest cons unstack ;
 unpair == uncons uncons pop ;
 definition == first body ;
 cdr == uncons swap pop ;
-x1 == dup i ;
+x == dup i ;
 y == fix i ;
-fix == [ duco ] first1 swap cons duco ;
+fix == [ duco ] first swap cons duco ;
 duco == dup cons ;
-factorial_rec == dup 2 < [ pop 1 ] [ dup pred1 factorial_rec * ] branch1 ;
-rolldown1 == [ swap ] dip1 swap ;
-small1 == dup null1 [ [ uncons null1 ] [ true ] ] index i swap pop ;
-quicksort == dup small1 [ ] [ partition quicksort [ quicksort ] dip1 concat1 ] branch1 ;
-partition == [ [ ] [ ] ] dip1 dup [ first1 > [ cnos ] [ swap [ cnos ] dip1 ] branch1 ] cons [ dup ] first1 cnos step1 ;
-quicksort1 == dup small1 [ ] [ partition1 quicksort1 [ quicksort1 ] dip1 concat1 ] branch1 ;
-partition1 == [ [ ] [ ] ] dip1 dup first1 [ first1 > [ cnos ] [ swap [ cnos ] dip1 ] branch1 ] cons [ first1 ] first1 cnos [ dup ] first1 cnos step1 ;
+factorial_rec == dup 2 < [ pop 1 ] [ dup pred factorial_rec * ] branch ;
+rolldown == [ swap ] dip swap ;
+small == dup null [ [ uncons null ] [ true ] ] index i swap pop ;
+quicksort == dup small [ ] [ partition quicksort [ quicksort ] dip concat ]
+	     branch ;
+partition == [ [ ] [ ] ] dip dup [ first > [ cnos ] [ swap [ cnos ] dip ]
+	     branch ] cons [ dup ] first cnos step ;
+quicksort1 == dup small [ ] [ partition1 quicksort1 [ quicksort1 ] dip concat ]
+	      branch ;
+partition1 == [ [ ] [ ] ] dip dup first [ first > [ cnos ] [ swap [ cnos ] dip
+	      ] branch ] cons [ first ] first cnos [ dup ] first cnos step ;
 END
+
 111 222 + .
 1 2 + 3 4 + * .
 2 2 + 2 2 * = put_bool nl .
 6 6 * 5 7 * > put_bool nl .
 true false or true and not put_bool nl .
 [ 1 2 3 4 5 ] reverse .
-[ peter paul ] [ mary jane ] concat1 .
+[ peter paul ] [ mary jane ] concat .
 [ 11 false 'X 44 ] last .
 3 [ 1 5 3 4 2 ] member put_bool nl .
 3 [ 1 5 6 4 2 ] member put_bool nl .
@@ -107,7 +113,7 @@ true false or true and not put_bool nl .
 111 [ 222 333 ] cons .
 [ 11 22 33 44 55 ] uncons uncons put put .
 0 setautoput .
-[ 'a 'b ] [ 'd 'e 'f ] concat1 dup put_list_chr nl .
+[ 'a 'b ] [ 'd 'e 'f ] concat dup put_list_chr nl .
 uncons uncons 'c swap cons cons cons dup put_list_chr nl .
 dup length putnl .
 reverse length putnl .
@@ -116,22 +122,22 @@ reverse length putnl .
 # 123 456
 111 222 [ + put ] i nl .
 111 [ put + ] reverse 222 swap i nl .
-3 7 100 [ * ] dip1 + .
-[ 1 2 3 ] [ dup * put ] step1 nl .
+3 7 100 [ * ] dip + .
+[ 1 2 3 ] [ dup * put ] step nl .
 2 [ dup * ] i .
 2 [ dup * ] twice .
 2 [ dup * ] thrice .
-2 [ square ] 0 times1 .
-2 [ square ] 1 times1 .
-2 [ square ] 2 times1 .
-2 [ square ] 3 times1 .
-2 [ square ] 4 times1 .
-2 [ square ] 5 times1 .
-[ 7 ] 10 times1 stack .
+2 [ square ] 0 times .
+2 [ square ] 1 times .
+2 [ square ] 2 times .
+2 [ square ] 3 times .
+2 [ square ] 4 times .
+2 [ square ] 5 times .
+[ 7 ] 10 times stack .
 [ 1 2 3 ] [ dup * ] map .
-[ 1 2 3 ] 0 [ dup * + ] fold1 .
+[ 1 2 3 ] 0 [ dup * + ] fold .
 11 12 [ [ + ] [ * ] [ pop unit ] [ dup pair ] ] construct2 .
-[ [ pair [ square ] map1 unpair + ] [ pop ] [ ] ] construct2 .
+[ [ pair [ square ] map unpair + ] [ pop ] [ ] ] construct2 .
 [ ] unstack 11111 .
 64 .
 64 .
@@ -143,14 +149,12 @@ reverse length putnl .
 [ last ] definition .
 [ Smith Jones Robinson ] [ last ] definition i .
 [ Smith Jones Robinson ]
-[ swap dup rest1 null1 [ car swap pop ] [ cdr swap x1 ] branch1 ] x1 .
+[ swap dup rest null [ car swap pop ] [ cdr swap x ] branch ] x .
 [ Smith Jones Robinson ]
-[ swap dup rest1 null1 [ car swap pop ] [ cdr swap i ] branch1 ] y .
+[ swap dup rest null [ car swap pop ] [ cdr swap i ] branch ] y .
 6 factorial_rec .
-6 [ swap dup 2 < [ pop pop 1 ] [ dup pred1 rolldown1 x1 * ] branch1 ]
-x1 .
-6 [ swap dup 2 < [ pop pop 1 ] [ dup pred1 rolldown1 i * ] branch1 ]
-y .
+6 [ swap dup 2 < [ pop pop 1 ] [ dup pred rolldown x * ] branch ] x .
+6 [ swap dup 2 < [ pop pop 1 ] [ dup pred rolldown i * ] branch ] y .
 [ 1 9 2 8 3 7 4 6 5 ] quicksort .
 [ 5 6 4 7 3 8 2 9 1 ] quicksort .
 [ 1 2 3 4 5 6 7 8 9 ] quicksort .
@@ -162,4 +166,4 @@ y .
     [ ABELSON Mary 1990 year 2 major Logic ] cnos
     [ ZEEMAN Fred 1988 year 2 major Accounting ] cnos
     [ MORRIS Janna 1992 year 1 major undecided ] cnos
-quicksort1 [ putnl ] step1 .
+quicksort1 [ putnl ] step .
