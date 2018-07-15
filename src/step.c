@@ -1,12 +1,12 @@
 /*
     module  : step.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef STEP_X
 #define STEP_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_step(void)
 {
     code_t *prog, *cur;
@@ -19,7 +19,7 @@ void do_step(void)
     }
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_step(void)
 {
     Node *prog;
@@ -30,33 +30,33 @@ int put_step(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* STEP */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "code_t *cur; TRACE;");
-    fprintf(outfp, "for (cur = (code_t *)do_pop(); cur; cur = cur->next) {");
-    fprintf(outfp, "do_push(cur->num);");
-    compile(prog);
-    fprintf(outfp, "} }");
-#else
-    fprintf(outfp, "char *str; ulong_t set; unsigned i; Node *cur;");
-    fprintf(outfp, "cur = stk; POP(stk);");
-    fprintf(outfp, "switch (cur->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
-    fprintf(outfp, "DUPLICATE(cur);");
-    compile(prog);
-    fprintf(outfp, "} break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "for (str = cur->u.str; *str; str++) {");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
-    compile(prog);
-    fprintf(outfp, "} break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "for (set = cur->u.set, i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & (1 << i)) {");
-    fprintf(outfp, "PUSH(INTEGER_, i);");
-    compile(prog);
-    fprintf(outfp, "} break; } }");
-#endif
+    if (new_version) {
+	fprintf(outfp, "code_t *cur;");
+	fprintf(outfp,"for (cur = (code_t *)do_pop(); cur; cur = cur->next) {");
+	fprintf(outfp, "do_push(cur->num);");
+	compile(prog);
+	fprintf(outfp, "} }");
+    } else {
+	fprintf(outfp, "char *str; ulong_t set; unsigned i; Node *cur;");
+	fprintf(outfp, "cur = stk; POP(stk);");
+	fprintf(outfp, "switch (cur->op) {");
+	fprintf(outfp, "case LIST_:");
+	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
+	fprintf(outfp, "DUPLICATE(cur);");
+	compile(prog);
+	fprintf(outfp, "} break;");
+	fprintf(outfp, "case STRING_:");
+	fprintf(outfp, "for (str = cur->u.str; *str; str++) {");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
+	compile(prog);
+	fprintf(outfp, "} break;");
+	fprintf(outfp, "case SET_:");
+	fprintf(outfp, "for (set = cur->u.set, i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "PUSH(INTEGER_, i);");
+	compile(prog);
+	fprintf(outfp, "} break; } }");
+    }
     return 1;
 }
 #endif
@@ -73,7 +73,7 @@ PRIVATE void do_step(void)
     ulong_t set;
     Node *prog, *cur;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_step())
 	return;
     COMPILE;
@@ -105,10 +105,9 @@ PRIVATE void do_step(void)
 		exeterm(prog);
 	    }
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("step");
-#endif
+	break;
     }
 }
 #endif

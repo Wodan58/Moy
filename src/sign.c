@@ -1,7 +1,7 @@
 /*
     module  : sign.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef SIGN_X
 #define SIGN_C
@@ -21,9 +21,16 @@ PRIVATE double fsgn(double f)
 	return 0.0;
 }
 
+#ifdef NEW_RUNTIME
+void do_sign(void)
+{
+    TRACE;
+    stk[-1] = stk[-1] > 0 ? 1 : -1;
+}
+#else
 PRIVATE void do_sign(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else
@@ -41,4 +48,5 @@ PRIVATE void do_sign(void)
     else if (stk->u.num < 0 || stk->u.num > 1)
 	UNARY(INTEGER_NEWNODE, stk->u.num > 0 ? 1 : -1);
 }
+#endif
 #endif

@@ -1,12 +1,12 @@
 /*
     module  : fmul.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef FMUL_X
 #define FMUL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_fmul(void)
 {
     float dbl1, dbl2;
@@ -25,7 +25,7 @@ Integer K is the product of integers I and J.  Also supports float.
 */
 PRIVATE void do_fmul(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && FLOAT_1 && FLOAT_2)
 	;
     else

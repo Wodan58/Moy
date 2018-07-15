@@ -1,12 +1,12 @@
 /*
     module  : uncons_str.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 07/15/18
 */
 #ifndef UNCONS_STR_X
 #define UNCONS_STR_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_uncons_str(void)
 {
     char *str;
@@ -28,7 +28,7 @@ PRIVATE void do_uncons_str(void)
     Node *save;
     ulong_t set;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
 	stk->u.lis->op <= SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
 	;
@@ -69,10 +69,9 @@ PRIVATE void do_uncons_str(void)
 	    UNARY(INTEGER_NEWNODE, i);
 	PUSH(SET_, set & ~(1 << i));
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("uncons");
-#endif
+	break;
     }
 }
 #endif

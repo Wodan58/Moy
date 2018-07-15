@@ -1,11 +1,18 @@
 /*
     module  : system.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef SYSTEM_X
 #define SYSTEM_C
 
+#ifdef NEW_RUNTIME
+void do_system(void)
+{
+    TRACE;
+    system((char *)do_pop());
+}
+#else
 /**
 system  :  "command"  ->
 Escapes to shell, executes string "command".
@@ -16,7 +23,7 @@ PRIVATE void do_system(void)
 {
     char *str;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("system");
@@ -25,4 +32,5 @@ PRIVATE void do_system(void)
     POP(stk);
     system(str);
 }
+#endif
 #endif

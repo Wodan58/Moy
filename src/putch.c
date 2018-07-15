@@ -1,12 +1,12 @@
 /*
     module  : putch.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef PUTCH_X
 #define PUTCH_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_putch(void)
 {
     int ch;
@@ -22,7 +22,7 @@ N : numeric, writes character whose ASCII is N.
 */
 PRIVATE void do_putch(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("putch");

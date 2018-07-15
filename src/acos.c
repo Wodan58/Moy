@@ -1,7 +1,7 @@
 /*
     module  : acos.c
-    version : 1.5
-    date    : 07/10/18
+    version : 1.6
+    date    : 07/15/18
 */
 #ifndef ACOS_X
 #define ACOS_C

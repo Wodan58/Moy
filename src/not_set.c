@@ -1,12 +1,12 @@
 /*
     module  : not_set.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 07/15/18
 */
 #ifndef NOT_SET_X
 #define NOT_SET_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_not_set(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_not_set(void)
 {
     int num = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -52,10 +52,9 @@ PRIVATE void do_not_set(void)
     case FILE_:
 	num = !stk->u.fil;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("not");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = num;

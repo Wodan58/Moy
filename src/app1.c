@@ -1,12 +1,19 @@
 /*
     module  : app1.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef APP1_X
 #define APP1_C
 
-#ifndef NCHECK
+#ifdef NEW_RUNTIME
+void do_app1(void)
+{
+    TRACE;
+    execute((code_t *)do_pop());
+}
+#else
+#ifndef OLD_RUNTIME
 int put_app1(void)
 {
     Node *prog;
@@ -28,7 +35,7 @@ PRIVATE void do_app1(void)
 {
     Node *prog;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_app1())
 	return;
     COMPILE;
@@ -39,4 +46,5 @@ PRIVATE void do_app1(void)
     POP(stk);
     exeterm(prog);
 }
+#endif
 #endif

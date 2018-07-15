@@ -1,7 +1,7 @@
 /*
     module  : node.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 07/14/18
 */
 #include "runtime.h"
 
@@ -56,22 +56,22 @@ Node *reverse(Node *cur)
 }
 
 /*
-    Copy the stack to a list
-*/
+ * Copy the stack to a list; do not empty the stack.
+ */
 Node *stk2lst(void)
 {
-    Node *root = 0, **cur;
+    Node *root = 0, **cur, *mem;
 
-    for (cur = &root; stk; stk = stk->next) {
-	*cur = heapnode(stk->op, stk->u.ptr, 0);
+    for (cur = &root, mem = stk; mem; mem = mem->next) {
+	*cur = heapnode(mem->op, mem->u.ptr, 0);
 	cur = &(*cur)->next;
     }
     return root;
 }
 
 /*
-    Replace the stack by a list
-*/
+ * Copy a list to the stack.
+ */
 void lst2stk(Node *cur)
 {
     if (cur) {

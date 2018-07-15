@@ -1,12 +1,12 @@
 /*
     module  : unary2.c
-    version : 1.15
-    date    : 07/10/18
+    version : 1.16
+    date    : 07/15/18
 */
 #ifndef UNARY2_X
 #define UNARY2_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_unary2(void)
 {
     code_t *prog;
@@ -24,7 +24,7 @@ void do_unary2(void)
     do_push(result[1]);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_unary2(void)
 {
     Node *prog;
@@ -35,24 +35,28 @@ int put_unary2(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* UNARY2 */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "node_t temp, result[2]; TRACE; temp = do_pop();");
+    if (new_version)
+	fprintf(outfp, "node_t temp, result[2]; temp = do_pop();");
+    else {
+	fprintf(outfp, "Node temp, *top, result[2];");
+	fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
+    }
     compile(prog);
-    fprintf(outfp, "result[0] = stk[-1]; stk[-1] = temp;");
+    if (new_version)
+	fprintf(outfp, "result[0] = stk[-1]; stk[-1] = temp;");
+    else {
+	fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
+	fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
+    }
     compile(prog);
-    fprintf(outfp, "result[1] = stk[-1]; stk[-1] = result[0];");
-    fprintf(outfp, "do_push(result[1]); }");
-#else
-    fprintf(outfp, "Node temp, *top, result[2];");
-    fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
-    compile(prog);
-    fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
-    compile(prog);
-    fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
-    fprintf(outfp, "DUPLICATE(&result[0]);");
-    fprintf(outfp, "DUPLICATE(&result[1]); }");
-#endif
+    if (new_version) {
+	fprintf(outfp, "result[1] = stk[-1]; stk[-1] = result[0];");
+	fprintf(outfp, "do_push(result[1]); }");
+    } else {
+	fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
+	fprintf(outfp, "DUPLICATE(&result[0]);");
+	fprintf(outfp, "DUPLICATE(&result[1]); }");
+    }
     return 1;
 }
 #endif
@@ -66,7 +70,7 @@ PRIVATE void do_unary2(void)
 {
     Node *prog, temp, *top, result[2];
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_unary2())
 	return;
     COMPILE;

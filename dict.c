@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/14/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -41,6 +41,22 @@ static Dict *dict;
 KHASH_MAP_INIT_STR(symtab, int);
 
 static khash_t(symtab) *hash;
+
+int symtabmax(void)
+{
+    return vec_max(dict);
+#if 0
+    return kh_n_buckets(hash);
+#endif
+}
+
+int symtabindex(void)
+{
+    return vec_size(dict);
+#if 0
+    return kh_size(hash);
+#endif
+}
 
 unsigned dict_flags(int index)
 {

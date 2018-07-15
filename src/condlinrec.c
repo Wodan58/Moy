@@ -1,12 +1,12 @@
 /*
     module  : condlinrec.c
-    version : 1.15
-    date    : 07/10/18
+    version : 1.16
+    date    : 07/15/18
 */
 #ifndef CONDLINREC_X
 #define CONDLINREC_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void condnestrec(code_t *root)
 {
     code_t *cur;
@@ -30,7 +30,7 @@ void do_condlinrec(void)
     condnestrec((code_t *)do_pop());
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_condnestrec(void)
 {
     static int ident;
@@ -47,22 +47,19 @@ int put_condnestrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void condnestrec_%d(void) {", ident);
-#ifdef NEW_VERSION
-    fprintf(outfp, "code_t *cur;");
-#else
-    fprintf(outfp, "Node *save; int num;");
-#endif
+    if (new_version)
+	fprintf(outfp, "code_t *cur; TRACE;");
+    else
+	fprintf(outfp, "Node *save; int num;");
     for (cur = root; cur->next; cur = cur->next) {
-#ifndef NEW_VERSION
-	fprintf(outfp, "CONDITION; save = stk;");
-#endif
+	if (!new_version)
+	    fprintf(outfp, "CONDITION; save = stk;");
 	list = cur->u.lis->u.lis;
 	compile(list);
-#ifdef NEW_VERSION
-	fprintf(outfp, "if (do_pop()) {");
-#else
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
-#endif
+	if (new_version)
+	    fprintf(outfp, "if (do_pop()) {");
+	else
+	    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
 	node = cur->u.lis->next;
 	compile(node->u.lis);
 	while ((node = node->next) != 0) {
@@ -121,7 +118,7 @@ PRIVATE void do_condlinrec(void)
 {
     Node *prog;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_condnestrec())
 	return;
     COMPILE;

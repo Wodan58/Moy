@@ -1,16 +1,16 @@
 /*
     module  : integer.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef INTEGER_X
 #define INTEGER_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_integer(void)
 {
     TRACE;
-    stk[-1] = stk[-1] && abs(stk[-1]) < start_of_data;
+    stk[-1] = IS_INTEGER(stk[-1]);
 }
 #else
 /**

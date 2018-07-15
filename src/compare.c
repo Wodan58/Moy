@@ -1,7 +1,7 @@
 /*
     module  : compare.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef COMPARE_X
 #define COMPARE_C

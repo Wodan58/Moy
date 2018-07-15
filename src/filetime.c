@@ -1,13 +1,24 @@
 /*
     module  : filetime.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef FILETIME_X
 #define FILETIME_C
 
 #include <sys/stat.h>
 
+#ifdef NEW_RUNTIME
+void do_filetime(void)
+{
+    struct stat buf;
+
+    TRACE;
+    if (stat((char *)stk[-1], &buf) == -1)
+	buf.st_mtime = 0;
+    stk[-1] = buf.st_mtime;
+}
+#else
 /**
 filetime  :  F  ->  T
 T is the modification time of file F.
@@ -16,7 +27,7 @@ PRIVATE void do_filetime(void)
 {
     struct stat buf;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("filetime");
@@ -28,4 +39,5 @@ PRIVATE void do_filetime(void)
     } else
 	UNARY(INTEGER_NEWNODE, buf.st_mtime);
 }
+#endif
 #endif

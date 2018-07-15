@@ -1,12 +1,12 @@
 /*
     module  : infra.c
-    version : 1.12
-    date    : 07/10/18
+    version : 1.13
+    date    : 07/15/18
 */
 #ifndef INFRA_X
 #define INFRA_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_infra(void)
 {
     code_t *prog, *list, *save;
@@ -22,7 +22,7 @@ void do_infra(void)
     do_push((node_t)list);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_infra(void)
 {
     Node *prog;
@@ -33,19 +33,17 @@ int put_infra(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* INFRA */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "code_t *list, *save; TRACE; list = (code_t *)do_pop();");
-    fprintf(outfp, "save = stk2lst(); lst2stk(list);");
+    if (new_version)
+	fprintf(outfp, "code_t *list, *save; list = (code_t *)do_pop();");
+    else
+	fprintf(outfp, "Node *list, *save; list = stk->u.lis; POP(stk);");
+    fprintf(outfp, "save = stk2lst(); stk = 0; lst2stk(list);");
     compile(prog);
-    fprintf(outfp, "list = stk2lst(); lst2stk(save); do_push((node_t)list); }");
-#else
-    fprintf(outfp, "Node *list, *save;");
-    fprintf(outfp, "list = stk->u.lis; POP(stk);");
-    fprintf(outfp, "save = stk2lst(); lst2stk(list);");
-    compile(prog);
-    fprintf(outfp, "list = stk2lst(); lst2stk(save);");
-    fprintf(outfp, "PUSH(LIST_, list); }");
-#endif
+    fprintf(outfp, "list = stk2lst(); stk = 0; lst2stk(save);");
+    if (new_version)
+	fprintf(outfp, "do_push((node_t)list); }");
+    else
+	fprintf(outfp, "PUSH(LIST_, list); }");
     return 1;
 }
 #endif
@@ -67,12 +65,12 @@ PRIVATE void do_infra(void)
  4. Empty the stack
  5. Copy the list onto the stack
  6. Execute the program
- 7. Collect the stack into the list
+ 7. Collect the stack into a list
  8. Empty the stack
  9. Restore the original stack
 10. Put the collected list onto the restored stack
 */
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_infra())
 	return;
     COMPILE;
@@ -84,10 +82,12 @@ PRIVATE void do_infra(void)
     POP(stk);
     list = stk->u.lis;		// 2
     POP(stk);
-    save = stk2lst();		// 3, 4
+    save = stk2lst();		// 3
+    stk = 0;			// 4
     lst2stk(list);		// 5
     exeterm(prog);		// 6
-    list = stk2lst();		// 7, 8
+    list = stk2lst();		// 7
+    stk = 0;			// 8
     lst2stk(save);		// 9
     PUSH(LIST_, list);		// 10
 }

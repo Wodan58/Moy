@@ -1,19 +1,19 @@
 /*
     module  : condnestrec.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef CONDNESTREC_X
 #define CONDNESTREC_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_condnestrec(void)
 {
     TRACE;
     condnestrec((code_t *)do_pop());
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_condnestrec(void);
 #endif
 
@@ -37,7 +37,7 @@ PRIVATE void do_condnestrec(void)
 {
     Node *prog;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_condnestrec())
 	return;
     COMPILE;

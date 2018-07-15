@@ -1,12 +1,12 @@
 /*
     module  : argv.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef ARGV_X
 #define ARGV_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_argv(void)
 {
     int i;
@@ -31,7 +31,7 @@ PRIVATE void do_argv(void)
     int i;
     Node *cur = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     for (i = g_argc - 1; i >= 0; i--)

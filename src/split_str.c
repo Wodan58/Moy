@@ -1,12 +1,12 @@
 /*
     module  : split_str.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef SPLIT_STR_X
 #define SPLIT_STR_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_split_str(void)
 {
     code_t *prog;
@@ -36,7 +36,7 @@ void do_split_str(void)
     do_push((node_t)nostring);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_split_str(void)
 {
     Node *prog;
@@ -47,66 +47,67 @@ int put_split_str(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* SPLIT_STR */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "int yesptr = 0, noptr = 0; char *str, *yesstring = 0,");
-    fprintf(outfp, "*nostring = 0; TRACE; if ((str = (char *)do_pop()) == 0)");
-    fprintf(outfp, "{ do_push(0); return; } yesstring = strdup(str);");
-    fprintf(outfp, "nostring = strdup(str); for (; *str; str++) {");
-    fprintf(outfp, "do_push(*str);");
-    compile(prog);
-    fprintf(outfp, "if (do_pop()) yesstring[yesptr++] = *str; else ");
-    fprintf(outfp, "nostring[noptr++] = *str; do_pop(); }");
-    fprintf(outfp, "yesstring[yesptr] = 0; nostring[noptr] = 0;");
-    fprintf(outfp, "do_push((node_t)yesstring); do_push((node_t)nostring);");
-#else
-    fprintf(outfp, "unsigned i, yes = 0, no = 0;");
-    fprintf(outfp, "char *str, *yes_str, *no_str;");
-    fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
-    fprintf(outfp, "Node *save, *list, *root = 0, *cur, *head = 0, *tail;");
-    fprintf(outfp, "switch (stk->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "list = stk->u.lis; POP(stk);");
-    fprintf(outfp, "for (; list; list = list->next) {");
-    fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
-    compile(prog);
-    fprintf(outfp, "if (stk->u.num) if (!root)");
-    fprintf(outfp, "cur = root = heapnode(list->op, list->u.ptr,0); else ");
-    fprintf(outfp, "cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
-    fprintf(outfp, "else if (!head)");
-    fprintf(outfp, "tail = head = heapnode(list->op,list->u.ptr,0); else ");
-    fprintf(outfp, "tail = tail->next = heapnode(list->op,list->u.ptr,0);");
-    fprintf(outfp, "stk = save; RELEASE; }");
-    fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "str = stk->u.str; POP(stk);");
-    fprintf(outfp, "yes_str = strdup(str);");
-    fprintf(outfp, "no_str = strdup(str);");
-    fprintf(outfp, "for (; *str; str++) {");
-    fprintf(outfp, "CONDITION; save = stk;");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
-    compile(prog);
-    fprintf(outfp, "if (stk->u.num)");
-    fprintf(outfp, "yes_str[yes++] = *str;");
-    fprintf(outfp, "else no_str[no++] = *str;");
-    fprintf(outfp, "stk = save; RELEASE; }");
-    fprintf(outfp, "yes_str[yes] = 0;");
-    fprintf(outfp, "no_str[no] = 0;");
-    fprintf(outfp, "PUSH(STRING_, yes_str);");
-    fprintf(outfp, "PUSH(STRING_, no_str); break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = stk->u.set; POP(stk);");
-    fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & (1 << i)) {");
-    fprintf(outfp, "CONDITION; save = stk;");
-    fprintf(outfp, "PUSH(INTEGER_, i);");
-    compile(prog);
-    fprintf(outfp, "if (stk->u.num)");
-    fprintf(outfp, "yes_set |= 1 << i;");
-    fprintf(outfp, "else no_set |= 1 << i;");
-    fprintf(outfp, "stk = save; RELEASE; }");
-    fprintf(outfp, "PUSH(SET_, yes_set);");
-    fprintf(outfp, "PUSH(SET_, no_set); break; } }");
-#endif
+    if (new_version) {
+	fprintf(outfp, "int yesptr = 0, noptr = 0; char *str, *yesstring = 0,");
+	fprintf(outfp, "*nostring = 0; if ((str = (char *)do_pop()) == 0)");
+	fprintf(outfp, "{ do_push(0); return; } yesstring = strdup(str);");
+	fprintf(outfp, "nostring = strdup(str); for (; *str; str++) {");
+	fprintf(outfp, "do_push(*str);");
+	compile(prog);
+	fprintf(outfp, "if (do_pop()) yesstring[yesptr++] = *str; else ");
+	fprintf(outfp, "nostring[noptr++] = *str; do_pop(); }");
+	fprintf(outfp, "yesstring[yesptr] = 0; nostring[noptr] = 0;");
+	fprintf(outfp, "do_push((node_t)yesstring);");
+	fprintf(outfp, "do_push((node_t)nostring);");
+    } else {
+	fprintf(outfp, "unsigned i, yes = 0, no = 0;");
+	fprintf(outfp, "char *str, *yes_str, *no_str;");
+	fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
+	fprintf(outfp, "Node *save, *list, *root = 0, *cur, *head = 0, *tail;");
+	fprintf(outfp, "switch (stk->op) {");
+	fprintf(outfp, "case LIST_:");
+	fprintf(outfp, "list = stk->u.lis; POP(stk);");
+	fprintf(outfp, "for (; list; list = list->next) {");
+	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
+	compile(prog);
+	fprintf(outfp, "if (stk->u.num) if (!root)");
+	fprintf(outfp, "cur = root = heapnode(list->op, list->u.ptr,0); else ");
+	fprintf(outfp, "cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
+	fprintf(outfp, "else if (!head)");
+	fprintf(outfp, "tail = head = heapnode(list->op,list->u.ptr,0); else ");
+	fprintf(outfp, "tail = tail->next = heapnode(list->op,list->u.ptr,0);");
+	fprintf(outfp, "stk = save; RELEASE; }");
+	fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); break;");
+	fprintf(outfp, "case STRING_:");
+	fprintf(outfp, "str = stk->u.str; POP(stk);");
+	fprintf(outfp, "yes_str = strdup(str);");
+	fprintf(outfp, "no_str = strdup(str);");
+	fprintf(outfp, "for (; *str; str++) {");
+	fprintf(outfp, "CONDITION; save = stk;");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
+	compile(prog);
+	fprintf(outfp, "if (stk->u.num)");
+	fprintf(outfp, "yes_str[yes++] = *str;");
+	fprintf(outfp, "else no_str[no++] = *str;");
+	fprintf(outfp, "stk = save; RELEASE; }");
+	fprintf(outfp, "yes_str[yes] = 0;");
+	fprintf(outfp, "no_str[no] = 0;");
+	fprintf(outfp, "PUSH(STRING_, yes_str);");
+	fprintf(outfp, "PUSH(STRING_, no_str); break;");
+	fprintf(outfp, "case SET_:");
+	fprintf(outfp, "set = stk->u.set; POP(stk);");
+	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "CONDITION; save = stk;");
+	fprintf(outfp, "PUSH(INTEGER_, i);");
+	compile(prog);
+	fprintf(outfp, "if (stk->u.num)");
+	fprintf(outfp, "yes_set |= 1 << i;");
+	fprintf(outfp, "else no_set |= 1 << i;");
+	fprintf(outfp, "stk = save; RELEASE; }");
+	fprintf(outfp, "PUSH(SET_, yes_set);");
+	fprintf(outfp, "PUSH(SET_, no_set); break; } }");
+    }
     return 1;
 }
 #endif
@@ -122,7 +123,7 @@ PRIVATE void do_split_str(void)
     ulong_t set, yes_set = 0, no_set = 0;
     Node *prog, *save, *list, *root = 0, *cur, *head = 0, *tail;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_split_str())
 	return;
     COMPILE;
@@ -197,10 +198,9 @@ PRIVATE void do_split_str(void)
 	PUSH(SET_, yes_set);
 	PUSH(SET_, no_set);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("split");
-#endif
+	break;
     }
 }
 #endif

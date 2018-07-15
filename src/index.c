@@ -1,12 +1,12 @@
 /*
     module  : index.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef INDEX_X
 #define INDEX_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_index(void)
 {
     code_t *cur;
@@ -26,7 +26,7 @@ PRIVATE void do_index(void)
 {
     Node *list;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     TWOPARAMS("index");

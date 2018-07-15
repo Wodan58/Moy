@@ -1,19 +1,19 @@
 /*
     module  : case.c
-    version : 1.11
-    date    : 07/10/18
+    version : 1.12
+    date    : 07/15/18
 */
 #ifndef CASE_X
 #define CASE_C
 
-#ifndef RUNTIME
+#ifndef NEW_RUNTIME
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {
     char *name;
 
     *error = 0;
     switch (first->op) {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     case USR_:
 	name = dict_descr(first->u.num);
 	switch (second->op) {
@@ -41,7 +41,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     case ANON_FUNCT_:
 	name = procname(first->u.proc);
 	switch (second->op) {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	case USR_:
 	    return strcmp(name, dict_descr(second->u.num));
 #endif
@@ -60,7 +60,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	    return strcmp(name, dict_descr(second->u.num));
 #endif
 	    break;
@@ -113,7 +113,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     case STRING_:
 	name = first->u.str;
 	switch (second->op) {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	case USR_:
 	    return strcmp(name, dict_descr(second->u.num));
 #endif
@@ -132,7 +132,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	    return strcmp(name, dict_descr(second->u.num));
 #endif
 	    break;
@@ -182,7 +182,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	}
 	break;
     default:
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	name = dict_descr(first->u.num);
 	switch (second->op) {
 	case USR_:
@@ -212,11 +212,12 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 }
 #endif
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_case(void)
 {
     code_t *cur;
 
+    TRACE;
     for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
 	if (cur->num == stk[-1])
 	    break;
@@ -228,7 +229,7 @@ void do_case(void)
 }
 #else
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_case(void)
 {
     Node *cur;
@@ -239,26 +240,26 @@ int put_case(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CASE */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "int num = 0; for (;;) {");
+    if (new_version)
+	fprintf(outfp, "int num = 0; for (;;) {");
+    else
+	fprintf(outfp, "int num = 0, ok; for (;;) {");
     for (; cur->next; cur = cur->next) {
 	PrintHead(cur, outfp);
-	fprintf(outfp, "if (stk[-1] == stk[-2]) { do_pop(); do_pop();");
+	if (new_version)
+	    fprintf(outfp, "if (stk[-1] == stk[-2]) { do_pop(); do_pop();");
+	else {
+	    fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
+	    fprintf(outfp, "POP(stk); POP(stk);");
+	}
 	compile(cur->u.lis->next);
 	fprintf(outfp, "num = 1; break; }");
     }
-    fprintf(outfp, "break; } if (!num) { do_pop();");
-#else
-    fprintf(outfp, "int num = 0, ok; for (;;) {");
-    for (; cur->next; cur = cur->next) {
-	PrintHead(cur, outfp);
-	fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
-	fprintf(outfp, "POP(stk); POP(stk);");
-	compile(cur->u.lis->next);
-	fprintf(outfp, "num = 1; break; }");
-    }
-    fprintf(outfp, "break; } if (!num) { POP(stk);");
-#endif
+    fprintf(outfp, "break; } if (!num) {");
+    if (new_version)
+	fprintf(outfp, "do_pop();");
+    else
+	fprintf(outfp, "POP(stk);");
     compile(cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
@@ -274,7 +275,7 @@ PRIVATE void do_case(void)
     int ok;
     Node *cur;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_case())
 	return;
     COMPILE;

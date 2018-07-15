@@ -1,15 +1,16 @@
 /*
     module  : unstack.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef UNSTACK_X
 #define UNSTACK_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_unstack(void)
 {
     TRACE;
+    stk = 0;
     lst2stk((code_t *)do_pop());
 }
 #else
@@ -21,7 +22,7 @@ PRIVATE void do_unstack(void)
 {
     Node *cur;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("unstack");

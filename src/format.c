@@ -1,11 +1,36 @@
 /*
     module  : format.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef FORMAT_X
 #define FORMAT_C
 
+#ifdef NEW_RUNTIME
+void do_format(void)
+{
+    int width, prec, leng;
+    char format[8], *result;
+
+    TRACE;
+    prec = do_pop();
+    width = do_pop();
+    strcpy(format, "%*.*lld");
+    format[6] = do_pop();
+#ifdef _MSC_VER
+    leng = INPLINEMAX;
+#else
+    leng = snprintf(0, 0, format, width, prec, (long long)stk[-1]) + 1;
+#endif
+    result = ck_malloc_sec(leng + 1);
+#ifdef _MSC_VER
+    sprintf(result, format, width, prec, (long long)stk[-1]);
+#else
+    snprintf(result, leng, format, width, prec, (long long)stk[-1]);
+#endif
+    stk[-1] = result;
+}
+#else
 /**
 format  :  N C I J  ->  S
 S is the formatted version of N in mode C
@@ -18,7 +43,7 @@ PRIVATE void do_format(void)
     int width, prec, leng;
     char spec, format[8], *result;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && INTEGER_1 && INTEGER_2 && CHAR_3 && NUMERIC_4)
 	;
     else
@@ -34,8 +59,10 @@ PRIVATE void do_format(void)
     CHARACTER("format");
     spec = stk->u.num;
     POP(stk);
+#ifndef NCHECK
     if (!strchr("dioxX", spec))
 	execerror("one of: d i o x X", "format");
+#endif
     strcpy(format, "%*.*lld");
     format[6] = spec;
     NUMERICTYPE("format");
@@ -56,4 +83,5 @@ PRIVATE void do_format(void)
     } else
 	UNARY(STRING_NEWNODE, result);
 }
+#endif
 #endif

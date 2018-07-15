@@ -1,11 +1,17 @@
 /*
     module  : __latex_manual.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 07/15/18
 */
 #ifndef __LATEX_MANUAL_X
 #define __LATEX_MANUAL_C
 
+#ifdef NEW_RUNTIME
+void do___latex_manual(void)
+{
+    TRACE;
+}
+#else
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
 
 #ifndef MANUAL_C
@@ -21,9 +27,10 @@ but without the head and tail.
 */
 PRIVATE void do___latex_manual(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     make_manual(2);
 }
+#endif
 #endif

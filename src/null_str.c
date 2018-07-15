@@ -1,12 +1,12 @@
 /*
     module  : null_str.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef NULL_STR_X
 #define NULL_STR_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_null_str(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_null_str(void)
 {
     int num = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -49,10 +49,9 @@ PRIVATE void do_null_str(void)
     case INTEGER_:
 	num = !stk->u.num;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("null");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = num;

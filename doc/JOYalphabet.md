@@ -4,29 +4,33 @@
 Introduction
 ============
 
-[Rosetta Code](http://rosettacode.org/) is a wiki that offers example
-programs for many programming languages. JOY is one of those programming
-languages. From Rosetta Code 26 tasks are taken, one task for each
-character in the alphabet, and described in this document. The tasks are
-quite diverse, starting with facts about the language, small test
-programs demonstrating syntactic constructs, up to complete applications.
+[Rosetta Code](http://rosettacode.org/) is a wiki that offers example programs
+for many programming languages. JOY is one of those programming languages.
+From Rosetta Code 26 tasks are taken, one task for each character in the
+alphabet, and described in this document. The tasks are quite diverse, starting
+with facts about the language, small test programs demonstrating syntactic
+constructs, up to complete applications.
 The description in this document solves each task, shows how to incorporate
 the task in a complete program, and shows the result of running the program.
 
 V — variables
 =============
 
-The task is to demonstrate variable declaration, initialization,
-assignment, datatypes, scope, referencing.
+The task is to demonstrate variable declaration, initialization, assignment,
+datatypes, scope, referencing.
 
-JOY does not have variables. Variables are names for locations in memory
-where values are stored. JOY has names, memory and values but not the
-combination.
+JOY does not have variables. Variables are names for locations in memory where
+values are stored. JOY has names, memory, and values but not the combination.
 
 The memory that JOY uses is commonly referred to as "the stack".
 
-Initializing
-------------
+Declaration
+-----------
+
+It is not possible to declare variables.
+
+Initialization
+--------------
 
 The JOY stack can be initialized:
 
@@ -39,7 +43,7 @@ Values can be pushed on the stack:
 
     3 2 1
 
-pushes the value `3` `2` `1` of type integer on top of the stack.
+pushes the values `3` `2` `1` of type integer on top of the stack.
 The stack now contains from top to bottom:
 
     1 2 3
@@ -48,8 +52,15 @@ Datatypes
 ---------
 
 Boolean (true, false); Character ('A ...); Integer (1, -1, ...);
-Float (3.14); Set ({0 1 2}); String ("Hello"); List ([0 1 2]);
+Set ({0 1 2}); String ("Hello"); List ([0 1 2]); Float (3.14);
 File (stdin, stdout, stderr); Symbols.
+
+Scope
+-----
+
+From the point of view of the C program that implements the language, the stack
+in Joy is one global variable that can be accessed in its entirety from all
+locations in the program.
 
 Stack
 -----

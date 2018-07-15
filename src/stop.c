@@ -1,10 +1,12 @@
 /*
     module  : stop.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef STOP_X
 #define STOP_C
+
+#ifdef NEW_RUNTIME
 
 #ifndef POP_C
 #undef POP_X
@@ -12,7 +14,6 @@
 #define POP_X
 #endif
 
-#ifdef RUNTIME
 void do_stop(void)
 {
     TRACE;
@@ -26,9 +27,16 @@ void do_stop(void)
     }
 }
 #else
+
+#ifndef PUT_C
+#undef PUT_X
+#include "put.c"
+#define PUT_X
+#endif
+
 PRIVATE void do_stop(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     if (stk) {

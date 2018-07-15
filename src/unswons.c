@@ -1,12 +1,12 @@
 /*
     module  : unswons.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef UNSWONS_X
 #define UNSWONS_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_unswons(void)
 {
     code_t *cur;
@@ -28,7 +28,7 @@ PRIVATE void do_unswons(void)
     Node *save;
     ulong_t set;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("unswons");
@@ -62,10 +62,9 @@ PRIVATE void do_unswons(void)
 	    UNARY(SET_NEWNODE, set & ~(1 << i));
 	PUSH(INTEGER_, i);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("unswons");
-#endif
+	break;
     }
 }
 #endif

@@ -1,11 +1,14 @@
 /*
     module  : ordchr.h
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifndef NCHECK
+#ifdef NEW_RUNTIME
+    TRACE;
+#else
+#ifndef OLD_RUNTIME
     if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
 	;
     else
@@ -17,6 +20,7 @@ PRIVATE void PROCEDURE(void)
 	stk->op = RESULTTYP;
     else
 	GUNARY(RESULTTYP, stk->u.ptr);
+#endif
 }
 
 #undef PROCEDURE

@@ -1,12 +1,12 @@
 /*
     module  : some.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef SOME_X
 #define SOME_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_some(void)
 {
     int num = 0;

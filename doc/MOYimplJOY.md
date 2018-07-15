@@ -165,8 +165,7 @@ restore the stack with CONDITION and RELEASE statements.
 Adding a new builtin
 ====================
 
-Adding a new builtin, for example *over*, requires the change of 10
-files:
+Adding a new builtin, for example *over*, requires the change of 10 files:
 
 -   parse.y - DO\_OVER, a new token type
 -   builtin.h - do\_over(), a function declaration
@@ -207,3 +206,7 @@ The reason to leave the types out is performance. Some parts really need
 the type information, such as the joy-in-joy interpreter, but these parts
 can have the type information implemented in Joy instead of C. Likewise,
 multi-tasking and multi-precision arithmatic can be implemented in Joy.
+
+2018-07-15 - The new version is now feature complete. The old version is used
+to compile lsptst.joy. Compile with -c to get the new version; compile with -o
+to get the old version.

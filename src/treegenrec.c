@@ -1,12 +1,46 @@
 /*
     module  : treegenrec.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef TREEGENREC_X
 #define TREEGENREC_C
 
-#ifndef NCHECK
+#ifndef CONS_C
+#undef CONS_X
+#include "cons.c"
+#define CONS_X
+#endif
+
+#ifdef NEW_RUNTIME
+void treegenrec(void)
+{
+    code_t *code;
+
+    TRACE;
+    code = (code_t *)do_pop();
+    if (IS_LIST(stk[-1])) {
+	execute(code->next->list);
+	do_push((node_t)code);
+	code = joy_code();
+	code->fun = treegenrec;
+	do_push((node_t)code);
+	do_cons();
+	code = (code_t *)stk[-1];
+	execute(code->list->next->next);
+    } else
+	execute(code->list);
+}
+
+void do_treegenrec(void)
+{
+    TRACE;
+    do_cons();
+    do_cons();
+    treegenrec();
+}
+#else
+#ifndef OLD_RUNTIME
 int put_treegenrec(void)
 {
     static int ident;
@@ -21,18 +55,29 @@ int put_treegenrec(void)
     printstack(outfp);
     fprintf(outfp, "do_cons();");
     fprintf(outfp, "do_cons();");
-    fprintf(declfp, "void do_treegenrec_%d(void);", ++ident);
-    fprintf(outfp, "do_treegenrec_%d();", ident);
+    fprintf(declfp, "void treegenrec_%d(void);", ++ident);
+    fprintf(outfp, "treegenrec_%d();", ident);
     oldfp = outfp;
     outfp = nextfile();
-    fprintf(outfp, "void do_treegenrec_%d(void) {", ident);
-    fprintf(outfp, "Node *save = stk; POP(stk);");
-    fprintf(outfp, "if (stk->op == LIST_) {");
+    fprintf(outfp, "void treegenrec_%d(void) {", ident);
+    if (new_version) {
+	fprintf(outfp, "code_t *code; TRACE; code = (code_t *)do_pop();");
+	fprintf(outfp, "if (IS_LIST(stk[-1])) {");
+    } else {
+	fprintf(outfp, "Node *save = stk; POP(stk);");
+	fprintf(outfp, "if (stk->op == LIST_) {");
+    }
     compile(prog[1]);
-    fprintf(outfp, "DUPLICATE(save);");
-    fprintf(outfp, "NULLARY(LIST_NEWNODE,");
-    fprintf(outfp, "ANON_FUNCT_NEWNODE(do_treegenrec_%d, 0));", ident);
-    fprintf(outfp, "do_cons();");
+    if (new_version) {
+	fprintf(outfp, "do_push((node_t)code);");
+	fprintf(outfp, "code = joy_code(); code->fun = treegenrec_%d;", ident);
+	fprintf(outfp, "do_push((node_t)code); do_cons();");
+    } else {
+	fprintf(outfp, "DUPLICATE(save);");
+	fprintf(outfp, "NULLARY(LIST_NEWNODE,");
+	fprintf(outfp, "ANON_FUNCT_NEWNODE(treegenrec_%d, 0));", ident);
+	fprintf(outfp, "do_cons();");
+    }
     compile(prog[2]);
     fprintf(outfp, "} else {");
     compile(prog[0]);
@@ -48,7 +93,7 @@ treegenrec  :  T [O1] [O2] [C]  ->  ...
 T is a tree. If T is a leaf, executes O1.
 Else executes O2 and then [[[O1] [O2] C] treegenrec] C.
 */
-static void treegenrec(void)
+void treegenrec(void)
 {
     Node *save;
 
@@ -66,7 +111,7 @@ static void treegenrec(void)
 
 PRIVATE void do_treegenrec(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_treegenrec())
 	return;
     COMPILE;
@@ -77,4 +122,5 @@ PRIVATE void do_treegenrec(void)
     do_cons();
     treegenrec();
 }
+#endif
 #endif

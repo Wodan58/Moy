@@ -1,11 +1,11 @@
 /*
     module  : andorxor.h
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2 && stk->op == stk->next->op &&
 	stk->op >= BOOLEAN_ && stk->op <= SET_)
 	;
@@ -33,10 +33,9 @@ PRIVATE void PROCEDURE(void)
 	} else
 	    BINARY(BOOLEAN_NEWNODE, stk->next->u.num OPER2 stk->u.num);
 	break;
-#ifndef NCHECK
     default:
 	BADDATA(NAME);
-#endif
+	break;
     }
 }
 

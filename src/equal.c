@@ -1,16 +1,16 @@
 /*
     module  : equal.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef EQUAL_X
 #define EQUAL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 int equal(code_t *first, code_t *second)
 {
     for (; first && second; first = first->next, second = second->next) {
-	if (first->num > start_of_heap && second->num > start_of_heap) {
+	if (IS_LIST(first->num) && IS_LIST(second->num)) {
 	    if (!equal(first->list, second->list))
 		return 0;
 	} else if (first->num != second->num)
@@ -22,7 +22,7 @@ int equal(code_t *first, code_t *second)
 void do_equal(void)
 {
     TRACE;
-    if (stk[-2] > start_of_heap && stk[-1] > start_of_heap)
+    if (IS_LIST(stk[-2]) && IS_LIST(stk[-1]))
 	stk[-2] = equal((code_t *)stk[-2], (code_t *)stk[-1]);
     else
 	stk[-2] = stk[-2] == stk[-1];
@@ -69,7 +69,7 @@ PRIVATE int equal_aux(Node *n1, Node *n2)
 
 PRIVATE void do_equal(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else

@@ -1,9 +1,9 @@
 /*
     module  : comprel.h
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
-#ifndef RUNTIME
+#ifndef NEW_RUNTIME
 #ifndef CASE_C
 #undef CASE_X
 #include "case.c"
@@ -13,9 +13,9 @@
 
 PRIVATE void PROCEDURE(void)
 {
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
     TRACE;
-    if (stk[-2] > start_of_data && stk[-2] < start_of_heap)
+    if (IS_STRING(stk[-2]))
 	stk[-2] = strcmp((char *)stk[-2], (char *)stk[-1]) OPR 0;
     else
 	stk[-2] = stk[-2] OPR stk[-1];
@@ -24,7 +24,7 @@ PRIVATE void PROCEDURE(void)
     double cmp;
     int i, j, error, comp = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else
@@ -37,11 +37,9 @@ PRIVATE void PROCEDURE(void)
 	comp = SETCMP;
     } else {
 	cmp = Compare(stk->next, stk, &error);
-	if (error) {
-#ifndef NCHECK
+	if (error)
 	    BADDATA(NAME);
-#endif
-	} else
+	else
 	    comp = cmp OPR 0;
     }
     if (OUTSIDE) {

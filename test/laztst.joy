@@ -33,8 +33,6 @@ nl == '\n putch ;
 END
 
 "\nTesting lazy lists in the library lazlib.joy\n" putchars .
-0 __settracegc .
-# 2 setecho .
 Naturals .
 Evens .
 Powers-of-2 .

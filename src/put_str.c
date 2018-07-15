@@ -1,12 +1,12 @@
 /*
     module  : put_str.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef PUT_STR_X
 #define PUT_STR_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_put_str(void)
 {
     char *str;
@@ -24,7 +24,7 @@ Writes X to output, pops X off stack.
 */
 PRIVATE void do_put_str(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("put");

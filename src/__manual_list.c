@@ -1,11 +1,17 @@
 /*
     module  : __manual_list.c
-    version : 1.5
-    date    : 07/10/18
+    version : 1.6
+    date    : 07/15/18
 */
 #ifndef __MANUAL_LIST_X
 #define __MANUAL_LIST_C
 
+#ifdef NEW_RUNTIME
+void do___manual_list(void)
+{
+    TRACE;
+}
+#else
 /**
 __manual_list  :  ->  L
 Pushes a list L of lists (one per operator) of three documentation strings.
@@ -15,7 +21,7 @@ PRIVATE void do___manual_list(void)
     int i = -1;
     Node *tmp, *cur = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     while (optable[++i].name);
@@ -27,4 +33,5 @@ PRIVATE void do___manual_list(void)
     }
     PUSH(LIST_, cur);
 }
+#endif
 #endif

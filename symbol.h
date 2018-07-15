@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/14/18
 */
 #define IS_UNDEFINED	0
 #define IS_ORIGINAL	1
@@ -53,6 +53,8 @@ char *prefix(int *hide, int *local);
 char *iterate(char *name);
 
 /* dict.c */
+int symtabmax(void);
+int symtabindex(void);
 void init_dict(void);
 int lookup(char *name);
 void enteratom(char *name, Node *cur);

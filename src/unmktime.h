@@ -1,7 +1,7 @@
 /*
     module  : unmktime.h
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -10,7 +10,7 @@ PRIVATE void PROCEDURE(void)
     struct tm *t;
     time_t timval;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && INTEGER_1)
 	;
     else
@@ -20,8 +20,7 @@ PRIVATE void PROCEDURE(void)
     INTEGER(NAME);
     timval = stk->u.num;
     t = FUNC(&timval);
-    wday = t->tm_wday;
-    if (wday == 0)
+    if ((wday = t->tm_wday) == 0)
 	wday = 7;
     cur = INTEGER_NEWNODE(wday, 0);
     cur = INTEGER_NEWNODE(t->tm_yday, cur);

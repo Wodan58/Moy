@@ -1,12 +1,12 @@
 /*
     module  : get.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef GET_X
 #define GET_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_get(void)
 {
     TRACE;
@@ -19,7 +19,7 @@ Reads a factor from input and pushes it onto stack.
 */
 PRIVATE void do_get(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     readfactor(yylex());

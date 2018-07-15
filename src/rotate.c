@@ -1,16 +1,17 @@
 /*
     module  : rotate.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef ROTATE_X
 #define ROTATE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_rotate(void)
 {
     node_t temp;
 
+    TRANS;
     temp = stk[-1];
     stk[-1] = stk[-3];
     stk[-3] = temp;
@@ -24,7 +25,7 @@ PRIVATE void do_rotate(void)
 {
     Node temp, *node, *next;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2 && VALID_3)
 	;
     else

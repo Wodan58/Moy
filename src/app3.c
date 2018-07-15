@@ -1,10 +1,16 @@
 /*
     module  : app3.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 07/15/18
 */
 #ifndef APP3_X
 #define APP3_C
+
+#ifndef UNARY3_C
+#undef UNARY3_X
+#include "unary3.c"
+#define UNARY3_X
+#endif
 
 /**
 app3  :  X1 X2 X3 [P]  ->  R1 R2 R3

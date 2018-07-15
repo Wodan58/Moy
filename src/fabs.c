@@ -1,12 +1,12 @@
 /*
     module  : fabs.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef FABS_X
 #define FABS_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_fabs(void)
 {
     float dbl;
@@ -24,7 +24,7 @@ or float N2 is the absolute value (0.0 ..) of float N1.
 */
 PRIVATE void do_fabs(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else

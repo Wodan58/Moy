@@ -1,12 +1,12 @@
 /*
     module  : pick.c
-    version : 1.4
-    date    : 07/10/18
+    version : 1.5
+    date    : 07/15/18
 */
 #ifndef PICK_X
 #define PICK_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_pick(void)
 {
     TRACE;
@@ -22,7 +22,7 @@ PRIVATE void do_pick(void)
     int num;
     Node *look;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else

@@ -1,11 +1,19 @@
 /*
     module  : frename.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef FRENAME_X
 #define FRENAME_C
 
+#ifdef NEW_RUNTIME
+void do_frename(void)
+{
+    TRACE;
+    stk[-2] = !rename((char *)stk[-2], (char *)stk[-1]);
+    (void)do_pop();
+}
+#else
 /**
 frename  :  P1 P2  ->  B
 The file system object with pathname P1 is renamed to P2.
@@ -13,7 +21,7 @@ B is a boolean indicating success or failure.
 */
 PRIVATE void do_frename(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     TWOPARAMS("frename");
@@ -26,4 +34,5 @@ PRIVATE void do_frename(void)
     } else
 	BINARY(BOOLEAN_NEWNODE, !rename(stk->next->u.str, stk->u.str));
 }
+#endif
 #endif

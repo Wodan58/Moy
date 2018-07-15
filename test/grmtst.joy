@@ -103,8 +103,6 @@ DEFINE
 END
 
 "\ntesting the grammar library in file  grmlib.joy\n\n" putchars .
-0 __settracegc .
-# 1 setecho .
 8 [ "The" _ [ "cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ]
 gen-put .
 7 [ "The" _ ? [ ? "very" _ "big" ] _ "tree" ] gen-put .

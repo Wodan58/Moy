@@ -1,11 +1,11 @@
 /*
     module  : ufloat.h
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
     float dbl;
 
     TRACE;
@@ -13,7 +13,7 @@ PRIVATE void PROCEDURE(void)
     dbl = FUNC(dbl);
     memcpy(&stk[-1], &dbl, sizeof(node_t));
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else

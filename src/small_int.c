@@ -1,12 +1,12 @@
 /*
     module  : small_int.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef SMALL_INT_X
 #define SMALL_INT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_small_int(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_small_int(void)
 {
     int small = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -49,10 +49,9 @@ PRIVATE void do_small_int(void)
     case LIST_:
 	small = !stk->u.lis || !stk->u.lis->next;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("small");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = small;

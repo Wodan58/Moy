@@ -1,12 +1,12 @@
 /*
     module  : pop.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef POP_X
 #define POP_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 node_t do_pop(void)
 {
 #ifdef VECTOR
@@ -25,7 +25,7 @@ Removes X from top of the stack.
 */
 PRIVATE void do_pop(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else

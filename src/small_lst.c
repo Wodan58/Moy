@@ -1,12 +1,12 @@
 /*
     module  : small_lst.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef SMALL_LST_X
 #define SMALL_LST_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_small_lst(void)
 {
     code_t *cur;
@@ -24,7 +24,7 @@ PRIVATE void do_small_lst(void)
 {
     int small = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -52,10 +52,9 @@ PRIVATE void do_small_lst(void)
     case LIST_:
 	small = !stk->u.lis || !stk->u.lis->next;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("small");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = small;

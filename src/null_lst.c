@@ -1,12 +1,12 @@
 /*
     module  : null_lst.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef NULL_LST_X
 #define NULL_LST_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_null_lst(void)
 {
     code_t *cur;
@@ -24,7 +24,7 @@ PRIVATE void do_null_lst(void)
 {
     int num = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -52,10 +52,9 @@ PRIVATE void do_null_lst(void)
     case INTEGER_:
 	num = !stk->u.num;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("null");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = num;

@@ -1,12 +1,46 @@
 /*
     module  : treerec.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef TREEREC_X
 #define TREEREC_C
 
-#ifndef NCHECK
+#ifndef CONS_C
+#undef CONS_X
+#include "cons.c"
+#define CONS_X
+#endif
+
+#ifdef NEW_RUNTIME
+void treerec(void)
+{
+    code_t *code, *prog;
+
+    TRACE;
+    if (IS_LIST(stk[-2])) {
+	code = (code_t *)stk[-1];
+	prog = code->next;
+	code = joy_code();
+	code->fun = treerec;
+	do_push((node_t)code);
+	do_cons();
+	code = (code_t *)stk[-1];
+	execute(prog);
+    } else {
+	code = (code_t *)do_pop();
+	execute(code->list);
+    }
+}
+
+void do_treerec(void)
+{
+    TRACE;
+    do_cons();
+    treerec();
+}
+#else
+#ifndef OLD_RUNTIME
 int put_treerec(void)
 {
     static int ident;
@@ -19,17 +53,25 @@ int put_treerec(void)
     prog[0] = stk->next->u.lis;
     printstack(outfp);
     fprintf(outfp, "do_cons();");
-    fprintf(declfp, "void do_treerec_%d(void);", ++ident);
-    fprintf(outfp, "do_treerec_%d();", ident);
+    fprintf(declfp, "void treerec_%d(void);", ++ident);
+    fprintf(outfp, "treerec_%d();", ident);
     oldfp = outfp;
     outfp = nextfile();
-    fprintf(outfp, "void do_treerec_%d(void) {", ident);
-    fprintf(outfp, "if (stk->next->op == LIST_) {");
-    fprintf(outfp, "NULLARY(LIST_NEWNODE,");
-    fprintf(outfp, "ANON_FUNCT_NEWNODE(do_treerec_%d, 0));", ident);
+    fprintf(outfp, "void treerec_%d(void) {", ident);
+    if (new_version) {
+	fprintf(outfp, "code_t *code; TRACE; if (IS_LIST(stk[-2])) {");
+	fprintf(outfp, "code = joy_code(); code->fun = treerec_%d;", ident);
+	fprintf(outfp, "do_push((node_t)code);");
+    } else {
+	fprintf(outfp, "if (stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
+	fprintf(outfp, "ANON_FUNCT_NEWNODE(treerec_%d, 0));", ident);
+    }
     fprintf(outfp, "do_cons();");
     compile(prog[1]);
-    fprintf(outfp, "} else { POP(stk);");
+    if (new_version)
+	fprintf(outfp, "} else { (void)do_pop();");
+    else
+	fprintf(outfp, "} else { POP(stk);");
     compile(prog[0]);
     fprintf(outfp, "} }");
     closefile(outfp);
@@ -42,7 +84,7 @@ int put_treerec(void)
 treerec  :  T [O] [C]  ->  ...
 T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
-static void treerec(void)
+void treerec(void)
 {
     Node *save;
 
@@ -59,7 +101,7 @@ static void treerec(void)
 
 PRIVATE void do_treerec(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_treerec())
 	return;
     COMPILE;
@@ -69,4 +111,5 @@ PRIVATE void do_treerec(void)
     do_cons();
     treerec();
 }
+#endif
 #endif

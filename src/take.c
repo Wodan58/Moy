@@ -1,11 +1,34 @@
 /*
     module  : take.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef TAKE_X
 #define TAKE_C
 
+#ifdef NEW_RUNTIME
+void do_take(void)
+{
+    int num;
+    code_t *list, *root = 0, *cur, *last;
+
+    TRACE;
+    num = do_pop();
+    if (num < 1) {
+	stk[-1] = 0;
+	return;
+    }
+    for (list = (code_t *)stk[-1]; list && num-- > 0; list = list->next) {
+	cur = joy_code();
+	cur->num = list->num;
+	if (!root)
+	    last = root = cur;
+	else
+	    last = last->next = cur;
+    }
+    stk[-1] = (node_t)root;
+}
+#else
 /**
 take  :  A N  ->  B
 Aggregate B is the result of retaining just the first N elements of A.
@@ -17,7 +40,7 @@ PRIVATE void do_take(void)
     ulong_t set;
     Node *root = 0, *cur, *last;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && INTEGER_1 && AGGREGATE_2)
 	;
     else
@@ -67,10 +90,10 @@ PRIVATE void do_take(void)
 	else
 	    UNARY(SET_NEWNODE, set);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("take");
-#endif
+	break;
     }
 }
+#endif
 #endif

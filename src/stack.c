@@ -1,12 +1,12 @@
 /*
     module  : stack.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef STACK_X
 #define STACK_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_stack(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_stack(void)
 {
     Node *cur, *node = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     for (cur = stk; cur; cur = cur->next)

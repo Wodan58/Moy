@@ -1,7 +1,7 @@
 /*
     module  : fold.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef FOLD_X
 #define FOLD_C
@@ -18,9 +18,10 @@
 #define STEP_X
 #endif
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_fold(void)
 {
+    TRACE;
     do_swapd();
     do_step();
 }
@@ -32,7 +33,7 @@ and combines with binary operator P to produce value V.
 */
 PRIVATE void do_fold(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && LIST_1 && VALID_2 && VALID_3)
 	;
     else

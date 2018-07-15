@@ -1,12 +1,12 @@
 /*
     module  : linrec.c
-    version : 1.14
-    date    : 07/10/18
+    version : 1.15
+    date    : 07/15/18
 */
 #ifndef LINREC_X
 #define LINREC_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void linrec(code_t *prog[])
 {
     execute(prog[0]);
@@ -31,7 +31,7 @@ void do_linrec(void)
     linrec(prog);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_linrec(void)
 {
     static int ident;
@@ -54,15 +54,15 @@ int put_linrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void linrec_%d(void) {", ident);
-#ifdef NEW_VERSION
+    if (new_version)
+	fprintf(outfp, "TRACE;");
+    else
+	fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
     compile(prog[0]);
-    fprintf(outfp, "if (do_pop()) {");
-#else
-    fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
-    compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
-    fprintf(outfp, "if (num) {");
-#endif
+    if (new_version)
+	fprintf(outfp, "if (do_pop()) {");
+    else
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
@@ -80,7 +80,7 @@ linrec  :  [P] [T] [R1] [R2]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses, executes R2.
 */
-static void linrec(Node *prog[])
+void linrec(Node *prog[])
 {
     int num;
     Node *save;
@@ -104,7 +104,7 @@ PRIVATE void do_linrec(void)
 {
     Node *prog[4];
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_linrec())
 	return;
     COMPILE;

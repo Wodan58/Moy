@@ -1,11 +1,19 @@
 /*
     module  : abs.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef ABS_X
 #define ABS_C
 
+#ifdef NEW_RUNTIME
+void do_abs(void)
+{
+    TRACE;
+    if (stk[-1] < 0)
+	stk[-1] = -stk[-1];
+}
+#else
 /**
 abs  :  N1  ->  N2
 Integer N2 is the absolute value (0,1,2..) of integer N1,
@@ -13,7 +21,7 @@ or float N2 is the absolute value (0.0 ..) of float N1.
 */
 PRIVATE void do_abs(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else
@@ -31,4 +39,5 @@ PRIVATE void do_abs(void)
     else if (stk->u.num < 0)
 	UNARY(INTEGER_NEWNODE, -stk->u.num);
 }
+#endif
 #endif

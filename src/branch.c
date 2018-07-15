@@ -1,12 +1,23 @@
 /*
     module  : branch.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef BRANCH_X
 #define BRANCH_C
 
-#ifndef NCHECK
+#ifdef NEW_RUNTIME
+void do_branch(void)
+{
+    code_t *prog[2];
+
+    TRACE;
+    prog[1] = (code_t *)do_pop();
+    prog[0] = (code_t *)do_pop();
+    execute(do_pop() ? prog[0] : prog[1]);
+}
+#else
+#ifndef OLD_RUNTIME
 int put_branch(void)
 {
     Node *prog[2];
@@ -18,8 +29,10 @@ int put_branch(void)
     prog[0] = stk->u.lis;
     printstack(outfp);
     fprintf(outfp, "{ /* BRANCH */");
-    fprintf(outfp, "int num = stk->u.num; POP(stk);");
-    fprintf(outfp, "if (num) {");
+    if (new_version)
+	fprintf(outfp, "if (do_pop()) {");
+    else
+	fprintf(outfp, "int num = stk->u.num; POP(stk); if (num) {");
     compile(prog[0]);
     fprintf(outfp, "} else {");
     compile(prog[1]);
@@ -37,7 +50,7 @@ PRIVATE void do_branch(void)
     int num;
     Node *prog[2];
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_branch())
 	return;
     COMPILE;
@@ -52,4 +65,5 @@ PRIVATE void do_branch(void)
     POP(stk);
     exeterm(num ? prog[0] : prog[1]);
 }
+#endif
 #endif

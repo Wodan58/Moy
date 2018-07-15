@@ -1,11 +1,25 @@
 /*
     module  : drop.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef DROP_X
 #define DROP_C
 
+#ifdef NEW_RUNTIME
+void do_drop(void)
+{
+    int num;
+    code_t *cur;
+
+    TRACE;
+    num = do_pop();
+    cur = (code_t *)stk[-1];
+    while (num-- > 0 && cur)
+	cur = cur->next;
+    stk[-1] = (node_t)cur;
+}
+#else
 /**
 drop  :  A N  ->  B
 Aggregate B is the result of deleting the first N elements of A.
@@ -16,7 +30,7 @@ PRIVATE void do_drop(void)
     Node *node;
     ulong_t set;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && INTEGER_1 && AGGREGATE_2)
 	;
     else
@@ -54,10 +68,10 @@ PRIVATE void do_drop(void)
 	else
 	    UNARY(SET_NEWNODE, set);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("drop");
-#endif
+	break;
     }
 }
+#endif
 #endif

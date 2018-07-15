@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 07/14/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -78,13 +78,22 @@ extern int _image_base__[], _section_alignment__[], etext[], _end__[];
 #endif
 
 char **g_argv;
+clock_t startclock;
 int g_argc, debugging, autoput = 1, tracegc;
 intptr_t start_of_prog, start_of_text, start_of_data, start_of_heap;
 
+#define IS_INTEGER(x)	(abs((intptr_t)(x)) > 0 && \
+			 abs((intptr_t)(x)) < start_of_prog)
+#define IS_STRING(x)	((intptr_t)(x) > start_of_data && \
+			 (intptr_t)(x) < start_of_heap)
+#define IS_LIST(x)	((intptr_t)(x) > start_of_heap || \
+			((intptr_t)(x) > start_of_prog && \
+			 (intptr_t)(x) < start_of_text))
+
 /* primitives */
 #define PRIVATE
-#define RUNTIME
-#include "prims.c"
+#define NEW_RUNTIME
+#include "runtime.c"
 
 void joy_init(int argc, char *argv[])
 {
@@ -92,6 +101,7 @@ void joy_init(int argc, char *argv[])
     int rv = 0;
 
     setbuf(stdout, 0);
+    startclock = clock();
     if (argc > 1) {
 	rv = 1;
 	if (argv[1][0] == '-') {
@@ -102,10 +112,12 @@ void joy_init(int argc, char *argv[])
 	ptr = argv[rv];
 	if (!ptr || isdigit(*ptr))
 	    rv--;
+#if 0
 	else if ((yyin = freopen(ptr, "r", stdin)) == 0) {
 	    fprintf(stderr, "failed to open the file '%s'.\n", ptr);
 	    exit(1);
 	}
+#endif
     }
 /*
  * Initialize global variables.
@@ -279,19 +291,22 @@ void print_node(node_t cur)
 {
     char *ptr;
 
-    if (print_dbl(cur))
+    if (print_dbl(cur))					// FLOAT_
 	;
-    else if (abs(cur) >= 0 && abs(cur) < start_of_prog)
+    else if (abs(cur) >= 0 && abs(cur) < start_of_prog)	// INTEGER_
 	printf("%d ", cur);
     else if (cur > start_of_text && cur < start_of_data) {
 	if ((ptr = procname((proc_t)cur)) == 0)
-	    printf("%p ", cur);
+	    printf("%p ", cur);				// ANON_FUNCT_
 	else
-	    printf("%s ", ptr);
+	    printf("%s ", ptr);				// USR_
     } else if (cur > start_of_data && cur < start_of_heap)
-	printf("\"%s\" ", (char *)cur);
+	if (!strchr((char *)cur, ' '))
+	    printf("%s ", (char *)cur);			// SYMBOL_
+	else
+	    printf("\"%s\" ", (char *)cur);		// STRING_
     else
-	print_list((code_t *)cur);
+	print_list((code_t *)cur);			// LIST_
 }
 
 void print_list(code_t *cur)

@@ -1,15 +1,15 @@
 /*
     module  : predsucc.h
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
     TRACE;
     stk[-1] = stk[-1] OPER 1;
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
 	;
     else

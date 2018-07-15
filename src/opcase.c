@@ -1,12 +1,12 @@
 /*
     module  : opcase.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef OPCASE_X
 #define OPCASE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_opcase(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_opcase(void)
 {
     Node *cur;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && LIST_1 && VALID_2)
 	;
     else

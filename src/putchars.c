@@ -1,12 +1,12 @@
 /*
     module  : putchars.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef PUTCHARS_X
 #define PUTCHARS_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_putchars(void)
 {
     TRACE;
@@ -19,7 +19,7 @@ Writes abc.. (without quotes)
 */
 PRIVATE void do_putchars(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("putchars");

@@ -1,12 +1,12 @@
 /*
     module  : binrec.c
-    version : 1.14
-    date    : 07/10/18
+    version : 1.15
+    date    : 07/15/18
 */
 #ifndef BINREC_X
 #define BINREC_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void binrec(code_t *prog[])
 {
     node_t temp;
@@ -36,7 +36,7 @@ void do_binrec(void)
     binrec(prog);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_binrec(void)
 {
     static int ident;
@@ -59,28 +59,27 @@ int put_binrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void binrec_%d(void) {", ident);
-#ifdef NEW_VERSION
-    fprintf(outfp, "node_t temp;");
+    if (new_version)
+	fprintf(outfp, "node_t temp; TRACE;");
+    else
+	fprintf(outfp, "int num; Node *save, temp; CONDITION; save = stk;");
     compile(prog[0]);
-    fprintf(outfp, "if (do_pop()) {");
+    if (new_version)
+	fprintf(outfp, "if (do_pop()) {");
+    else
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
-    fprintf(outfp, "temp = do_pop(); binrec_%d();", ident);
-    fprintf(outfp, "do_push(temp);");
-#else
-    fprintf(outfp, "int num; Node *save, temp;");
-    fprintf(outfp, "CONDITION; save = stk;");
-    compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
-    fprintf(outfp, "if (num) {");
-    compile(prog[1]);
-    fprintf(outfp, "} else {");
-    compile(prog[2]);
-    fprintf(outfp, "temp = *stk; POP(stk);\n");
+    if (new_version)
+	fprintf(outfp, "temp = do_pop();");
+    else
+	fprintf(outfp, "temp = *stk; POP(stk);\n");
     fprintf(outfp, "binrec_%d();", ident);
-    fprintf(outfp, "DUPLICATE(&temp);");
-#endif
+    if (new_version)
+	fprintf(outfp, "do_push(temp);");
+    else
+	fprintf(outfp, "DUPLICATE(&temp);");
     fprintf(outfp, "binrec_%d();", ident);
     compile(prog[3]);
     fprintf(outfp, "} }\n");
@@ -96,7 +95,7 @@ Executes P. If that yields true, executes T.
 Else uses R1 to produce two intermediates, recurses on both,
 then executes R2 to combine their results.
 */
-static void binrec(Node *prog[])
+void binrec(Node *prog[])
 {
     int num;
     Node *save, temp;
@@ -124,7 +123,7 @@ PRIVATE void do_binrec(void)
 {
     Node *prog[4];
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_binrec())
 	return;
     COMPILE;

@@ -1,12 +1,12 @@
 /*
     module  : body.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef BODY_X
 #define BODY_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_body(void)
 {
     TRACE;
@@ -20,7 +20,7 @@ Quotation [P] is the body of user-defined symbol U.
 PRIVATE void do_body(void)
 {
     ONEPARAM("body");
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     USERDEF("body");
     if (OUTSIDE) {
 	stk->u.lis = dict_body(stk->u.num);

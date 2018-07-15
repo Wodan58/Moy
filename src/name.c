@@ -1,14 +1,15 @@
 /*
     module  : name.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef NAME_X
 #define NAME_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_name(void)
 {
+    TRACE;
 }
 #else
 /**
@@ -18,7 +19,7 @@ for literals sym the result string is its type.
 */
 PRIVATE void do_name(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     char *str;
 
     if (compiling && VALID_1)

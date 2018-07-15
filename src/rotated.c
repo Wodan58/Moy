@@ -1,11 +1,22 @@
 /*
     module  : rotated.c
-    version : 1.5
-    date    : 07/10/18
+    version : 1.6
+    date    : 07/15/18
 */
 #ifndef ROTATED_X
 #define ROTATED_C
 
+#ifdef RUNTIME
+void do_rotated(void)
+{
+    node_t temp;
+
+    TRANS;
+    temp = stk[-2];
+    stk[-2] = stk[-4];
+    stk[-4] = temp;
+}
+#else
 #ifndef ROTATE_C
 #undef ROTATE_X
 #include "rotate.c"
@@ -21,4 +32,5 @@ As if defined by:   rotated  ==  [rotate] dip
 #define PARAMCOUNT	FOURPARAMS
 #define ARGUMENT	do_rotate
 #include "dipped.h"
+#endif
 #endif

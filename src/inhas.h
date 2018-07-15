@@ -1,7 +1,7 @@
 /*
     module  : inhas.h
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -12,7 +12,7 @@ PRIVATE void PROCEDURE(void)
     int ok;
 #endif
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else
@@ -38,10 +38,9 @@ PRIVATE void PROCEDURE(void)
     case SET_:
 	found = (AGGR->u.set & (1 << ELEM->u.num)) > 0;
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE(NAME);
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->next->u.num = found;

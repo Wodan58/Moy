@@ -1,12 +1,12 @@
 /*
     module  : cons.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef CONS_X
 #define CONS_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_cons(void)
 {
     code_t *cur;

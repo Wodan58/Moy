@@ -1,16 +1,16 @@
 /*
     module  : leaf.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef LEAF_X
 #define LEAF_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_leaf(void)
 {
     TRACE;
-    stk[-1] = stk[-1] < start_of_heap;
+    stk[-1] = !IS_LIST(stk[-1]);
 }
 #else
 /**

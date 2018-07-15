@@ -1,16 +1,16 @@
 /*
     module  : small.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef SMALL_X
 #define SMALL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_small(void)
 {
     TRACE;
-    if (stk[-1] > start_of_data && stk[-1] < start_of_heap)
+    if (IS_STRING(stk[-1]))
 	stk[-1] = !stk[-1] || strlen((char *)stk[-1]) < 2;
     else
 	stk[-1] = stk[-1] < 2;
@@ -24,7 +24,7 @@ PRIVATE void do_small(void)
 {
     int small = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -52,10 +52,9 @@ PRIVATE void do_small(void)
     case LIST_:
 	small = !stk->u.lis || !stk->u.lis->next;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("small");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = small;

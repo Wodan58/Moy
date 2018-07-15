@@ -1,12 +1,12 @@
 /*
     module  : setautoput.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef SETAUTOPUT_X
 #define SETAUTOPUT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_setautoput(void)
 {
     TRACE;
@@ -20,7 +20,7 @@ if I = 1, put; if I = 2, stack).
 */
 PRIVATE void do_setautoput(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("setautoput");

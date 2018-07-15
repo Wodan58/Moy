@@ -1,19 +1,62 @@
 /*
     module  : mktime.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef MKTIME_X
 #define MKTIME_C
 
+#ifdef NEW_RUNTIME
+void decode_time(struct tm *t)
+{
+    code_t *cur;
+
+    memset(t, 0, sizeof(struct tm));
+    if ((cur = (code_t *)stk[-1])
+	return;
+    t->tm_year = cur->num - 1900;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_mon = cur->num - 1;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_mday = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_hour = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_min = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_sec = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_isdst = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_yday = cur->num;
+    if ((cur = cur->next) == 0)
+	return;
+    t->tm_wday = cur->num;
+}
+
+void do_mktime(void)
+{
+    struct tm t;
+
+    TRACE;
+    decode_time(&t);
+    stk[-1] = mktime(&t);
+}
+#else
 PRIVATE void decode_time(struct tm *t)
 {
     Node *p;
 
-    t->tm_year = t->tm_mon = t->tm_mday =
-	t->tm_hour = t->tm_min = t->tm_sec = t->tm_isdst =
-	t->tm_yday = t->tm_wday = 0;
+    memset(t, 0, sizeof(struct tm));
     p = stk->u.lis;
+    POP(stk);
     if (p && p->op == INTEGER_) {
 	t->tm_year = p->u.num - 1900;
 	POP(p);
@@ -61,7 +104,7 @@ PRIVATE void do_mktime(void)
 {
     struct tm t;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && LIST_1)
 	;
     else
@@ -72,4 +115,5 @@ PRIVATE void do_mktime(void)
     decode_time(&t);
     PUSH(INTEGER_, mktime(&t));
 }
+#endif
 #endif

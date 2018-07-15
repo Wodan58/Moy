@@ -1,12 +1,12 @@
 /*
     module  : ifte.c
-    version : 1.15
-    date    : 07/10/18
+    version : 1.16
+    date    : 07/15/18
 */
 #ifndef IFTE_X
 #define IFTE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_ifte(void)
 {
     code_t *prog[3];
@@ -19,7 +19,7 @@ void do_ifte(void)
     execute(do_pop() ? prog[1] : prog[2]);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_ifte(void)
 {
     Node *prog[3];
@@ -34,15 +34,13 @@ int put_ifte(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* IFTE */");
-#ifdef NEW_VERSION
+    if (!new_version)
+	fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
     compile(prog[0]);
-    fprintf(outfp, "if (do_pop()) {");
-#else
-    fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
-    compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
-    fprintf(outfp, "if (num) {");
-#endif
+    if (new_version)
+	fprintf(outfp, "if (do_pop()) {");
+    else
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
@@ -59,7 +57,7 @@ PRIVATE void do_ifte(void)
 {
     Node *prog[3], *save;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_ifte())
 	return;
     COMPILE;

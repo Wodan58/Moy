@@ -1,12 +1,12 @@
 /*
     module  : times.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef TIMES_X
 #define TIMES_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_times(void)
 {
     int num;
@@ -19,7 +19,7 @@ void do_times(void)
 	execute(prog);
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_times(void)
 {
     Node *prog;
@@ -30,11 +30,10 @@ int put_times(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* TIMES */");
-#ifdef NEW_VERSION
-    fprintf(outfp, "int num; TRACE; num = do_pop();");
-#else
-    fprintf(outfp, "unsigned num = stk->u.num; POP(stk);");
-#endif
+    if (new_version)
+	fprintf(outfp, "int num; num = do_pop();");
+    else
+	fprintf(outfp, "int num = stk->u.num; POP(stk);");
     fprintf(outfp, "while (num--) {");
     compile(prog);
     fprintf(outfp, "} }");
@@ -48,10 +47,10 @@ N times executes P.
 */
 PRIVATE void do_times(void)
 {
+    int num;
     Node *prog;
-    unsigned num;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_times())
 	return;
     COMPILE;

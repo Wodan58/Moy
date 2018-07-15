@@ -1,12 +1,12 @@
 /*
     module  : rest.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef REST_X
 #define REST_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_rest(void)
 {
     code_t *cur;
@@ -25,7 +25,7 @@ PRIVATE void do_rest(void)
     int i = 0;
     char *str;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && AGGREGATE_1)
 	;
     else
@@ -57,10 +57,9 @@ PRIVATE void do_rest(void)
 	else
 	    UNARY(SET_NEWNODE, stk->u.set & ~(1 << i));
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("rest");
-#endif
+	break;
     }
 }
 #endif

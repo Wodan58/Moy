@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.15
-    date    : 07/10/18
+    version : 1.16
+    date    : 07/14/18
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -25,7 +25,7 @@ typedef struct table_t {
 extern table_t table[];
 extern clock_t startclock;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 #define COMPILE		if (compiling) { printstack(outfp); \
 			fprintf(outfp, "%s();", __func__); return; }
 #endif

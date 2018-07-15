@@ -1,12 +1,12 @@
 /*
     module  : not.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef NOT_X
 #define NOT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_not(void)
 {
     TRACE;
@@ -21,7 +21,7 @@ PRIVATE void do_not(void)
 {
     int num = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else
@@ -52,10 +52,9 @@ PRIVATE void do_not(void)
     case FILE_:
 	num = !stk->u.fil;
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("not");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = num;

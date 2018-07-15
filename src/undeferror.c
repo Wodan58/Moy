@@ -1,20 +1,28 @@
 /*
     module  : undeferror.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef UNDEFERROR_X
 #define UNDEFERROR_C
 
+#ifdef NEW_RUNTIME
+void do_undeferror(void)
+{
+    TRACE;
+    do_push(undeferror);
+}
+#else
 /**
 undeferror  :  ->  I
 Pushes current value of undefined-is-error flag.
 */
 PRIVATE void do_undeferror(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     PUSH(INTEGER_, undeferror);
 }
+#endif
 #endif

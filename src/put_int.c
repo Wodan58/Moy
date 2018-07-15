@@ -1,12 +1,12 @@
 /*
     module  : put_int.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef PUT_INT_X
 #define PUT_INT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_put_int(void)
 {
     TRACE;
@@ -19,7 +19,7 @@ Writes X to output, pops X off stack.
 */
 PRIVATE void do_put_int(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("put");

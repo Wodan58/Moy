@@ -1,29 +1,21 @@
 /*
     module  : put_dbl.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef PUT_DBL_X
 #define PUT_DBL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_put_dbl(void)
 {
-    int i;
     float dbl;
     node_t temp;
-    char buf[MAXSTR];
 
     TRACE;
     temp = do_pop();
     memcpy(&dbl, &temp, sizeof(float));
-    sprintf(buf, "%f", dbl);
-    for (i = strlen(buf) - 1; i >= 0; i--)
-	if (buf[i] == '0' || buf[i] == '.')
-	    buf[i] = 0;
-	else
-	    break;
-    printf("%s ", buf);
+    printf("%g ", dbl);
 }
 #else
 /**
@@ -32,7 +24,7 @@ Writes X to output, pops X off stack.
 */
 PRIVATE void do_put_dbl(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("put");

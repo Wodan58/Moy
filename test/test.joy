@@ -10,7 +10,6 @@ put_list_str == "[ " putchars [ put_str 32 putch ] step "]" putchars ;
 nl == '\n putch ;
 END
 
-1 setundeferror .
 1001.1 cube-root put_dbl nl .
 argc .
 argv put_list_str nl .

@@ -1,12 +1,12 @@
 /*
     module  : swap.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef SWAP_X
 #define SWAP_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_swap(void)
 {
     node_t temp;
@@ -25,7 +25,7 @@ PRIVATE void do_swap(void)
 {
     Node temp, *node;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else

@@ -1,7 +1,7 @@
 /*
     module  : round.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef ROUND_X
 #define ROUND_C

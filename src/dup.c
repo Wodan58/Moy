@@ -1,20 +1,16 @@
 /*
     module  : dup.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef DUP_X
 #define DUP_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_dup(void)
 {
     TRACE;
     do_push(stk[-1]);
-#if 0
-    stk++;
-    stk[-1] = stk[-2];
-#endif
 }
 #else
 /**
@@ -23,7 +19,7 @@ Pushes an extra copy of X onto stack.
 */
 PRIVATE void do_dup(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1)
 	;
     else

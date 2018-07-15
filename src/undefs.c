@@ -1,18 +1,24 @@
 /*
     module  : undefs.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef UNDEFS_X
 #define UNDEFS_C
 
+#ifdef NEW_RUNTIME
+void do_undefs(void)
+{
+    TRACE;
+}
+#else
 /**
 undefs  :  ->  [..]
 Push a list of all undefined symbols in the current symbol table.
 */
 PRIVATE void do_undefs(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     int i;
     char *ptr;
     Node *root = 0;
@@ -26,4 +32,5 @@ PRIVATE void do_undefs(void)
     PUSH(LIST_, root);
 #endif
 }
+#endif
 #endif

@@ -1,12 +1,12 @@
 /*
     module  : size.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef SIZE_X
 #define SIZE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_size(void)
 {
     TRACE;
@@ -23,7 +23,7 @@ PRIVATE void do_size(void)
     Node *cur;
     size_t size = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && AGGREGATE_1)
 	;
     else
@@ -43,10 +43,9 @@ PRIVATE void do_size(void)
 	    if (stk->u.set & (1 << i))
 		size++;
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("size");
-#endif
+	break;
     }
     if (OUTSIDE) {
 	stk->u.num = size;

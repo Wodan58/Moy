@@ -1,12 +1,12 @@
 /*
     module  : rem.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef REM_X
 #define REM_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_rem(void)
 {
     TRACE;
@@ -20,7 +20,7 @@ Integer K is the remainder of dividing I by J.  Also supports float.
 */
 PRIVATE void do_rem(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1 && NUMERIC_2)
 	;
     else
@@ -28,9 +28,11 @@ PRIVATE void do_rem(void)
 #endif
     TWOPARAMS("rem");
     FLOAT2("rem");
+#ifndef NCHECK
     if ((stk->op == FLOAT_ && !stk->u.dbl) ||
 	(stk->op == INTEGER_ && !stk->u.num))
 	execerror("non-zero operand", "rem");
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl = fmod(stk->next->u.dbl, FLOATVAL);

@@ -1,7 +1,7 @@
 /*
     module  : manual.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef MANUAL_X
 #define MANUAL_C
@@ -20,6 +20,12 @@
 	if (HTML) printf("</B><BR><BR>");			\
 	printf("\n\n"); }
 
+#ifdef NEW_RUNTIME
+void do_manual(void)
+{
+    TRACE;
+}
+#else
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 {
     char *name;
@@ -79,9 +85,10 @@ Writes this manual of all Joy primitives to output file.
 */
 PRIVATE void do_manual(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     make_manual(0);
 }
+#endif
 #endif

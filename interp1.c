@@ -1,9 +1,9 @@
 /*
     module  : interp1.c
-    version : 1.5
-    date    : 07/07/18
+    version : 1.6
+    date    : 07/14/18
 */
-#define NCHECK
+#define OLD_RUNTIME
 #include "runtime.h"
 #include "interp.c"
 

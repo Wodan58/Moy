@@ -1,12 +1,12 @@
 /*
     module  : first.c
-    version : 1.9
-    date    : 07/10/18
+    version : 1.10
+    date    : 07/15/18
 */
 #ifndef FIRST_X
 #define FIRST_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_first(void)
 {
     code_t *cur;
@@ -24,7 +24,7 @@ PRIVATE void do_first(void)
 {
     int i = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && AGGREGATE_1)
 	;
     else
@@ -58,10 +58,9 @@ PRIVATE void do_first(void)
 	} else
 	    UNARY(INTEGER_NEWNODE, i);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("first");
-#endif
+	break;
     }
 }
 #endif

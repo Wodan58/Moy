@@ -1,13 +1,13 @@
 /*
     module  : dipped.h
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
     Node temp;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else

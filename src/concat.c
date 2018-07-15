@@ -1,12 +1,12 @@
 /*
     module  : concat.c
-    version : 1.11
-    date    : 07/10/18
+    version : 1.12
+    date    : 07/15/18
 */
 #ifndef CONCAT_X
 #define CONCAT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_concat(void)
 {
     code_t *first, *second, *root = 0, *cur = 0;
@@ -38,7 +38,7 @@ PRIVATE void do_concat(void)
     unsigned i;
     Node *cur = 0, *root = 0, *last = 0;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_2 && AGGREGATE_1 && AGGREGATE_2 &&
 	stk->op == stk->next->op)
 	;
@@ -87,10 +87,9 @@ PRIVATE void do_concat(void)
 	} else
 	    BINARY(SET_NEWNODE, stk->next->u.set | stk->u.set);
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE("concat");
-#endif
+	break;
     }
 }
 #endif

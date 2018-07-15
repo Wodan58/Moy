@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.12
-    date    : 07/10/18
+    version : 1.13
+    date    : 07/14/18
 */
 #include "runtime.h"
 #include "runtime.c"
@@ -10,7 +10,7 @@ void interprete(Node *node)
 {
     int index;
     Node *code;
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     unsigned flags;
 #endif
 
@@ -25,7 +25,7 @@ start:
 	}
 #endif
 	switch (node->op) {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 	case USR_:
 	    index = node->u.num;
 	    if ((code = dict_body(index)) != 0) {

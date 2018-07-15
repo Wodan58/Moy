@@ -1,12 +1,12 @@
 /*
     module  : unary.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef UNARY_X
 #define UNARY_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 
 #ifndef STACK_C
 #undef STACK_X

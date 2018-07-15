@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.9
-    date    : 07/05/18
+    version : 1.10
+    date    : 07/14/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +15,7 @@
 clock_t startclock;
 FILE *outfp, *declfp;
 char **g_argv, *mainfunc;
-int g_argc, debugging, compiling, definition;
+int g_argc, debugging, compiling, definition, new_version;
 int autoput = INIAUTOPUT, tracegc = INITRACEGC, undeferror = INIUNDEFERR;
 
 void initsym(int argc, char **argv)
@@ -32,9 +32,11 @@ void initsym(int argc, char **argv)
 	    rv = 2;
 	    for (i = 1; argv[1][i]; i++)
 		switch (argv[1][i]) {
-		case 'c' : compiling = 1;
+		case 'c' : compiling = new_version = 1;
 			   break;
 		case 'd' : debugging = 1;
+			   break;
+		case 'o' : compiling = 1;
 			   break;
 		}
 	    if (compiling && !strcmp(argv[2], "-f")) {

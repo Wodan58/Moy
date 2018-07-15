@@ -1,14 +1,15 @@
 /*
     module  : intern.c
-    version : 1.12
-    date    : 07/10/18
+    version : 1.13
+    date    : 07/15/18
 */
 #ifndef INTERN_X
 #define INTERN_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_intern(void)
 {
+    TRACE;
     stk[-1] = (node_t)nameproc((char *)stk[-1]);
 }
 #else
@@ -18,7 +19,7 @@ Pushes the item whose name is "sym".
 */
 PRIVATE void do_intern(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     int i;
     char id[ALEN];
     char *ptr = 0;
@@ -35,8 +36,10 @@ PRIVATE void do_intern(void)
 	for (ptr = id + 1; *ptr; ptr++)
 	    if (!isalnum((int) *ptr) && !strchr("=_-", *ptr))
 		break;
+#ifndef NCHECK
     if (!ptr || *ptr)
 	execerror("valid name", id);
+#endif
     i = lookup(id);
     if (OUTSIDE) {
 	if (dict_flags(i) & IS_BUILTIN) {

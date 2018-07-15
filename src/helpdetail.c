@@ -1,11 +1,18 @@
 /*
     module  : helpdetail.c
-    version : 1.13
-    date    : 07/10/18
+    version : 1.14
+    date    : 07/15/18
 */
 #ifndef HELPDETAIL_X
 #define HELPDETAIL_C
 
+#ifdef NEW_RUNTIME
+void do_helpdetail(void)
+{
+    TRACE;
+}
+#else
+#ifndef OLD_RUNTIME
 int search(char *name)
 {
     int i;
@@ -15,6 +22,7 @@ int search(char *name)
 	    return i;
     return 0;
 }
+#endif
 
 /**
 helpdetail  :  [ S1 S2 .. ]  ->
@@ -22,7 +30,7 @@ Gives brief help on each symbol S in the list.
 */
 PRIVATE void do_helpdetail(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     int i;
     char *name;
     Node *node;
@@ -57,4 +65,5 @@ PRIVATE void do_helpdetail(void)
     POP(stk);
 #endif
 }
+#endif
 #endif

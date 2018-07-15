@@ -1,12 +1,28 @@
 /*
     module  : primrec.c
-    version : 1.10
-    date    : 07/10/18
+    version : 1.11
+    date    : 07/15/18
 */
 #ifndef PRIMREC_X
 #define PRIMREC_C
 
-#ifndef NCHECK
+#ifdef NEW_RUNTIME
+void do_primrec(void)
+{
+    int i, num;
+    code_t *prog, *init;
+
+    TRACE;
+    prog = (code_t *)do_pop();
+    init = (code_t *)do_pop();
+    for (i = num = do_pop(); i; i--)
+	do_push(i);
+    execute(init);
+    while (num--)
+	execute(prog);
+}
+#else
+#ifndef OLD_RUNTIME
 int put_primrec(void)
 {
     Node *prog, *init;
@@ -19,24 +35,29 @@ int put_primrec(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* PRIMREC */");
-    fprintf(outfp, "unsigned i, num = 0; Node *cur;");
-    fprintf(outfp, "char *str; ulong_t set;");
-    fprintf(outfp, "cur = stk; POP(stk);");
-    fprintf(outfp, "switch (cur->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");
-    fprintf(outfp, "DUPLICATE(cur); break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "for (num = strlen(str = cur->u.str); *str; str++)");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str); break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = cur->u.set;");
-    fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & (1 << i)) {");
-    fprintf(outfp, "PUSH(INTEGER_, i); num++; } break;");
-    fprintf(outfp, "case INTEGER_:");
-    fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
-    fprintf(outfp, "PUSH(INTEGER_, i); break; }");
+    if (new_version) {
+	fprintf(outfp, "int i, num; code_t *prog, *init;");
+	fprintf(outfp, "for (i = num = do_pop(); i; i--) do_push(i);");
+    } else {
+	fprintf(outfp, "int i, num = 0; Node *cur;");
+	fprintf(outfp, "char *str; ulong_t set;");
+	fprintf(outfp, "cur = stk; POP(stk);");
+	fprintf(outfp, "switch (cur->op) {");
+	fprintf(outfp, "case LIST_:");
+	fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next, num++)");
+	fprintf(outfp, "DUPLICATE(cur); break;");
+	fprintf(outfp, "case STRING_:");
+	fprintf(outfp, "for (num = strlen(str = cur->u.str); *str; str++)");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str); break;");
+	fprintf(outfp, "case SET_:");
+	fprintf(outfp, "set = cur->u.set;");
+	fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "PUSH(INTEGER_, i); num++; } break;");
+	fprintf(outfp, "case INTEGER_:");
+	fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
+	fprintf(outfp, "PUSH(INTEGER_, i); break; }");
+    }
     compile(init);
     fprintf(outfp, "while (num--) {");
     compile(prog);
@@ -55,10 +76,10 @@ PRIVATE void do_primrec(void)
 {
     char *str;
     long_t set;
-    unsigned i, num = 0;
+    int i, num = 0;
     Node *prog, *init, *cur;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_primrec())
 	return;
     COMPILE;
@@ -91,13 +112,13 @@ PRIVATE void do_primrec(void)
 	for (i = num = cur->u.num; i; i--)
 	    PUSH(INTEGER_, i);
 	break;
-#ifndef NCHECK
     default:
 	BADDATA("primrec");
-#endif
+	break;
     }
     exeterm(init);
     while (num--)
 	exeterm(prog);
 }
+#endif
 #endif

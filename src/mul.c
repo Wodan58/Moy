@@ -1,12 +1,12 @@
 /*
     module  : mul.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef MUL_X
 #define MUL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_mul(void)
 {
     TRACE;
@@ -20,7 +20,7 @@ Integer K is the product of integers I and J.  Also supports float.
 */
 PRIVATE void do_mul(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1 && NUMERIC_2)
 	;
     else

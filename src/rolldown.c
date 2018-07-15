@@ -1,12 +1,12 @@
 /*
     module  : rolldown.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef ROLLDOWN_X
 #define ROLLDOWN_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_rolldown(void)
 {
     node_t temp;
@@ -26,7 +26,7 @@ PRIVATE void do_rolldown(void)
 {
     Node temp, *node, *next;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2 && VALID_3)
 	;
     else

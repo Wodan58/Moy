@@ -1,18 +1,25 @@
 /*
     module  : getenv.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef GETENV_X
 #define GETENV_C
 
+#ifdef NEW_RUNTIME
+void do_getenv(void)
+{
+    TRACE;
+    stk[-1] = (node_t)getenv((char *)stk[-1]);
+}
+#else
 /**
 getenv  :  "variable"  ->  "value"
 Retrieves the value of the environment variable "variable".
 */
 PRIVATE void do_getenv(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("getenv");
@@ -22,4 +29,5 @@ PRIVATE void do_getenv(void)
     else
 	UNARY(STRING_NEWNODE, getenv(stk->u.str));
 }
+#endif
 #endif

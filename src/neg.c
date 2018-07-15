@@ -1,18 +1,25 @@
 /*
     module  : neg.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef NEG_X
 #define NEG_C
 
+#ifdef NEW_RUNTIME
+void do_neg(void)
+{
+    TRACE;
+    stk[-1] = -stk[-1];
+}
+#else
 /**
 neg  :  I  ->  J
 Integer J is the negative of integer I.  Also supports float.
 */
 PRIVATE void do_neg(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else
@@ -30,4 +37,5 @@ PRIVATE void do_neg(void)
     else if (stk->u.num)
 	UNARY(INTEGER_NEWNODE, -stk->u.num);
 }
+#endif
 #endif

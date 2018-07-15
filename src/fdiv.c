@@ -1,12 +1,12 @@
 /*
     module  : fdiv.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef FDIV_X
 #define FDIV_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_fdiv(void)
 {
     float dbl1, dbl2;
@@ -25,7 +25,7 @@ Integer K is the (rounded) ratio of integers I and J.  Also supports float.
 */
 PRIVATE void do_fdiv(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1 && NUMERIC_2)
 	;
     else
@@ -33,9 +33,11 @@ PRIVATE void do_fdiv(void)
 #endif
     TWOPARAMS("/");
     FLOAT2("/");
+#ifndef NCHECK
     if ((stk->op == FLOAT_ && !stk->u.dbl) ||
 	(stk->op == INTEGER_ && !stk->u.num))
 	execerror("non-zero divisor", "/");
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl /= FLOATVAL;

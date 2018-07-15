@@ -1,9 +1,9 @@
 /*
     module  : someall.h
-    version : 1.16
-    date    : 07/10/18
+    version : 1.17
+    date    : 07/15/18
 */
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 #define CAT(a, b)	a ## b
 #define PUT_PROC(a)	CAT(put_, a)()
 
@@ -16,63 +16,63 @@ int PUT_PROC(PROCEDURE)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-#ifdef NEW_VERSION
+    if (new_version) {
 #ifdef SOME
-    fprintf(outfp, "{ /* SOME */");
-    fprintf(outfp, "int num = 0; code_t *list; TRACE;");
-    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
-    fprintf(outfp, "list = list->next) { do_push(list->num);");
-    compile(prog);
-    fprintf(outfp, "num = do_pop(); do_pop(); if (num) break;");
+	fprintf(outfp, "{ /* SOME */");
+	fprintf(outfp, "int num = 0; code_t *list;");
+	fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+	fprintf(outfp, "list = list->next) { do_push(list->num);");
+	compile(prog);
+	fprintf(outfp, "num = do_pop(); do_pop(); if (num) break;");
 #else
-    fprintf(outfp, "{ /* ALL */");
-    fprintf(outfp, "int num = 1; code_t *list; TRACE;");
-    fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
-    fprintf(outfp, "list = list->next) { do_push(list->num);");
-    compile(prog);
-    fprintf(outfp, "num = do_pop(); do_pop(); if (!num) break;");
+	fprintf(outfp, "{ /* ALL */");
+	fprintf(outfp, "int num = 1; code_t *list; TRACE;");
+	fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
+	fprintf(outfp, "list = list->next) { do_push(list->num);");
+	compile(prog);
+	fprintf(outfp, "num = do_pop(); do_pop(); if (!num) break;");
 #endif
-    fprintf(outfp, "} do_push(num); }");
-#else
-    fprintf(outfp, "{ /* SOMEALL */");
-    fprintf(outfp, "unsigned i, num = %d;", INITIAL);
-    fprintf(outfp, "char *str;");
-    fprintf(outfp, "ulong_t set;");
-    fprintf(outfp, "Node *list, *save;");
-    fprintf(outfp, "switch (stk->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "list = stk->u.lis; POP(stk);");
-    fprintf(outfp, "for (; list; list = list->next) {");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
-    fprintf(outfp, "DUPLICATE(list);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
-    fprintf(outfp, "RELEASE;");
-    fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "str = stk->u.str; POP(stk);");
-    fprintf(outfp, "for (; *str; str++) {");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
-    fprintf(outfp, "RELEASE;");
-    fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = stk->u.set; POP(stk);");
-    fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & (1 << i)) {");
-    fprintf(outfp, "CONDITION;");
-    fprintf(outfp, "save = stk;");
-    fprintf(outfp, "PUSH(INTEGER_, i);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
-    fprintf(outfp, "RELEASE;");
-    fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
-    fprintf(outfp, "PUSH(BOOLEAN_, num); }");
-#endif
+	fprintf(outfp, "} do_push(num); }");
+    } else {
+	fprintf(outfp, "{ /* SOMEALL */");
+	fprintf(outfp, "unsigned i, num = %d;", INITIAL);
+	fprintf(outfp, "char *str;");
+	fprintf(outfp, "ulong_t set;");
+	fprintf(outfp, "Node *list, *save;");
+	fprintf(outfp, "switch (stk->op) {");
+	fprintf(outfp, "case LIST_:");
+	fprintf(outfp, "list = stk->u.lis; POP(stk);");
+	fprintf(outfp, "for (; list; list = list->next) {");
+	fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "save = stk;");
+	fprintf(outfp, "DUPLICATE(list);");
+	compile(prog);
+	fprintf(outfp, "num = stk->u.num; stk = save;");
+	fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
+	fprintf(outfp, "case STRING_:");
+	fprintf(outfp, "str = stk->u.str; POP(stk);");
+	fprintf(outfp, "for (; *str; str++) {");
+	fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "save = stk;");
+	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
+	compile(prog);
+	fprintf(outfp, "num = stk->u.num; stk = save;");
+	fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
+	fprintf(outfp, "case SET_:");
+	fprintf(outfp, "set = stk->u.set; POP(stk);");
+	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
+	fprintf(outfp, "if (set & (1 << i)) {");
+	fprintf(outfp, "CONDITION;");
+	fprintf(outfp, "save = stk;");
+	fprintf(outfp, "PUSH(INTEGER_, i);");
+	compile(prog);
+	fprintf(outfp, "num = stk->u.num; stk = save;");
+	fprintf(outfp, "RELEASE;");
+	fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
+	fprintf(outfp, "PUSH(BOOLEAN_, num); }");
+    }
     return 1;
 }
 #endif
@@ -84,7 +84,7 @@ PRIVATE void PROCEDURE(void)
     int i, num = INITIAL;
     Node *prog, *list, *save;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && PUT_PROC(PROCEDURE))
 	return;
     COMPILE;
@@ -140,10 +140,9 @@ PRIVATE void PROCEDURE(void)
 		    break;
 	    }
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE(NAME);
-#endif
+	break;
     }
     PUSH(BOOLEAN_, num);
 }

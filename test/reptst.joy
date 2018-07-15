@@ -82,8 +82,6 @@ accu-product-list == [ ] [ [ * ] dip cons ] rep.inter ;
 accu-list == [ ] [ cons ] rep.inter ;
 END 
 
-1 setundeferror .
-# 2 setecho .
 selfr .
 selfr i i i .
 squaring .
@@ -140,7 +138,6 @@ nfib-fix .
 6 nfib-fix i pop .
 6 nfib-fix-c i swap putln steps .
 6 nfib-fix-a i swap putln trace .
-0 __settracegc .
 4 fact-fix i pop .
 [ 2 5 3 7 6 ] [ a b c ] length-fix-a i swap put i swap putln trace .
 6 nfib-fix i pop .

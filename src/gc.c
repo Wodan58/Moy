@@ -1,7 +1,7 @@
 /*
     module  : gc.c
-    version : 1.4
-    date    : 07/10/18
+    version : 1.5
+    date    : 07/15/18
 */
 #ifndef GC_X
 #define GC_C
@@ -12,7 +12,10 @@ Initiates garbage collection.
 */
 PRIVATE void do_gc(void)
 {
-#ifndef NCHECK
+#ifdef NEW_RUNTIME
+    TRACE;
+#endif
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ck_collect();

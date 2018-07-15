@@ -1,12 +1,12 @@
 /*
     module  : strtol.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef STRTOL_X
 #define STRTOL_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_strtol(void)
 {
     int base;
@@ -27,7 +27,7 @@ PRIVATE void do_strtol(void)
     int base;
     long_t num;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && INTEGER_1 && STRING_2)
 	;
     else

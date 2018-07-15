@@ -1,12 +1,12 @@
 /*
     module  : quit.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef QUIT_X
 #define QUIT_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_quit(void)
 {
     TRACE;
@@ -19,7 +19,7 @@ Exit from Joy.
 */
 PRIVATE void do_quit(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     COMPILE;
 #endif
     exit(0);

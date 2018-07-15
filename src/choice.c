@@ -1,18 +1,27 @@
 /*
     module  : choice.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef CHOICE_X
 #define CHOICE_C
 
+#ifdef NEW_RUNTIME
+void do_choice(void)
+{
+    TRACE;
+    stk[-3] = stk[-3] ? stk[-2] : stk[-1];
+    (void)do_pop();
+    (void)do_pop();
+}
+#else
 /**
 choice  :  B T F  ->  X
 If B is true, then X = T else X = F.
 */
 PRIVATE void do_choice(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2 && VALID_3)
 	;
     else
@@ -34,4 +43,5 @@ PRIVATE void do_choice(void)
     else
 	GTERNARY(stk->op, stk->u.ptr);
 }
+#endif
 #endif

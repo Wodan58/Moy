@@ -1,12 +1,12 @@
 /*
     module  : swons.c
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 #ifndef SWONS_X
 #define SWONS_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_swons(void)
 {
     code_t *cur;

@@ -1,12 +1,12 @@
 /*
     module  : sametype.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef SAMETYPE_X
 #define SAMETYPE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_sametype(void)
 {
     TRACE;
@@ -20,7 +20,7 @@ Tests whether X and Y have the same type.
 */
 PRIVATE void do_sametype(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
 	;
     else

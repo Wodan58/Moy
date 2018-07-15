@@ -1,7 +1,7 @@
 /*
     module  : enconcat_str.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef ENCONCAT_STR_X
 #define ENCONCAT_STR_C
@@ -24,9 +24,10 @@
 #define CONCAT_STR_X
 #endif
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_enconcat_str(void)
 {
+    TRACE;
     do_swapd();
     do_cons_str();
     do_concat_str();
@@ -39,7 +40,7 @@ with X inserted between S and T (== swapd cons concat).
 */
 PRIVATE void do_enconcat_str(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_3 && AGGREGATE_1 && AGGREGATE_2 &&
 	stk->op == stk->next->op)
 	;
@@ -49,8 +50,8 @@ PRIVATE void do_enconcat_str(void)
     THREEPARAMS("enconcat");
     SAME2TYPES("enconcat");
     do_swapd();
-    do_cons();
-    do_concat();
+    do_cons_str();
+    do_concat_str();
 }
 #endif
 #endif

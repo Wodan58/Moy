@@ -1,11 +1,23 @@
 /*
     module  : frexp.c
-    version : 1.7
-    date    : 07/10/18
+    version : 1.8
+    date    : 07/15/18
 */
 #ifndef FREXP_X
 #define FREXP_C
 
+#ifdef NEW_RUNTIME
+void do_frexp(void)
+{
+    int exp;
+    float dbl;
+
+    TRACE;
+    memcpy(&dbl, &stk[-1], sizeof(float));
+    stk[-1] = frexp(dbl, &exp);
+    do_push(exp);
+}
+#else
 /**
 frexp  :  F  ->  G I
 G is the mantissa and I is the exponent of F.
@@ -15,7 +27,7 @@ PRIVATE void do_frexp(void)
 {
     int exp;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
 	;
     else
@@ -29,4 +41,5 @@ PRIVATE void do_frexp(void)
 	UNARY(FLOAT_NEWNODE, frexp(FLOATVAL, &exp));
     PUSH(INTEGER_, exp);
 }
+#endif
 #endif

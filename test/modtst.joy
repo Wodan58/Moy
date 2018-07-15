@@ -56,8 +56,6 @@ IN
   fifty == twenty thirty + ;
 END
 
-# 2 setecho .
-1 setundeferror .
 zero .
 one .
 two .

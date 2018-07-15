@@ -1,23 +1,25 @@
 /*
     module  : plusminus.h
-    version : 1.6
-    date    : 07/10/18
+    version : 1.7
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && ((NUMERIC_1 && NUMERIC_2) || (INTEGER_1 && CHAR_2)))
 	;
     else
 	COMPILE;
 #endif
     TWOPARAMS(NAME);
+#ifndef NCHECK
     if (((stk->op == FLOAT_ || stk->op == INTEGER_) &&
 	 (stk->next->op == FLOAT_ || stk->next->op == INTEGER_)) ||
 	 (stk->op == INTEGER_ && (stk->next->op == CHAR_
 			       || stk->next->op == INTEGER_)));
     else
 	execerror("two floats or numerics", NAME);
+#endif
     if (OUTSIDE) {
 	if (stk->next->op == FLOAT_)
 	    stk->next->u.dbl = stk->next->u.dbl OPER FLOATVAL;

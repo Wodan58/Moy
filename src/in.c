@@ -1,12 +1,12 @@
 /*
     module  : in.c
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 #ifndef IN_X
 #define IN_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_in(void)
 {
     code_t *cur;

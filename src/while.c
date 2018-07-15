@@ -1,12 +1,12 @@
 /*
     module  : while.c
-    version : 1.14
-    date    : 07/10/18
+    version : 1.15
+    date    : 07/15/18
 */
 #ifndef WHILE_X
 #define WHILE_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_while(void)
 {
     code_t *prog[2];
@@ -22,7 +22,7 @@ void do_while(void)
     }
 }
 #else
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
 int put_while(void)
 {
     Node *prog[2];
@@ -34,22 +34,24 @@ int put_while(void)
     prog[0] = stk->u.lis;
     POP(stk);
     printstack(outfp);
-#ifdef NEW_VERSION
-    fprintf(outfp, "for (;;) { /* WHILE */");
+    if (new_version)
+	fprintf(outfp, "for (;;) { /* WHILE */");
+    else {
+	fprintf(outfp, "{ /* WHILE */");
+	fprintf(outfp, "int num; Node *save; for (;;) {");
+	fprintf(outfp, "CONDITION; save = stk;");
+    }
     compile(prog[0]);
-    fprintf(outfp, "if (!do_pop()) break;");
+    if (new_version)
+	fprintf(outfp, "if (!do_pop()) break;");
+    else {
+	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
+	fprintf(outfp, "if (!num) break;");
+    }
     compile(prog[1]);
     fprintf(outfp, "}");
-#else
-    fprintf(outfp, "{ /* WHILE */");
-    fprintf(outfp, "int num; Node *save; for (;;) {");
-    fprintf(outfp, "CONDITION; save = stk;");
-    compile(prog[0]);
-    fprintf(outfp, "num = stk->u.num; stk = save; RELEASE;");
-    fprintf(outfp, "if (!num) break;");
-    compile(prog[1]);
-    fprintf(outfp, "} }");
-#endif
+    if (!new_version)
+    fprintf(outfp, "}");
     return 1;
 }
 #endif
@@ -63,7 +65,7 @@ PRIVATE void do_while(void)
     int num;
     Node *prog, *list, *save;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && put_while())
 	return;
     COMPILE;

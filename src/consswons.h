@@ -1,13 +1,13 @@
 /*
     module  : consswons.h
-    version : 1.8
-    date    : 07/10/18
+    version : 1.9
+    date    : 07/15/18
 */
 PRIVATE void PROCEDURE(void)
 {
     char *str;
 
-#ifndef NCHECK
+#ifndef OLD_RUNTIME
     if (compiling && VALID_2)
 	;
     else
@@ -39,9 +39,7 @@ PRIVATE void PROCEDURE(void)
 	    BINARY(STRING_NEWNODE, str);
 	break;
     case SET_:
-#ifndef NCHECK
 	CHECKSETMEMBER(ELEM, NAME);
-#endif
 	if (OUTSIDE) {
 	    stk->next->u.set = AGGR->u.set | (1 << ELEM->u.num);
 	    stk->next->op = SET_;
@@ -49,10 +47,9 @@ PRIVATE void PROCEDURE(void)
 	} else
 	    BINARY(SET_NEWNODE, AGGR->u.set | (1 << ELEM->u.num));
 	break;
-#ifndef NCHECK
     default:
 	BADAGGREGATE(NAME);
-#endif
+	break;
     }
 }
 

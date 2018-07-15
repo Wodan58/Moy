@@ -83,8 +83,6 @@ Cam2Inf == C2I ;
 END
 
 "\nTesting the 12 translators in the library  symlib.joy\n" putchars .
-0 __settracegc .
-# 1 setecho .
 [ 2 3 * 4 5 + - ] Rev2Cam .
 [ 4 6 pred * 5 succ 7 + - fact ] Rev2Cam .
 [ true true not or false false and or ] Rev2Cam .

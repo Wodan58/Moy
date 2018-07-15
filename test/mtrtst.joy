@@ -54,11 +54,8 @@ cosdeg == radians cos ;
 cartproduct == [ [ ] ] dip2 [ pairlist swap [ swons ] dip ] pairstep ;
 END
 
-1 setundeferror .
 "output from test file  mtrtst.joy  (* MATRICES and VECTORS *)\n" putchars .
 "user input is indented by one tab\n" putchars .
-0 __settracegc .
-# 2 setecho .
 5 "hello" n-e-vector .
 5 1 n-e-vector .
 5 [ 1 2 3 ] [ over + ] sv-bin-v .

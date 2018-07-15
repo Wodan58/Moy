@@ -1,12 +1,12 @@
 /*
     module  : fsub.c
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 07/15/18
 */
 #ifndef FSUB_X
 #define FSUB_C
 
-#ifdef RUNTIME
+#ifdef NEW_RUNTIME
 void do_fsub(void)
 {
     float dbl1, dbl2;
