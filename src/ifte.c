@@ -1,7 +1,7 @@
 /*
     module  : ifte.c
-    version : 1.16
-    date    : 07/15/18
+    version : 1.17
+    date    : 07/19/18
 */
 #ifndef IFTE_X
 #define IFTE_C
@@ -35,12 +35,12 @@ int put_ifte(void)
     printstack(outfp);
     fprintf(outfp, "{ /* IFTE */");
     if (!new_version)
-	fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
+	fprintf(outfp, "int num;");
     compile(prog[0]);
     if (new_version)
 	fprintf(outfp, "if (do_pop()) {");
     else
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+	fprintf(outfp, "num = stk->u.num; POP(stk); if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
@@ -55,7 +55,7 @@ Executes B. If that yields true, then executes T else executes F.
 */
 PRIVATE void do_ifte(void)
 {
-    Node *prog[3], *save;
+    Node *prog[3] /* , *save */;
 
 #ifndef OLD_RUNTIME
     if (compiling && put_ifte())
@@ -70,12 +70,17 @@ PRIVATE void do_ifte(void)
     POP(stk);
     prog[0] = stk->u.lis;
     POP(stk);
+#if 0
     CONDITION;
     save = stk;
+#endif
     exeterm(prog[0]);
     prog[0] = stk->u.num ? prog[1] : prog[2];
+    POP(stk);
+#if 0
     stk = save;
     RELEASE;
+#endif
     exeterm(prog[0]);
 }
 #endif

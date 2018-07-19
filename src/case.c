@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.12
-    date    : 07/15/18
+    version : 1.13
+    date    : 07/19/18
 */
 #ifndef CASE_X
 #define CASE_C
@@ -219,7 +219,7 @@ void do_case(void)
 
     TRACE;
     for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
-	if (cur->num == stk[-1])
+	if (cur->list->num == stk[-1])
 	    break;
     if (cur->next) {
 	(void)do_pop();
