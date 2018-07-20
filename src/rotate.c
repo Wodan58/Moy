@@ -1,7 +1,7 @@
 /*
     module  : rotate.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 07/20/18
 */
 #ifndef ROTATE_X
 #define ROTATE_C
@@ -11,7 +11,7 @@ void do_rotate(void)
 {
     node_t temp;
 
-    TRANS;
+    TRACE;
     temp = stk[-1];
     stk[-1] = stk[-3];
     stk[-3] = temp;

@@ -1,7 +1,7 @@
 /*
     module  : srand.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 07/20/18
 */
 #ifndef SRAND_X
 #define SRAND_C
@@ -9,7 +9,7 @@
 #ifdef NEW_RUNTIME
 void do_srand(void)
 {
-    TRANS;
+    TRACE;
     srand(do_pop());
 }
 #else
