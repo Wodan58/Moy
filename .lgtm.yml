@@ -1,0 +1,12 @@
+extraction:
+  cpp:
+    after_prepare:
+      - wget -O bdwgc.zip "https://github.com/ivmai/bdwgc/archive/master.zip?foo=`date +%s`"
+      - unzip bdwgc.zip
+      - mv bdwgc-master bdwgc
+    configure:
+      command:
+        - cmake -G "Unix Makefiles"
+    index:
+      build_command:
+        - cmake --build . --config Release
