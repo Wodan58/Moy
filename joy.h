@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.20
-    date    : 07/14/18
+    version : 1.21
+    date    : 12/28/18
 */
 #ifdef _MSC_VER
 #include <io.h>
@@ -15,6 +15,7 @@
 #define SETSIZE_	32
 #define MAXINT_		2147483647
 #define PRINT_NUM	"%ld"
+#define PRINT_SET	"%lu"
 
 typedef long		long_t;
 typedef unsigned long	ulong_t;
@@ -25,14 +26,15 @@ typedef float		real_t;
 #define SETSIZE_	64
 #define MAXINT_		9223372036854775807LL
 #define PRINT_NUM	"%lld"
+#define PRINT_SET	"%llu"
 
 typedef long long	long_t;
 typedef unsigned long long	ulong_t;
 typedef double		real_t;
 #endif
 
-#ifndef PARSER
 #include "joygc.h"
+#ifndef PARSER
 #include "parse.h"
 #endif
 

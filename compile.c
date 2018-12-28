@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.34
-    date    : 07/14/18
+    version : 1.35
+    date    : 12/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -69,7 +69,7 @@ static char *PrintString(char *str)
     unsigned leng;
 
     leng = StringLeng(str);
-    ptr = ck_malloc_sec(leng + 1);
+    ptr = malloc_sec(leng + 1);
     StringPrint(ptr, str);
     return ptr;
 }
@@ -139,21 +139,23 @@ static void printlist(Node *node, FILE *fp)
 	    break;
 	case CHAR_ :
 	    if (new_version)
-		fprintf(fp, "cur->num = %d;", cur->u.num);
+		fprintf(fp, "cur->num = %d;", (int)cur->u.num);
 	    else
-		fprintf(fp, "list = CHAR_NEWNODE(%d, list);", cur->u.num);
+		fprintf(fp, "list = CHAR_NEWNODE(%d, list);", (int)cur->u.num);
 	    break;
 	case INTEGER_ :
 	    if (new_version)
-		fprintf(fp, "cur->num = %d;", cur->u.num);
+		fprintf(fp, "cur->num = " PRINT_NUM ";", cur->u.num);
 	    else
-		fprintf(fp, "list = INTEGER_NEWNODE(%d, list);", cur->u.num);
+		fprintf(fp, "list = INTEGER_NEWNODE(" PRINT_NUM ", list);",
+			cur->u.num);
 	    break;
 	case SET_ :
 	    if (new_version)
-		fprintf(fp, "cur->num = %d;", cur->u.num);
+		fprintf(fp, "cur->num = " PRINT_SET ";", cur->u.set);
 	    else
-		fprintf(fp, "list = SET_NEWNODE(%d, list);", cur->u.num);
+		fprintf(fp, "list = SET_NEWNODE(" PRINT_SET ", list);",
+			cur->u.set);
 	    break;
 	case STRING_ :
 	    if (!cur->u.str) {
@@ -251,21 +253,21 @@ static void printnode(Node *node, FILE *fp)
 	break;
     case CHAR_:
 	if (new_version)
-	    fprintf(fp, "do_push(%d);", node->u.num);
+	    fprintf(fp, "do_push(%d);", (int)node->u.num);
 	else
 	    fprintf(fp, "PUSH(CHAR_, %d);", (int)node->u.num);
 	break;
     case INTEGER_:
 	if (new_version)
-	    fprintf(fp, "do_push(%d);", node->u.num);
+	    fprintf(fp, "do_push(" PRINT_NUM ");", node->u.num);
 	else
-	    fprintf(fp, "PUSH(INTEGER_, %lld);", (long long)node->u.num);
+	    fprintf(fp, "PUSH(INTEGER_, " PRINT_NUM ");", node->u.num);
 	break;
     case SET_:
 	if (new_version)
-	    fprintf(fp, "do_push(%d);", node->u.num);
+	    fprintf(fp, "do_push(" PRINT_SET ");", node->u.set);
 	else
-	    fprintf(fp, "PUSH(SET_, %llu);", (unsigned long long)node->u.set);
+	    fprintf(fp, "PUSH(SET_, " PRINT_SET ");", node->u.set);
 	break;
     case STRING_:
 	name = PrintString(node->u.str);

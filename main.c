@@ -1,7 +1,7 @@
 /*
     module  : main.c
-    version : 1.9
-    date    : 07/02/18
+    version : 1.10
+    date    : 12/28/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -16,8 +16,7 @@ void execerror(char *message, const char *op)
 {
     if (!strncmp(op, "do_", 3))
 	op += 3;
-    fprintf(stderr, "run time error: %s needed for %s in line %d\n",
-	    message, op, yylineno);
+    fprintf(stderr, "run time error: %s needed for %s\n", message, op);
     longjmp(begin, 1);
 }
 
