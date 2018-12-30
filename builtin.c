@@ -1,6 +1,6 @@
 /*
     module  : builtin.c
-    version : 1.5
+    version : 1.6
     date    : 12/30/18
 */
 #include <stdio.h>
@@ -154,10 +154,10 @@ void joy_init(int argc, char *argv[])
     start_of_data = (intptr_t)etext;
     start_of_heap = (intptr_t)_end__;
 #else
-    start_of_prog = (intptr_t)_executable_start;
+    start_of_prog = 0x400000;	// 64 bit Linux
     start_of_text = start_of_prog;
-    start_of_data = (intptr_t)etext;
-    start_of_heap = (intptr_t)_bss_start;
+    asm("movl $etext, %0" : "=r" (start_of_data));
+    asm("movl $end, %0" : "=r" (start_of_heap));
 #endif
 #endif
 #if 0
