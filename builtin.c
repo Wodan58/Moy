@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.4
-    date    : 07/14/18
+    version : 1.5
+    date    : 12/30/18
 */
 #include <stdio.h>
 #include <string.h>
@@ -74,7 +74,11 @@ void setechoflag(int flag);
 #define IMAGE_SIZE	20
 
 #ifndef _MSC_VER
+#ifdef __CYGWIN__
 extern int _image_base__[], _section_alignment__[], etext[], _end__[];
+#else
+extern int _executable_start[], etext[], _bss_start[];
+#endif
 #endif
 
 char **g_argv;
@@ -144,10 +148,17 @@ void joy_init(int argc, char *argv[])
 	start_of_heap = ptr[IMAGE_BASE] + ptr[IMAGE_SIZE];
     }
 #else
+#ifdef __CYGWIN__
     start_of_prog = (intptr_t)_image_base__;
-    start_of_text = (intptr_t)start_of_prog + (intptr_t)_section_alignment__;
+    start_of_text = start_of_prog + (intptr_t)_section_alignment__;
     start_of_data = (intptr_t)etext;
     start_of_heap = (intptr_t)_end__;
+#else
+    start_of_prog = (intptr_t)_executable_start;
+    start_of_text = start_of_prog;
+    start_of_data = (intptr_t)etext;
+    start_of_heap = (intptr_t)_bss_start;
+#endif
 #endif
 #if 0
     fprintf(stderr, "prog=%X text=%X data=%X heap=%X\n", start_of_prog,
