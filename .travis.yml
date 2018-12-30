@@ -8,13 +8,13 @@ install:
   - gem install coveralls-lcov
   - lcov --version
   - gcc --version
-  - ld --verbose
 
 before_script:
   - lcov --directory . --zerocounters
 
 script:
   - git clone https://github.com/ivmai/bdwgc.git
+  - ld --verbose
   - cmake -G "Unix Makefiles"
   - cmake --build . --config Debug
 
