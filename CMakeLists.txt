@@ -1,11 +1,11 @@
 #
 #   module  : cmakelists.txt
-#   version : 1.4
-#   date    : 07/02/18
+#   version : 1.5
+#   date    : 12/30/18
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 find_package(BISON)
 BISON_TARGET(MyParser parse.y parse.c)
 find_package(FLEX)
@@ -15,6 +15,11 @@ else()
 FLEX_TARGET(MyScanner lexer.l lexer.c)
 endif()
 add_definitions(-DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
+if(WIN32)
+else()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
+endif()
 include_directories(. src bdwgc/include)
 add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       compile.c initmem.c initsym.c interp.c joy.c node.c optable.c
@@ -29,4 +34,4 @@ add_custom_target(always
 		  COMMAND sh trans.sh
 		 )
 add_subdirectory(bdwgc)
-# add_subdirectory(test)
+add_subdirectory(test)
