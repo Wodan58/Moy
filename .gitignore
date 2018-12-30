@@ -1,0 +1,13 @@
+bdwgc
+*.cmake
+CMakeFiles
+CMakeCache.txt
+Makefile
+moy.*
+lexer.c
+parse.c
+parse.h
+runtime.c
+builtin.h
+table.c
+trans.c

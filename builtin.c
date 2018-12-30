@@ -129,6 +129,7 @@ void joy_init(int argc, char *argv[])
  */
 #ifdef _MSC_VER
     {
+	extern int main();
 	int *ptr;
 	intptr_t start;
 

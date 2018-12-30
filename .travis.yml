@@ -8,6 +8,7 @@ install:
   - gem install coveralls-lcov
   - lcov --version
   - gcc --version
+  - ld --verbose
 
 before_script:
   - lcov --directory . --zerocounters
