@@ -1,7 +1,7 @@
 /*
     module  : prims.h
-    version : 1.2
-    date    : 07/10/18
+    version : 1.3
+    date    : 12/30/18
 */
 typedef intptr_t node_t;
 
@@ -13,7 +13,7 @@ typedef struct code_t {
 	float dbl;
 	char *str;
 	proc_t fun;
-	uintptr_t set;
+	intptr_t set;
 	struct code_t *list;
     };
     struct code_t *next;
