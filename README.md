@@ -26,6 +26,5 @@ Installation
 
 In addition to the BDW garbage collector, it is wise to install CMake. Then run:
 
-CMake -G "Unix Makefiles" or CMake -G "NMake Makefiles"
-
-make or nmake
+    CMake -G "Unix Makefiles" .
+    make
