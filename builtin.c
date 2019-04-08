@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.7
-    date    : 12/30/18
+    version : 1.8
+    date    : 04/08/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -77,7 +77,7 @@ void setechoflag(int flag);
 #ifdef __CYGWIN__
 extern int _image_base__[], _section_alignment__[], etext[], _end__[];
 #else
-extern int _executable_start[], etext[], _bss_start[];
+extern int _start[], __data_start[], __bss_start[], _end[];
 #endif
 #endif
 
@@ -154,10 +154,10 @@ void joy_init(int argc, char *argv[])
     start_of_data = (intptr_t)etext;
     start_of_heap = (intptr_t)_end__;
 #else
-    start_of_prog = 0x400000;	// 64 bit Linux
-    start_of_text = start_of_prog;
-    asm("mov $etext, %0" : "=r" (start_of_data));
-    asm("mov $end, %0" : "=r" (start_of_heap));
+    start_of_prog = (intptr_t)_start;
+    start_of_text = (intptr_t)_start;
+    start_of_data = (intptr_t)__data_start;
+    start_of_heap = (intptr_t)_end;
 #endif
 #endif
 #if 0
