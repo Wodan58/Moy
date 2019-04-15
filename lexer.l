@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.17
-    date    : 07/02/18
+    version : 1.18
+    date    : 04/15/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -98,6 +98,10 @@ static void sprint(char *str)
 
 %option		yylineno
 
+firstchar	[-!$%&*+,./:<=>?@A-Z\\^_`a-z|~]
+nextchar	[-*+/0-9<=>A-Z_a-z]
+restchar	({firstchar}{nextchar}*|[-]([-=A-Z_a-z]{nextchar}*)?)
+symbol		{restchar}(\.{restchar})*
 escape		\\(["'\\btnvfr]|[01][0-9][0-9]|2[0-5][0-5])
 character	'([^\\]|{escape})
 string		\"([^"\\\n]|{escape})*\"
@@ -140,5 +144,6 @@ maxint		{ yylval.num = MAXINT_; return INTEGER_; }
 ^\%INCLUDE.*	include(DelSpace(yytext + 8));
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 ^\%LISTING.*	moy_echo = atoi(yytext + 8);
-[;[\]{}]	return yytext[0];
-[^ \t\n]+	{ yylval.str = strdup(yytext); return SYMBOL_; }
+{symbol}	{ yylval.str = strdup(yytext); return SYMBOL_; }
+[;[\]{}]	|
+.		return yytext[0];

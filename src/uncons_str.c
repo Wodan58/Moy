@@ -35,10 +35,10 @@ PRIVATE void do_uncons_str(void)
     else
 	COMPILE;
 #endif
-    ONEPARAM("uncons");
+    ONEPARAM("uncons_str");
     switch (stk->op) {
     case LIST_:
-	CHECKEMPTYLIST(stk->u.lis, "uncons");
+	CHECKEMPTYLIST(stk->u.lis, "uncons_str");
 	save = stk->u.lis;
 	if (OUTSIDE) {
 	    stk->op = stk->u.lis->op;
@@ -49,7 +49,7 @@ PRIVATE void do_uncons_str(void)
 	break;
     case STRING_:
 	str = stk->u.str;
-	CHECKEMPTYSTRING(str, "uncons");
+	CHECKEMPTYSTRING(str, "uncons_str");
 	if (OUTSIDE) {
 	    stk->u.num = *str;
 	    stk->op = CHAR_;
@@ -59,7 +59,7 @@ PRIVATE void do_uncons_str(void)
 	break;
     case SET_:
 	set = stk->u.set;
-	CHECKEMPTYSET(set, "uncons");
+	CHECKEMPTYSET(set, "uncons_str");
 	while (!(set & (1 << i)))
 	    i++;
 	if (OUTSIDE) {
@@ -70,7 +70,7 @@ PRIVATE void do_uncons_str(void)
 	PUSH(SET_, set & ~(1 << i));
 	break;
     default:
-	BADAGGREGATE("uncons");
+	BADAGGREGATE("uncons_str");
 	break;
     }
 }

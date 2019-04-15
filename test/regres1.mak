@@ -1,19 +1,19 @@
 regres: tutorial fib modtst gcd test jp-reprodtst jp-joytst flatjoy lsptst joytut laztst jp-nestrec jp-church reptst mtrtst symtst grmtst plgtst
 
 tutorial:
-	-./$@3 | diff -w - OUT/tutorial.out
+	./$@3 | diff -w - OUT/tutorial.out
 
 fib:
-	-./$@3 | diff -w - OUT/fib.out
+	./$@3 | diff -w - OUT/fib.out
 
 modtst:
-	-./$@3 | diff -w - OUT/$@.out
+	./$@3 | diff -w - OUT/$@.out
 
 gcd:
-	-./$@3 24 54 | diff -w - OUT/gcd.out
+	./$@3 24 54 | diff -w - OUT/gcd.out
 
 test:
-	-./$@3 | diff -w - OUT/$@.out
+	./$@3 | diff -w - OUT/$@.out
 
 jp-reprodtst:
 	-./$@3 | diff -w - OUT/$@.out

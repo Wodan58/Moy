@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.8
-    date    : 04/08/19
+    version : 1.9
+    date    : 04/15/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -251,11 +251,13 @@ void lst2stk(code_t *cur)
 
 void execute(code_t *cur)
 {
+    char *ptr;
+
     for (; cur; cur = cur->next)
-	if (cur->num > start_of_text && cur->num < start_of_data)
-	    (*cur->fun)();
-	else
+	if ((ptr = procname(cur->fun)) == 0)
 	    do_push(cur->num);
+	else
+	    (*cur->fun)();
 }
 
 /*

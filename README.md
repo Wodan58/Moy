@@ -29,3 +29,11 @@ In addition to the BDW garbage collector, it is wise to install CMake. Then run:
     ln -s ../bdwgc
     cmake .
     cmake --build .
+
+And run:
+
+    cd test
+    make -f regres.mak
+    make -f regres1.mak
+
+Not everything is working in the tagless version; these makefiles show the progress.

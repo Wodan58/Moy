@@ -3,7 +3,7 @@ bdwgc
 CMakeFiles
 CMakeCache.txt
 Makefile
-moy.*
+moy*
 lexer.c
 parse.c
 parse.h
@@ -11,3 +11,5 @@ runtime.c
 builtin.h
 table.c
 trans.c
+*3*
+SCCS

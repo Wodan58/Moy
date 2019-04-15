@@ -1,59 +1,59 @@
-[[duco] duco] 
-[[duco] duco] 
-[[[dup *] dip duco] [dup *] dip duco] 
+[[rep.duco] rep.duco] 
+[[rep.duco] rep.duco] 
+[[[dup *] dip rep.duco] [dup *] dip rep.duco] 
 4 
 16 
 256 
-[[0 [succ] infra dureco] [succ] infra dureco] 
+[[0 [succ] infra rep.dureco] [succ] infra rep.dureco] 
 5 
-[[6 [succ] infra dureco] [succ] infra dureco] 
-[[0 [succ] infra [10 *] dip dureco] [succ] infra [10 *] dip dureco] 
+[[6 [succ] infra rep.dureco] [succ] infra rep.dureco] 
+[[0 [succ] infra [10 *] dip rep.dureco] [succ] infra [10 *] dip rep.dureco] 
 300000 
 5 
-[[1 dureco] dureco] 
-[[1 dureco] dureco] 
+[[1 rep.dureco] rep.dureco] 
+[[1 rep.dureco] rep.dureco] 
 1 
-[[1 [2 /] infra dureco] [2 /] infra dureco] 
-[[0.125 [2 /] infra dureco] [2 /] infra dureco] 
+[[1 [2 ./] infra rep.dureco] [2 ./] infra rep.dureco] 
+[[0.125 [2 ./] infra rep.dureco] [2 ./] infra rep.dureco] 
 0.125 
-[[42 [succ] infra dureco] [succ] infra dureco] 
+[[42 [succ] infra rep.dureco] [succ] infra rep.dureco] 
 47 
-[[1 dup [first] dip dureco] dup [first] dip dureco] 
+[[1 dup [first] dip rep.dureco] dup [first] dip rep.dureco] 
 1 
 1 
 1 
-[[1 dup [first] dip [2 /] infra dureco] dup [first] dip [2 /] infra dureco] 
+[[1 dup [first] dip [2 ./] infra rep.dureco] dup [first] dip [2 ./] infra rep.dureco] 
 0.0625 
 0.125 
 0.25 
 0.5 
 1 
-[[2 dup [first] dip [succ [dup prime not] [succ] while] infra dureco] dup [first] dip [succ [dup prime not] [succ] while] infra dureco] 
+[[2 dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco] dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco] 
 11 
 7 
 5 
 3 
 2 
-[[0 2 [pop dup dup * [2 +] dip] infra durereco] [pop dup dup * [2 +] dip] infra durereco] 
+[[0 2 [pop dup dup * [2 +] dip] infra rep.durereco] [pop dup dup * [2 +] dip] infra rep.durereco] 
 0 
 4 
 16 
 36 
 64 
-[[[0 1] 10 dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra durereco] dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra durereco] 
+[[[0 1] 10 dup [first] dip [pop dup [] cons [dup log10] infra [10 .*] dip] infra rep.durereco] dup [first] dip [pop dup [] cons [dup log10] infra [10 .*] dip] infra rep.durereco] 
 [5 100000] 
 [4 10000] 
 [3 1000] 
 [2 100] 
 [1 10] 
 [0 1] 
-[[[] uncons [cons] dip cons dureco] uncons [cons] dip cons dureco] 
+[[[] uncons [cons] dip cons rep.dureco] uncons [cons] dip cons rep.dureco] 
 [1 2 3 4 5] 
-[[0 uncons [+] dip cons dureco] uncons [+] dip cons dureco] 
+[[0 uncons [+] dip cons rep.dureco] uncons [+] dip cons rep.dureco] 
 15 
-[[[] uncons [[*] dip cons] dip cons dureco] uncons [[*] dip cons] dip cons dureco] 
+[[[] uncons [[*] dip cons] dip cons rep.dureco] uncons [[*] dip cons] dip cons rep.dureco] 
 [10 200 3000 40000] 
-[[3 [dup first null] [pop [[duco] duco]] [[pred] infra [+] dip dureco] ifte] [dup first null] [pop [[duco] duco]] [[pred] infra [+] dip dureco] ifte] 
+[[3 [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte] [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte] 
 3 
 6 
 10 
@@ -61,16 +61,16 @@
 5 
 15 
 720 
-[[duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
 720 
-[[duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
 720 
 120 24 6 
 120 24 6 
 steps: 15 
 120 24 6 
 trace: [0 1 2 3 0 1 2 3 4 0 1 2 3 4 5] 
-[[duco [pop dup small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] duco [pop dup small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] 
+[[rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] 
 13 
 13 
 steps: 25 

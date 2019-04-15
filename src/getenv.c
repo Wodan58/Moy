@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 04/15/19
 */
 #ifndef GETENV_X
 #define GETENV_C
@@ -9,8 +9,12 @@
 #ifdef NEW_RUNTIME
 void do_getenv(void)
 {
+    char *str;
+
     TRACE;
-    stk[-1] = (node_t)getenv((char *)stk[-1]);
+    if ((str = getenv((char *)str[-1])) == 0)
+	str = "";
+    stk[-1] = (node_t)str;
 }
 #else
 /**
@@ -19,15 +23,19 @@ Retrieves the value of the environment variable "variable".
 */
 PRIVATE void do_getenv(void)
 {
+    char *str;
+
 #ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("getenv");
     STRING("getenv");
+    if ((str = getenv(stk->u.str)) == 0)
+	str = "";
     if (OUTSIDE)
-	stk->u.str = getenv(stk->u.str);
+	stk->u.str = str;
     else
-	UNARY(STRING_NEWNODE, getenv(stk->u.str));
+	UNARY(STRING_NEWNODE, str);
 }
 #endif
 #endif

@@ -66,17 +66,17 @@ six .
 seven .
 fifty .
 thirty .
-m1.ab .
-m1.ba .
-m1.abba .
+m1.ab put_str '\n putch .
+m1.ba put_str '\n putch .
+m1.abba put_str '\n putch .
 m1.a .
 m1.b .
-m2.ab .
-m2.ba .
-m2.abba .
-m2.cd .
-m2.abc .
-m2.bcd .
+m2.ab put_str '\n putch .
+m2.ba put_str '\n putch .
+m2.abba put_str '\n putch .
+m2.cd put_str '\n putch .
+m2.abc put_str '\n putch .
+m2.bcd put_str '\n putch .
 m2.a .
 m2.b .
 m2.c .

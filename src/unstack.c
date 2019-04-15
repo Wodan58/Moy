@@ -1,7 +1,7 @@
 /*
     module  : unstack.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 04/15/19
 */
 #ifndef UNSTACK_X
 #define UNSTACK_C
@@ -10,7 +10,6 @@
 void do_unstack(void)
 {
     TRACE;
-    stk = 0;
     lst2stk((code_t *)do_pop());
 }
 #else

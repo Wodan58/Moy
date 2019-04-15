@@ -1,6 +1,6 @@
 /*
-    module  : comprel.h
-    version : 1.10
+    module  : comprel_str.h
+    version : 1.1
     date    : 04/15/19
 */
 #ifndef NEW_RUNTIME
@@ -15,7 +15,7 @@ PRIVATE void PROCEDURE(void)
 {
 #ifdef NEW_RUNTIME
     TRACE;
-    stk[-2] = stk[-2] OPR stk[-1];
+    stk[-2] = strcmp((char *)stk[-2], (char *)stk[-1]) OPR 0;
     (void)do_pop();
 #else
     double cmp;

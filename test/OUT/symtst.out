@@ -76,8 +76,8 @@ true
 [< [+ [* [1] [2]] [+ [* [3] [4]] [* [5] [6]]]] [100]] 
 [1 2 * 3 4 * 5 6 * + + 100 <] 
 true 
-[cons [intern [reverse [cons ['t] ["iuq"]]]] [QUOTE []]] 
-[[intern reverse ['t cons "iuq"] cons QUOTE []]] 
-[cons intern reverse cons 't "iuq" []] 
-['t "iuq" cons reverse intern [] cons] 
+[cons [intern [reverse_str [cons_str ['t] ["iuq"]]]] [QUOTE []]] 
+[[intern reverse_str ['t cons_str "iuq"] cons QUOTE []]] 
+[cons intern reverse_str cons_str 't "iuq" []] 
+['t "iuq" cons_str reverse_str intern [] cons] 
 [quit] 
