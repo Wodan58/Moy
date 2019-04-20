@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.16
-    date    : 07/14/18
+    version : 1.17
+    date    : 04/20/19
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -197,7 +197,7 @@ extern clock_t startclock;
     execerror("different type",NAME)
 #endif
 
-#define USR_NEWNODE(u,r)	newnode(USR_, (void *)(u), r)
+#define USR_NEWNODE(u,r)	newnode(USR_, (void *)(long_t)(u), r)
 #define ANON_FUNCT_NEWNODE(u,r)	newnode(ANON_FUNCT_, (void *)(u), r)
 #define BOOLEAN_NEWNODE(u,r)	newnode(BOOLEAN_, (void *)(long_t)(u), r)
 #define CHAR_NEWNODE(u,r)	newnode(CHAR_, (void *)(long_t)(u), r)
