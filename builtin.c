@@ -1,6 +1,6 @@
 /*
     module  : builtin.c
-    version : 1.10
+    version : 1.11
     date    : 04/20/19
 */
 #include <stdio.h>
@@ -14,6 +14,7 @@
 
 #ifdef _MSC_VER
 #define __func__	__FUNCTION__
+#pragma warning( disable : 4101 4244 4305 )
 #endif
 
 void trace(const char *str);
