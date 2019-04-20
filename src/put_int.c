@@ -1,7 +1,7 @@
 /*
     module  : put_int.c
-    version : 1.3
-    date    : 07/15/18
+    version : 1.4
+    date    : 04/20/19
 */
 #ifndef PUT_INT_X
 #define PUT_INT_C
@@ -10,7 +10,7 @@
 void do_put_int(void)
 {
     TRACE;
-    printf("%d ", do_pop());
+    printf("%d ", (int)do_pop());
 }
 #else
 /**
