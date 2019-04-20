@@ -1,13 +1,13 @@
 /*
     module  : node.h
-    version : 1.5
-    date    : 07/02/18
+    version : 1.6
+    date    : 04/20/19
 */
 #ifdef _MSC_VER
 extern Node *stk;
 
 #define __func__	__FUNCTION__
-#pragma warning( disable : 4244 4305 )
+#pragma warning( disable : 4244 4305 4996 )
 #else
 register Node *stk asm("bl");
 #endif

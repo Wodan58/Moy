@@ -1,7 +1,7 @@
 /*
     module  : putchars.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 04/20/19
 */
 #ifndef PUTCHARS_X
 #define PUTCHARS_C
@@ -10,7 +10,7 @@
 void do_putchars(void)
 {
     TRACE;
-    printf("%s", do_pop());
+    printf("%s", (char *)do_pop());
 }
 #else
 /**

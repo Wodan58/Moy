@@ -1,7 +1,7 @@
 #
 #  module  : table.sh
-#  version : 1.1
-#  date    : 06/29/18
+#  version : 1.2
+#  date    : 04/20/19
 #
 #  Generate table.c
 #
@@ -27,6 +27,7 @@ then
   echo table.c is up-to-date
   exit
 fi
+rm -f table.c
 for i in src/*.c
 do
   sed -n '/\/\*\*/ {

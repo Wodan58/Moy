@@ -1,7 +1,7 @@
 #
 #  module  : prims.sh
-#  version : 1.1
-#  date    : 06/29/18
+#  version : 1.2
+#  date    : 04/20/19
 #
 #  Generate runtime.c and builtin.h
 #
@@ -25,6 +25,7 @@ else
 fi
 if [ $todo -eq 1 ]
 then
+  rm -f runtime.c builtin.h
   mv prims.tmp runtime.c
   sed 's/.*\//void do_/;s/\..*/(void);/' <runtime.c >builtin.h
 fi

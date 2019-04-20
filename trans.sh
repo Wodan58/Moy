@@ -1,7 +1,7 @@
 #
 #  module  : trans.sh
-#  version : 1.1
-#  date    : 06/29/18
+#  version : 1.2
+#  date    : 04/20/19
 #
 #  Generate trans.c
 #
@@ -27,6 +27,7 @@ then
   echo trans.c is up-to-date
   exit
 fi
+rm -f trans.c
 for i in src/*.c
 do
   file=`basename $i`

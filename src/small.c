@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 04/20/19
 */
 #ifndef SMALL_X
 #define SMALL_C
@@ -10,10 +10,7 @@
 void do_small(void)
 {
     TRACE;
-    if (IS_STRING(stk[-1]))
-	stk[-1] = !stk[-1] || strlen((char *)stk[-1]) < 2;
-    else
-	stk[-1] = stk[-1] < 2;
+    stk[-1] = stk[-1] < 2;
 }
 #else
 /**

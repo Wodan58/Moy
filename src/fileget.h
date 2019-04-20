@@ -1,7 +1,7 @@
 /*
     module  : fileget.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.9
+    date    : 04/20/19
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -13,7 +13,7 @@ PRIVATE void PROCEDURE(void)
     ONEPARAM(NAME);
     FILE(NAME);
     temp.op = CONSTRUCTOR;
-    temp.u.ptr = (void *)EXPR;
+    temp.u.num = EXPR;
     DUPLICATE(&temp);
 }
 

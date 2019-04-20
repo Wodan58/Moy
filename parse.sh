@@ -1,7 +1,7 @@
 #
 #  module  : parse.sh
-#  version : 1.1
-#  date    : 06/29/18
+#  version : 1.2
+#  date    : 04/20/19
 #
 #  Generate parse.h
 #
@@ -20,5 +20,6 @@ else
 fi
 if [ $todo -eq 1 ]
 then
+rm -f parse.c parse.h
 $*
 fi

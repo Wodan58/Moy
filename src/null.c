@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 04/20/19
 */
 #ifndef NULL_X
 #define NULL_C
@@ -10,10 +10,7 @@
 void do_null(void)
 {
     TRACE;
-    if (IS_STRING(stk[-1]))
-	stk[-1] = !stk[-1] || !strlen((char *)stk[-1]);
-    else
-	stk[-1] = !stk[-1];
+    stk[-1] = !stk[-1];
 }
 #else
 /**

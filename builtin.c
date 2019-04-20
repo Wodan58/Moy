@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.9
-    date    : 04/15/19
+    version : 1.10
+    date    : 04/20/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -308,10 +308,10 @@ void print_node(node_t cur)
     if (print_dbl(cur))					// FLOAT_
 	;
     else if (abs(cur) >= 0 && abs(cur) < start_of_prog)	// INTEGER_
-	printf("%d ", cur);
+	printf("%d ", (int)cur);
     else if (cur > start_of_text && cur < start_of_data) {
 	if ((ptr = procname((proc_t)cur)) == 0)
-	    printf("%p ", cur);				// ANON_FUNCT_
+	    printf("%p ", (void *)cur);			// ANON_FUNCT_
 	else
 	    printf("%s ", ptr);				// USR_
     } else if (cur > start_of_data && cur < start_of_heap)
