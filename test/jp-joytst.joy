@@ -12,12 +12,13 @@ opcase pop opcase ] [ body pop body ] [ i pop joy0 ] [ step pop [ joy0 ] cons
 step ] [ [ ] cons i ] ] opcase i ] step ;
 END
 
-2 3 + "\nfinal answer = " putchars .
-[ 2 3 + ] joy0s "\nfinal answer = " putchars .
-[ [ 2 3 + ] joy0s ] joy0s "\nfinal answer = " putchars .
-[ [ [ 2 3 + ] joy0s ] joy0s ] joy0s "\nfinal answer = " putchars .
-[ 2 3 + ] joy0l "\nfinal answer = " putchars .
-[ [ 2 3 + ] joy0l ] joy0l "\nfinal answer = " putchars .
-[ [ [ 2 3 + ] joy0l ] joy0l ] joy0l "\nfinal answer = " putchars .
+0 setautoput .
+2 3 + "\nfinal answer = " putchars put_int newline .
+[ 2 3 + ] joy0s "\nfinal answer = " putchars put_int newline .
+[ [ 2 3 + ] joy0s ] joy0s "\nfinal answer = " putchars put_int newline .
+[ [ [ 2 3 + ] joy0s ] joy0s ] joy0s "\nfinal answer = " putchars put_int newline .
+[ 2 3 + ] joy0l "\nfinal answer = " putchars put_int newline .
+[ [ 2 3 + ] joy0l ] joy0l "\nfinal answer = " putchars put_int newline .
+[ [ [ 2 3 + ] joy0l ] joy0l ] joy0l "\nfinal answer = " putchars put_int newline .
 [ [ [ [ [ 2 3 + ] joy0 ] joy0 ] joy0 ] joy0 ] joy0 "\nfinal answer = " putchars
-.
+put_int newline .

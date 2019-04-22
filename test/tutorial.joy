@@ -1,10 +1,12 @@
+%INCLUDE stdlib.joy
+
 (*
 This tutorial is taken from 42minjoy.
 
-It uses a minimal set of 27 builtins:
+It uses a small number of 31 builtins:
 
 input: get
-output: put, putch
+output: put, putch, put_int, put_bool, put_str, putchars, put_sym
 stack: dup, swap, pop
 list: null, cons, uncons, i
 conditional: index
@@ -38,8 +40,6 @@ Builtin "select" has not even been mentioned. It is only used in the joy-in-joy
 interpreter and seems to have no other purpose.
 *)
 LIBRA
-# put_bool == [ [ "true" ] [ "false" ] ] index i put ;
-nl == 10 putch ;
 reverse == [ ] swap shunt ;
 step == [ dup ] dip swap [ ] = [ [ step2 ] [ pop pop ] ] index i ;
 step2 == [ uncons ] dip dup [ swap ] dip [ i ] first rollup [ step ]
@@ -60,10 +60,8 @@ member == swap contains ;
 contains == false swap [ = or ] cons fold ;
 fold == [ swap ] dip step ;
 sum == 0 [ + ] fold ;
-space == 32 ;
 product == 1 [ * ] fold ;
-put_list_chr == 91 putch space putch uncons swap putch [ space putch putch ]
-		step space putch 93 putch ;
+put_list_chr == 91 putch space uncons swap putch [ space putch ] step space 93 putch ;
 length == 0 [ pop 1 + ] fold ;
 putnl == put nl ;
 twice == dup b ;
@@ -103,28 +101,7 @@ partition2 == [ [ ] [ ] ] dip dup first [ first gt [ cnos ] [ swap [ cnos ] dip
 	      ] branch ] cons [ first ] first cnos [ dup ] first cnos step ;
 put_list_int == "[ " putchars [ put_int ] step "]" putchars ;
 put_list_str == "[ " putchars [ put_str ] step "]" putchars ;
-put_list_sym == "[ " putchars [ putchars space putch ] step "]" putchars ;
-ps == "stack: " putchars stack putnl ;
-unswonsd == [ unswons ] dip ;
-popd == [ pop ] dip ;
-put_rec_aux == "[ " putchars
-[ dup null_str not ]
-[ unswonsd uncons_str
-  [
-    [ [ 's putchars space putch ]
-      [ 'i put_int ]
-      [ ]
-    ] case
-  ] dip
-  [ over '( = ]
-  [ swap pop put_rec_aux ]
-  [ uncons_str
-    [ over ') = ]
-    [ swap pop popd "] " putchars ]
-    [ cons_str ] ifte
-  ] ifte
-] while ;
-put_rec == put_rec_aux "] " putchars pop pop ;
+put_list_sym == "[ " putchars [ put_sym ] step "]" putchars ;
 END
 
 0 setautoput .
@@ -138,9 +115,9 @@ true false or true and not put_bool nl .
 [ 11 false 'X 44 ] last put_int nl .
 3 [ 1 5 3 4 2 ] member put_bool nl .
 3 [ 1 5 6 4 2 ] member put_bool nl .
-[ 1 2 3 4 ] dup sum put product put_int nl .
+[ 1 2 3 4 ] dup sum put_int product put_int nl .
 111 [ 222 333 ] cons put_list_int nl .
-[ 11 22 33 44 55 ] uncons uncons put_list_int space putch put_int put_int nl .
+[ 11 22 33 44 55 ] uncons uncons put_list_int space put_int put_int nl .
 [ 'a 'b ] [ 'd 'e 'f ] concat dup put_list_chr nl .
 uncons uncons 'c swap cons cons cons dup put_list_chr nl .
 dup length put_int nl .
@@ -163,7 +140,7 @@ reverse length put_int nl .
 [ 7 ] 10 times stack put_list_int nl .
 [ 1 2 3 ] [ dup * ] map put_list_int nl .
 [ 1 2 3 ] 0 [ dup * + ] fold put_int nl .
-11 12 [ [ + ] [ * ] [ pop unit ] [ dup pair ] ] construct2 "ii(i)(ii)" put_rec nl .
+11 12 [ [ + ] [ * ] [ pop unit ] [ dup pair ] ] construct2 "(ii(i)(ii))" put_list nl .
 [ [ pair [ square ] map unpair + ] [ pop ] [ ] ] construct2 put_list_int nl .
 [ ] unstack 11111 put_int nl .
 64 put_int nl .
@@ -172,13 +149,13 @@ reverse length put_int nl .
 65 putch nl .
 97 putch nl .
 'g putch nl .
-[ Smith Jones Robinson ] last putchars nl .
+[ Smith Jones Robinson ] last put_sym nl .
 # [ last ] definition putnl .
 # [ Smith Jones Robinson ] [ last ] definition i putchars nl .
 [ Smith Jones Robinson ]
-[ swap dup rest null [ car swap pop ] [ cdr swap x ] branch ] x putchars nl .
+[ swap dup rest null [ car swap pop ] [ cdr swap x ] branch ] x put_sym nl .
 [ Smith Jones Robinson ]
-[ swap dup rest null [ car swap pop ] [ cdr swap i ] branch ] y putchars nl .
+[ swap dup rest null [ car swap pop ] [ cdr swap i ] branch ] y put_sym nl .
 6 factorial_rec put_int nl .
 6 [ swap dup 2 < [ pop pop 1 ] [ dup pred rolldown x * ] branch ] x put_int nl .
 6 [ swap dup 2 < [ pop pop 1 ] [ dup pred rolldown i * ] branch ] y put_int nl .
@@ -188,9 +165,9 @@ reverse length put_int nl .
 [ 9 8 7 6 5 4 3 2 1 ] quicksort put_list_int nl .
 # [ quicksort ] definition putnl .
 [ [ 1 Smith ] [ 3 Jones ] [ 2 Robinson ] [ 4 Brown ] ] quicksort1
-"[ " putchars [ "is" put_rec ] step "]\n" putchars .
+"[ " putchars [ "(iy)" put_list ] step "]\n" putchars .
 [ ] [ NURKS Peter 1989 year 3 major "Computer Science" ] cnos
-    [ ABELSON Mary 1990 year 2 major Logic ] cnos
-    [ ZEEMAN Fred 1988 year 2 major Accounting ] cnos
-    [ MORRIS Janna 1992 year 1 major undecided ] cnos
-quicksort2 [ "ssisiss" put_rec nl ] step .
+    [ ABELSON Mary 1990 year 2 major "Logic" ] cnos
+    [ ZEEMAN Fred 1988 year 2 major "Accounting" ] cnos
+    [ MORRIS Janna 1992 year 1 major "undecided" ] cnos
+quicksort2 [ "(yyiyiys)" put_list nl ] step .

@@ -1,0 +1,22 @@
+(*
+    Print a list according to a descriptive string.
+*)
+LIBRA
+ps == "stack: " putchars stack put '\n putch ;
+nl == '\n putch ;
+space == 32 putch ;
+get_data == [ dup null ] [ ] [ unswons ] ifte ;
+put_list == 0 rollup
+[ dup null_str not ]                                 # as long as the string is not empty
+[ uncons_str                                         # read the first character
+[ [ [ '( "[ " putchars ]
+    [ ') "] " putchars pop ]
+    [ 's putchars space ]
+    [ 'i put_int ]
+    [ 'y put_sym ]
+    [ ]
+  ] case
+  get_data
+] dip
+] while pop pop                                      # continue
+.

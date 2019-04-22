@@ -1,5 +1,5 @@
 DEFINE
-putln == put newline ;
+putln == put_int newline ;
 newline == '\n putch ;
 gcd == [ dup 0 > ] [ dup rollup rem ] while pop ;
 END

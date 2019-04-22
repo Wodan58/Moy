@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 MODULE m2
 PRIVATE
   b == "B" ;
@@ -56,27 +58,28 @@ IN
   fifty == twenty thirty + ;
 END
 
-zero .
-one .
-two .
-three .
-four .
-five .
-six .
-seven .
-fifty .
-thirty .
-m1.ab put_str '\n putch .
-m1.ba put_str '\n putch .
-m1.abba put_str '\n putch .
+0 setautoput .
+zero put_int nl .
+one put_int nl .
+two put_int nl .
+three put_int nl .
+four put_int nl .
+five put_int nl .
+six put_int nl .
+seven put_int nl .
+fifty put_int nl .
+thirty put_int nl .
+m1.ab put_str nl .
+m1.ba put_str nl .
+m1.abba put_str nl .
 m1.a .
 m1.b .
-m2.ab put_str '\n putch .
-m2.ba put_str '\n putch .
-m2.abba put_str '\n putch .
-m2.cd put_str '\n putch .
-m2.abc put_str '\n putch .
-m2.bcd put_str '\n putch .
+m2.ab put_str nl .
+m2.ba put_str nl .
+m2.abba put_str nl .
+m2.cd put_str nl .
+m2.abc put_str nl .
+m2.bcd put_str nl .
 m2.a .
 m2.b .
 m2.c .

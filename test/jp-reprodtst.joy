@@ -1,9 +1,10 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 str-uncons == [ str-first ] [ str-rest ] cleave ;
 str-third == str-rest str-rest str-rest str-first ;
 str-tenth == 10 [ str-rest ] times str-first ;
-str-take == [ dup null ] [ pop pop [ ] ] [ [ str-uncons ] dip pred ] [ cons ]
-linrec ;
+str-take == [ dup null ] [ pop pop [ ] ] [ [ str-uncons ] dip pred ] [ cons ] linrec ;
 str-rest == second i ;
 str-prim == 2 [ succ [ dup prime not ] [ succ ] while ] str-maker ;
 str-pows == 1 [ 2 * ] str-maker ;
@@ -16,8 +17,7 @@ second == rest first ;
 rep-uncons == [ rep-first ] [ rep-rest ] cleave ;
 rep-third == rep-rest rep-rest rep-rest rep-first ;
 rep-tenth == 10 [ rep-rest ] times rep-first ;
-rep-take == [ dup null ] [ pop pop [ ] ] [ [ rep-uncons ] dip pred ] [ cons ]
-linrec ;
+rep-take == [ dup null ] [ pop pop [ ] ] [ [ rep-uncons ] dip pred ] [ cons ] linrec ;
 rep-rest == i ;
 rep-prim == 2 [ succ [ dup prime not ] [ succ ] while ] rep-maker ;
 rep-pows == 1 [ 2 * ] rep-maker ;
@@ -28,29 +28,29 @@ rep-first == first first ;
 rep-evns == 0 [ 2 + ] rep-maker ;
 rep-drop == [ rep-rest ] times ;
 rep-brak == [ ] [ [ ] cons ] rep-maker ;
-prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup *
-< ;
+prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup * < ;
 dureco == dup rest cons ;
 END
 
-str-ints .
-str-pows .
-str-brak .
-str-brak str-third .
-str-pows .
-str-pows str-tenth .
-str-ints 5 str-take .
-str-pows 10 str-take .
-str-prim 10 str-drop 10 str-take .
-rep-ints .
-rep-pows .
-rep-evns .
-rep-evns rep-rest rep-rest rep-first .
-rep-brak .
-rep-brak rep-third .
-rep-pows .
-rep-pows rep-tenth .
-rep-ints 5 rep-take .
-rep-pows 10 rep-take .
-rep-prim 10 rep-drop 10 rep-take .
-rep-n-th-pow 10 rep-drop 5 rep-take .
+0 setautoput .
+str-ints "(i(i(y)y))" put_list nl .
+str-pows "(i(i(iy)y))" put_list nl .
+str-brak "(()((())(()y)y))" put_list nl .
+str-brak str-third "(((())))" put_list nl .
+str-pows "(i(i(iy)y))" put_list nl .
+str-pows str-tenth put_int nl .
+str-ints 5 str-take "(iiiii)" put_list nl .
+str-pows 10 str-take "(iiiiiiiiii)" put_list nl .
+str-prim 10 str-drop 10 str-take "(iiiiiiiiii)" put_list nl .
+rep-ints "((i(y)yy)(y)yy)" put_list nl .
+rep-pows "((i(iy)yy)(iy)yy)" put_list nl .
+rep-evns "((i(iy)yy)(iy)yy)" put_list nl .
+rep-evns rep-rest rep-rest rep-first put_int nl .
+rep-brak "((()(()y)yy)(()y)yy)" put_list nl .
+rep-brak rep-third "(((())))" put_list nl .
+rep-pows "((i(iy)yy)(iy)yy)" put_list nl .
+rep-pows rep-tenth put_int nl .
+rep-ints 5 rep-take "(iiiii)" put_list nl .
+rep-pows 10 rep-take "(iiiiiiiiii)" put_list nl .
+rep-prim 10 rep-drop 10 rep-take "(iiiiiiiiii)" put_list nl .
+rep-n-th-pow 10 rep-drop 5 rep-take "((ii)(ii)(ii)(ii)(ii))" put_list nl .
