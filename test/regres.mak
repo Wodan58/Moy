@@ -1,4 +1,4 @@
-regres: gcd24_54 test modtst flatjoy jp-reprodtst jp-joytst joytut laztst reptst jp-nestrec jp-church mtrtst symtst grmtst plgtst # lsptst tutorial
+regres: gcd24_54 test modtst flatjoy jp-reprodtst jp-joytst laztst reptst jp-nestrec jp-church mtrtst symtst grmtst plgtst # lsptst tutorial joytut
 
 tutorial:
 	../moy tutorial.joy | diff -w - OUT/tutorial.out

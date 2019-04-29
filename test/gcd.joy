@@ -1,7 +1,8 @@
+%INCLUDE stdlib.joy
+
 DEFINE
-putln == put_int newline ;
-newline == '\n putch ;
 gcd == [ dup 0 > ] [ dup rollup rem ] while pop ;
 END
 
-argv rest [ 10 strtol ] map uncons uncons pop gcd putln .
+0 setautoput .
+argv rest [ 10 strtol ] map uncons uncons pop gcd put_int nl .

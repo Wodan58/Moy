@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 (*
     fib - benchmarking
 *)

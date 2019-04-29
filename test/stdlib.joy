@@ -13,10 +13,18 @@ put_list == 0 rollup
     [ ') "] " putchars pop ]
     [ 's putchars space ]
     [ 'i put_int ]
+    [ 'd put_dbl ]
+    [ 'c put_char ]
     [ 'y put_sym ]
     [ ]
   ] case
   get_data
 ] dip
-] while pop pop                                      # continue
+] while pop pop ;                                    # continue
+put_list_int == "[ " putchars [ put_int ] step "]" putchars ;
+put_list_str == "[ " putchars [ put_str ] step "]" putchars ;
+put_list_sym == "[ " putchars [ put_sym ] step "]" putchars ;
+put_list_dbl == "[ " putchars [ put_dbl ] step "]" putchars ;
+put_list_chr == "[ " putchars [ putch space ] step "]" putchars ;
+put_list_char == "[ " putchars [ put_char ] step "]" putchars ;
 .

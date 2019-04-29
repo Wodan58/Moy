@@ -1,5 +1,6 @@
+%INCLUDE stdlib.joy
+
 DEFINE
-newline == '\n putch ;
 joy0s == newline "joy0s :" putchars newline [ [ [ joy0s body joy0s ] [ [ ] ] [
 pop pop pop ] [ cons pop cons ] [ opcase pop opcase ] [ body pop body ] [ i pop
 joy0s ] [ step pop [ joy0 ] cons step ] [ [ ] cons i ] ] opcase i ] step ;
@@ -13,12 +14,12 @@ step ] [ [ ] cons i ] ] opcase i ] step ;
 END
 
 0 setautoput .
-2 3 + "\nfinal answer = " putchars put_int newline .
-[ 2 3 + ] joy0s "\nfinal answer = " putchars put_int newline .
-[ [ 2 3 + ] joy0s ] joy0s "\nfinal answer = " putchars put_int newline .
-[ [ [ 2 3 + ] joy0s ] joy0s ] joy0s "\nfinal answer = " putchars put_int newline .
-[ 2 3 + ] joy0l "\nfinal answer = " putchars put_int newline .
-[ [ 2 3 + ] joy0l ] joy0l "\nfinal answer = " putchars put_int newline .
-[ [ [ 2 3 + ] joy0l ] joy0l ] joy0l "\nfinal answer = " putchars put_int newline .
+2 3 + "\nfinal answer = " putchars put_int nl .
+[ 2 3 + ] joy0s "\nfinal answer = " putchars put_int nl .
+[ [ 2 3 + ] joy0s ] joy0s "\nfinal answer = " putchars put_int nl .
+[ [ [ 2 3 + ] joy0s ] joy0s ] joy0s "\nfinal answer = " putchars put_int nl .
+[ 2 3 + ] joy0l "\nfinal answer = " putchars put_int nl .
+[ [ 2 3 + ] joy0l ] joy0l "\nfinal answer = " putchars put_int nl .
+[ [ [ 2 3 + ] joy0l ] joy0l ] joy0l "\nfinal answer = " putchars put_int nl .
 [ [ [ [ [ 2 3 + ] joy0 ] joy0 ] joy0 ] joy0 ] joy0 "\nfinal answer = " putchars
-put_int newline .
+put_int nl .

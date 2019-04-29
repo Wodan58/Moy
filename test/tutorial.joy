@@ -3,7 +3,7 @@
 (*
 This tutorial is taken from 42minjoy.
 
-It uses a small number of 31 builtins:
+It uses a small number of 32 builtins:
 
 input: get
 output: put, putch, put_int, put_bool, put_str, putchars, put_sym
@@ -61,9 +61,8 @@ contains == false swap [ = or ] cons fold ;
 fold == [ swap ] dip step ;
 sum == 0 [ + ] fold ;
 product == 1 [ * ] fold ;
-put_list_chr == 91 putch space uncons swap putch [ space putch ] step space 93 putch ;
 length == 0 [ pop 1 + ] fold ;
-putnl == put nl ;
+# putnl == put nl ;
 twice == dup b ;
 b == [ i ] dip i ;
 thrice == dup [ twice ] dip i ;
@@ -99,9 +98,6 @@ quicksort2 == dup small [ ] [ partition2 quicksort2 [ quicksort2 ] dip concat ]
 	      branch ;
 partition2 == [ [ ] [ ] ] dip dup first [ first gt [ cnos ] [ swap [ cnos ] dip
 	      ] branch ] cons [ first ] first cnos [ dup ] first cnos step ;
-put_list_int == "[ " putchars [ put_int ] step "]" putchars ;
-put_list_str == "[ " putchars [ put_str ] step "]" putchars ;
-put_list_sym == "[ " putchars [ put_sym ] step "]" putchars ;
 END
 
 0 setautoput .

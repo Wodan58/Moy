@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 use-newton == [ [ .- ] cons ] dip swoncat 1.0 swap newton ;
 swoncat == swap concat ;
@@ -6,11 +8,10 @@ dup2 [ [ cleave ./ .- ] dip ] dip ] while pop pop ;
 dup2 == dupd dup swapd ;
 deriv == [ unary2 swap .- 0.001 ./ ] cons [ dup 0.001 .+ ] swoncat ;
 cube-root == [ dup dup .* .* ] use-newton ;
-put_list_str == "[ " putchars [ put_str 32 putch ] step "]" putchars ;
-nl == '\n putch ;
 END
 
+0 setautoput .
 1001.1 cube-root put_dbl nl .
-argc .
+argc put_int nl .
 argv put_list_str nl .
 quit .
