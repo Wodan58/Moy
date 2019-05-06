@@ -14,7 +14,7 @@ FLEX_TARGET(MyScanner lexer.l lexer.c COMPILE_FLAGS --wincompat)
 else()
 FLEX_TARGET(MyScanner lexer.l lexer.c)
 endif()
-add_definitions(-DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
+add_definitions(-DDEBUG -DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
 if(WIN32)
 else()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization

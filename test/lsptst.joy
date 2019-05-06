@@ -1,17 +1,16 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 swoncat == swap concat ;
 sequor == [ pop true ] swap ifte ;
 second == rest first ;
 putstrings == [ putchars ] step ;
-putln == put newline ;
-prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup *
-< ;
-numerical == [ dup integer ] [ float ] sequor ;
-newline == '\n putch ;
+prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup * < ;
+numerical == [ dup integer ] [ dup float ] sequor ;
 lisp == [ "\nLisp interpreter\n" "\t\tTo include the Lisp library, type\n"
 "\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n" "GO\n\n" ] putstrings dummy lib0
-l-prompt putchars get [ dup "EXIT" equal not ] [ eval putln l-prompt putchars get ]
-while pop pop "exit from Lisp interpreter\n" putchars ;
+l-prompt putchars get [ dup [ EXIT ] first equal not ] [ eval put nl
+l-prompt putchars get ] while pop pop "exit from Lisp interpreter\n" putchars ;
 dummy == [ + * - / < > and or map prime filter include pred ] ;
 lib0 == [ [ [ FOLDR ] [ CLOSURE lib0 [ lis ini bin ] IF [ NULL lis ] ini [ bin
 		      [ CAR lis ] [ FOLDR [ CDR lis ] ini bin ] ] ] ]
@@ -42,30 +41,6 @@ numerical ] [ string ] sequor ] [ ] [ [ [ CAR first first ] [ CDR first rest ]
 first null ] [ LIST ] [ [ i ] dip call ] ] case ] ifte ] ifte ;
 END
 
+0 setautoput .
 "\nTesting the Lisp interpreter lisp in the library lsplib.joy\n" putchars .
 lisp quit .
-123.456
-false
-"hello world"
-[ QUOTE [ Peter Paul Mary ] ]
-[ QUOTE [ 1 2 3 4 5 ] ]
-[ CAR [ QUOTE [ Peter Paul Mary ] ] ]
-[ CDR [ QUOTE [ 1 2 3 4 5 ] ] ]
-[ CONS Fred [ QUOTE [ Peter Paul ] ] ]
-[ ATOM Fred ]
-[ ATOM [ QUOTE [ 1 2 3 ] ] ]
-[ NULL [ QUOTE [ 1 2 3 ] ] ]
-[ NULL [ QUOTE [ ] ] ]
-[ EQ 2 3 ]
-[ LIST [ CDR [ QUOTE [ 1 2 3 ] ] ] [ ATOM 123 ] ]
-[ [ LAMBDA [ lis ] CAR [ CDR lis ] ] [ QUOTE [ 11 22 33 ] ] ]
-[ + [ * 2 5 ] [ - 10 7 ] ]
-[ and true false ]
-[ or true false ]
-[ > 3 4 ]
-[ and [ NULL [ QUOTE [ ] ] ] [ NULL [ QUOTE [ Bob ] ] ] ]
-[ map [ QUOTE [ 10 11 12 13 14 15 16 ] ] [ QUOTE [ prime ] ] ]
-[ filter [ QUOTE [ 10 11 12 13 14 15 16 ] ] [ QUOTE [ prime ] ] ]
-[ include "OK" "lsptst.lsp" ]
-"EXIT"
-.

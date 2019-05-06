@@ -1,7 +1,7 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : put_char.c
+    version : 1.1
+    date    : 05/06/19
 */
 #ifndef PUT_CHAR_X
 #define PUT_CHAR_C

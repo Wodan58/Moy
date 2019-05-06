@@ -1,12 +1,12 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 swoncat == swap concat ;
 sip == dupd dip ;
 dipd == [ dip ] cons dip ;
 Qsucc == [ [ dup [ i ] dip ] dip i ] cons ;
-Qpow == [ [ [ [ Q1 i ] ] dip [ Qmul i ] cons [ cons ] cons ] dip i i ] cons
-	cons ;
-Qmul == [ [ [ [ Q0 i ] ] dip [ Qadd i ] cons [ cons ] cons ] dip i i ] cons
-	cons ;
+Qpow == [ [ [ [ Q1 i ] ] dip [ Qmul i ] cons [ cons ] cons ] dip i i ] cons cons ;
+Qmul == [ [ [ [ Q0 i ] ] dip [ Qadd i ] cons [ cons ] cons ] dip i i ] cons cons ;
 Qadd == [ [ [ Qsucc i ] cons ] swap i i ] cons cons ;
 Q3 == Q2 Qsucc ;
 Q2 == Q1 Qsucc ;
@@ -37,97 +37,99 @@ C0 == pop ;
 Boole == [ "Yes, yes" ] [ "No, no" ] ;
 END
 
-Peano C0 .
-Peano [ C0 ] Csucc .
-Peano [ [ C0 ] Csucc ] Csucc .
-Peano [ [ [ C0 ] Csucc ] Csucc ] Csucc .
-Peano C0 .
-Peano C1 .
-Peano C2 .
-Peano C3 .
-Doublings C0 .
-Doublings C1 .
-Doublings C2 .
-Doublings C3 .
-Lists C0 .
-Lists C1 .
-Lists C2 .
-Lists C3 .
-Peano [ C2 ] [ C3 ] Cadd .
-Peano [ C2 ] [ C3 ] Cmul .
-Peano [ C2 ] [ C3 ] Cpow .
-Doublings [ C2 ] [ C3 ] Cadd .
-Doublings [ C2 ] [ C3 ] Cmul .
-Doublings [ C2 ] [ C3 ] Cpow .
-Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd .
+0 setautoput .
+Peano C0 put_int nl .
+Peano [ C0 ] Csucc put_int nl .
+Peano [ [ C0 ] Csucc ] Csucc put_int nl .
+Peano [ [ [ C0 ] Csucc ] Csucc ] Csucc put_int nl .
+Peano C0 put_int nl .
+Peano C1 put_int nl .
+Peano C2 put_int nl .
+Peano C3 put_int nl .
+Doublings C0 put_int nl .
+Doublings C1 put_int nl .
+Doublings C2 put_int nl .
+Doublings C3 put_int nl .
+Lists C0 "()" put_list nl .
+Lists C1 "(y)" put_list nl .
+Lists C2 "(yy)" put_list nl .
+Lists C3 "(yyy)" put_list nl .
+Peano [ C2 ] [ C3 ] Cadd put_int nl .
+Peano [ C2 ] [ C3 ] Cmul put_int nl .
+Peano [ C2 ] [ C3 ] Cpow put_int nl .
+Doublings [ C2 ] [ C3 ] Cadd put_int nl .
+Doublings [ C2 ] [ C3 ] Cmul put_int nl .
+Doublings [ C2 ] [ C3 ] Cpow put_int nl .
+Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd put_int nl .
 Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd 3
-succ 2 + 3 * succ 2 + = .
+succ 2 + 3 * succ 2 + = put_bool nl .
 Peano [ [ [ [ C2 ] [ C3 ] Cmul ] [ C2 ] Cpow ] [ [ C2 ] [ [ C1 ] Csucc ] Cmul ]
-Cadd ] [ C2 ] Cadd .
-Peano Q0 i .
-Peano Q0 Qsucc i .
-Peano Q0 Qsucc Qsucc i .
-Peano Q0 i .
-Peano Q1 i .
-Peano Q2 i .
-Peano Q3 i .
-Q0 .
-Q1 .
-Q2 .
-Q3 .
-Peano Q2 Q3 Qadd i .
-Peano Q2 Q3 Qmul i .
-Peano Q2 Q3 Qpow i .
-Q2 Q3 Qadd .
-Q2 Q3 Qmul .
-Q2 Q3 Qpow .
-Peano Q3 Qsucc Q2 Qadd Q3 Qmul Qsucc Q2 Qadd i .
-Peano Q3 Qsucc Q2 Qadd Q3 Qmul Qsucc Q2 Qadd i 3 succ 2 + 3 * succ 2 + = .
-Boole Ctrue .
-Boole Cfalse .
-Comparison Ctrue .
-Comparison Cfalse .
-Boole [ Ctrue ] Cnot .
-Boole [ Cfalse ] Cnot .
-Comparison [ [ Ctrue ] Cnot ] Cnot .
-Comparison [ [ Cfalse ] Cnot ] Cnot .
-Boole [ Ctrue ] [ Ctrue ] Cor .
-Boole [ Ctrue ] [ Cfalse ] Cor .
-Boole [ Cfalse ] [ Ctrue ] Cor .
-Boole [ Cfalse ] [ Cfalse ] Cor .
-Boole [ Ctrue ] [ Ctrue ] Cand .
-Boole [ Ctrue ] [ Cfalse ] Cand .
-Boole [ Cfalse ] [ Ctrue ] Cand .
-Boole [ Cfalse ] [ Cfalse ] Cand .
-Boole [ C0 ] Ceq0 .
-Boole [ C1 ] Ceq0 .
-Boole [ C2 ] Ceq0 .
-Boole [ [ C0 ] Ceq0 ] [ [ [ C2 ] Csucc ] Ceq0 ] Cor .
-Boole [ [ C0 ] Ceq0 ] [ [ [ C2 ] Csucc ] Ceq0 ] Cand .
-Peano [ [ C0 ] Ceq0 ] [ C2 ] [ C3 ] Cifte .
-Peano [ [ C1 ] Ceq0 ] [ C2 ] [ C3 ] Cifte .
-Peano [ [ [ C0 ] Ceq0 ] Cnot ] [ C2 ] [ C3 ] Cifte .
-Peano [ [ [ C1 ] Ceq0 ] Cnot ] [ C2 ] [ C3 ] Cifte .
+Cadd ] [ C2 ] Cadd put_int nl .
+Peano Q0 i put_int nl .
+Peano Q0 Qsucc i put_int nl .
+Peano Q0 Qsucc Qsucc i put_int nl .
+Peano Q0 i put_int nl .
+Peano Q1 i put_int nl .
+Peano Q2 i put_int nl .
+Peano Q3 i put_int nl .
+Q0 "(y)" put_list nl .
+Q1 "((y)(y(y)y)yy)" put_list nl .
+Q2 "(((y)(y(y)y)yy)(y(y)y)yy)" put_list nl .
+Q3 "((((y)(y(y)y)yy)(y(y)y)yy)(y(y)y)yy)" put_list nl .
+Peano Q2 Q3 Qadd i put_int nl .
+Peano Q2 Q3 Qmul i put_int nl .
+Peano Q2 Q3 Qpow i put_int nl .
+Q2 Q3 Qadd "((((y)(y(y)y)yy)(y(y)y)yy)((((y)(y(y)y)yy)(y(y)y)yy)(y(y)y)yy)((yy)y)yyy)"
+put_list nl .
+Q2 Q3 Qmul "((((y)(y(y)y)yy)(y(y)y)yy)((((y)(y(y)y)yy)(y(y)y)yy)(y(y)y)yy)(((yy))y(yy)y(y)y)yyy)" put_list nl .
+Q2 Q3 Qpow "((((y)(y(y)y)yy)(y(y)y)yy)((((y)(y(y)y)yy)(y(y)y)yy)(y(y)y)yy)(((yy))y(yy)y(y)y)yyy)" put_list nl .
+Peano Q3 Qsucc Q2 Qadd Q3 Qmul Qsucc Q2 Qadd i put_int nl .
+Peano Q3 Qsucc Q2 Qadd Q3 Qmul Qsucc Q2 Qadd i 3 succ 2 + 3 * succ 2 + = put_bool nl .
+Boole Ctrue put_str nl .
+Boole Cfalse put_str nl .
+Comparison Ctrue put_bool nl .
+Comparison Cfalse put_bool nl .
+Boole [ Ctrue ] Cnot put_str nl .
+Boole [ Cfalse ] Cnot put_str nl .
+Comparison [ [ Ctrue ] Cnot ] Cnot put_bool nl .
+Comparison [ [ Cfalse ] Cnot ] Cnot put_bool nl .
+Boole [ Ctrue ] [ Ctrue ] Cor put_str nl .
+Boole [ Ctrue ] [ Cfalse ] Cor put_str nl .
+Boole [ Cfalse ] [ Ctrue ] Cor put_str nl .
+Boole [ Cfalse ] [ Cfalse ] Cor put_str nl .
+Boole [ Ctrue ] [ Ctrue ] Cand put_str nl .
+Boole [ Ctrue ] [ Cfalse ] Cand put_str nl .
+Boole [ Cfalse ] [ Ctrue ] Cand put_str nl .
+Boole [ Cfalse ] [ Cfalse ] Cand put_str nl .
+Boole [ C0 ] Ceq0 put_str nl .
+Boole [ C1 ] Ceq0 put_str nl .
+Boole [ C2 ] Ceq0 put_str nl .
+Boole [ [ C0 ] Ceq0 ] [ [ [ C2 ] Csucc ] Ceq0 ] Cor put_str nl .
+Boole [ [ C0 ] Ceq0 ] [ [ [ C2 ] Csucc ] Ceq0 ] Cand put_str nl .
+Peano [ [ C0 ] Ceq0 ] [ C2 ] [ C3 ] Cifte put_int nl .
+Peano [ [ C1 ] Ceq0 ] [ C2 ] [ C3 ] Cifte put_int nl .
+Peano [ [ [ C0 ] Ceq0 ] Cnot ] [ C2 ] [ C3 ] Cifte put_int nl .
+Peano [ [ [ C1 ] Ceq0 ] Cnot ] [ C2 ] [ C3 ] Cifte put_int nl .
 Peano [ Ctrue ] [ [ Ctrue ] [ C0 ] [ C1 ] Cifte ] [ [ Ctrue ] [ C2 ] [ C3 ]
-Cifte ] Cifte .
+Cifte ] Cifte put_int nl .
 Peano [ Ctrue ] [ [ Cfalse ] [ C0 ] [ C1 ] Cifte ] [ [ Cfalse ] [ C2 ] [ C3 ]
-Cifte ] Cifte .
+Cifte ] Cifte put_int nl .
 Peano [ Cfalse ] [ [ Ctrue ] [ C0 ] [ C1 ] Cifte ] [ [ Ctrue ] [ C2 ] [ C3 ]
-Cifte ] Cifte .
+Cifte ] Cifte put_int nl .
 Peano [ Cfalse ] [ [ Cfalse ] [ C0 ] [ C1 ] Cifte ] [ [ Cfalse ] [ C2 ] [ C3 ]
-Cifte ] Cifte .
-Peano [ C0 ] [ C1 ] Ccons Ccar .
-Peano [ C0 ] [ C1 ] Ccons Ccdr .
-Peano [ [ C0 ] [ C1 ] Ccons Ccar ] [ [ C2 ] [ C3 ] Ccons Ccar ] Ccons Ccar .
-Peano [ [ C0 ] [ C1 ] Ccons Ccdr ] [ [ C2 ] [ C3 ] Ccons Ccdr ] Ccons Ccar .
-Peano [ [ C0 ] [ C1 ] Ccons Ccar ] [ [ C2 ] [ C3 ] Ccons Ccar ] Ccons Ccdr .
-Peano [ [ C0 ] [ C1 ] Ccons Ccdr ] [ [ C2 ] [ C3 ] Ccons Ccdr ] Ccons Ccdr .
-Peano [ C2 ] [ C3 ] Cadd .
-Peano [ C2 ] [ C3 ] Cmul .
-Peano [ C2 ] [ C3 ] Cpow .
-Doublings [ C2 ] [ C3 ] Cadd .
-Doublings [ C2 ] [ C3 ] Cmul .
-Doublings [ C2 ] [ C3 ] Cpow .
-Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd .
+Cifte ] Cifte put_int nl .
+Peano [ C0 ] [ C1 ] Ccons Ccar put_int nl .
+Peano [ C0 ] [ C1 ] Ccons Ccdr put_int nl .
+Peano [ [ C0 ] [ C1 ] Ccons Ccar ] [ [ C2 ] [ C3 ] Ccons Ccar ] Ccons Ccar put_int nl .
+Peano [ [ C0 ] [ C1 ] Ccons Ccdr ] [ [ C2 ] [ C3 ] Ccons Ccdr ] Ccons Ccar put_int nl .
+Peano [ [ C0 ] [ C1 ] Ccons Ccar ] [ [ C2 ] [ C3 ] Ccons Ccar ] Ccons Ccdr put_int nl .
+Peano [ [ C0 ] [ C1 ] Ccons Ccdr ] [ [ C2 ] [ C3 ] Ccons Ccdr ] Ccons Ccdr put_int nl .
+Peano [ C2 ] [ C3 ] Cadd put_int nl .
+Peano [ C2 ] [ C3 ] Cmul put_int nl .
+Peano [ C2 ] [ C3 ] Cpow put_int nl .
+Doublings [ C2 ] [ C3 ] Cadd put_int nl .
+Doublings [ C2 ] [ C3 ] Cmul put_int nl .
+Doublings [ C2 ] [ C3 ] Cpow put_int nl .
+Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd put_int nl .
 Peano [ [ [ [ [ C3 ] Csucc ] [ C2 ] Cadd ] [ C3 ] Cmul ] Csucc ] [ C2 ] Cadd 3
-succ 2 + 3 * succ 2 + = .
+succ 2 + 3 * succ 2 + = put_bool nl .

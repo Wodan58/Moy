@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 swoncat == swap concat ;
 shunt == [ swons ] step ;
@@ -5,10 +7,8 @@ sequand == [ pop false ] ifte ;
 second == rest first ;
 s == swoncat ;
 r-show == Rev2Tre taut-show-all ;
-putln == put newline ;
 prs-trace == pop ;
 p-show == Pol2Tre taut-show-all ;
-newline == '\n putch ;
 m-test == Min2Tre taut-test ;
 m-show1 == Min2Tre taut-show-first ;
 m-show == Min2Tre taut-show-all ;
@@ -16,8 +16,7 @@ m-count == Min2Tre taut-count ;
 m-collect1 == Min2Tre taut-collect-first ;
 m-collect == Min2Tre taut-collect-all ;
 fib == [ 1 0 ] dip [ swap [ + ] unary ] times popd ;
-fact == [ [ pop null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ] ifte
-] ;
+fact == [ [ pop null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ] ifte ] ;
 dipd == [ dip ] cons dip ;
 big-formula == [ [ CEO-sells-shares imp insider-trading and traders-conspire ]
 and [ i-trade-exposed imp CEO-resigns or CEO-is-sacked ] and [ CEO-resigns imp
@@ -27,10 +26,10 @@ CEO-sells-shares imp shares-drop ] ] ;
 END
 HIDE
 show-first == pop "\tnot tautology, first countermodel:\n" putchars swap '\t
-putch "T: " putchars put "  F: " putchars putln succ ;
-show-all == pop [ [ dup null ] [ "\tnot tautology, countermodel(s):\n" putchars
-] [ ] ifte "  " putchars succ dup put ] dipd swap '\t putch "T: " putchars put
-"  F: " putchars putln ;
+putch "T: " putchars put_list_sym "  F: " putchars put_list_sym nl succ ;
+show-all == pop [ [ dup null ] [ "\tnot tautology, countermodel(s):\n" putchars ] [ ]
+ifte "  " putchars succ dup put_int ] dipd swap '\t putch "T: " putchars put_list_sym
+"  F: " putchars put_list_sym nl ;
 found == pop pop pop not ;
 count == pop pop pop succ ;
 collect == pop [ ] cons cons swons ;
@@ -88,11 +87,9 @@ in ] pop first ver-all ] [ popd [ 3 pick over has ] [ pop pop pop pop ] [ swap
 "fal-all E" t-trace ;
 END
 HIDE
-parse-list-residues == pop [ succ dup put ": " putchars ] dip [ put ] step
-newline ;
+parse-list-residues == pop [ succ dup put ": " putchars ] dip [ put ] step nl ;
 IN
-prs-list-residues == Min2Tre [ [ 0 ] dip [ [ parse-list-residues ] ] ] dip
-parse pop ;
+prs-list-residues == Min2Tre [ [ 0 ] dip [ [ parse-list-residues ] ] ] dip parse pop ;
 parse == "parse B" prs-trace unswons [ [ [ dup [ | ] in ] pop [ [ ] cons cons
 dup ] dip uncons first [ swap [ [ i ] dip parse ] dip ] dip [ i ] dip parse ] [
 [ dup [ _ ] in ] pop uncons first swap [ [ parse ] cons swons ] dip parse ] [ [
@@ -135,6 +132,15 @@ DEFINE
     bin3ops == [ and & K ] ;
 END
 
+(*
+	not tautology, first countermodel:
+	T: [p]   F: [q] 
+[] 
+[[[s q] [p]] [[s] [p]] [[s] [q p]]] 
+[[[s] [q p]]] 
+*)
+
+0 setautoput .
 "\ntesting the propositional logic library in file  plglib.joy\n\n" putchars .
 [ raining or not raining ] m-show .
 [ raining or not windy ] m-show .
@@ -171,15 +177,16 @@ END
 [ p & q & r > p v q v r ] m-show .
 [ p v q v r > p & q & r ] m-show .
 [ p v q v r > p & q & r ] m-show1 .
-[ [ p > q ] & [ q > s ] > [ p > s ] ] m-collect .
-[ [ p > q ] & [ q > s ] > [ s > p ] ] m-collect .
-[ [ p > q ] & [ q > s ] > [ s > p ] ] m-collect1 .
-[ [ p > q ] & [ r > s ] > [ [ p & r ] > [ q v s ] ] ] m-count .
-[ [ p > q ] & [ r > s ] > [ [ p v r ] > [ q & s ] ] ] m-count .
+[ [ p > q ] & [ q > s ] > [ p > s ] ] m-collect "()" put_list nl .
+[ [ p > q ] & [ q > s ] > [ s > p ] ] m-collect "(((yy)(y))((y)(y))((y)(yy)))" put_list
+nl .
+[ [ p > q ] & [ q > s ] > [ s > p ] ] m-collect1 "(((y)(yy)))" put_list nl .
+[ [ p > q ] & [ r > s ] > [ [ p & r ] > [ q v s ] ] ] m-count put_int nl .
+[ [ p > q ] & [ r > s ] > [ [ p v r ] > [ q & s ] ] ] m-count put_int nl .
 [ [ p > q ] & [ r > s ] > [ [ p v r ] > [ q & s ] ] ] m-show .
-[ [ p & q & r ] > [ p = q = r ] ] m-test .
-[ [ p = q = r ] > [ p & q & r ] ] m-test .
-[ [ p = q = r ] > [ p v q v r ] ] m-test .
-[ [ p v q v r ] > [ p = q = r ] ] m-test .
-big-formula m-test .
+[ [ p & q & r ] > [ p = q = r ] ] m-test put_bool nl .
+[ [ p = q = r ] > [ p & q & r ] ] m-test put_bool nl .
+[ [ p = q = r ] > [ p v q v r ] ] m-test put_bool nl .
+[ [ p v q v r ] > [ p = q = r ] ] m-test put_bool nl .
+big-formula m-test put_bool nl .
 big-formula m-show .

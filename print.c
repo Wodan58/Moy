@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.22
-    date    : 07/08/18
+    version : 1.23
+    date    : 05/06/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -36,7 +36,7 @@ void writefactor(Node *node, FILE *stm)
 	    fprintf(stm, "'%c", (int)node->u.num);
 	break;
     case INTEGER_:
-	fprintf(stm, "%lld", (long long)node->u.num);
+	fprintf(stm, PRINT_NUM, node->u.num);
 	break;
     case SET_:
 	fprintf(stm, "{");

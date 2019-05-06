@@ -9,13 +9,18 @@ get_data == [ dup null ] [ ] [ unswons ] ifte ;
 put_list == 0 rollup
 [ dup null_str not ]                                 # as long as the string is not empty
 [ uncons_str                                         # read the first character
-[ [ [ '( "[ " putchars ]
+[ [ [ '[ ]
+    [ '] pop ]
+    [ '( "[ " putchars ]
     [ ') "] " putchars pop ]
     [ 's putchars space ]
+    [ 't put_str ]
     [ 'i put_int ]
     [ 'd put_dbl ]
     [ 'c put_char ]
+    [ 'b put_bool ]
     [ 'y put_sym ]
+    [ 'z put_set ]
     [ ]
   ] case
   get_data
@@ -27,4 +32,6 @@ put_list_sym == "[ " putchars [ put_sym ] step "]" putchars ;
 put_list_dbl == "[ " putchars [ put_dbl ] step "]" putchars ;
 put_list_chr == "[ " putchars [ putch space ] step "]" putchars ;
 put_list_char == "[ " putchars [ put_char ] step "]" putchars ;
+put_list_set == "[ " putchars [ put_set ] step "]" putchars ;
+put_list_bool == "[ " putchars [ put_bool ] step "]" putchars ;
 .

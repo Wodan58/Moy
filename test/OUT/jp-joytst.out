@@ -33,7 +33,7 @@ joy0l :
 [ 2 3 + ] joy0l 
 joy0l :
 nl 
-"joy0l :" putchars joy0l nl 
+"joy0l :" putchars joy0l :nl 
 [ dup put [ [ joy0l body joy0l ] [ [  ] ] [ pop pop pop ] [ cons pop cons ] [ opcase pop opcase ] [ body pop body ] [ i pop joy0l ] [ step pop [ joy0 ] cons step ] [ [  ] cons i ] ] opcase i ] step 2 3 + 
 final answer = 5 
 
@@ -41,11 +41,11 @@ joy0l :
 [ [ 2 3 + ] joy0l ] joy0l 
 joy0l :
 nl 
-"joy0l :" putchars joy0l nl 
+"joy0l :" putchars joy0l :nl 
 [ dup put [ [ joy0l body joy0l ] [ [  ] ] [ pop pop pop ] [ cons pop cons ] [ opcase pop opcase ] [ body pop body ] [ i pop joy0l ] [ step pop [ joy0 ] cons step ] [ [  ] cons i ] ] opcase i ] step [ 2 3 + ] joy0l 
 joy0l :
 nl 
-"joy0l :" putchars joy0l nl 
+"joy0l :" putchars joy0l :nl 
 [ dup put [ [ joy0l body joy0l ] [ [  ] ] [ pop pop pop ] [ cons pop cons ] [ opcase pop opcase ] [ body pop body ] [ i pop joy0l ] [ step pop [ joy0 ] cons step ] [ [  ] cons i ] ] opcase i ] step 2 3 + 
 final answer = 5 
 

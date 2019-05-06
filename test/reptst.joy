@@ -32,7 +32,9 @@ ints == [ dureco ] count dureco ;
 self == [ duco ] duco ;
 END
 DEFINE
-trace == "trace: " putchars state put_int nl ;
+trace == "trace: " putchars state put_list_int nl ;
+trace2 == "trace: " putchars state "(()(i)(ii)(iii)(iiii)(iiiii)()(y)(yy)(yyy))" put_list
+nl ;
 times10-c == [ 10 * ] rep.exe-c ;
 ten-powers-log10 == 1.0 [ 10.0 .* ] [ [ ] cons [ dup log10 ] infra ] rep.f-stream-d ;
 swoncat == swap concat ;
@@ -140,7 +142,7 @@ nfib-fix "((y(yy)((yi)y)((yyy)yyyy(y)y)y)y(yy)((yi)y)((yyy)yyyy(y)y)y)" put_list
 6 nfib-fix-c i swap put_int nl steps .
 6 nfib-fix-a i swap put_int nl trace .
 4 fact-fix i pop put_int nl .
-[ 2 5 3 7 6 ] [ a b c ] length-fix-a i swap put_int i swap put_int nl trace .
+[ 2 5 3 7 6 ] [ a b c ] length-fix-a i swap put_int i swap put_int nl trace2 .
 6 nfib-fix i pop put_int nl .
 6 nfib-bin [ ] [ [ dup put_int ] dip ] rep.fix-i i nl pop put_int . nl .
 [ 5 10 9 14 7 18 1 4 15 3 20 19 8 11 2 6 12 13 16 17 ] qtest put_int nl . put_list_int nl .

@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 unops == [ not succ pred fact first rest reverse_str i intern quit ] ;
 swoncat == swap concat ;
@@ -7,11 +9,9 @@ sequand == [ pop false ] ifte ;
 reverselist == [ ] swap shunt ;
 reverse_str == "" swap shunt_str ;
 reverse == [ [ ] ] [ "" ] iflist swap shunt ;
-# fact == [ [ over null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ]
-# ifte ] ;
+# fact == [ [ over null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ] ifte ] ;
 fact == [ 1 1 ] dip [ dup [ * ] dip succ ] times pop ;
-prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dupd
-dup * < ;
+prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dupd dup * < ;
 binops == [ and or + - * / = < > cons concat map filter ] ;
 bin3ops == [ * / and cons ] ;
 bin2ops == [ + - or concat ] ;
@@ -82,92 +82,101 @@ Cam2Pol == [ C2P ] new-infra ;
 Cam2Inf == C2I ;
 END
 
+0 setautoput .
 "\nTesting the 12 translators in the library  symlib.joy\n" putchars .
-[ 2 3 * 4 5 + - ] Rev2Cam .
-[ 4 6 pred * 5 succ 7 + - fact ] Rev2Cam .
-[ true true not or false false and or ] Rev2Cam .
-[ 2 3 * 2 3 + succ = ] Rev2Cam .
-[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Cam .
-[ [ 1 2 3 4 ] [ fact ] map ] Rev2Cam .
-[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Cam .
-[ 2 3 * 4 5 + - ] Rev2Tre .
-[ 4 6 pred * 5 succ 7 + - fact ] Rev2Tre .
-[ true true not or false false and or ] Rev2Tre .
-[ 2 3 * 2 3 + succ = ] Rev2Tre .
-[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Tre .
-[ [ 1 2 3 4 ] [ fact ] map ] Rev2Tre .
-[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Tre .
-[ 2 3 * 4 5 + - ] Rev2Inf .
-[ 4 6 pred * 5 succ 7 + - fact ] Rev2Inf .
-[ true true not or false false and or ] Rev2Inf .
-[ 2 3 * 2 3 + succ = ] Rev2Inf .
-[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Inf .
-[ [ 1 2 3 4 ] [ fact ] map ] Rev2Inf .
-[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Inf .
-[ 2 3 * 4 5 + - ] Rev2Pol .
-[ 4 6 pred * 5 succ 7 + - fact ] Rev2Pol .
-[ true true not or false false and or ] Rev2Pol .
-[ 2 3 * 2 3 + succ = ] Rev2Pol .
-[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Pol .
-[ [ 1 2 3 4 ] [ fact ] map ] Rev2Pol .
-[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Pol .
-[ - [ * 2 3 ] [ + 4 5 ] ] Cam2Inf .
-[ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ] 7 ] ] ] Cam2Inf .
-[ or [ or true [ not true ] ] [ and false false ] ] Cam2Inf .
-[ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Inf .
-[ concat [ cons 1 [ QUOTE [ 2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Inf .
-[ map [ QUOTE [ 1 2 3 4 ] ] [ QUOTE [ fact ] ] ] Cam2Inf .
-[ filter [ QUOTE [ 6 7 8 9 ] ] [ QUOTE [ prime ] ] ] Cam2Inf .
-[ [ [ 2 * 3 ] - [ 4 + 5 ] ] ] Inf2Pol .
-[ fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ] Inf2Pol .
-[ [ [ true or not true ] or [ false and false ] ] ] Inf2Pol .
-[ [ [ 2 * 3 ] = succ [ 2 + 3 ] ] ] Inf2Pol .
-[ [ [ 1 cons QUOTE [ 2 3 ] ] concat [ 4 cons QUOTE [ 5 6 ] ] ] ] Inf2Pol .
-[ [ QUOTE [ 1 2 3 4 ] map QUOTE [ fact ] ] ] Inf2Pol .
-[ [ QUOTE [ 6 7 8 9 ] filter QUOTE [ prime ] ] ] Inf2Pol .
-[ - * 2 3 + 4 5 ] Pol2Rev .
-[ fact - * 4 pred 6 + succ 5 7 ] Pol2Rev .
-[ or or true not true and false false ] Pol2Rev .
-[ = * 2 3 succ + 2 3 ] Pol2Rev .
-[ concat cons 1 [ 2 3 ] cons 4 [ 5 6 ] ] Pol2Rev .
-[ map [ 1 2 3 4 ] [ fact ] ] Pol2Rev .
-[ filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev .
-[ - [ * 2 3 ] [ + 4 5 ] ] Cam2Rev i .
-[ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ] 7 ] ] ] Cam2Rev i .
-[ or [ or true [ not true ] ] [ and false false ] ] Cam2Rev i .
-[ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Rev i .
-[ concat [ cons 1 [ QUOTE [ 2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Rev i .
-[ map [ QUOTE [ 1 2 3 4 ] ] [ QUOTE [ fact ] ] ] Cam2Rev i .
-[ filter [ QUOTE [ 6 7 8 9 ] ] [ QUOTE [ prime ] ] ] Cam2Rev i .
-[ [ [ 2 * 3 ] - [ 4 + 5 ] ] ] Inf2Rev i .
-[ fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ] Inf2Rev i .
-[ [ [ true or not true ] or [ false and false ] ] ] Inf2Rev i .
-[ [ [ 2 * 3 ] = succ [ 2 + 3 ] ] ] Inf2Rev i .
-[ [ [ 1 cons QUOTE [ 2 3 ] ] concat [ 4 cons QUOTE [ 5 6 ] ] ] ] Inf2Rev i .
-[ [ QUOTE [ 1 2 3 4 ] map QUOTE [ fact ] ] ] Inf2Rev i .
-[ [ QUOTE [ 6 7 8 9 ] filter QUOTE [ prime ] ] ] Inf2Rev i .
-[ - * 2 3 + 4 5 ] Pol2Rev i .
-[ fact - * 4 pred 6 + succ 5 7 ] Pol2Rev i .
-[ or or true not true and false false ] Pol2Rev i .
-[ = * 2 3 succ + 2 3 ] Pol2Rev i .
-[ concat cons 1 [ 2 3 ] cons 4 [ 5 6 ] ] Pol2Rev i .
-[ map [ 1 2 3 4 ] [ fact ] ] Pol2Rev i .
-[ filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev i .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Inf .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Pol .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Cam .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Tre .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Rev .
-[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Rev i .
+[ 2 3 * 4 5 + - ] Rev2Cam "(y(yii)(yii))" put_list nl .
+[ 4 6 pred * 5 succ 7 + - fact ] Rev2Cam "(y(y(yi(yi))(y(yi)i)))" put_list nl .
+[ true true not or false false and or ] Rev2Cam "(y(yb(yb))(ybb))" put_list nl .
+[ 2 3 * 2 3 + succ = ] Rev2Cam "(y(yii)(y(yii)))" put_list nl .
+[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Cam "(y(yi(y(ii)))(yi(y(ii))))" put_list nl .
+[ [ 1 2 3 4 ] [ fact ] map ] Rev2Cam "(y(y(iiii))(y(y)))" put_list nl .
+[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Cam "(y(y(iiii))(y(y)))" put_list nl .
+[ 2 3 * 4 5 + - ] Rev2Tre "(y(y(i)(i))(y(i)(i)))" put_list nl .
+[ 4 6 pred * 5 succ 7 + - fact ] Rev2Tre "(y(y(y(i)(y(i)))(y(y(i))(i))))" put_list nl .
+[ true true not or false false and or ] Rev2Tre "(y(y(b)(y(b)))(y(b)(b)))" put_list nl .
+[ 2 3 * 2 3 + succ = ] Rev2Tre "(y(y(i)(i))(y(y(i)(i))))" put_list nl .
+[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Tre "(y(y(i)(y(ii)))(y(i)(y(ii))))"
+put_list nl .
+[ [ 1 2 3 4 ] [ fact ] map ] Rev2Tre "(y(y(iiii))(y(y)))" put_list nl .
+[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Tre "(y(y(iiii))(y(y)))" put_list nl .
+[ 2 3 * 4 5 + - ] Rev2Inf "(((iyi)y(iyi)))" put_list nl .
+[ 4 6 pred * 5 succ 7 + - fact ] Rev2Inf "(y((iyyi)y(yiyi)))" put_list nl .
+[ true true not or false false and or ] Rev2Inf "(((byyb)y(byb)))" put_list nl .
+[ 2 3 * 2 3 + succ = ] Rev2Inf "(((iyi)yy(iyi)))" put_list nl .
+[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Inf "(((iyy(ii))y(iyy(ii))))" put_list nl .
+[ [ 1 2 3 4 ] [ fact ] map ] Rev2Inf "((y(iiii)yy(y)))" put_list nl .
+[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Inf "((y(iiii)yy(y)))" put_list nl .
+[ 2 3 * 4 5 + - ] Rev2Pol "(yyiiyii)" put_list nl .
+[ 4 6 pred * 5 succ 7 + - fact ] Rev2Pol "(yyyiyiyyii)" put_list nl .
+[ true true not or false false and or ] Rev2Pol "(yybybybb)" put_list nl .
+[ 2 3 * 2 3 + succ = ] Rev2Pol "(yyiiyyii)" put_list nl .
+[ 1 [ 2 3 ] cons 4 [ 5 6 ] cons concat ] Rev2Pol "(yyi(ii)yi(ii))" put_list nl .
+[ [ 1 2 3 4 ] [ fact ] map ] Rev2Pol "(y(iiii)(y))" put_list nl .
+[ [ 6 7 8 9 ] [ prime ] filter ] Rev2Pol "(y(iiii)(y))" put_list nl .
+[ - [ * 2 3 ] [ + 4 5 ] ] Cam2Inf "(((iyi)y(iyi)))" put_list nl .
+[ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ] 7 ] ] ] Cam2Inf "(y((iyyi)y(yiyi)))"
+put_list nl .
+[ or [ or true [ not true ] ] [ and false false ] ] Cam2Inf "(((byyb)y(byb)))" put_list
+nl .
+[ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Inf "(((iyi)yy(iyi)))" put_list nl .
+[ concat [ cons 1 [ QUOTE [ 2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Inf
+"(((iyy(ii))y(iyy(ii))))" put_list nl .
+[ map [ QUOTE [ 1 2 3 4 ] ] [ QUOTE [ fact ] ] ] Cam2Inf "((y(iiii)yy(y)))" put_list nl .
+[ filter [ QUOTE [ 6 7 8 9 ] ] [ QUOTE [ prime ] ] ] Cam2Inf "((y(iiii)yy(y)))"
+put_list nl .
+[ [ [ 2 * 3 ] - [ 4 + 5 ] ] ] Inf2Pol "(yyiiyii)" put_list nl .
+[ fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ] Inf2Pol "(yyyiyiyyii)" put_list nl .
+[ [ [ true or not true ] or [ false and false ] ] ] Inf2Pol "(yybybybb)" put_list nl .
+[ [ [ 2 * 3 ] = succ [ 2 + 3 ] ] ] Inf2Pol "(yyiiyyii)" put_list nl .
+[ [ [ 1 cons QUOTE [ 2 3 ] ] concat [ 4 cons QUOTE [ 5 6 ] ] ] ] Inf2Pol
+"(yyi(ii)yi(ii))" put_list nl .
+[ [ QUOTE [ 1 2 3 4 ] map QUOTE [ fact ] ] ] Inf2Pol "(y(iiii)(y))" put_list nl .
+[ [ QUOTE [ 6 7 8 9 ] filter QUOTE [ prime ] ] ] Inf2Pol "(y(iiii)(y))" put_list nl .
+[ - * 2 3 + 4 5 ] Pol2Rev "(iiyiiyy)" put_list nl .
+[ fact - * 4 pred 6 + succ 5 7 ] Pol2Rev "(iiyyiyiyyy)" put_list nl .
+[ or or true not true and false false ] Pol2Rev "(bbyybbyy)" put_list nl .
+[ = * 2 3 succ + 2 3 ] Pol2Rev "(iiyiiyyy)" put_list nl .
+[ concat cons 1 [ 2 3 ] cons 4 [ 5 6 ] ] Pol2Rev "(i(ii)yi(ii)yy)" put_list nl .
+[ map [ 1 2 3 4 ] [ fact ] ] Pol2Rev "((iiii)(y)y)" put_list nl .
+[ filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev "((iiii)(y)y)" put_list nl .
+[ - [ * 2 3 ] [ + 4 5 ] ] Cam2Rev i put_int nl .
+[ fact [ - [ * 4 [ pred 6 ] ] [ + [ succ 5 ] 7 ] ] ] Cam2Rev i put_int nl .
+[ or [ or true [ not true ] ] [ and false false ] ] Cam2Rev i put_bool nl .
+[ = [ * 2 3 ] [ succ [ + 2 3 ] ] ] Cam2Rev i put_bool nl .
+[ concat [ cons 1 [ QUOTE [ 2 3 ] ] ] [ cons 4 [ QUOTE [ 5 6 ] ] ] ] Cam2Rev i
+put_list_int nl .
+[ map [ QUOTE [ 1 2 3 4 ] ] [ QUOTE [ fact ] ] ] Cam2Rev i put_list_int nl .
+[ filter [ QUOTE [ 6 7 8 9 ] ] [ QUOTE [ prime ] ] ] Cam2Rev i put_list_int nl .
+[ [ [ 2 * 3 ] - [ 4 + 5 ] ] ] Inf2Rev i put_int nl .
+[ fact [ [ 4 * pred 6 ] - [ succ 5 + 7 ] ] ] Inf2Rev i put_int nl .
+[ [ [ true or not true ] or [ false and false ] ] ] Inf2Rev i put_bool nl .
+[ [ [ 2 * 3 ] = succ [ 2 + 3 ] ] ] Inf2Rev i put_bool nl .
+[ [ [ 1 cons QUOTE [ 2 3 ] ] concat [ 4 cons QUOTE [ 5 6 ] ] ] ] Inf2Rev i put_list_int
+nl .
+[ [ QUOTE [ 1 2 3 4 ] map QUOTE [ fact ] ] ] Inf2Rev i put_list_int nl .
+[ [ QUOTE [ 6 7 8 9 ] filter QUOTE [ prime ] ] ] Inf2Rev i put_list_int nl .
+[ - * 2 3 + 4 5 ] Pol2Rev i put_int nl .
+[ fact - * 4 pred 6 + succ 5 7 ] Pol2Rev i put_int nl .
+[ or or true not true and false false ] Pol2Rev i put_bool nl .
+[ = * 2 3 succ + 2 3 ] Pol2Rev i put_bool nl .
+[ concat cons 1 [ 2 3 ] cons 4 [ 5 6 ] ] Pol2Rev i put_list_int nl .
+[ map [ 1 2 3 4 ] [ fact ] ] Pol2Rev i put_list_int nl .
+[ filter [ 6 7 8 9 ] [ prime ] ] Pol2Rev i put_list_int nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Inf "((((iyi)y((iyi)y(iyi)))yi))" put_list nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Pol "(yyyiiyyiiyiii)" put_list nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Cam "(y(y(yii)(y(yii)(yii)))i)" put_list nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Tre "(y(y(y(i)(i))(y(y(i)(i))(y(i)(i))))(i))"
+put_list nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Rev "(iiyiiyiiyyyiy)" put_list nl .
+[ 1 * 2 + 3 * 4 + 5 * 6 < 100 ] Min2Rev i put_bool nl .
 [ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Tre
-.
+"(y(y(y(y(c)(t))))(y()))" put_list nl .
 [ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Inf
-.
+"((yy(cyt)yy()))" put_list nl .
 [ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Pol
-.
+"(yyyyct())" put_list nl .
 [ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Rev
-.
-[ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Rev
-i .
-[ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Rev
-i i .
+"(ctyyy()y)" put_list nl .
+[ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Rev i
+"(y)" put_list nl .
+[ cons [ intern [ reverse_str [ cons_str 't "iuq" ] ] ] [ QUOTE [ ] ] ] Cam2Rev i i .

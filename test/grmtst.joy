@@ -1,46 +1,38 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 verb-phrase == [ "is" _ ? "not" _ $ adjective | "sleeps" | [ "eats" | "sits" _
 	       "on" ] _ $ noun-phrase ] ;
 tree == [ "big" _ "tree" ] ;
 term == [ $ factor _ * [ "*" _ $ factor ] ] ;
 string2charlist == [ dup null_str ] [ pop [ ] ] [ uncons_str ] [ cons ] linrec ;
-space == '\032 putch ;
 shunt == [ swons ] step ;
 sequand == [ pop false ] ifte ;
-sentence == [ $ noun-phrase _ $ verb-phrase _ * [ [ "and" | "or" ] _ $ sentence
-	    ] ] ;
+sentence == [ $ noun-phrase _ $ verb-phrase _ * [ [ "and" | "or" ] _ $ sentence ] ] ;
 second == rest first ;
 reverse == [ [ ] ] [ "" ] iflist swap shunt ;
 prs-trace == pop ;
-noun-phrase == [ "John" | "Mary" | [ "a" | "the" ] _ * $ adjective _ [ "cat" |
-	       "dog" ] ] ;
-newline == '\n putch ;
+noun-phrase == [ "John" | "Mary" | [ "a" | "the" ] _ * $ adjective _ [ "cat" | "dog" ] ] ;
 names == [ "peter" _ "smith" | "paul" _ "jones" | "mary" _ "robinson" ] ;
 fib == [ 1 0 ] dip [ swap [ + ] unary ] times popd ;
 factor == [ "x" | "(" _ $ expression _ ")" ] ;
-fact == [ [ pop null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ]
-	ifte ] ;
+fact == [ [ pop null ] [ [ pop 1 ] dip ] [ [ dup pred ] dip i [ * ] dip ] ifte ] ;
 expression == [ $ term _ * [ "+" _ $ term ] ] ;
 arith == [ "x" | "(" _ $ arith _ "+" _ $ arith _ ")" ] ;
-anyname == [ [ "peter" | "paul" | "mary" ] _ [ "smith" | "jones" | "robinson" ]
-	   ] ;
+anyname == [ [ "peter" | "paul" | "mary" ] _ [ "smith" | "jones" | "robinson" ] ] ;
 adjective == [ "brown" | "black" | "rich" ] ;
 Rev-Pol == [ 'p _ * [ 'N | $ Rev-Pol _ [ 'A | 'C | 'K ] ] ] ;
 Polish == [ 'p | 'N _ $ Polish | [ 'A | 'C | 'K ] _ $ Polish _ $ Polish ] ;
 E == sentence prs-list-residues ;
 END
 HIDE parse-test == pop pop true or ;
-parse-string-residues == pop [ succ dup put ": " putchars ] dip [ putch ] step
-			 newline ;
-parse-list-residues == pop [ succ dup put ": " putchars ] dip [ put ] step
-		       newline ;
+parse-string-residues == pop [ succ dup put_int ": " putchars ] dip [ putch ] step nl ;
+parse-list-residues == pop [ succ dup put_int ": " putchars ] dip [ put_str ] step nl ;
 parse-count == pop pop succ ;
 IN
 prs-test == Min2Tre [ [ false ] dip [ [ parse-test ] ] ] dip parse ;
-prs-string-residues == Min2Tre [ [ 0 ] dip [ [ parse-string-residues ] ] ] dip
-		       parse pop ;
-prs-list-residues == Min2Tre [ [ 0 ] dip [ [ parse-list-residues ] ] ] dip
-		     parse pop ;
+prs-string-residues == Min2Tre [ [ 0 ] dip [ [ parse-string-residues ] ] ] dip parse pop ;
+prs-list-residues == Min2Tre [ [ 0 ] dip [ [ parse-list-residues ] ] ] dip parse pop ;
 prs-count == Min2Tre [ [ 0 ] dip [ [ parse-count ] ] ] dip parse ;
 parse == "parse B" prs-trace unswons [ [ [ dup [ | ] in1 ] pop [ [ ] cons cons
 dup ] dip uncons first [ swap [ [ i ] dip parse ] dip ] dip [ i ] dip parse ]
@@ -55,10 +47,12 @@ epsilon ] in1 ] pop pop unswons i ] [ popd [ dup 3 pick first = ] [ pop [ rest
 ] dip unswons i ] [ pop pop pop ] ifte ] ] cond "parse E" prs-trace ;
 END
 HIDE
-show-putchars-step == pop [ putchars ] step newline pop ;
-show-putchars-sp-step == pop [ putchars space ] step newline pop ;
-show-put-step == pop [ put ] step newline pop ;
-show-put == pop put newline pop ;
+show-putchars-step == pop [ putchars ] step nl pop ;
+show-putchars-sp-step == pop [ putchars space ] step nl pop ;
+show-put-step == pop [ put_str ] step nl pop ;
+show-put-step-int == pop [ put_int ] step nl pop ;
+show-put-step-list == pop "[yyty(iiii)ic]" put_list nl pop ;
+show-put == pop put_list_str nl pop ;
 accumulate == pop popd swons ;
 IN
 generate == [ 3 pick 3 pick size <= ] [ pop pop pop pop ] [ "generate B"
@@ -75,9 +69,10 @@ swons ] dip unswons i ] [ [ dup [ epsilon ] in1 ] pop pop unswons i ] [ popd
 swap [ swons ] dip unswons i ] ] cond "generate E" gen-trace ] ifte ;
 gen-trace == pop ;
 gen-putchars-step == Min2Tre [ [ ] [ [ show-putchars-step ] ] ] dip generate ;
-gen-putchars-sp-step == Min2Tre [ [ ] [ [ show-putchars-sp-step ] ] ] dip
-			generate ;
+gen-putchars-sp-step == Min2Tre [ [ ] [ [ show-putchars-sp-step ] ] ] dip generate ;
 gen-put-step == Min2Tre [ [ ] [ [ show-put-step ] ] ] dip generate ;
+gen-put-step-int == Min2Tre [ [ ] [ [ show-put-step-int ] ] ] dip generate ;
+gen-put-step-list == Min2Tre [ [ ] [ [ show-put-step-list ] ] ] dip generate ;
 gen-put == Min2Tre [ [ ] [ [ show-put ] ] ] dip generate ;
 gen-accumulate == Min2Tre [ [ [ ] ] dip [ ] [ [ accumulate ] ] ] dip generate ;
 END
@@ -102,43 +97,42 @@ DEFINE
     bin3ops == [ ] ;
 END
 
+0 setautoput .
 "\ntesting the grammar library in file  grmlib.joy\n\n" putchars .
-8 [ "The" _ [ "cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ]
-gen-put .
+8 [ "The" _ [ "cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ] gen-put .
 7 [ "The" _ ? [ ? "very" _ "big" ] _ "tree" ] gen-put .
 5 [ "The" _ * "very" _ "big" _ "tree" ] gen-put-step .
 7 [ "The" _ + [ "very" _ "big" ] _ "tree" ] gen-putchars-sp-step .
 8 [ Smith _ Peter _ "(Pete)" _ CS _ QUOTE [ 20 22 18 16 ] _ 76 _ 'B | Jones _
-Robert _ "(BOB)" _ LG _ QUOTE [ 12 19 13 14 ] _ 58 _ 'D ] gen-put-step .
-5 [ [ 0 | 1 ] _ [ 0 | 1 ] _ [ 0 | 1 ] ] gen-put-step .
+Robert _ "(BOB)" _ LG _ QUOTE [ 12 19 13 14 ] _ 58 _ 'D ] gen-put-step-list .
+5 [ [ 0 | 1 ] _ [ 0 | 1 ] _ [ 0 | 1 ] ] gen-put-step-int .
 13 [ $ arith ] gen-putchars-step .
 7 [ $ expression ] gen-putchars-sp-step .
 8 [ "The" _ [ "cat" | "dog" ] _ "sat" _ "on" _ "the" _ [ "mat" | "lawn" ] ]
-gen-accumulate .
-7 [ $ expression ] gen-accumulate size .
-7 [ $ term ] gen-accumulate size .
-7 [ $ factor ] gen-accumulate size .
+gen-accumulate "((tttttt)(tttttt)(tttttt)(tttttt))" put_list nl .
+7 [ $ expression ] gen-accumulate size put_int nl .
+7 [ $ term ] gen-accumulate size put_int nl .
+7 [ $ factor ] gen-accumulate size put_int nl .
 7 [ $ factor ] gen-putchars-sp-step .
-# 1 setecho .
-[ "big" "tree" ] tree prs-test .
-[ "peter" "smith" ] names prs-test .
-[ "paul" "jones" ] names prs-test .
-[ "mary" "robinson" ] names prs-test .
-[ "fred" ] names prs-test .
-[ "peter" "robinson" ] anyname prs-test .
-[ "paul" "smith" ] anyname prs-test .
-[ "paul" "nurks" ] anyname prs-test .
-[ "fred" "nurks" ] anyname prs-test .
-[ "mary" "robinson" ] [ $ anyname ] prs-test .
-[ "mary" "robertson" ] [ $ anyname ] prs-test .
-[ 'K 'p 'N 'p ] [ $ Polish ] prs-test .
-[ 'K 'p 'M 'p ] [ $ Polish ] prs-test .
-[ 'K 'p 'N 'q ] [ $ Polish ] prs-test .
-"CNpApKpp" string2charlist Polish prs-test .
-"CNpBpKpp" string2charlist Polish prs-test .
-[ "*" "*" "*" "*" "*" "." ] [ * "*" ] prs-count .
-[ "*" "*" "*" "." "*" "*" ] [ * "*" ] prs-count .
-[ "*" "*" "*" "." "*" "*" ] [ + "*" ] prs-count .
+[ "big" "tree" ] tree prs-test put_bool nl .
+[ "peter" "smith" ] names prs-test put_bool nl .
+[ "paul" "jones" ] names prs-test put_bool nl .
+[ "mary" "robinson" ] names prs-test put_bool nl .
+[ "fred" ] names prs-test put_bool nl .
+[ "peter" "robinson" ] anyname prs-test put_bool nl .
+[ "paul" "smith" ] anyname prs-test put_bool nl .
+[ "paul" "nurks" ] anyname prs-test put_bool nl .
+[ "fred" "nurks" ] anyname prs-test put_bool nl .
+[ "mary" "robinson" ] [ $ anyname ] prs-test put_bool nl .
+[ "mary" "robertson" ] [ $ anyname ] prs-test put_bool nl .
+[ 'K 'p 'N 'p ] [ $ Polish ] prs-test put_bool nl .
+[ 'K 'p 'M 'p ] [ $ Polish ] prs-test put_bool nl .
+[ 'K 'p 'N 'q ] [ $ Polish ] prs-test put_bool nl .
+"CNpApKpp" string2charlist Polish prs-test put_bool nl .
+"CNpBpKpp" string2charlist Polish prs-test put_bool nl .
+[ "*" "*" "*" "*" "*" "." ] [ * "*" ] prs-count put_int nl .
+[ "*" "*" "*" "." "*" "*" ] [ * "*" ] prs-count put_int nl .
+[ "*" "*" "*" "." "*" "*" ] [ + "*" ] prs-count put_int nl .
 "pNNpNANNpC " string2charlist Rev-Pol prs-string-residues .
 "pNNpNABNpC " string2charlist Rev-Pol prs-string-residues .
 [ "Mary" "sleeps" "and" "the" "cat" "sleeps" "." ] E .

@@ -3,10 +3,10 @@
 (*
 This tutorial is taken from 42minjoy.
 
-It uses a small number of 32 builtins:
+It uses a small number of 28+ builtins:
 
 input: get
-output: put, putch, put_int, put_bool, put_str, putchars, put_sym
+output: put, putch, putchars, put_ ...
 stack: dup, swap, pop
 list: null, cons, uncons, i
 conditional: index
