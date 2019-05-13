@@ -1,12 +1,13 @@
 #
 #   module  : flatjoy.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 0 __settracegc.
-2 setecho.
 
 %INCLUDE usrlib.joy
+
+2 setecho.
 
 DEFINE
 P0 == [];                                       # empty code
@@ -17,7 +18,7 @@ P3 == [ [[1 2][3 4][5] []] [[dup *] map] map ]. # double nesting
 DEFINE
     c  ==  concat;
     j2f-f ==
-        [ list ]
+        [ dup list ]
         [ [[[]] concat] dip [j2f-f] step [[] cons c] concat ]
         [ [] cons [c] cons concat ]
         ifte;
@@ -45,12 +46,11 @@ P3 j2f-forwards i i.
 DEFINE
     s  ==  swoncat;
     j2f-r ==
-        [ list ]
+        [ dup list ]
         [ [[swons] swoncat] dip [j2f-r] step [] swons ]
         [ [] cons [s] cons swoncat ]
         ifte;
     j2f-reverse == [] swap [j2f-r] step [] swons.
-
 
 P0.
 P0 j2f-reverse.
@@ -70,7 +70,6 @@ P3.
 P3 j2f-reverse.
 P3 j2f-reverse i.
 P3 j2f-reverse i i.
-
                 # Double flattening - an exercise in Joy obfuscation:
 P3 j2f-forwards j2f-reverse.
                 # partial de-obfuscation  -  by Joy itself:

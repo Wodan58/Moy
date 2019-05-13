@@ -1,0 +1,325 @@
+usrlib  is loaded
+inilib  is loaded
+agglib  is loaded
+numlib  is loaded
+replib  is loaded
+
+	(* -FOUR BASIC *) 
+
+	DEFINE 
+	    selfr == rep.self. 
+
+	selfr. 
+[[rep.duco] rep.duco]
+
+	selfr i i i. 
+[[rep.duco] rep.duco]
+
+	DEFINE 
+	    squaring == [dup *] rep.exe. 
+
+	squaring. 
+[[[dup *] dip rep.duco] [dup *] dip rep.duco]
+
+	2 squaring i pop. 
+4
+
+	2 squaring i i pop. 
+16
+
+	2 squaring i i i pop. 
+256
+
+	DEFINE 
+	    state == first first; 
+	    integers == rep.ints. 
+
+	integers. 
+[[0 [succ] infra rep.dureco] [succ] infra rep.dureco]
+
+	integers i i i i i state. 
+5
+
+	integers i i i i i i. 
+[[6 [succ] infra rep.dureco] [succ] infra rep.dureco]
+
+	DEFINE 
+	    times10-c ==  [10 *] rep.exe-c. 
+
+	times10-c. 
+[[0 [succ] infra [10 *] dip rep.dureco] [succ] infra [10 *] dip rep.dureco]
+
+	3 times10-c i i i i i pop. 
+300000
+
+	3 times10-c i i i i i popd state. 
+5
+
+	(* -STREAMS *) 
+
+	DEFINE 
+	    ones == 1 rep.c-stream. 
+
+	ones. 
+[[1 rep.dureco] rep.dureco]
+	ones i i i i i. 
+[[1 rep.dureco] rep.dureco]
+	ones i i i i i state. 
+1
+
+	DEFINE 
+	    halving == 1.0 [2 /] rep.n-stream. 
+
+	halving. 
+[[1 [2 /] infra rep.dureco] [2 /] infra rep.dureco]
+
+	halving i i i. 
+[[0.125 [2 /] infra rep.dureco] [2 /] infra rep.dureco]
+
+	halving i i i state. 
+0.125
+
+	DEFINE 
+	    integers-from == [succ] rep.n-stream. 
+
+	42 integers-from. 
+[[42 [succ] infra rep.dureco] [succ] infra rep.dureco]
+
+	42 integers-from i i i i i state. 
+47
+
+	DEFINE 
+	    ones-d == 1 rep.c-stream-d. 
+
+	ones-d. 
+[[1 dup [first] dip rep.dureco] dup [first] dip rep.dureco]
+
+	ones-d i i i pop. . . 
+1
+1
+1
+
+	DEFINE 
+	    halving-d == 1.0 [2 /] rep.n-stream-d. 
+
+	halving-d. 
+[[1 dup [first] dip [2 /] infra rep.dureco] dup [first] dip [2 /] infra rep.dureco]
+
+	halving-d i i i i i pop. . . . . 
+0.0625
+0.125
+0.25
+0.5
+1
+
+	DEFINE 
+	    primes-d == 2 [succ [dup prime not] [succ] while] rep.n-stream-d. 
+
+	primes-d. 
+[[2 dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco] dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco]
+
+	primes-d i i i i i pop. . . . . 
+11
+7
+5
+3
+2
+
+	DEFINE 
+	    even-squares == 0 [2 +] [dup *] rep.f-stream. 
+
+	even-squares. 
+[[0 2 [pop dup dup * [2 +] dip] infra rep.durereco] [pop dup dup * [2 +] dip] infra rep.durereco]
+
+	even-squares state. 
+0
+
+	even-squares i state. 
+4
+
+	even-squares i i state. 
+16
+
+	even-squares i i i state. 
+36
+
+	even-squares i i i i state. 
+64
+
+	DEFINE 
+	    ten-powers-log10 == 
+		 1.0 [10 *] [[] cons [dup log10] infra] rep.f-stream-d.  (* R.W. *) 
+
+	ten-powers-log10. 
+[[[0 1] 10 dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra rep.durereco] dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra rep.durereco]
+
+	ten-powers-log10 i i i i i i pop. . . . . . 
+[5 100000]
+[4 10000]
+[3 1000]
+[2 100]
+[1 10]
+[0 1]
+
+	(* -INTERACTION *) 
+
+	DEFINE 
+	    accu-list == [] [cons] rep.inter; 
+	    accu-sum == 0 [+] rep.inter; 
+	    accu-product-list == [] [[*] dip cons] rep.inter. 
+
+	accu-list. 
+[[[] uncons [cons] dip cons rep.dureco] uncons [cons] dip cons rep.dureco]
+
+	1 2 3 4 5 accu-list i i i i i state. 
+[1 2 3 4 5]
+
+	accu-sum. 
+[[0 uncons [+] dip cons rep.dureco] uncons [+] dip cons rep.dureco]
+
+	1 2 3 4 5 accu-sum i i i i i state. 
+15
+
+	accu-product-list. 
+[[[] uncons [[*] dip cons] dip cons rep.dureco] uncons [[*] dip cons] dip cons rep.dureco]
+
+	1 10 2 100 3 1000 4 10000 accu-product-list i i i i state. 
+[10 200 3000 40000]
+
+	DEFINE 
+	    max-3-adds == 3 [+] rep.exe-t; 
+	    max-4-adds == 4 [+] rep.exe-t. 
+
+	          max-3-adds. 
+[[3 [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte] [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte]
+
+	      2 1 max-3-adds i pop. 
+3
+
+	    3 2 1 max-3-adds i i pop. 
+6
+
+	  4 3 2 1 max-3-adds i i i pop. 
+10
+
+	5 4 3 2 1 max-3-adds i i i i pop. . 
+10
+5
+
+	5 4 3 2 1 max-4-adds i i i i pop. 
+15
+
+	(* -RECURSIVE *) 
+
+	DEFINE 
+	    fact0 == [[over null] [pop pop 1  ] [[dup pred] dip i  *     ] ifte]; 
+	    fact  == [[over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte]. 
+
+	6 fact0 rep.fix i. 
+720
+
+	6 fact  rep.fix i. . 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte]
+720
+
+	3 fact  rep.fix i i. . 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte]
+720
+
+	DEFINE 
+	    fact-fix   == fact rep.fix; 
+	    fact-fix-c == fact rep.fix-c; 
+	    fact-fix-a == fact rep.fix-a; 
+	    steps == "steps: " putchars state putln; 
+	    trace == "trace: " putchars state putln. 
+
+	3 4 5  fact-fix   i swap put i swap put i swap putln pop. 
+120 24 6 
+
+	3 4 5  fact-fix-c i swap put i swap put i swap putln steps. 
+120 24 6 
+steps: 15 
+
+	3 4 5  fact-fix-a i swap put i swap put i swap putln trace. 
+120 24 6 
+trace: [0 1 2 3 0 1 2 3 4 0 1 2 3 4 5] 
+
+	DEFINE 
+	    nfib == 
+		[ [ over small ] 
+		  [ [pop 1] dip ] 
+		  [ [pred dup pred] dip 
+		    dip swap i 
+		    [+] dip ] 
+		  ifte ]; 
+	    nfib-fix == nfib rep.fix; 
+	    nfib-fix-c == nfib rep.fix-c; 
+	    nfib-fix-a == nfib rep.fix-a. 
+
+	nfib-fix. 
+[[rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte]
+
+	6 nfib-fix i pop. 
+13
+
+	6 nfib-fix-c i swap putln steps. 
+13 
+steps: 25 
+
+	6 nfib-fix-a i swap putln trace. 
+13 
+trace: [0 1 2 1 0 1 2 3 4 1 0 1 2 3 0 1 2 1 0 1 2 3 4 5 6] 
+
+	0 __settracegc. 
+
+	(* -CONVENIENCE *) 
+
+	DEFINE 
+	    fact-lin == [over null] [pop 1] [dup pred] [*] rep.linear; 
+	    length-lin == [over null] [pop 0] [rest] [succ] rep.linear; 
+	    nfib-bin == [over small] [pop 1] [pred dup pred] [+] rep.binary2; 
+	    fact-fix == fact-lin rep.fix; 
+	    length-fix-a == length-lin rep.fix-a; 
+	    nfib-fix == nfib-bin rep.fix. 
+
+	4 fact-fix i pop. 
+24
+
+	[2 5 3 7 6] [a b c] length-fix-a i swap put i swap putln trace. 
+3 5 
+trace: [[] [6] [7 6] [3 7 6] [5 3 7 6] [2 5 3 7 6] [] [c] [b c] [a b c]] 
+
+	6 nfib-fix i pop. 
+13
+
+	6 nfib-bin [] [[dup put] dip] rep.fix-i i pop newline. newline.
+6 5 4 3 2 1 0 1 2 1 0 3 2 1 0 1 4 3 2 1 0 1 2 1 0 
+13
+
+
+	DEFINE 
+	    qsort-bin == [over small] [] [uncons [over over >] split] [enconcat] rep.binary2; 
+	    qsort-fix-c == qsort-bin rep.fix-c; 
+	    qtest == qsort-fix-c i state. 
+
+	[5 10 9 14 7 18 1 4 15 3 20 19 8 11 2 6 12 13 16 17] qtest. . 
+29
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
+
+	[10 5 3 2 4 1 8 7 9 6 15 13 12 14 11 18 17 19 16 20] qtest. . 
+25
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
+
+	[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20] qtest. . 
+39
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
+
+	[20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1] qtest. . 
+39
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]
+
+	"You can also sort strings, of course" qtest. . 
+55
+"      ,Yaaccefgilnnooooorrrsssssttuu"
+
+	(* END   reptst.joy *) 

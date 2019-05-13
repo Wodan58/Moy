@@ -64,10 +64,10 @@ Ones 5 Drop 5 Take put_list_int nl .
 1.0 [ 1.1 .* ] From-by 10 Drop "(d(d(dy)y))" put_list nl .
 1.0 [ 1.1 .* ] From-by 10 N-th put_dbl nl .
 1.0 [ 1.1 .* ] From-by 10 Take put_list_dbl nl .
-true [ not ] From-by "(y(y(y)y))" put_list nl .
+true [ not ] From-by "(b(b(y)y))" put_list nl .
 true [ not ] From-by Third put_bool nl .
-true [ not ] From-by 3 Drop "(y(y(y)y))" put_list nl .
-true [ not ] From-by 10 Take put_list_sym nl .
+true [ not ] From-by 3 Drop "(b(b(y)y))" put_list nl .
+true [ not ] From-by 10 Take put_list_bool nl .
 "" [ 'a swons_str ] From-by 7 Take put_list_str nl .
 [ ] [ [ ] cons ] From-by 7 Take "(()(())((()))(((())))((((()))))(((((())))))((((((())))))))" put_list nl .
 '0 '9 From-to "(c(ccy))" put_list nl .

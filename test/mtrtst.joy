@@ -26,9 +26,9 @@ sm-bin-m == [ (* sv-bin-v *) map ] cons map popd ;
 sindeg == radians sin ;
 radians == pi .* 180.0 ./ ;
 putlist == "[ " putchars [ dup null ] [ pop ] [ unswons "(dd)" put_list [ "\n  " putchars
-put ] step ] ifte "]\n" putchars ;
+"(dd)" put_list ] step ] ifte "]\n" putchars ;
 putlist-set == "[ " putchars [ dup null ] [ pop ] [ unswons "(zz)" put_list [ "\n  "
-putchars put ] step ] ifte "]\n" putchars ;
+putchars "(zz)" put_list ] step ] ifte "]\n" putchars ;
 pop2 == pop pop ;
 pi == 3.14159265 ;
 pairstep == [ dupd ] swoncat [ step pop ] cons cons step ;
@@ -80,12 +80,12 @@ END
 [ true false false true ] [ true true false false ] [ and ] vv-bin-v put_list_bool nl .
 [ 1 2 3 ] [ 1 2 3 ] [ * ] [ + ] vv-2bin-s put_int nl .
 [ 1.1 2.2 3.3 ] [ 3.3 4.4 5.5 ] [ .* ] [ .+ ] vv-2bin-s put_dbl nl .
-[ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ and ] [ or ] vv-2bin-s put_dbl nl .
-[ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ or ] [ and ] vv-2bin-s put_dbl nl .
+[ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ and ] [ or ] vv-2bin-s put_set nl .
+[ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ or ] [ and ] vv-2bin-s put_set nl .
 [ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ and ] [ and ] vv-2bin-s put_set nl .
 [ { 1 2 3 } { 4 5 6 } ] [ { 2 3 } { 2 6 } ] [ or ] [ or ] vv-2bin-s put_set nl .
-[ true false true ] [ false true true ] [ and ] [ or ] vv-2bin-s put_set nl .
-[ 1 2 3 4 ] v-1row-m put_set nl .
+[ true false true ] [ false true true ] [ and ] [ or ] vv-2bin-s put_bool nl .
+[ 1 2 3 4 ] v-1row-m "((iiii))" put_list nl .
 [ 1 2 3 4 ] v-1col-m "((i)(i)(i)(i))" put_list nl .
 [ 1 2 3 4 ] v-zdiag-m "((iiii)(iiii)(iiii)(iiii))" put_list nl .
 [ 1 2 3 4 ] 0 v-e-diag-m "((iiii)(iiii)(iiii)(iiii))" put_list nl .
@@ -120,7 +120,7 @@ put_list nl .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 0 [ over * ] ms-cbin-m "((ii)(ii)(ii))" put_list nl .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] 7 [ popd ] ms-bin-m "((ii)(ii)(ii))" put_list nl .
 [ [ 1 2 ] [ 3 4 ] [ 5 6 ] ] [ succ ] [ i ] ms-bin-m "((ii)(ii)(ii))" put_list nl .
-[ [ { 1 2 } { 3 4 } ] [ { 5 6 } { 7 8 } ] ] { 1 3 5 7 } [ and ] ms-bin-m "((ii)(ii))"
+[ [ { 1 2 } { 3 4 } ] [ { 5 6 } { 7 8 } ] ] { 1 3 5 7 } [ and ] ms-bin-m "((zz)(zz))"
 put_list nl .
 5 [ [ 1 2 3 ] [ 4 5 6 ] [ 7 8 9 ] ] [ over swap - ] sm-bin-m "((iii)(iii)(iii))" put_list
 nl .

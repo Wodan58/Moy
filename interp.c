@@ -1,7 +1,7 @@
 /*
     module  : interp.c
-    version : 1.13
-    date    : 07/14/18
+    version : 1.14
+    date    : 05/12/19
 */
 #include "runtime.h"
 #include "runtime.c"
@@ -58,7 +58,7 @@ start:
 	    DUPLICATE(node);
 	    break;
 	default:
-	    execerror("valid datatype", "interprete");
+	    execerror("valid datatype", "interpreter");
 	    break;
 	}
     }

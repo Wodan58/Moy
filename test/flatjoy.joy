@@ -44,8 +44,7 @@ P2 j2f-reverse "(()(y)y()(y)y(y)yy()(i)y(i)y(i)yy)" put_list nl .
 P2 j2f-reverse i "((iii)(yy)y)" put_list nl .
 P2 j2f-reverse i i "(iii)" put_list nl .
 P3 "(((ii)(ii)(i)())((yy)y)y)" put_list nl .
-P3 j2f-reverse "(()(y)y()(y)y()(y)y(y)yyy()()y()(i)yy()(i)y(i)yy()(i)y(i)yyy)" put_list
-nl .
+P3 j2f-reverse "(()(y)y()(y)y()(y)y(y)yyy()()y()(i)yy()(i)y(i)yy()(i)y(i)yyy)" put_list nl .
 P3 j2f-reverse i "(((ii)(ii)(i)())((yy)y)y)" put_list nl .
 P3 j2f-reverse i i "((ii)(ii)(i)())" put_list nl .
 P3 j2f-forwards j2f-reverse "(()(y)y()(y)yy(y)y(y)y()y(y)y()(y)yy(y)y(y)y()y(y)y()(y)yy(y)y()(y)yy()y()y(y)y(y)y()y(y)y(y)y()y()y(y)y(y)y()y(y)y()(i)yy()y(y)y(y)y()y(y)y()(i)yy(y)y()(i)yy()y(y)y(y)y()y(y)y()(i)yy(y)y()(i)yy()y()y()y)" put_list nl .

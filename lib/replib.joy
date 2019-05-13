@@ -1,7 +1,7 @@
 #
 #   module  : replib.joy
-#   version : 1.2
-#   date    : 09/09/16
+#   version : 1.3
+#   date    : 05/12/19
 #
 (* FILE:   replib.joy *)
 
@@ -56,7 +56,7 @@ PUBLIC
         [[pred] infra] swoncat          # N [[pred] infra [P] dip dureco]
         [ifte] cons                     # N [[E] ifte]
         [pop [[duco] duco]] swons       # N [[pop [[duco] duco] [E] ifte]
-        [first null] swons              # N [[first null] [T] [E] ifte]
+        [dup first null] swons          # N [[first null] [T] [E] ifte]
         cons dureco;                    # [[N [I] [T] [E] ifte] ..]
 
     fix == [duco] swoncat duco;
@@ -75,7 +75,7 @@ PUBLIC
         swoncat                         # [s uncons [I] dip cons dureco P]
         dureco;
 
-    fix-a == [] [[cons] unary] fix-i;
+    fix-a == [] [[over swons] unary] fix-i;
 
     _expand ==                          # [I] [T] [R1] [R2] [r]  ==>
                           # [ [pop I] [[T] dip] [[R1] dip r [R2] dip] ifte ]
@@ -87,7 +87,7 @@ PUBLIC
 
         [ [dip] cons                    #  .. [[T] dip] ..
 
-          [ [pop] swoncat] dip ]        #  [pop [I]] .. ..
+          (* [ [pop] swoncat] dip *) ]  #  [pop [I]] .. ..
         dip
 
         [ifte] cons cons cons;          # [ .. .. .. ifte ]

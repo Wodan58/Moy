@@ -1,7 +1,7 @@
 /*
     module  : symbol.c
-    version : 1.13
-    date    : 07/02/18
+    version : 1.14
+    date    : 05/12/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,25 +11,30 @@
 #include "decl.h"
 
 static char *module;
-static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide;
+static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide, inside_pub;
 
 /*
- * initmod registers str as module name.
+ * initmod registers str as module name and sets definition to 1.
  */
 void initmod(char *str)
 {
-    definition = 1;
     module = str;
-}
-
-void exitmod(void)
-{
-    definition = 0;
-    module = 0;
+    definition = 1;
 }
 
 /*
- * initpriv registers the current hide number.
+ * exitmod deregisters the module and sets definition to 0.
+ */
+void exitmod(void)
+{
+    if (module) {
+	module = 0;
+	definition = 0;
+    }
+}
+
+/*
+ * initpriv registers the current hide number and sets definition to 1.
  */
 void initpriv(void)
 {
@@ -40,28 +45,45 @@ void initpriv(void)
     inside_hide = 1;
 }
 
+/*
+ * stoppriv registers the transition from private to public definitions.
+ */
 void stoppriv(void)
 {
     inside_hide = 0;
 }
 
 /*
- * exitpriv clears the defintion flag.
+ * exitpriv lowers the hide_index and if 0, clears the definition flag.
  */
 void exitpriv(void)
 {
-    if (!module)
-	definition = 0;
     if (hide_index)
 	hide_index--;
+    if (!hide_index && !module && !inside_pub)
+	definition = 0;
 }
 
 /*
- * initpub sets the definition flag.
+ * initpub sets the definition flag, unless already in hiding or module.
  */
 void initpub(void)
 {
-    definition = 1;
+    if (!hide_index && !module) {
+	definition = 1;
+	inside_pub = 1;
+    }
+}
+
+/*
+ * exitpub unsets the definition flag, unless still in hiding or module.
+ */
+void exitpub(void)
+{
+    if (!hide_index && !module) {
+	definition = 0;
+	inside_pub = 0;
+    }
 }
 
 /*

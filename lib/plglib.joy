@@ -1,7 +1,7 @@
 #
 #   module  : plglib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   plglib.joy *)
 
@@ -35,7 +35,7 @@ HIDE
 *)
     show-all ==
 	pop
-	[ [null]
+	[ [dup null]
 	  ["\tnot tautology, countermodel(s):\n" putchars]
 	  []
 	  ifte
@@ -124,7 +124,7 @@ IN
     ver-all ==					(* t f c F		*)
 	"ver-all B" t-trace
 	unswons
-	[ [ [[or v A] in]
+	[ [ [dup [or v A] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -132,7 +132,7 @@ IN
 	      [[i] dip ver-all] dip ]
 	    dip
 	    [i] dip ver-all ]
-	  [ [[imp > C] in]
+	  [ [dup [imp > C] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -140,7 +140,7 @@ IN
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip ver-all ]
-	  [ [[iff = E] in]
+	  [ [dup [iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
@@ -149,18 +149,18 @@ IN
 	      [[i] dip ver-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [[and & K] in]
+	  [ [dup [and & K] in]
 	    pop uncons first swap
 	    [ [ver-all] cons swons ]
 	    dip ver-all ]
-	  [ [[not - N] in]
+	  [ [dup [not - N] in]
 	    pop first fal-all ]
 	  [ popd
-	    [ popd has ]
+	    [ 2 pick over has ]
 	    [ pop pop pop pop ]
 	    [ swap
 	      [ swapd
-		[has] [pop] [swons] ifte
+		[over over has] [pop] [swons] ifte
 		swap ]
 	      dip
 	      unswons i ]
@@ -171,7 +171,7 @@ IN
     fal-all ==					(* t f c F		*)
 	"fal-all B" t-trace
 	unswons
-	[ [ [[and & K] in]
+	[ [ [dup [and & K] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -179,15 +179,15 @@ IN
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [[or v A] in]
+	  [ [dup [or v A] in]
 	    pop uncons first swap
 	    [ [fal-all] cons swons ]
 	    dip fal-all ]
-	  [ [[imp > C] in]
+	  [ [dup [imp > C] in]
 	    pop uncons first swap
 	    [ [fal-all] cons swons ]
 	    dip ver-all ]
-	  [ [[iff = E] in]
+	  [ [dup [iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
@@ -196,13 +196,13 @@ IN
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [[not - N] in]
+	  [ [dup [not - N] in]
 	    pop first ver-all ]
 	  [ popd
-	    [ popd popd has ]
+	    [ 3 pick over has ]
 	    [ pop pop pop pop ]
 	    [ swap
-	      [ [has] [pop] [swons] ifte ]
+	      [ [over over has] [pop] [swons] ifte ]
 	      dip
 	      unswons i ]
 	    ifte ] ]
@@ -210,11 +210,11 @@ IN
 	"fal-all E" t-trace;
 
     ver-first ==				(* t f c F		*)
-      [ pop pop pop pop null ]
+      [ 4 pick null ]
       [
 	"ver-first B" t-trace
 	unswons
-	[ [ [[or v A] in]
+	[ [ [dup [or v A] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -222,7 +222,7 @@ IN
 	      [[i] dip ver-first] dip ]
 	    dip
 	    [i] dip ver-first ]
-	  [ [[imp > C] in]
+	  [ [dup [imp > C] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -230,7 +230,7 @@ IN
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip ver-first ]
-	  [ [[iff = E] in]
+	  [ [dup [iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
@@ -239,18 +239,18 @@ IN
 	      [[i] dip ver-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [[and & K] in]
+	  [ [dup [and & K] in]
 	    pop uncons first swap
 	    [ [ver-first] cons swons ]
 	    dip ver-first ]
-	  [ [[not - N] in]
+	  [ [dup [not - N] in]
 	    pop first fal-first ]
 	  [ popd
-	    [ popd has ]
+	    [ 2 pick over has ]
 	    [ pop pop pop pop ]
 	    [ swap
 	      [ swapd
-		[has] [pop] [swons] ifte
+		[over over has] [pop] [swons] ifte
 		swap ]
 	      dip
 	      unswons i ]
@@ -262,11 +262,11 @@ IN
       ifte;
 
     fal-first ==				(* t f c F		*)
-      [ pop pop pop pop null ]
+      [ 4 pick null ]
       [
 	"fal-first B" t-trace
 	unswons
-	[ [ [[and & K] in]
+	[ [ [dup [and & K] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -274,7 +274,7 @@ IN
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [[iff = E] in]
+	  [ [dup [iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
@@ -283,21 +283,21 @@ IN
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [[or v A] in]
+	  [ [dup [or v A] in]
 	    pop uncons first swap
 	    [ [fal-first] cons swons ]
 	    dip fal-first ]
-	  [ [[imp > C] in]
+	  [ [dup [imp > C] in]
 	    pop uncons first swap
 	    [ [fal-first] cons swons ]
 	    dip ver-first ]
-	  [ [[not - N] in]
+	  [ [dup [not - N] in]
 	    pop first ver-first ]
 	  [ popd
-	    [ popd popd has ]
+	    [ 3 pick over has ]
 	    [ pop pop pop pop ]
 	    [ swap
-	      [ [has] [pop] [swons] ifte ]
+	      [ [over over has] [pop] [swons] ifte ]
 	      dip
 	      unswons i ]
 	    ifte ] ]
@@ -323,12 +323,12 @@ IN
     taut-show-all ==
 	[ 0  [] [] [[show-all]] ] dip
 	fal-all
-	[null] ['\t putch "tautology\n" putchars] [] ifte
+	[dup null] ['\t putch "tautology\n" putchars] [] ifte
 	pop;
     taut-show-first ==
 	[ 0  [] [] [[show-first]] ] dip
 	fal-first
-	[null] ['\t putch "tautology\n" putchars] [] ifte
+	[dup null] ['\t putch "tautology\n" putchars] [] ifte
 	pop;
     taut-collect-all ==
 	[ [] [] [] [[collect]] ] dip

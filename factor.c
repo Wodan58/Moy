@@ -1,7 +1,7 @@
 /*
     module  : factor.c
-    version : 1.3
-    date    : 07/10/18
+    version : 1.4
+    date    : 05/13/19
 */
 #include <stdio.h>
 #include "joy.h"
@@ -11,7 +11,7 @@ YYSTYPE yylval;
 
 void readfactor(int sym)
 {
-    uintptr_t set = 0;
+    ulong_t set = 0;
 
     switch (sym) {
     case '{':

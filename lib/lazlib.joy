@@ -1,7 +1,7 @@
 #
 #   module  : lazlib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   lazlib.joy *)
 
@@ -28,7 +28,7 @@ LIBRA
 	[Null not]  [[succ] dip Rest]  while
 	pop;
     Take ==
-	[ Null ]
+	[ dup Null ]
 	[ pop pop [] ]
 	[ [Uncons] dip  pred ]	(* note: lazy Uncons	*)
 	[ cons ]		(* note: ordinary cons	*)
@@ -42,7 +42,7 @@ LIBRA
 	Cons;			(* [f [f' From]]	*)
 
     From-to ==			(*  f   t		*)
-	[ > ]
+	[ over over > ]
 	[ pop pop [] ]
 	[ [dup succ] dip 	(*  f   f' t		*)
 	  [From-to] cons cons	(*  f  [f' t From-to]	*)
@@ -58,7 +58,7 @@ LIBRA
 	  [dupd i] dip cons	(*  f [B(f) t  [B] From-to-by]	*)
 	  Cons ]		(* [f  B(f) t  [B] From-to-by]]	*)
 	(* ifpart, else-part: *)
-	[ [pop >]
+	[ [2 pick 2 pick >]
 	  [pop pop pop] ] dip
 	ifte;
 
@@ -69,7 +69,7 @@ LIBRA
 	Cons;			(* [f [B(f) [B] From-by]]	*)
 
     Map ==			(*     s        [F]		*)
-	[pop Null]
+	[over Null]
 	[[]]			(*     []			*)
 	[ [Uncons] dip		(*     f      r [F]		*)
 	  dup swapd		(*     f [F]  r [F]		*)
@@ -79,10 +79,10 @@ LIBRA
 	ifte;
 
     Filter ==			(*  s   [P]			*)
-	[pop Null]
+	[over Null]
 	[[]]			(* []				*)
 	[ dup			(*   s   [P]   [P]		*)
-	  [ [i not] cons [first] swoncat
+	  [ [i not] cons [dup first] swoncat
 	    [Rest]
 	    while
 	    Uncons ]

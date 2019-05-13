@@ -1,7 +1,7 @@
 /*
     module  : in1.c
-    version : 1.4
-    date    : 07/15/18
+    version : 1.5
+    date    : 05/12/19
 */
 #ifndef IN1_X
 #define IN1_C
@@ -23,6 +23,9 @@ in1  :  X A  ->  B
 Tests whether X is a member of aggregate A.
 */
 #define PROCEDURE	do_in1
+#ifdef CORRECT_INHAS_COMPARE
+#undef CORRECT_INHAS_COMPARE
+#endif
 #define NAME		"in1"
 #define AGGR		stk
 #define ELEM		stk->next

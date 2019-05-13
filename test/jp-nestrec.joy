@@ -12,7 +12,7 @@ x-ack == [ [ [ [ 2 pick null ] pop popd succ ] [ [ over null ] [ pop pred 1 ]
 dip x ] [ [ [ dup pred swap ] dip pred ] dip twice-x ] ] cond ] x ;
 twice-x == dup [ x ] dip x ;
 twice-i == dup [ i ] dip i ;
-toggle == [ over over has_set ] [ [ not ] dip swons_set not_set ] [ swons_set ] ifte ;
+toggle == [ over over has_set ] [ [ not_set ] dip swons_set not_set ] [ swons_set ] ifte ;
 swoncat == swap concat ;
 r-mcc91 == [ dup 100 > ] [ 10 - ] [ 11 + r-mcc91 r-mcc91 ] ifte ;
 r-hamilhyp == [ dup null ] [ pop ] [ dup rollup pred r-hamilhyp dupd cons swap
@@ -28,8 +28,8 @@ l-mcc91 == [ dup 100 > ] [ 10 - ] [ 11 + ] [ l-mcc91 ] linrec ;
 dup2 == dupd dup swapd ;
 cnr-mcc91 == [ [ [ dup 100 > ] [ 10 - ] ] [ [ 11 + ] [ ] [ ] ] ] condnestrec ;
 cnr-hanoi == [ [ rolldown ] infra ] dip [ [ [ dup null ] [ pop pop ] ] [ [ dup2
-[ [ rotate ] infra ] dip pred ] [ [ dup rest put_sym ] dip [ [ swap ] infra ] dip
-pred ] [ ] ] ] condnestrec ;
+[ [ rotate ] infra ] dip pred ] [ [ dup rest "(yy)" put_list ] dip [ [ swap ] infra ]
+dip pred ] [ ] ] ] condnestrec ;
 cnr-hamilhyp == [ [ [ dup null ] [ pop ] ] [ [ dup rollup pred ] [ dupd cons
 swap pred ] [ ] ] ] condnestrec ;
 cnr-grayseq == [ [ [ dup null ] [ pop ] ] [ [ dup rollup pred ] [ dupd dup [

@@ -1,7 +1,7 @@
 #
 #   module  : mtrtst.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* file: mtrtst.joy                          MATRICES AND VECTORS *)
 
@@ -20,17 +20,17 @@ putchars.
 5  1  n-e-vector.
                                    (* vectors and scalars  *)
 
-5   [1 2 3]   [+]sv-bin-v.
-3.13   [10 20 30]   [*]sv-bin-v.
-5   [1 2 3 4 5 6 7 8 9 10]    [-]sv-bin-v.
+5   [1 2 3]   [over +]sv-bin-v.
+3.13   [10 20 30]   [over *]sv-bin-v.
+5   [1 2 3 4 5 6 7 8 9 10]    [over swap -]sv-bin-v.
 [1 2 3 4 5 6 7 8 9 10]   5    [-]vs-bin-v.
 [{1 2 3}{4 5 6}{7 8 9}]    {2 4 6 8}    [and]vs-bin-v.
 3.14   [[id] [dup *] [dup dup * *]]    [i]sv-bin-v.
 [1 2 3 4]   [dup] [*] concat   [i]vs-bin-v.
 [1.1 2.2 3.3 4.4 5.5]   v-negate-v.
 [1.1 2.2 3.3 4.4 5.5]   v-invert-v.
-   
-                                   (* two vectors          *)
+
+(* two vectors *)
 
 [1 2 3 4]   [11 22 33]      vv-samesize.
 [1 2 3 4]   [11 22 33 44]   vv-samesize.
@@ -50,7 +50,7 @@ putchars.
 [{1 2 3}{4 5 6}]   [{2 3}{2 6}]   [or][or]vv-2bin-s.
 [true false true]  [false true true]  [and][or]vv-2bin-s.
 
-                                   (* vectors to matrices *)
+(* vectors to matrices *)
 [1 2 3 4]  v-1row-m.
 [1 2 3 4]  v-1col-m.
 [1 2 3 4]  v-zdiag-m.
@@ -61,43 +61,43 @@ putchars.
 4  1  n-e-vector  0  v-e-diag-m.
 4 'i  n-e-vector 'o  v-e-diag-m.
 
-[1 2 3]   [10 20]   [+]vv-bin-m.
-[1.1 2.2]   [3.3 4.4 5.5 6.6]    [+]vv-bin-m.
-[1.1 2.2]   [4.4 5.5 6.6 7.7]    [*]vv-bin-m.
-[{1 2 3}{4 5}]   [{1}{2 3}{3 4}]   [or]vv-bin-m.
-[{1 2 3}{4 5}]   [{1}{2 3}{3 4}]   [and]vv-bin-m.
+[1 2 3]   [10 20]   [over +]vv-bin-m.
+[1.1 2.2]   [3.3 4.4 5.5 6.6]    [over +]vv-bin-m.
+[1.1 2.2]   [4.4 5.5 6.6 7.7]    [over *]vv-bin-m.
+[{1 2 3}{4 5}]   [{1}{2 3}{3 4}]   [over or]vv-bin-m.
+[{1 2 3}{4 5}]   [{1}{2 3}{3 4}]   [over and]vv-bin-m.
 [1 2 3 4]  [[id] [dup *] [dup dup * *]]   [dupd i]vv-bin-m.
 
 (* sindeg   cosdeg   tandeg  are defined in numlib.joy *)
 [0.0 30.0 45.0]  [ [sindeg] [cosdeg] [tandeg] ]  [dupd i]vv-bin-m.
 
-[peter paul]   [[smith] [jones]]   [cons]vv-bin-m.
-[peter paul]   [[smith] [jones]]   [cons]vv-bin-m  size.
+[peter paul]   [[smith] [jones]]   [over swap cons]vv-bin-m.
+[peter paul]   [[smith] [jones]]   [over swap cons]vv-bin-m  size.
 (* compare: *)
 [peter paul]   [ smith   jones ]   cartproduct.
 [peter paul]   [ smith   jones ]   cartproduct  size.
 
-                                   (* MATRICES             *)
+(* MATRICES             *)
 
 [[1 2] [3 4]]   [[5 6] [7 8]]   mm-vercat-m.
 [[1 2] [3 4]]   [[5 6] [7 8]]   mm-horcat-m.
 [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]   m-transpose-m.
 
-                                   (* matrices and scalars *)
+(* matrices and scalars *)
 
-[[1 2] [3 4] [5 6]]  10      [+]ms-cbin-m.
-[[1 2] [3 4] [5 6]]  10      [-]ms-bin-m. (* not commutative *)
-[[1 2] [3 4] [5 6]]  10      [*]ms-cbin-m.
-[[1 2] [3 4] [5 6]]   0      [*]ms-cbin-m.
+[[1 2] [3 4] [5 6]]  10      [over +]ms-cbin-m.
+[[1 2] [3 4] [5 6]]  10      [over over -]ms-bin-m. (* not commutative *)
+[[1 2] [3 4] [5 6]]  10      [over *]ms-cbin-m.
+[[1 2] [3 4] [5 6]]   0      [over *]ms-cbin-m.
 [[1 2] [3 4] [5 6]]   7   [popd]ms-bin-m.
 [[1 2] [3 4] [5 6]]  [succ]  [i]ms-bin-m.
 [[{1 2} {3 4}] [{5 6} {7 8}] ]   {1 3 5 7}  [and]ms-bin-m.
 
-5  [[1 2 3] [4 5 6] [7 8 9]]        [-]sm-bin-m.
-   [[1 2 3] [4 5 6] [7 8 9]]   5    [-]ms-bin-m.
+5  [[1 2 3] [4 5 6] [7 8 9]]        [over swap -]sm-bin-m.
+   [[1 2 3] [4 5 6] [7 8 9]]   5    [over swap -]ms-bin-m.
 0  [[1 2 3] [4 5 6] [7 8 9]]      [pop]sm-bin-m.
 
-                                   (* two matrices         *)
+(* two matrices         *)
 
 [[1 2 3] [4 5 6]]  [[10 20 30]  [40 50 60]]      mm-add-m.
 [[1 2 3] [4 5 6]]  [[10 20 30]  [40 50 60]]   [+]mm-bin-m.

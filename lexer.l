@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.18
-    date    : 04/15/19
+    version : 1.19
+    date    : 05/12/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -13,7 +13,6 @@
 #include "decl.h"
 
 static int moy_echo;
-static char buf[MAXLINE];
 
 #ifdef FLEX_SCANNER
 int include_stack_ptr;
@@ -34,12 +33,15 @@ void setechoflag(int flag)
 
 static void putline(void)
 {
+    if (!moy_echo)
+	return;
+    if (strstr(yytext, "(*") && !strstr(yytext, "*)"))
+	return;
     if (moy_echo > 2)
-	printf("%4d", yylineno);
+	fprintf(stderr, "%4d", yylineno);
     if (moy_echo > 1)
-	printf("\t");
-    if (moy_echo)
-	printf("%s", buf + 1);
+	fprintf(stderr, "\t");
+    fprintf(stderr, "%s", yytext + 1);
 }
 
 static void SkipComment(void)
@@ -98,9 +100,10 @@ static void sprint(char *str)
 
 %option		yylineno
 
-firstchar	[-!$%&*+,./:<=>?@A-Z\\^_`a-z|~]
-nextchar	[-*+/0-9<=>A-Z_a-z]
-restchar	({firstchar}{nextchar}*|[-]([-=A-Z_a-z]{nextchar}*)?)
+firstchar	[!$%&*+,./:<=>?@A-Z\\^_`a-z|~]
+secondchar	[*+/<>]
+nextchar	[-0-9=A-Z_a-z]
+restchar	({firstchar}{secondchar}?{nextchar}*|[-]([-*+/<=>A-Z_a-z]{nextchar}*)?)
 symbol		{restchar}(\.{restchar})*
 escape		\\(["'\\btnvfr]|[01][0-9][0-9]|2[0-5][0-5])
 character	'([^\\]|{escape})
@@ -114,8 +117,7 @@ linecom		#.*
 
 %%
 
-\n.*\n		{ int i; strncpy(buf, yytext, MAXLINE); buf[MAXLINE - 1] = 0;
-		  for (i = yyleng - 1; i; i--) unput(yytext[i]); putline(); }
+\n.*\n		{ putline(); yyless(1); }
 LIBRA		|
 DEFINE		|
 IN		|

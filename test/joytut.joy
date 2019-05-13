@@ -18,8 +18,7 @@ putchars toc-all-headings [
 "type  0  to do all sections, or\n"
 "type any other number (even negative) to quit.\n" ] putstrings get-integer
 [ dup toc-of-tutorial size >= ] [ 0 swap - ] [ ] ifte ;
-toc-all-headings == toc-of-tutorial rest [ space space second putchars newline
-		    ] step ;
+toc-all-headings == toc-of-tutorial rest [ space space second putchars newline ] step ;
 space == '\032 putch ;
 second == rest first ;
 sec3 == 3 toc-one-heading ini-stats [

@@ -1,7 +1,7 @@
 #
 #   module  : mtrlib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   mtrlib.joy *)
 
@@ -18,8 +18,8 @@ vv-samesize == [size] dip size =;
 (* operators *)
 n-e-vector == [] cons [times] cons cons
                 [] swap infra;
-v-negate-v == 0 swap [-]sv-bin-v;
-v-invert-v == 1.0 swap [/]sv-bin-v;
+v-negate-v == 0 swap [over swap -]sv-bin-v;
+v-invert-v == 1.0 swap [over swap /]sv-bin-v;
 
                                            (* vectors and scalars  *)
 (* combinators *)
@@ -40,8 +40,8 @@ vv-2bin-s == [mapr2 uncons] dip step;
 v-1row-m == [] cons;
 v-1col-m == [] swap [swons] sv-bin-v;
 v-zdiag-m ==
-    [ small ]
-    [ [null]  []  [[] cons]  ifte ]
+    [ dup small ]
+    [ [dup null]  []  [[] cons]  ifte ]
     [ uncons ]
     [ dup  [first rest 0 swons cons]  dip
       [0 swons]  map
@@ -52,8 +52,8 @@ v-e-diag-m ==
 	[ [swons cons] cons [first rest] swoncat ] dip
 	[swons] cons
 	[map cons] cons [dip] swoncat cons [dup] swoncat
-(*P1*)	[ [small]
-(*P2*)	  [[null] [] [[] cons] ifte]
+(*P1*)	[ [dup small]
+(*P2*)	  [[dup null] [] [[] cons] ifte]
 (*P3*)	  [uncons] ]  dip
 (*go*)	linrec;
 
@@ -70,14 +70,14 @@ mm-samedimensions == [m-dimensions] dip m-dimensions
 mm-vercat-m == concat;
 mm-horcat-m == [concat] mapr2;
 m-transpose-m == (* READE p 133 *)
-	[ [null] [true] [[null] some] ifte ]
+	[ dup [dup null] [true] [[dup null] some] ifte ]
 	[ pop [] ]
 	[ [[first] map] [[rest] map] cleave ]
 	[ cons ]
 	linrec;
 
                                            (* matrices and scalars *)
-sm-bin-m == [sv-bin-v] cons map popd;
+sm-bin-m == [(* sv-bin-v *) map ] cons map popd;
 ms-bin-m == cons [map] cons map;
 ms-cbin-m == swapd sm-bin-m; (* efficiency *)
 
@@ -89,11 +89,11 @@ mm-bin-m == [mapr2] cons mapr2;
 mm-add-m == [+] mm-bin-m;
 mm-mul-m == 
 	transpose
-	[ [[*] mapr2 0 [+] fold] map popd ] cons
+	[ [[[*] mapr2] unary 0 [+] fold] map popd ] cons
 	map;
 
 mm-2bin-m ==
-	[fold] cons [[mapr2 unswons] cons] dip concat
+	[fold] cons [[[mapr2] cons unary unswons] cons] dip concat
 	[ transpose ] dip
 	[ map popd ] cons cons
 	map;

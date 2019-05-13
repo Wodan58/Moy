@@ -1,7 +1,7 @@
 /*
     module  : put_sym.c
-    version : 1.1
-    date    : 04/22/19
+    version : 1.2
+    date    : 05/12/19
 */
 #ifndef PUT_SYM_X
 #define PUT_SYM_C
@@ -13,8 +13,9 @@ void do_put_sym(void)
     proc_t cur;
 
     TRACE;
-    cur = (proc_t)do_pop();
-    if ((ptr = procname((proc_t)cur)) == 0)
+    if ((cur = (proc_t)do_pop()) == 0)
+	printf("\"\" ");
+    else if ((ptr = procname((proc_t)cur)) == 0)
 	 printf("%s ", (char *)cur);
     else
 	 printf("%s ", ptr);

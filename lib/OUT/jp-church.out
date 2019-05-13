@@ -1,0 +1,290 @@
+usrlib  is loaded
+inilib  is loaded
+agglib  is loaded
+
+	DEFINE 
+	    C0  ==  pop; 
+	    Csucc  ==  [dup [i] dip] dip i. 
+
+	DEFINE 
+	    Peano  ==  0 [succ]. 
+
+	Peano C0. 
+0
+	Peano [C0] Csucc. 
+1
+	Peano [[C0] Csucc] Csucc. 
+2
+	Peano [[[C0] Csucc] Csucc] Csucc. 
+3
+
+	DEFINE 
+	    C1  ==  [C0] Csucc; 
+	    C2  ==  [C1] Csucc; 
+	    C3 ==  [C2] Csucc. 
+
+	Peano C0. 
+0
+	Peano C1. 
+1
+	Peano C2. 
+2
+	Peano C3. 
+3
+
+	DEFINE 
+	    Doublings  ==  1 [2 *]; 
+	    Lists  ==  [] [[i] swoncat]. 
+
+	Doublings C0. 
+1
+	Doublings C1. 
+2
+	Doublings C2. 
+4
+	Doublings C3. 
+8
+
+	Lists C0. 
+[]
+	Lists C1. 
+[i]
+	Lists C2. 
+[i i]
+	Lists C3. 
+[i i i]
+
+	DEFINE 
+	    Cadd  ==  [ [[Csucc] cons] ] dip i i; 
+	    Cmul  ==  [ [[C0]] dip  [Cadd] cons [cons] cons ] dip i i; 
+	    Cpow  ==  [ [[C1 ]] dip  [Cmul] cons [cons] cons ] dip i i. 
+
+	Peano [C2] [C3] Cadd. 
+5
+	Peano [C2] [C3] Cmul. 
+6
+	Peano [C2] [C3] Cpow. 
+8
+
+	Doublings [C2] [C3] Cadd. 
+32
+	Doublings [C2] [C3] Cmul. 
+64
+	Doublings [C2] [C3] Cpow. 
+256
+
+	Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd . 
+21
+	Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd 
+	            3   succ    2   +      3   *     succ    2   +      = . 
+true
+
+	Peano [[[[C2] [C3] Cmul] [C2] Cpow] [[C2] [[C1] Csucc] Cmul] Cadd] [C2] Cadd. 
+42
+
+	DEFINE 
+	    Q0  ==  [pop]; 
+	    Qsucc  ==  [ [dup [i] dip] dip i ]  cons. 
+
+	Peano Q0 i. 
+0
+	Peano Q0 Qsucc i. 
+1
+	Peano Q0 Qsucc Qsucc i. 
+2
+
+	DEFINE 
+	    Q1  ==  Q0 Qsucc; 
+	    Q2  ==  Q1 Qsucc; 
+	    Q3 ==  Q2 Qsucc. 
+
+	Peano Q0 i. 
+0
+	Peano Q1 i. 
+1
+	Peano Q2 i. 
+2
+	Peano Q3 i. 
+3
+
+	Q0. 
+[pop]
+	Q1. 
+[[pop] [dup [i] dip] dip i]
+	Q2. 
+[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i]
+	Q3. 
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i]
+
+	DEFINE 
+	    Qadd  == 
+	      [ [[Qsucc i] cons] swap i i ]  cons cons; 
+	    Qmul  == 
+	      [ [[[Q0 i]] dip [Qadd i] cons [cons] cons] dip i i ] cons cons; 
+	    Qpow  == 
+	      [ [[[Q1 i]] dip [Qmul i] cons [cons] cons] dip i i ] cons cons. 
+
+	Peano Q2 Q3 Qadd i . 
+5
+	Peano Q2 Q3 Qmul i . 
+6
+	Peano Q2 Q3 Qpow i . 
+8
+
+	Q2 Q3 Qadd . 
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[Qsucc i] cons] swap i i]
+	Q2 Q3 Qmul . 
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[Q0 i]] dip [Qadd i] cons [cons] cons] dip i i]
+	Q2 Q3 Qpow . 
+[[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[[pop] [dup [i] dip] dip i] [dup [i] dip] dip i] [dup [i] dip] dip i] [[[Q1 i]] dip [Qmul i] cons [cons] cons] dip i i]
+
+	Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i. 
+21
+	Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i 
+	            3  succ   2  +     3  *    succ  2  +      = . 
+true
+
+	DEFINE  
+	    Ctrue  ==  pop i; 
+	    Cfalse  ==  popd i. 
+
+	DEFINE 
+	    Boole == ["Yes, yes"] ["No, no"]; 
+	    Comparison  ==  2 3 [<] [>]. 
+
+	Boole Ctrue. 
+"Yes, yes"
+	Boole Cfalse. 
+"No, no"
+	Comparison Ctrue. 
+true
+	Comparison Cfalse. 
+false
+
+	DEFINE 
+	    Cnot  ==  swapd i. 
+
+	Boole [Ctrue] Cnot. 
+"No, no"
+	Boole [Cfalse] Cnot. 
+"Yes, yes"
+	Comparison [[Ctrue] Cnot] Cnot. 
+true
+	Comparison [[Cfalse] Cnot] Cnot. 
+false
+
+	DEFINE 
+	    Cor  ==  [[Ctrue]] dipd i; 
+	    Cand  ==  [[Cfalse]] dip i. 
+
+	Boole [Ctrue ] [Ctrue ] Cor. 
+"Yes, yes"
+	Boole [Ctrue ] [Cfalse] Cor. 
+"Yes, yes"
+	Boole [Cfalse] [Ctrue ] Cor. 
+"Yes, yes"
+	Boole [Cfalse] [Cfalse] Cor. 
+"No, no"
+	Boole [Ctrue ] [Ctrue ] Cand. 
+"Yes, yes"
+	Boole [Ctrue ] [Cfalse] Cand. 
+"No, no"
+	Boole [Cfalse] [Ctrue ] Cand. 
+"No, no"
+	Boole [Cfalse] [Cfalse] Cand. 
+"No, no"
+
+	DEFINE 
+	    Ceq0  == [ [Ctrue] [pop [Cfalse]] ] dip i i. 
+
+	Boole [C0] Ceq0 . 
+"Yes, yes"
+	Boole [C1] Ceq0 . 
+"No, no"
+	Boole [C2] Ceq0 . 
+"No, no"
+	Boole [[C0] Ceq0] [[[C2] Csucc] Ceq0] Cor. 
+"Yes, yes"
+	Boole [[C0] Ceq0] [[[C2] Csucc] Ceq0] Cand. 
+"No, no"
+
+	DEFINE 
+	    Cifte  ==  rolldown i. 
+
+	Peano  [[C0] Ceq0]  [C2]  [C3]  Cifte. 
+2
+	Peano  [[C1] Ceq0]  [C2]  [C3]  Cifte. 
+3
+	Peano  [[[C0] Ceq0] Cnot]  [C2]  [C3]  Cifte. 
+3
+	Peano  [[[C1] Ceq0] Cnot]  [C2]  [C3]  Cifte. 
+2
+
+		Peano [Ctrue ] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte. 
+0
+	Peano [Ctrue ] [[Cfalse] [C0] [C1] Cifte] [[Cfalse] [C2] [C3] Cifte] Cifte. 
+1
+	Peano [Cfalse] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte. 
+2
+	Peano [Cfalse] [[Cfalse] [C0] [C1] Cifte] [[Cfalse] [C2] [C3] Cifte] Cifte. 
+3
+
+	DEFINE 
+	    Ccons  ==  [i]; 
+	    Ccar  ==  [Ctrue] swap i; 
+	    Ccdr  ==  [Cfalse] swap i. 
+
+	Peano  [C0] [C1] Ccons Ccar. 
+0
+	Peano  [C0] [C1] Ccons Ccdr. 
+1
+
+	Peano [[C0] [C1] Ccons Ccar] [[C2] [C3] Ccons Ccar] Ccons Ccar. 
+0
+	Peano [[C0] [C1] Ccons Ccdr] [[C2] [C3] Ccons Ccdr] Ccons Ccar. 
+1
+	Peano [[C0] [C1] Ccons Ccar] [[C2] [C3] Ccons Ccar] Ccons Ccdr. 
+2
+	Peano [[C0] [C1] Ccons Ccdr] [[C2] [C3] Ccons Ccdr] Ccons Ccdr. 
+3
+	# The definition of Brent Kerby's more elegant Church numerals 
+
+	# The original definitions, commented away, are given for comparison. 
+	# The new definitions over-ride the old ones. 
+
+	DEFINE 
+
+	#  Csucc ==  [dup [i] dip] dip i; 
+	   Csucc ==  [dup dip] dip i; 
+
+	#  Cadd ==  [ [[Csucc] cons] ] dip i i; 
+	   Cadd ==  [sip] dip i;               # but sip needs to be defined: 
+	                                         sip ==  dupd dip; 
+
+	#  Cmul ==  [ [[C0]] dip  [Cadd] cons [cons] cons ] dip i i; 
+	   Cmul ==  [cons] dip i; 
+
+	#  Cpow ==  [ [[C1]] dip  [Cmul] cons [cons] cons ] dip i i; 
+	   Cpow ==  [[cons] cons] dip i i. 
+
+	# Now the old tests using the new definitions: 
+
+	Peano [C2] [C3] Cadd. 
+5
+	Peano [C2] [C3] Cmul. 
+6
+	Peano [C2] [C3] Cpow. 
+8
+
+	Doublings [C2] [C3] Cadd. 
+32
+	Doublings [C2] [C3] Cmul. 
+64
+	Doublings [C2] [C3] Cpow. 
+256
+
+	Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd . 
+21
+	Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd 
+	            3   succ    2   +      3   *     succ    2   +      = . 
+true

@@ -1,7 +1,7 @@
 #
 #   module  : jp-church.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 %INCLUDE usrlib.joy
 
@@ -94,7 +94,6 @@ DEFINE
     Qpow  ==
       [ [[[Q1 i]] dip [Qmul i] cons [cons] cons] dip i i ] cons cons.
 
-
 Peano Q2 Q3 Qadd i.
 Peano Q2 Q3 Qmul i.
 Peano Q2 Q3 Qpow i.
@@ -107,8 +106,7 @@ Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i.
 Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i
             3  succ   2  +     3  *    succ  2  +      = .
 
-
-DEFINE 
+DEFINE
     Ctrue  ==  pop i;
     Cfalse  ==  popd i.
 
@@ -121,7 +119,7 @@ Boole Cfalse.
 Comparison Ctrue.
 Comparison Cfalse.
 
-DEFINE
+DEFINE 
 (*
     Cnot  ==  [ [Cfalse] [Ctrue] ] dip i.
 *)
@@ -198,7 +196,6 @@ DEFINE
 
 #  Cpow ==  [ [[C1]] dip  [Cmul] cons [cons] cons ] dip i i;
    Cpow ==  [[cons] cons] dip i i.
-
 
 # Now the old tests using the new definitions:
 

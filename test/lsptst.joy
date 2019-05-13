@@ -6,7 +6,7 @@ sequor == [ pop true ] swap ifte ;
 second == rest first ;
 putstrings == [ putchars ] step ;
 prime == 2 [ over over dup * > 2 pick 2 pick rem 0 > and ] [ succ ] while dup * < ;
-numerical == [ dup integer ] [ dup float ] sequor ;
+numerical == [ dup integer ] [ float ] sequor ;
 lisp == [ "\nLisp interpreter\n" "\t\tTo include the Lisp library, type\n"
 "\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n" "GO\n\n" ] putstrings dummy lib0
 l-prompt putchars get [ dup [ EXIT ] first equal not ] [ eval put nl
@@ -27,7 +27,7 @@ eval == [ dup list ] [ unswons [ [ QUOTE first ] [ LAMBDA dupd cons [ CLOSURE ]
 swoncat ] [ IF uncons [ eval ] dip swap [ dup null ] [ pop second ] [ pop first
 ] ifte eval ] [ DEF uncons first swap [ eval ] dip dup [ [ [ ] cons ] unary2
 swons swons ] dip ] [ DEFUN uncons [ LAMBDA ] swoncat [ ] cons cons [ DEF ]
-swoncat eval ] [ swons [ eval ] map unswons apply ] ] case ] [ [ dup [
+swoncat eval ] [ swons [ eval ] map unswons apply ] ] case ] [ [ dup [ dup
 numerical ] [ string ] sequor ] [ ] [ dupd swap [ [ dup null ] [ true ] [ over
 over first first in ] ifte ] [ [ dup null ] [ pop ] [ first unswons rolldown [
 over first over = ] [ pop pop first ] [ [ [ rest ] unary2 ] dip ] tailrec ]
@@ -35,7 +35,7 @@ ifte ] [ rest ] tailrec ] ifte ] ifte ;
 call == [ ] cons i ;
 apply == [ dup list ] [ unswons [ [ CLOSURE unswons call swons uncons swapd
 uncons [ swap cons swons ] dip eval popd ] [
-"apply: unknown procedure type -\n" putchars abort ] ] case ] [ [ dup [
+"apply: unknown procedure type -\n" putchars abort ] ] case ] [ [ dup [ dup
 numerical ] [ string ] sequor ] [ ] [ [ [ CAR first first ] [ CDR first rest ]
 [ CONS uncons first cons ] [ EQ uncons first equal ] [ ATOM first leaf ] [ NULL
 first null ] [ LIST ] [ [ i ] dip call ] ] case ] ifte ] ifte ;

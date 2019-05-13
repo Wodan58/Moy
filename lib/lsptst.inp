@@ -1,11 +1,11 @@
-							(* CONSTANTS	*)
+(* CONSTANTS	*)
 	123.456
 	false
 	"hello world"
 	[ QUOTE [Peter Paul Mary] ]
 	[ QUOTE [1 2 3 4 5] ]
 
-						(* PRIMITIVE FUNCTIONS	*)
+(* PRIMITIVE FUNCTIONS	*)
 	[ CAR [QUOTE [Peter Paul Mary]] ]
 	[ CDR [QUOTE [1 2 3 4 5]] ]
 	[ CONS Fred [QUOTE [Peter Paul]] ]
@@ -17,7 +17,7 @@
 	[ LIST  [CDR [QUOTE [1 2 3]]]  [ATOM 123]  ]
 	[ [LAMBDA [lis] CAR [CDR lis]]  [QUOTE [11 22 33]] ]
 
-						(* "BORROWED" from JOY	*)
+(* "BORROWED" from JOY	*)
 	[ + [* 2 5] [- 10 7] ]
 	[ and true false ]
 	[ or true false ]

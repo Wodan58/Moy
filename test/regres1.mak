@@ -1,4 +1,4 @@
-regres: fib gcd test jp-reprodtst modtst jp-church reptst tutorial symtst plgtst grmtst # jp-joytst flatjoy jp-nestrec laztst joytut mtrtst lsptst
+regres: fib gcd test jp-joytst flatjoy jp-reprodtst modtst jp-nestrec laztst joytut jp-church grmtst mtrtst reptst tutorial symtst plgtst lsptst
 
 fib:
 	./$@3 | diff -w - OUT/fib.out
@@ -9,11 +9,13 @@ gcd:
 test:
 	-./$@3 | diff -w - OUT/$@.out
 
+# builtin opcase is not supported
 jp-joytst:
-	./$@3 | diff -w - OUT/$@.out
+	-./$@1 | diff -w - OUT/$@.out
 
+# predicate list is not supported
 flatjoy:
-	./$@3 | diff -w - OUT/$@.out
+	./$@1 | diff -w - OUT/$@.out
 
 jp-reprodtst:
 	./$@3 | diff -w - OUT/$@.out
@@ -27,8 +29,9 @@ jp-nestrec:
 laztst:
 	./$@3 | diff -w - OUT/$@.out
 
+# predicates list, integer are not supported
 joytut:
-	./$@2 <$@.inp | diff -w - OUT/$@.out
+	./$@1 <$@.inp | diff -w - OUT/$@.out
 
 jp-church:
 	./$@3 | diff -w - OUT/$@.out
@@ -37,7 +40,7 @@ grmtst:
 	./$@3 | diff -w - OUT/$@.out
 
 mtrtst:
-	./$@3 | diff -w - OUT/$@.out
+	-./$@3 | diff -w - OUT/$@.out
 
 reptst:
 	./$@3 | diff -w - OUT/$@.out
@@ -51,5 +54,7 @@ symtst:
 plgtst:
 	./$@3 | diff -w - OUT/$@.out
 
+# predicates list, integer, float, string are not supported
 lsptst:
 	./$@1 <$@.inp | diff -w - OUT/$@.out
+

@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.10
-    date    : 07/14/18
+    version : 1.11
+    date    : 05/12/19
 */
 #define IS_UNDEFINED	0
 #define IS_ORIGINAL	1
@@ -49,6 +49,7 @@ void initpriv(void);
 void stoppriv(void);
 void exitpriv(void);
 void initpub(void);
+void exitpub(void);
 char *prefix(int *hide, int *local);
 char *iterate(char *name);
 

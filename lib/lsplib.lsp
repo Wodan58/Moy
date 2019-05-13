@@ -15,7 +15,8 @@
 	  [ LAMBDA [lis] [CAR [CDR lis]] ] ]
 	[ DEF  PRIME
 	  [ LAMBDA [n] prime n ] ]
-						(* DEFS USING FOLDR	*)
+
+(* DEFS USING FOLDR	*)
 	[ DEFUN   CONCAT  [lis1 lis2]
 	    FOLDR lis1 lis2 [LAMBDA [l r] CONS l r] ]
 	[ DEFUN   FLATTEN  [lis]
@@ -32,14 +33,14 @@
 	    FOLDR lis NIL
 		  [LAMBDA [l r] IF [pred l] [CONS l r] r] ]
 
-						(* DEFS USING FOLDL	*)
+(* DEFS USING FOLDL	*)
 	[ DEFUN   SHUNT  [l1 l2]
 	    FOLDL l1 l2 [LAMBDA [l r] CONS l r] ]
 	[ DEFUN   REVERSE  [lis]  SHUNT lis NIL ]
 	[ DEFUN  LIST-TO-INT [lis]
 	    FOLDL lis 0 [LAMBDA [x y] + x [* 10 y]] ]
 
-						(* DEFS USING FOLDR2	*)
+(* DEFS USING FOLDR2	*)
 	[ DEFUN  ZIP  [l1 l2]
 	    FOLDR2 l1 l2 NIL [LAMBDA [x y z] CONS [PAIR x y] z] ]
 	[ DEFUN  WEAVE  [l1 l2]
@@ -53,7 +54,7 @@
 	[ DEFUN  RECSUM  [lis]
 	    RECFOLDR lis 0 [LAMBDA [x y] + x y] ]
 
-			(* simulating recursion by Self-Application	*)
+(* simulating recursion by Self-Application	*)
 
 	[ DEFUN   FACT0  [f n]
 	    IF [NULL n] 1 [* n [f f [pred n]]] ]

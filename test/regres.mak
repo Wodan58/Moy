@@ -1,4 +1,4 @@
-regres: fib gcd24_54 test jp-joytst flatjoy jp-reprodtst modtst jp-nestrec laztst joytut jp-church grmtst mtrtst reptst tutorial symtst plgtst # lsptst
+regres: fib gcd24_54 test jp-joytst flatjoy jp-reprodtst modtst jp-nestrec laztst joytut jp-church grmtst mtrtst reptst tutorial symtst plgtst lsptst
 
 fib:
 	../moy fib.joy | diff -w - OUT/fib.out
@@ -52,4 +52,4 @@ plgtst:
 	../moy $@.joy | diff -w - OUT/$@.out
 
 lsptst:
-	-cat $@.joy $@.inp | ../moy | diff -w - OUT/$@.out
+	cat $@.joy $@.inp | ../moy | diff -w - OUT/$@.out

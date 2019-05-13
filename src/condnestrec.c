@@ -1,10 +1,16 @@
 /*
     module  : condnestrec.c
-    version : 1.11
-    date    : 07/15/18
+    version : 1.12
+    date    : 05/12/19
 */
 #ifndef CONDNESTREC_X
 #define CONDNESTREC_C
+
+#ifndef CONDLINREC_C
+#undef CONDLINREC_X
+#include "condlinrec.c"
+#define CONDLINREC_X
+#endif
 
 #ifdef NEW_RUNTIME
 void do_condnestrec(void)
@@ -15,14 +21,6 @@ void do_condnestrec(void)
 #else
 #ifndef OLD_RUNTIME
 int put_condnestrec(void);
-#endif
-
-PRIVATE void condnestrec(Node *root);
-
-#ifndef CONDLINREC_C
-#undef CONDLINREC_X
-#include "condlinrec.c"
-#define CONDLINREC_X
 #endif
 
 /**

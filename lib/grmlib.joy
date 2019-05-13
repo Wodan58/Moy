@@ -1,7 +1,7 @@
 #
 #   module  : grmlib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   grmlib.joy *)
 
@@ -47,13 +47,13 @@ HIDE
 IN
 
     generate ==	(* length-limit  accumulator  continuation  expression	*)
-      [ pop pop size <= ]
+      [ 3 pick 3 pick size <= ]
       [ pop pop pop pop ] (* got enough *)
       [
 	"generate B" gen-trace
 	unswons
 						# binary operators
-	[ [ [[ | ] in]
+	[ [ [dup [ | ] in1]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -61,25 +61,25 @@ IN
 	      [[i] dip generate] dip ]
 	    dip
 	    [i] dip generate ]
-	  [ [[ _ ] in ]
+	  [ [dup [ _ ] in1]
 	    pop uncons first
 	    [ [generate] cons swons ]
 	    dip generate ]
 						# unary operators
-	  [ [[ ? ] in ]
+	  [ [dup [ ? ] in1]
 	    pop
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first generate ]
-	  [ [[ + ] in ]
+	  [ [dup [ + ] in1]
 	    swons
 	    [] cons cons cons cons dup
 	    [ i second generate ] dip
 	    i dup
 	    [ [generate] cons swons ] dip
 	    second generate ]
-	  [ [[ * ] in ]
+	  [ [dup [ * ] in1]
 	    swons
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
@@ -87,15 +87,15 @@ IN
 	    dup
 	    [ [i] dip [generate] cons swons ] dip
 	    second generate ]
-	  [ [[ $ ] in]
+	  [ [dup [ $ ] in1]
 	    pop first i
 	    Min2Tre generate ]
-	  [ [[QUOTE] in ]
+	  [ [dup [QUOTE] in1]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [[epsilon] in ]
+	  [ [dup [epsilon] in1]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom
@@ -148,7 +148,7 @@ IN
 	"parse B" prs-trace
 	unswons
 						# binary operators
-	[ [ [[ | ] in]
+	[ [ [dup [ | ] in1]
 	    pop
 	    [ [] cons cons dup ] dip
 	    uncons first
@@ -156,25 +156,25 @@ IN
 	      [[i] dip parse] dip ]
 	    dip
 	    [i] dip parse ]
-	  [ [[ _ ] in ]
+	  [ [dup [ _ ] in1]
 	    pop uncons first swap # in generate there is no swap
 	    [ [parse] cons swons ]
 	    dip parse ]
 						# unary operators
-	  [ [[ ? ] in ]
+	  [ [dup [ ? ] in1]
 	    pop
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first parse ]
-	  [ [[ + ] in ]
+	  [ [dup [ + ] in1]
 	    swons
 	    [] cons cons cons dup
 	    [ i second parse ] dip
 	    i dup
 	    [ [parse] cons swons ] dip
 	    second parse ]
-	  [ [[ * ] in ]
+	  [ [dup [ * ] in1]
 	    swons
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
@@ -182,22 +182,22 @@ IN
 	    dup
 	    [ [i] dip [parse] cons swons ] dip
 	    second parse ]
-	  [ [[ $ ] in]
+	  [ [dup [ $ ] in1]
 	    pop first i
 	    Min2Tre parse ]
-	  [ [[QUOTE] in ]
+	  [ [dup [QUOTE] in1]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [[epsilon] in ]
+	  [ [dup [epsilon] in1]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom
 	    # here I need a test that the list is not empty
 	    # otherwise the "first" below will crash
 	    popd
-	    [ [pop first] dip = ]
+	    [ dup 3 pick first = ]
 	    [ pop [rest] dip unswons i ]
 	    [ pop pop pop ]
 	    ifte ] ]

@@ -1,7 +1,7 @@
 #
-#   module  : jp-reprodtst.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   module  : 
+#   version : 1.2
+#   date    : 05/12/19
 #
 %INCLUDE usrlib.joy
 %INCLUDE numlib.joy
@@ -21,7 +21,7 @@ DEFINE
 DEFINE
     str-ints == 0 [succ] str-maker;
     str-pows == 1 [2 *] str-maker;
-    str-prim == 2 [succ [prime not] [succ] while] str-maker;
+    str-prim == 2 [succ [dup prime not] [succ] while] str-maker;
     str-brak == [] [[] cons] str-maker.
 
 str-ints.
@@ -35,7 +35,7 @@ DEFINE
     str-drop == [str-rest] times;
     str-n-th == str-drop str-first;
     str-take ==    #  S n  =>  [S1 S2 .. Sn]
-        [null] [pop pop []] [[str-uncons] dip pred] [cons] linrec.
+        [dup null] [pop pop []] [[str-uncons] dip pred] [cons] linrec.
 
 str-brak.
 str-brak  str-third.
@@ -62,7 +62,7 @@ DEFINE
     rep-ints == 0 [succ] rep-maker;
     rep-evns == 0 [2 +] rep-maker;
     rep-pows == 1 [2 *] rep-maker;
-    rep-prim == 2 [succ [prime not] [succ] while] rep-maker;
+    rep-prim == 2 [succ [dup prime not] [succ] while] rep-maker;
     rep-brak == [] [[] cons] rep-maker.
 
 rep-ints.
@@ -76,7 +76,7 @@ DEFINE
     rep-drop == [rep-rest] times;
     rep-n-th == rep-drop rep-first;
     rep-take ==    #  S n  =>  [S1 S2 .. Sn]
-        [null] [pop pop []] [[rep-uncons] dip pred] [cons] linrec.
+        [dup null] [pop pop []] [[rep-uncons] dip pred] [cons] linrec.
 
 rep-evns.
 rep-evns  rep-rest rep-rest rep-first.

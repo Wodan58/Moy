@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.23
-    date    : 07/08/18
+    version : 1.24
+    date    : 05/12/19
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,7 +68,7 @@ private : JPRIVATE { initpriv(); } seq_definition { stoppriv(); } ;
 
 opt_public : public | /* empty */ ;
 
-public : JPUBLIC { initpub(); } seq_definition ;
+public : JPUBLIC { initpub(); } seq_definition { exitpub(); } ;
 
 /*
     A definition sequence is one or more definitions, separated by ';' .

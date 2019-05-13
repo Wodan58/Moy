@@ -11,5 +11,7 @@ runtime.c
 builtin.h
 table.c
 trans.c
-*3*
+test/*3
+test/*2
+test/*1
 SCCS

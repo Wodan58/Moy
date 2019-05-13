@@ -1,7 +1,7 @@
 #
 #   module  : inilib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   inilib.joy *)
 
@@ -33,7 +33,7 @@ LIBRA
     to-upper == ['a >=] [32 -] [] ifte;
     to-lower == ['a < ] [32 +] [] ifte;
     boolean == [logical] [set] sequor;
-    numerical == [integer] [float] sequor;
+    numerical == [dup integer] [float] sequor;
     swoncat == swap concat;
 
 (* date and time *)

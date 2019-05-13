@@ -1,0 +1,57 @@
+333 
+21 
+true 
+true 
+false 
+[ 5 4 3 2 1 ] 
+[ peter paul mary jane ] 
+44 
+true 
+false 
+10  24 
+[ 111 222 333 ] 
+[ 33 44 55 ]  22  11  
+[ 'a 'b 'd 'e 'f ] 
+[ 'a 'b 'c 'd 'e 'f ] 
+6 
+6 
+333 
+333 
+121 
+1  4  9  
+4 
+16 
+256 
+2 
+4 
+16 
+256 
+65536 
+4294967296 
+[ 7 7 7 7 7 7 7 7 7 7 ] 
+[ 1 4 9 ] 
+14 
+[ 23 132 [ 11 ] [ 12 12 ] ] 
+[ 265 11 12 ] 
+11111 
+64 
+64 
+255 
+'A 
+'a 
+'g 
+Robinson 
+Robinson 
+Robinson 
+720 
+720 
+720 
+[ 1 2 3 4 5 6 7 8 9 ] 
+[ 1 2 3 4 5 6 7 8 9 ] 
+[ 1 2 3 4 5 6 7 8 9 ] 
+[ 1 2 3 4 5 6 7 8 9 ] 
+[ [ 1 Smith ] [ 2 Robinson ] [ 3 Jones ] [ 4 Brown ] ] 
+[ ABELSON Mary 1990 year 2 major Logic ] 
+[ MORRIS Janna 1992 year 1 major undecided ] 
+[ NURKS Peter 1989 year 3 major Computer Science ] 
+[ ZEEMAN Fred 1988 year 2 major Accounting ] 

@@ -1,7 +1,7 @@
 #
 #   module  : agglib.joy
-#   version : 1.1
-#   date    : 04/25/16
+#   version : 1.2
+#   date    : 05/12/19
 #
 (* FILE:   agglib.joy *)
 
@@ -91,7 +91,7 @@ LIBRA
     fold2 == rollupd stepr2;
 
     mapr2 ==	(* == zipwith  B&W p 57 *)
-	[ [null2] [pop2 []] [uncons2] ] dip	(* P1 P2 P3 *)
+	[ [over over null2] [pop2 []] [uncons2] ] dip	(* P1 P2 P3 *)
 	[dip cons] cons				(* P4 *)
 	linrec;
     foldr2 ==

@@ -1,7 +1,7 @@
 #
 #   module  : grmtst.joy
-#   version : 1.2
-#   date    : 03/12/17
+#   version : 1.3
+#   date    : 05/12/19
 #
 (* FILE:   grmtst.joy *)
 
@@ -29,7 +29,7 @@
 
 8 ["The" _ ["cat" | "dog"]  _ "sat" _ "on" _ "the" _ ["mat" | "lawn"]] gen-put.
 
-(*   The unary operators:
+(*   The unary operators: *)
 (*   question-mark is 0 or 1, star is 0 or more, plus is 1 or more	*)
 
 7 [ "The" _ ?[ ? "very" _ "big" ] _ "tree" ]   gen-put.
@@ -93,8 +93,6 @@ DEFINE
 [ "peter"  "smith" ]  names  prs-test.
 [ "paul"  "jones" ]  names  prs-test.
 [ "mary"  "robinson" ]  names  prs-test.
-
-
 [ "fred"  ]  names  prs-test.
 
 DEFINE anyname ==
@@ -123,7 +121,7 @@ DEFINE
 
 DEFINE
     string2charlist ==
-	 [null]  [pop []]  [uncons]  [cons]  linrec.
+	 [dup null]  [pop []]  [uncons]  [cons]  linrec.
 
 "CNpApKpp"  string2charlist Polish prs-test.
 "CNpBpKpp"  string2charlist Polish prs-test.
@@ -134,9 +132,9 @@ DEFINE
 [ "*" "*" "*" "." "*" "*" ]  [ * "*" ]  prs-count.
 [ "*" "*" "*" "." "*" "*" ]  [ + "*" ]  prs-count.
 
-(* The following examples all use test strings of which some
-   initial substrings are accepted by the grammar. Each parse
-   then leaves some unused part of the test string behind.		*)
+(* The following examples all use test strings of which some		*)
+(* initial substrings are accepted by the grammar. Each parse		*)
+(* then leaves some unused part of the test string behind.		*)
 
 #  Using the reverse Polish notation for propositional logic:
 
@@ -179,3 +177,4 @@ E  ==
 [ "a" "black" "cat" "sits" "on" "Maria" "." ] E.
 
 (* END  grmtst.joy *)
+quit.
