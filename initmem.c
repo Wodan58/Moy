@@ -1,7 +1,7 @@
 /*
     module  : initmem.c
-    version : 1.11
-    date    : 07/02/18
+    version : 1.13
+    date    : 05/18/19
 */
 #include "runtime.h"
 
@@ -15,7 +15,7 @@ static Node *backup(void)
     Node *root = 0, *cur;
 
     for (cur = stk; cur; cur = cur->next)
-	root = heapnode(cur->op, cur->u.ptr, root);
+	root = newnode(cur->op, cur->u.ptr, root);
     return root;
 }
 
@@ -26,11 +26,6 @@ static void restore(Node *cur)
 {
     for (stk = 0; cur; cur = cur->next)
 	DUPLICATE(cur);
-}
-
-void initmem(void)
-{
-    stk = 0;
 }
 
 void savemem(void)

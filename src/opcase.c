@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 05/16/19
 */
 #ifndef OPCASE_X
 #define OPCASE_C
@@ -9,8 +9,7 @@
 #ifdef NEW_RUNTIME
 void do_opcase(void)
 {
-    TRACE;
-    do_push(0);
+#error "opcase" is not supported in the new version
 }
 #else
 /**

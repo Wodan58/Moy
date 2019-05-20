@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.12
-    date    : 04/22/19
+    version : 1.14
+    date    : 05/20/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +11,7 @@
 #include <math.h>
 #include "joy.h"
 #include "decl.h"
+#include "prims.h"
 
 #ifdef _MSC_VER
 #define __func__	__FUNCTION__
@@ -24,8 +25,6 @@ void trace(const char *str);
 #else
 #define TRACE
 #endif
-
-#include "prims.h"
 
 #ifdef VECTOR
 Stack *theStack;
@@ -85,15 +84,14 @@ extern int __executable_start[], __data_start[], __bss_start[], _end[];
 char **g_argv;
 clock_t startclock;
 int g_argc, debugging, autoput = 1, tracegc;
-intptr_t start_of_prog, start_of_text, start_of_data, start_of_heap;
+intptr_t start_of_text, start_of_data, start_of_heap;
 
-#define IS_INTEGER(x)	(abs((intptr_t)(x)) > 0 && \
-			 abs((intptr_t)(x)) < start_of_prog)
-#define IS_STRING(x)	((intptr_t)(x) > start_of_data && \
-			 (intptr_t)(x) < start_of_heap)
-#define IS_LIST(x)	((intptr_t)(x) > start_of_heap || \
-			((intptr_t)(x) > start_of_prog && \
-			 (intptr_t)(x) < start_of_text))
+#define MAX_INTEGER	100000
+
+#define IS_INTEGER(x)	(abs((intptr_t)(x)) > 0 && abs((intptr_t)(x)) < MAX_INTEGER)
+#define IS_CODE(x)	((intptr_t)(x) > start_of_text && (intptr_t)(x) < start_of_data)
+#define IS_STRING(x)	((intptr_t)(x) > start_of_data && (intptr_t)(x) < start_of_heap)
+#define IS_LIST(x)	((intptr_t)(x) > start_of_heap)
 
 /* primitives */
 #define PRIVATE
@@ -140,8 +138,6 @@ void joy_init(int argc, char *argv[])
 
 	start = (intptr_t)main;
 	start &= DOWN_64K;
-	ptr = malloc(1);
-	start_of_prog = (intptr_t)ptr;
 	ptr = (int *)start;
 	ptr += ptr[PEPOINTER] / 4;
 	start_of_text = ptr[IMAGE_BASE] + ptr[BASE_OF_CODE];
@@ -150,20 +146,18 @@ void joy_init(int argc, char *argv[])
     }
 #else
 #ifdef __CYGWIN__
-    start_of_prog = (intptr_t)_image_base__;
-    start_of_text = start_of_prog + (intptr_t)_section_alignment__;
+    start_of_text = (intptr_t)_image_base__ + (intptr_t)_section_alignment__;
     start_of_data = (intptr_t)etext;
     start_of_heap = (intptr_t)_end__;
 #else
-    start_of_prog = (intptr_t)__executable_start;
     start_of_text = (intptr_t)__executable_start;
     start_of_data = (intptr_t)__data_start;
     start_of_heap = (intptr_t)_end;
 #endif
 #endif
 #if 0
-    fprintf(stderr, "prog=%X text=%X data=%X heap=%X\n", start_of_prog,
-	    start_of_text, start_of_data, start_of_heap);
+    fprintf(stderr, "text=%X data=%X heap=%X\n", start_of_text, start_of_data,
+	    start_of_heap);
 #endif
 /*
  * Initialise stack.
@@ -173,18 +167,6 @@ void joy_init(int argc, char *argv[])
 #else
     stk = memory;
 #endif
-}
-
-code_t *joy_code(void)
-{
-    code_t *cur;
-
-    if ((cur = malloc(sizeof(code_t))) == 0) {
-	fprintf(stderr, "Out of memory\n");
-	exit(0);
-    }
-    cur->list = cur->next = 0;
-    return cur;
 }
 
 size_t joy_leng(code_t *cur)
@@ -250,15 +232,31 @@ void lst2stk(code_t *cur)
 #endif
 }
 
+#ifdef REPORT
+double count_execute;
+
+void report_execute()
+{
+    fprintf(stderr, "execute = %.0f\n", count_execute);
+}
+#endif
+
 void execute(code_t *cur)
 {
-    char *ptr;
+#ifdef REPORT
+    static int first;
 
+    if (!first) {
+	first = 1;
+	atexit(report_execute);
+    }
+    count_execute++;
+#endif
     for (; cur; cur = cur->next)
-	if ((ptr = procname(cur->fun)) == 0)
-	    do_push(cur->num);
-	else
+	if (procname(cur->fun))
 	    (*cur->fun)();
+	else
+	    do_push(cur->num);
 }
 
 /*
@@ -306,21 +304,24 @@ void print_node(node_t cur)
 {
     char *ptr;
 
+#if 0
     if (print_dbl(cur))					// FLOAT_
 	;
-    else if (abs(cur) >= 0 && abs(cur) < start_of_prog)	// INTEGER_
+    else
+#endif
+    if (!cur || IS_INTEGER(cur))			// INTEGER_
 	printf("%d ", (int)cur);
-    else if (cur > start_of_text && cur < start_of_data) {
+    else if (IS_CODE(cur)) {
 	if ((ptr = procname((proc_t)cur)) == 0)
 	    printf("%p ", (void *)cur);			// ANON_FUNCT_
 	else
 	    printf("%s ", ptr);				// USR_
-    } else if (cur > start_of_data && cur < start_of_heap)
+    } else if (IS_STRING(cur)) {
 	if (!strchr((char *)cur, ' '))
 	    printf("%s ", (char *)cur);			// SYMBOL_
 	else
 	    printf("\"%s\" ", (char *)cur);		// STRING_
-    else
+    } else
 	print_list((code_t *)cur);			// LIST_
 }
 
@@ -352,14 +353,31 @@ void trace(const char *str)
     printf(": %s\n", str);
 }
 
+#ifdef REPORT
+double count_search;
+
+void report_search()
+{
+    fprintf(stderr, "search  = %.0f\n", count_search);
+}
+#endif
+
 char *procname(proc_t proc)
 {
     int i;
+#ifdef REPORT
+    static int first;
 
+    if (!first) {
+	first = 1;
+	atexit(report_search);
+    }
+    count_search++;
+#endif
     for (i = 0; table[i].proc; i++)
 	if (proc == table[i].proc)
-	    return table[i].name;
-    return 0;
+	    break;
+    return table[i].name;
 }
 
 proc_t nameproc(char *name)
@@ -368,6 +386,6 @@ proc_t nameproc(char *name)
 
     for (i = 0; table[i].proc; i++)
 	if (!strcmp(name, table[i].name))
-	    return table[i].proc;
-    return 0;
+	    break;
+    return table[i].proc;
 }

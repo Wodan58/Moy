@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 05/16/19
 */
 #ifndef BODY_X
 #define BODY_C
@@ -9,8 +9,7 @@
 #ifdef NEW_RUNTIME
 void do_body(void)
 {
-    TRACE;
-    do_push(0);
+#error "body" is not supported in the new version
 }
 #else
 /**

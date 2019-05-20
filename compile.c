@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.35
-    date    : 12/28/18
+    version : 1.36
+    date    : 05/19/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +11,18 @@
 #include "joy.h"
 #include "symbol.h"
 #include "decl.h"
+
+static unsigned ListLeng(Node *cur)
+{
+    unsigned leng;
+
+    for (leng = 0; cur; cur = cur->next) {
+	leng++;
+	if (cur->op == LIST_)
+	    leng += ListLeng(cur->u.lis);
+    }
+    return leng;
+}
 
 static unsigned StringLeng(char *str)
 {
@@ -124,7 +136,7 @@ static void printlist(Node *node, FILE *fp)
 		    else
 			fprintf(fp, "cur->fun = do_%s;", name);
 		} else
-		    fprintf(fp,"list = ANON_FUNCT_NEWNODE(do_%s, list);",name);
+		    fprintf(fp, "list = ANON_FUNCT_NEWNODE(do_%s, list);", name);
 	    }
 	    break;
 	case ANON_FUNCT_ :
@@ -135,7 +147,7 @@ static void printlist(Node *node, FILE *fp)
 	    if (new_version)
 		fprintf(fp, "cur->num = %d;", cur->u.num != 0);
 	    else
-		fprintf(fp,"list = BOOLEAN_NEWNODE(%d, list);",cur->u.num != 0);
+		fprintf(fp, "list = BOOLEAN_NEWNODE(%d, list);", cur->u.num != 0);
 	    break;
 	case CHAR_ :
 	    if (new_version)
@@ -207,6 +219,94 @@ static void printlist(Node *node, FILE *fp)
 	    fprintf(fp, "list = cur;");
 	}
     }
+}
+
+static void PrintMember(Node *cur, unsigned list, unsigned *pindex, FILE *fp)
+{
+    char *name;
+    int offset;
+    unsigned flags, index = *pindex;
+
+    if (!cur)
+	return;
+    fprintf(fp, "{");
+    switch (cur->op) {
+    case USR_ :
+	offset = cur->u.num;
+	if (dict_body(offset) == 0) {
+	    fprintf(fp, ".u.str=\"%s\",", dict_name(offset));
+	    fprintf(fp, ".op=SYMBOL_");
+	} else {
+	    flags = dict_flags(offset);
+	    name = dict_nickname(offset);
+	    if ((flags & IS_BUILTIN) == 0) {
+		if ((flags & IS_DECLARED) == 0) {
+		    flags |= IS_DECLARED;
+		    fprintf(declfp, "void do_%s(void);", name);
+		}
+	    }
+	    dict_setflags(offset, flags |= IS_USED);
+	    fprintf(fp, ".u.proc=do_%s,", name);
+	    fprintf(fp, ".op=ANON_FUNCT_");
+	}
+	break;
+    case ANON_FUNCT_ :
+	fprintf(fp, ".u.proc=do_%s,", procname(cur->u.proc));
+	fprintf(fp, ".op=ANON_FUNCT_");
+	break;
+    case BOOLEAN_ :
+	fprintf(fp, ".u.num=%d,", cur->u.num != 0);
+	fprintf(fp, ".op=BOOLEAN_");
+	break;
+    case CHAR_ :
+	fprintf(fp, ".u.num=%d,", (int)cur->u.num);
+	fprintf(fp, ".op=CHAR_");
+	break;
+    case INTEGER_ :
+	fprintf(fp, ".u.num=" PRINT_NUM ",", cur->u.num);
+	fprintf(fp, ".op=INTEGER_");
+	break;
+    case SET_ :
+	fprintf(fp, ".u.num=" PRINT_SET ",", cur->u.set);
+	fprintf(fp, ".op=SET_");
+	break;
+    case STRING_ :
+	fprintf(fp, ".u.str=%s,", PrintString(cur->u.str));
+	fprintf(fp, ".op=STRING_");
+	break;
+    case LIST_ :
+	if (cur->u.lis)
+	    fprintf(fp, ".u.lis=L%d+%d,", list, index + 1);
+	fprintf(fp, ".op=LIST_");
+	if (cur->next)
+	    fprintf(fp, ",.next=L%d+%d", list, index + 1 + ListLeng(cur->u.lis));
+	fprintf(fp, "},\n");
+	*pindex = index + 1;
+	for (cur = cur->u.lis; cur; cur = cur->next)
+	    PrintMember(cur, list, pindex, fp);
+	return;
+    case FLOAT_ :
+	fprintf(fp, ".u.dbl=%g,", cur->u.dbl);
+	fprintf(fp, ".op=FLOAT_");
+	break;
+    }
+    if (cur->next)
+	fprintf(fp, ",.next=L%d+%d", list, index + 1);
+    fprintf(fp, "},\n");
+    *pindex = index + 1;
+}
+
+static unsigned PrintList(Node *cur, FILE *fp)
+{
+    static unsigned list;
+    unsigned leng, index;
+
+    leng = ListLeng(cur);
+    fprintf(fp, "static Node L%d[%d] = {\n", ++list, leng);
+    for (index = 0; cur; cur = cur->next)
+	PrintMember(cur, list, &index, fp);
+    fprintf(fp, "};\n");
+    return list;
 }
 
 static void printnode(Node *node, FILE *fp)
@@ -287,6 +387,8 @@ static void printnode(Node *node, FILE *fp)
 		fprintf(fp, "{ code_t *cur, *list = 0;");
 		printlist(node->u.lis, fp);
 		fprintf(fp, "do_push((node_t)list); }");
+	    } else if (old_version) {
+		fprintf(fp, "PUSH(LIST_, L%d);", PrintList(node->u.lis, fp));
 	    } else {
 		fprintf(fp, "{ Node *list = 0;");
 		printlist(node->u.lis, fp);

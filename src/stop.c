@@ -1,7 +1,7 @@
 /*
     module  : stop.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 05/18/19
 */
 #ifndef STOP_X
 #define STOP_C
@@ -25,6 +25,12 @@ void do_stop(void)
 	print_node(do_pop());
 	putchar('\n');
     }
+#ifdef VECTOR
+    if (vec_empty(theStack))
+#else
+    if (stk == memory)
+#endif
+	freemem();
 }
 #else
 

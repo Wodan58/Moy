@@ -1,90 +1,47 @@
 /*
     module  : memory.c
-    version : 1.5
-    date    : 07/05/18
+    version : 1.6
+    date    : 05/18/19
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "gc.h"
 #include "joy.h"
-#include "symbol.h"
 #include "decl.h"
+#include "symbol.h"
 
-static int first, memptr1, memptr2;
-static Node memory1[MEMORYMAX], memory2[MEMORYMAX];
+static int memptr;
+static Node memory[MEMORYMAX];
 
-#ifdef STATS
-static double count_nodes1, cur_nodes1, max_nodes1, count_defs1, count_heap1;
-static double count_nodes2, cur_nodes2, max_nodes2, count_defs2, count_heap2;
+#ifdef REPORT
+static double count_memory;
 
-static void report(void)
+void report_memory()
 {
-    fprintf(stderr, "nodes1 = %.0f\n", count_nodes1);
-    fprintf(stderr, "max1   = %.0f\n", max_nodes1);
-    fprintf(stderr, "defs1  = %.0f\n", count_defs1);
-    fprintf(stderr, "heap1  = %.0f\n", count_heap1);
-
-    fprintf(stderr, "nodes2 = %.0f\n", count_nodes2);
-    fprintf(stderr, "max2   = %.0f\n", max_nodes2);
-    fprintf(stderr, "defs2  = %.0f\n", count_defs2);
-    fprintf(stderr, "heap2  = %.0f\n", count_heap2);
+    fprintf(stderr, "memory  = %.0f\n", count_memory);
 }
 #endif
 
 /*
  * getnode allocates nodes from a static array, unless definition is active and
- * until the array is not exhausted.
+ * as long as the array is not exhausted.
  */
-Node *get1node(void)
+Node *getnode(void)
 {
     Node *node;
+#ifdef REPORT
+    static int first;
 
-#ifdef STATS
     if (!first) {
 	first = 1;
-	atexit(report);
+	atexit(report_memory);
     }
-    cur_nodes1++;
-    if (max_nodes1 < cur_nodes1)
-	max_nodes1 = cur_nodes1;
-    count_nodes1++;
+    count_memory++;
 #endif
-    if (!definition && memptr1 < MEMORYMAX)
-	return &memory1[memptr1++];
-#ifdef STATS
-    if (definition)
-	count_defs1++;
-    else
-	count_heap1++;
-#endif
-    if ((node = GC_malloc(sizeof(Node))) == 0)
-	execerror("memory", "allocator");
-    return node;
-}
 
-Node *get2node(void)
-{
-    Node *node;
-
-#ifdef STATS
-    if (!first) {
-	first = 1;
-	atexit(report);
-    }
-    cur_nodes2++;
-    if (max_nodes2 < cur_nodes2)
-	max_nodes2 = cur_nodes2;
-    count_nodes2++;
-#endif
-    if (!definition && memptr2 < MEMORYMAX)
-	return &memory2[memptr2++];
-#ifdef STATS
-    if (definition)
-	count_defs2++;
-    else
-	count_heap2++;
-#endif
+    if (!definition && memptr < MEMORYMAX)
+	return &memory[memptr++];
     if ((node = GC_malloc(sizeof(Node))) == 0)
 	execerror("memory", "allocator");
     return node;
@@ -95,14 +52,8 @@ Node *get2node(void)
  */
 void freemem(void)
 {
-#ifdef STATS
-    cur_nodes1 = 0;
-    cur_nodes2 = 0;
-#endif
-    memset(memory1, 0, memptr1 * sizeof(Node));
-    memptr1 = 0;
-    memset(memory2, 0, memptr2 * sizeof(Node));
-    memptr2 = 0;
+    memset(memory, 0, memptr * sizeof(Node));
+    memptr = 0;
 }
 
 /*

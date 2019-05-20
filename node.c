@@ -1,7 +1,7 @@
 /*
     module  : node.c
-    version : 1.6
-    date    : 07/14/18
+    version : 1.7
+    date    : 05/18/19
 */
 #include "runtime.h"
 
@@ -13,7 +13,7 @@ Node *newnode(Operator op, void *u, Node *next)
 {
     Node *node;
 
-    node = get1node();
+    node = getnode();
     node->u.ptr = u;
     node->op = op;
     node->next = next;
@@ -24,20 +24,9 @@ Node *dblnode(double dbl, Node *next)
 {
     Node *node;
 
-    node = get1node();
+    node = getnode();
     node->u.dbl = dbl;
     node->op = FLOAT_;
-    node->next = next;
-    return node;
-}
-
-Node *heapnode(Operator op, void *u, Node *next)
-{
-    Node *node;
-
-    node = get2node();
-    node->u.ptr = u;
-    node->op = op;
     node->next = next;
     return node;
 }
@@ -63,7 +52,7 @@ Node *stk2lst(void)
     Node *root = 0, **cur, *mem;
 
     for (cur = &root, mem = stk; mem; mem = mem->next) {
-	*cur = heapnode(mem->op, mem->u.ptr, 0);
+	*cur = newnode(mem->op, mem->u.ptr, 0);
 	cur = &(*cur)->next;
     }
     return root;

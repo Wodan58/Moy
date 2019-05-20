@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.11
-    date    : 07/15/18
+    version : 1.12
+    date    : 05/18/19
 */
 #ifndef TAKE_X
 #define TAKE_C
@@ -59,9 +59,9 @@ PRIVATE void do_take(void)
 	} else {
 	    for (cur = stk->u.lis; cur && num-- > 0; cur = cur->next)
 		if (!root)
-		    last = root = heapnode(cur->op, cur->u.ptr, 0);
+		    last = root = newnode(cur->op, cur->u.ptr, 0);
 		else
-		    last = last->next = heapnode(cur->op, cur->u.ptr, 0);
+		    last = last->next = newnode(cur->op, cur->u.ptr, 0);
 	    if (OUTSIDE)
 		stk->u.lis = root;
 	    else

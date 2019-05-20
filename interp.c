@@ -1,10 +1,19 @@
 /*
     module  : interp.c
-    version : 1.14
-    date    : 05/12/19
+    version : 1.15
+    date    : 05/20/19
 */
 #include "runtime.h"
 #include "runtime.c"
+
+#ifdef REPORT
+double count_execute;
+
+void report_execute()
+{
+    fprintf(stderr, "execute = %.0f\n", count_execute);
+}
+#endif
 
 void interprete(Node *node)
 {
@@ -12,6 +21,15 @@ void interprete(Node *node)
     Node *code;
 #ifndef OLD_RUNTIME
     unsigned flags;
+#endif
+#ifdef REPORT
+    static int first;
+
+    if (!first) {
+	first = 1;
+	atexit(report_execute);
+    }
+    count_execute++;
 #endif
 
 start:

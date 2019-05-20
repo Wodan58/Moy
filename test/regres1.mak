@@ -9,13 +9,11 @@ gcd:
 test:
 	-./$@3 | diff -w - OUT/$@.out
 
-# builtin opcase is not supported
 jp-joytst:
-	-./$@1 | diff -w - OUT/$@.out
+	-./$@4 | diff -w - OUT/$@.out
 
-# predicate list is not supported
 flatjoy:
-	./$@1 | diff -w - OUT/$@.out
+	./$@4 | diff -w - OUT/$@.out
 
 jp-reprodtst:
 	./$@3 | diff -w - OUT/$@.out
@@ -29,15 +27,14 @@ jp-nestrec:
 laztst:
 	./$@3 | diff -w - OUT/$@.out
 
-# predicates list, integer are not supported
 joytut:
-	./$@1 <$@.inp | diff -w - OUT/$@.out
+	-./$@2 <$@.inp | diff -w - OUT/$@.out
 
 jp-church:
 	./$@3 | diff -w - OUT/$@.out
 
 grmtst:
-	./$@3 | diff -w - OUT/$@.out
+	./$@4 | diff -w - OUT/$@.out
 
 mtrtst:
 	-./$@3 | diff -w - OUT/$@.out
@@ -54,7 +51,5 @@ symtst:
 plgtst:
 	./$@3 | diff -w - OUT/$@.out
 
-# predicates list, integer, float, string are not supported
 lsptst:
-	./$@1 <$@.inp | diff -w - OUT/$@.out
-
+	-./$@1 <$@.inp | diff -w - OUT/$@.out

@@ -1,7 +1,7 @@
 /*
     module  : argv.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 05/18/19
 */
 #ifndef ARGV_X
 #define ARGV_C
@@ -35,7 +35,7 @@ PRIVATE void do_argv(void)
     COMPILE;
 #endif
     for (i = g_argc - 1; i >= 0; i--)
-	cur = heapnode(STRING_, (void *)g_argv[i], cur);
+	cur = newnode(STRING_, (void *)g_argv[i], cur);
     PUSH(LIST_, cur);
 }
 #endif

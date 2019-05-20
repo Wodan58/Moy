@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.11
-    date    : 05/12/19
+    version : 1.12
+    date    : 05/18/19
 */
 #define IS_UNDEFINED	0
 #define IS_ORIGINAL	1
@@ -25,8 +25,7 @@ typedef void (*proc_t)(void);
 #include "node.h"
 
 /* memory.c */
-Node *get1node(void);
-Node *get2node(void);
+Node *getnode(void);
 void freemem(void);
 
 /* interp.c */

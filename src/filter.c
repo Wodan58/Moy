@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.19
-    date    : 07/15/18
+    version : 1.20
+    date    : 05/18/19
 */
 #ifndef FILTER_X
 #define FILTER_C
@@ -61,8 +61,8 @@ int put_filter(void)
 	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
 	compile(prog);
 	fprintf(outfp, "if (stk->u.num) { if (!root)");
-	fprintf(outfp, "cur = root = heapnode(list->op, list->u.ptr,0); else ");
-	fprintf(outfp, "cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
+	fprintf(outfp, "cur = root = newnode(list->op, list->u.ptr,0); else ");
+	fprintf(outfp, "cur = cur->next = newnode(list->op, list->u.ptr, 0);");
 	fprintf(outfp, "} stk = save; RELEASE; }");
 	fprintf(outfp, "PUSH(LIST_, root); break;");
 	fprintf(outfp, "case STRING_:");
@@ -120,9 +120,9 @@ PRIVATE void do_filter(void)
 	    exeterm(prog);
 	    if (stk->u.num) {
 		if (!root)
-		    cur = root = heapnode(list->op, list->u.ptr, 0);
+		    cur = root = newnode(list->op, list->u.ptr, 0);
 		else
-		    cur = cur->next = heapnode(list->op, list->u.ptr, 0);
+		    cur = cur->next = newnode(list->op, list->u.ptr, 0);
 	    }
 	    stk = save;
 	    RELEASE;

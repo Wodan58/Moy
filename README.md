@@ -16,9 +16,8 @@ Changes
 
 Most builtins of Joy1 are supported in Moy. Conditions do not restore the stack to what
 it was before the condition started, unless embedded in nullary, unary, binary, or
-ternary. The stack is implemented as a tagless array of values. The build system requires
-new builtins in only one location: as a .c file in the src-directory. The transition to a
-tagless stack is not yet complete.
+ternary. The stack is implemented as an array. The build system requires new builtins in
+only one location: as a .c file in the src-directory.
 
 Installation
 ------------
@@ -31,8 +30,8 @@ In addition to the BDW garbage collector, it is wise to install CMake. Then run:
 
 And run:
 
-    cd test
+    cd lib
+    make -f regres.mak
+    cd ../test
     make -f regres.mak
     make -f regres1.mak
-    cd ../lib
-    make -f regres.mak

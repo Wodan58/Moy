@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.12
-    date    : 07/15/18
+    version : 1.13
+    date    : 05/18/19
 */
 #ifndef CONCAT_X
 #define CONCAT_C
@@ -59,9 +59,9 @@ PRIVATE void do_concat(void)
 	}
 	for (cur = stk->next->u.lis; cur; cur = cur->next)
 	    if (!root)
-		last = root = heapnode(cur->op, cur->u.ptr, 0);
+		last = root = newnode(cur->op, cur->u.ptr, 0);
 	    else
-		last = last->next = heapnode(cur->op, cur->u.ptr, 0);
+		last = last->next = newnode(cur->op, cur->u.ptr, 0);
 	last->next = stk->u.lis;
 	if (OUTSIDE) {
 	    stk->next->u.lis = root;

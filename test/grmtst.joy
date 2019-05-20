@@ -10,7 +10,6 @@ shunt == [ swons ] step ;
 sequand == [ pop false ] ifte ;
 sentence == [ $ noun-phrase _ $ verb-phrase _ * [ [ "and" | "or" ] _ $ sentence ] ] ;
 second == rest first ;
-reverse == [ [ ] ] [ "" ] iflist swap shunt ;
 prs-trace == pop ;
 noun-phrase == [ "John" | "Mary" | [ "a" | "the" ] _ * $ adjective _ [ "cat" | "dog" ] ] ;
 names == [ "peter" _ "smith" | "paul" _ "jones" | "mary" _ "robinson" ] ;

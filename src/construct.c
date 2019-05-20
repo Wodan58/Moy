@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.12
-    date    : 07/15/18
+    version : 1.13
+    date    : 05/18/19
 */
 #ifndef CONSTRUCT_X
 #define CONSTRUCT_C
@@ -59,7 +59,7 @@ int put_construct(void)
 	    fprintf(outfp, "if (!root) last = root = cur;");
 	    fprintf(outfp, "else last = last->next = cur;");
 	} else {
-	    fprintf(outfp, "root = heapnode(stk->op, stk->u.ptr, root);");
+	    fprintf(outfp, "root = newnode(stk->op, stk->u.ptr, root);");
 	    fprintf(outfp, "stk = 0;");
 	}
 	fprintf(outfp, "lst2stk(save[1]);");
@@ -104,7 +104,7 @@ PRIVATE void do_construct(void)
     for (; list; list = list->next) {
 	save[1] = stk2lst();
 	exeterm(list->u.lis);
-	root = heapnode(stk->op, stk->u.ptr, root);
+	root = newnode(stk->op, stk->u.ptr, root);
 	stk = 0;
 	lst2stk(save[1]);
     }

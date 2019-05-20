@@ -1,7 +1,7 @@
 /*
     module  : prims.h
-    version : 1.3
-    date    : 12/30/18
+    version : 1.4
+    date    : 05/18/19
 */
 typedef intptr_t node_t;
 
@@ -36,6 +36,7 @@ register node_t *stk asm("bl");
 #endif
 
 code_t *joy_code(void);
+void freemem(void);
 void do_push(node_t temp);
 node_t do_pop(void);
 proc_t nameproc(char *name);

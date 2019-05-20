@@ -1,6 +1,6 @@
 /*
-    module  : initsym.c
-    version : 1.11
+    module  : initsym1.c
+    version : 1.1
     date    : 05/19/19
 */
 #include <stdio.h>
@@ -25,7 +25,6 @@ void initsym(int argc, char **argv)
 
     setbuf(stdout, 0);
     startclock = clock();
-    setechoflag(INIECHOFLAG);
     if (argc > 1) {
 	rv = 1;
 	if (argv[1][0] == '-') {
@@ -49,10 +48,12 @@ void initsym(int argc, char **argv)
 	ptr = argv[rv];
 	if (!ptr || isdigit(*ptr))
 	    rv--;
+#if 0
 	else if ((yyin = freopen(ptr, "r", stdin)) == 0) {
 	    fprintf(stderr, "failed to open the file '%s'.\n", ptr);
 	    exit(1);
 	}
+#endif
     }
     g_argc = argc - rv;
     g_argv = &argv[rv];

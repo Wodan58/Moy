@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.21
-    date    : 12/28/18
+    version : 1.23
+    date    : 05/19/19
 */
 #ifdef _MSC_VER
 #include <io.h>
@@ -48,7 +48,7 @@ extern optable_t optable[];
 /* initsym.c */
 extern FILE *outfp, *declfp;
 extern char **g_argv, *mainfunc;
-extern int g_argc, debugging, compiling, definition, new_version;
+extern int g_argc, debugging, compiling, definition, new_version, old_version;
 extern int autoput, tracegc, undeferror;
 
 /* lexer.l */
@@ -65,9 +65,6 @@ void finalise(void);
 
 /* error.c */
 void execerror(char *message, const char *op);
-
-/* initmem.c */
-void initmem(void);
 
 /* initsym.c */
 void initsym(int argc, char **argv);

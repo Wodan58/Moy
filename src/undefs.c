@@ -1,7 +1,7 @@
 /*
     module  : undefs.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 05/18/19
 */
 #ifndef UNDEFS_X
 #define UNDEFS_C
@@ -27,7 +27,7 @@ PRIVATE void do_undefs(void)
     for (i = dict_size() - 1; i >= 0; i--) {
 	ptr = dict_descr(i);
 	if (*ptr && *ptr != '_' && !dict_body(i))
-	    root = heapnode(STRING_, ptr, root);
+	    root = newnode(STRING_, ptr, root);
     }
     PUSH(LIST_, root);
 #endif

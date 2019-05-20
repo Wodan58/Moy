@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.20
-    date    : 07/15/18
+    version : 1.21
+    date    : 05/18/19
 */
 #ifndef MAP_X
 #define MAP_C
@@ -54,8 +54,8 @@ int put_map(void)
 	fprintf(outfp, "DUPLICATE(cur);");
 	compile(prog);
 	fprintf(outfp, "if (!root)");
-	fprintf(outfp, "last = root = heapnode(stk->op, stk->u.ptr, 0); else ");
-	fprintf(outfp, "last = last->next = heapnode(stk->op, stk->u.ptr, 0);");
+	fprintf(outfp, "last = root = newnode(stk->op, stk->u.ptr, 0); else ");
+	fprintf(outfp, "last = last->next = newnode(stk->op, stk->u.ptr, 0);");
 	fprintf(outfp, "if ((stk = save) != 0) *stk = temp; RELEASE;");
 	fprintf(outfp, "} PUSH(LIST_, root); break;");
 	fprintf(outfp, "case STRING_:");
@@ -118,9 +118,9 @@ PRIVATE void do_map(void)
 		execerror("non-empty stack", "map");
 #endif
 	    if (!root)
-		last = root = heapnode(stk->op, stk->u.ptr, 0);
+		last = root = newnode(stk->op, stk->u.ptr, 0);
 	    else
-		last = last->next = heapnode(stk->op, stk->u.ptr, 0);
+		last = last->next = newnode(stk->op, stk->u.ptr, 0);
 	    if ((stk = save) != 0)
 		*stk = temp;
 	}

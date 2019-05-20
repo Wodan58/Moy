@@ -1,7 +1,7 @@
 /*
     module  : split_str.c
-    version : 1.3
-    date    : 07/15/18
+    version : 1.4
+    date    : 05/18/19
 */
 #ifndef SPLIT_STR_X
 #define SPLIT_STR_C
@@ -71,11 +71,11 @@ int put_split_str(void)
 	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
 	compile(prog);
 	fprintf(outfp, "if (stk->u.num) if (!root)");
-	fprintf(outfp, "cur = root = heapnode(list->op, list->u.ptr,0); else ");
-	fprintf(outfp, "cur = cur->next = heapnode(list->op, list->u.ptr, 0);");
+	fprintf(outfp, "cur = root = newnode(list->op, list->u.ptr,0); else ");
+	fprintf(outfp, "cur = cur->next = newnode(list->op, list->u.ptr, 0);");
 	fprintf(outfp, "else if (!head)");
-	fprintf(outfp, "tail = head = heapnode(list->op,list->u.ptr,0); else ");
-	fprintf(outfp, "tail = tail->next = heapnode(list->op,list->u.ptr,0);");
+	fprintf(outfp, "tail = head = newnode(list->op,list->u.ptr,0); else ");
+	fprintf(outfp, "tail = tail->next = newnode(list->op,list->u.ptr,0);");
 	fprintf(outfp, "stk = save; RELEASE; }");
 	fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); break;");
 	fprintf(outfp, "case STRING_:");
@@ -143,13 +143,13 @@ PRIVATE void do_split_str(void)
 	    exeterm(prog);
 	    if (stk->u.num)
 		if (!root)
-		    cur = root = heapnode(list->op, list->u.ptr, 0);
+		    cur = root = newnode(list->op, list->u.ptr, 0);
 		else
-		    cur = cur->next = heapnode(list->op, list->u.ptr, 0);
+		    cur = cur->next = newnode(list->op, list->u.ptr, 0);
 	    else if (!head)
-		tail = head = heapnode(list->op, list->u.ptr, 0);
+		tail = head = newnode(list->op, list->u.ptr, 0);
 	    else
-		tail = tail->next = heapnode(list->op, list->u.ptr, 0);
+		tail = tail->next = newnode(list->op, list->u.ptr, 0);
 	    stk = save;
 	    RELEASE;
 	}

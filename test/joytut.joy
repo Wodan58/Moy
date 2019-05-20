@@ -1,3 +1,5 @@
+%INCLUDE stdlib.joy
+
 DEFINE
 factorial == [ dup 1 <= ] [ pop 1 ] [ dup pred factorial * ] ifte ;
 toc-repeat-sections == toc-ask-for-section [ dup 0 >= ] [ toc-do-section
@@ -55,7 +57,7 @@ sec2 == 2 toc-one-heading ini-stats [
 "on the stack. But combinators always expect a quoted program\n"
 "and perhaps something else. For example, the   map   combinator\n"
 "expects a single program and below that an aggregate, e.g. a list.\n" ]
-putstrings [ get-list [ 6 4 8 ] ] "[3 2 4] [dup +] map" q1 [ get-quote [ 10 + ]
+putstrings [ get-list [ 6 4 8 ] ] "[3 2 4] [dup +] map" q1-list [ get-quote [ 10 + ]
 ] "[13 12 14]" "[3 2 4]  ...  map" q2 [
 "Another example is the   filter   combinator, which expects\n"
 "a program that computes a truth value, and below that an aggregate.\n" ]
@@ -73,17 +75,21 @@ get-integer 5 ] "2  3  +" q1 [ get-integer 42 ] "7  6  *" q1 [ get-integer 37 ]
 "These are written inside square brackets, like this:\n"
 "        [42 17 3 9 35]\n" "Some important operators for lists are:\n"
 "    first      rest      cons      concat\n" ] putstrings [ get-integer 5 ]
-"[5 4 2 7]  first" q1 [ get-list [ 4 2 7 ] ] "[5 4 2 7]  rest" q1 [ get-list [
-8 9 3 ] ] "8  [9 3]  cons" q1 [ get-list [ 5 3 5 3 ] ] "[5 3]  dup  concat" q1
-[ get-list [ [ 5 3 ] 5 3 ] ] "[5 3]  dup  cons" q1 [ get-list [ 7 3 ] ]
-"[7 3 3 2 4]" "...  [3 2 4]  concat" q2 put-stats ;
+"[5 4 2 7]  first" q1 [ get-list [ 4 2 7 ] ] "[5 4 2 7]  rest" q1-list [ get-list [
+8 9 3 ] ] "8  [9 3]  cons" q1-list [ get-list [ 5 3 5 3 ] ] "[5 3]  dup  concat" q1-list
+[ get-list [ [ 5 3 ] 5 3 ] ] "[5 3]  dup  cons" q1-list [ get-list [ 7 3 ] ]
+"[7 3 3 2 4]" "...  [3 2 4]  concat" q2-list put-stats ;
 sec0 == toc-of-tutorial rest [ first i ] step ;
 q2 == "What will the dots   ...   have to be, so that\n\t" putchars putchars
 "\nleaves    " putchars putchars "    on the stack ?\n" putchars i expecting ;
+q2-list == "What will the dots   ...   have to be, so that\n\t" putchars putchars
+"\nleaves    " putchars putchars "    on the stack ?\n" putchars i expecting-list ;
 q1 == "What will the program   " putchars putchars "   leave on the stack ?\n"
 putchars i expecting ;
+q1-list == "What will the program   " putchars putchars "   leave on the stack ?\n"
+putchars i expecting-list ;
 putstrings == [ putchars ] step ;
-put-stats == "You answered " putchars [ put ] dip "of the " putchars put
+put-stats == "You answered " putchars [ put_int ] dip "of the " putchars put_int
 "questions correctly.\n\n" putchars ;
 praise == [ "Good." "Splendid." "Excellent." "Great." "Terrific." ] 0 at
 putchars newline ;
@@ -97,11 +103,12 @@ while ;
 get-integer == get [ dup integer not ] [ pop "An integer is expected:\n"
 putchars get ] while ;
 expecting-from == [ [ [ over over equal ] some ] nullary ] [ pop pop praise [
-succ ] dip ] [ "No, the right answer must be one of the following:\n\t"
-putchars [ put "  " putchars ] step pop newline ] ifte succ ;
+succ ] dip ] [ "No, the right answer must be one of the following:\n\t" putchars
+unswons "(yyyy)" put_list unswons "(yiyyy)" put_list pop pop newline ] ifte succ ;
 expecting == [ over over equal ] [ pop pop praise [ succ ] dip ] [
-"No, the right answer is:  " putchars put pop newline ] ifte succ ;
+"No, the right answer is:  " putchars put_int pop newline ] ifte succ ;
+expecting-list == [ over over equal ] [ pop pop praise [ succ ] dip ] [
+"No, the right answer is:  " putchars put_list_int pop newline ] ifte succ ;
 END
 
-5 factorial pop .
 joytut quit .

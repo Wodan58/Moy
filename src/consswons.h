@@ -1,7 +1,7 @@
 /*
     module  : consswons.h
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 05/18/19
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -17,11 +17,11 @@ PRIVATE void PROCEDURE(void)
     switch (AGGR->op) {
     case LIST_:
 	if (OUTSIDE) {
-	    stk->next->u.lis = heapnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis);
+	    stk->next->u.lis = newnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis);
 	    stk->next->op = LIST_;
 	    POP(stk);
 	} else
-	    BINARY(LIST_NEWNODE, heapnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis));
+	    BINARY(LIST_NEWNODE, newnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis));
 	break;
     case STRING_:
 #ifndef NCHECK

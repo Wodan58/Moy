@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.13
-    date    : 07/15/18
+    version : 1.14
+    date    : 05/13/19
 */
 #ifndef INFRA_X
 #define INFRA_C
@@ -37,9 +37,15 @@ int put_infra(void)
 	fprintf(outfp, "code_t *list, *save; list = (code_t *)do_pop();");
     else
 	fprintf(outfp, "Node *list, *save; list = stk->u.lis; POP(stk);");
-    fprintf(outfp, "save = stk2lst(); stk = 0; lst2stk(list);");
+    fprintf(outfp, "save = stk2lst();");
+    if (!new_version)
+	fprintf(outfp, "stk = 0;");
+    fprintf(outfp, "lst2stk(list);");
     compile(prog);
-    fprintf(outfp, "list = stk2lst(); stk = 0; lst2stk(save);");
+    fprintf(outfp, "list = stk2lst();");
+    if (!new_version)
+	fprintf(outfp, "stk = 0;");
+    fprintf(outfp, "lst2stk(save);");
     if (new_version)
 	fprintf(outfp, "do_push((node_t)list); }");
     else

@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.11
-    date    : 07/15/18
+    version : 1.12
+    date    : 05/18/19
 */
 #ifndef FREAD_X
 #define FREAD_C
@@ -46,7 +46,7 @@ PRIVATE void do_fread(void)
     FILE("fread");
     buf = ck_malloc_sec(count);
     for (i = fread(buf, 1, count, stk->u.fil) - 1; i >= 0; i--)
-	cur = heapnode(INTEGER_, (void *)(long_t)buf[i], cur);
+	cur = newnode(INTEGER_, (void *)(long_t)buf[i], cur);
     PUSH(LIST_, cur);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : stack.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 05/18/19
 */
 #ifndef STACK_X
 #define STACK_C
@@ -25,7 +25,7 @@ PRIVATE void do_stack(void)
     COMPILE;
 #endif
     for (cur = stk; cur; cur = cur->next)
-	node = heapnode(cur->op, cur->u.ptr, node);
+	node = newnode(cur->op, cur->u.ptr, node);
     PUSH(LIST_, reverse(node));
 }
 #endif
