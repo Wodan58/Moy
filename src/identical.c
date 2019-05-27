@@ -1,7 +1,7 @@
 /*
     module  : identical.c
-    version : 1.1
-    date    : 05/26/19
+    version : 1.2
+    date    : 05/27/19
 */
 #ifndef IDENTICAL_X
 #define IDENTICAL_C
@@ -38,8 +38,6 @@ identical  :  T U  ->  B
 */
 PRIVATE int identical(Node *first, Node *second)
 {
-    int ok;
-
     if (!first && !second)
 	return 1;
     if (!first || !second)

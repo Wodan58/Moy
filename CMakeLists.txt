@@ -34,4 +34,7 @@ add_custom_target(always
 		  COMMAND sh trans.sh
 		 )
 add_subdirectory(bdwgc)
+if(WIN32)
+else()
 add_subdirectory(test)
+endif()
