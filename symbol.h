@@ -1,8 +1,11 @@
 /*
     module  : symbol.h
-    version : 1.12
-    date    : 05/18/19
+    version : 1.13
+    date    : 05/26/19
 */
+#ifndef SYMBOL_H
+#define SYMBOL_H
+
 #define IS_UNDEFINED	0
 #define IS_ORIGINAL	1
 #define IS_BUILTIN	2
@@ -67,7 +70,8 @@ Node *dict_body(int index);
 int dict_size(void);
 char *dict_descr(int index);
 int check_anything_was_printed(void);
-void iterate_dict_and_write_struct(void);
+void iterate_dict_and_write_struct(FILE *fp);
 
 char *procname(proc_t proc);
 proc_t nameproc(char *name);
+#endif

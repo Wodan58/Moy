@@ -1,6 +1,6 @@
 /*
-    module  : memory.c
-    version : 1.7
+    module  : memory2.c
+    version : 1.1
     date    : 05/26/19
 */
 #include <stdio.h>
@@ -52,10 +52,8 @@ Node *getnode(void)
  */
 void freemem(void)
 {
-#if 0
     memset(memory, 0, memptr * sizeof(Node));
     memptr = 0;
-#endif
 }
 
 /*

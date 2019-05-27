@@ -1,6 +1,6 @@
 /*
     module  : interp.c
-    version : 1.15
+    version : 1.16
     date    : 05/20/19
 */
 #include "runtime.h"
@@ -17,9 +17,9 @@ void report_execute()
 
 void interprete(Node *node)
 {
+#ifndef OLD_RUNTIME
     int index;
     Node *code;
-#ifndef OLD_RUNTIME
     unsigned flags;
 #endif
 #ifdef REPORT
@@ -32,7 +32,9 @@ void interprete(Node *node)
     count_execute++;
 #endif
 
+#ifndef OLD_RUNTIME
 start:
+#endif
     for (; node; node = node->next) {
 #ifdef DEBUG
 	if (debugging) {

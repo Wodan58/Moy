@@ -1,7 +1,7 @@
 /*
     module  : node.h
-    version : 1.7
-    date    : 05/18/19
+    version : 1.9
+    date    : 05/26/19
 */
 #ifdef _MSC_VER
 extern Node *stk;
@@ -17,5 +17,3 @@ Node *dblnode(double dbl, Node *next);
 Node *reverse(Node *cur);
 Node *stk2lst(void);
 void lst2stk(Node *cur);
-
-double Compare(Node *first, Node *second, int *error);

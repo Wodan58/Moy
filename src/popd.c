@@ -1,7 +1,7 @@
 /*
     module  : popd.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 05/26/19
 */
 #ifndef POPD_X
 #define POPD_C
@@ -16,6 +16,7 @@ void do_popd(void)
 #else
 
 #ifndef POP_C
+#undef POP_X
 #include "pop.c"
 #define POP_X
 #endif

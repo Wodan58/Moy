@@ -205,8 +205,20 @@ on the application whether these additions are needed.
 The reason to leave the types out is performance. Some parts really need
 the type information, such as the joy-in-joy interpreter, but these parts
 can have the type information implemented in Joy instead of C. Likewise,
-multi-tasking and multi-precision arithmatic can be implemented in Joy.
+multi-tasking and multi-precision arithmetic can be implemented in Joy.
 
 2018-07-15 - The new version is now feature complete. The old version is used
 to compile lsptst.joy. Compile with -c to get the new version; compile with -o
 to get the old version.
+
+Compile options
+===============
+
+There are now three ways to compile Joy sources, each with their own advantages
+and disadvantages.
+
+- -c - This is the new version, designed to make the Fibonacci benchmark fast.
+
+- -o - This is the old version, designed to build with all standard C compilers.
+
+- -r - This is the retro version, designed for C compilers that support C99.

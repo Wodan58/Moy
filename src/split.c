@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.20
-    date    : 05/18/19
+    version : 1.21
+    date    : 05/20/19
 */
 #ifndef SPLIT_X
 #define SPLIT_C
@@ -78,8 +78,8 @@ int put_split(void)
 	fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); break;");
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
-	fprintf(outfp, "yes_str = strdup(str);");
-	fprintf(outfp, "no_str = strdup(str);");
+	fprintf(outfp, "yes_str = ck_strdup(str);");
+	fprintf(outfp, "no_str = ck_strdup(str);");
 	fprintf(outfp, "for (; *str; str++) {");
 	fprintf(outfp, "CONDITION; save = stk;");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
@@ -157,8 +157,8 @@ PRIVATE void do_split(void)
     case STRING_:
 	str = stk->u.str;
 	POP(stk);
-	yesstring = strdup(str);
-	nostring = strdup(str);
+	yesstring = ck_strdup(str);
+	nostring = ck_strdup(str);
 	for (; str && *str; str++) {
 	    CONDITION;
 	    save = stk;

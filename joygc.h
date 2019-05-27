@@ -1,17 +1,11 @@
 /*
     module  : joygc.h
-    version : 1.7
-    date    : 07/02/18
+    version : 1.8
+    date    : 05/26/19
 */
-#ifdef strdup
-#undef strdup
-#endif
-
-#define strdup(x)	ck_strdup(x)
 #define malloc(x)	ck_malloc(x)
 #define calloc(x,y)	ck_calloc(x,y)
 #define realloc(x,y)	ck_realloc(x,y)
-#define malloc_sec(x)	ck_malloc_sec(x)
 #define free(x)		ck_free(x)
 
 char *ck_strdup(char *str);

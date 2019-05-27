@@ -1,7 +1,7 @@
 /*
     module  : swons_str.c
-    version : 1.3
-    date    : 07/15/18
+    version : 1.4
+    date    : 05/20/19
 */
 #ifndef SWONS_STR_X
 #define SWONS_STR_C
@@ -17,9 +17,9 @@ void do_swons_str(void)
     ch = do_pop();
     ptr = (char *)stk[-1];
     if (ptr)
-	str = malloc_sec(strlen(ptr) + 2);
+	str = ck_malloc_sec(strlen(ptr) + 2);
     else
-	str = malloc_sec(2);
+	str = ck_malloc_sec(2);
     *str = ch;
     if (ptr)
 	strcpy(str + 1, ptr);

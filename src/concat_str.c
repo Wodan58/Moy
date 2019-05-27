@@ -1,7 +1,7 @@
 /*
     module  : concat_str.c
-    version : 1.4
-    date    : 05/18/19
+    version : 1.5
+    date    : 05/20/19
 */
 #ifndef CONCAT_STR_X
 #define CONCAT_STR_C
@@ -17,7 +17,7 @@ void do_concat_str(void)
     first = (char *)stk[-1];
     i = first ? strlen(first) : 0;
     j = second ? strlen(second) : 0;
-    result = malloc_sec(i + j + 1);
+    result = ck_malloc_sec(i + j + 1);
     if (first)
 	strcpy(result, first);
     if (second)

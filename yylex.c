@@ -1,7 +1,7 @@
 /*
     module  : yylex.c
-    version : 1.1
-    date    : 05/19/19
+    version : 1.2
+    date    : 05/20/19
 */
 #include "runtime.h"
 
@@ -72,7 +72,7 @@ Start:
 	}
 	string[i] = '\0';
 	getch();
-	yylval.str = strdup(string);
+	yylval.str = ck_strdup(string);
 	return STRING_;
     case '-': /* PERHAPS unary minus */
 	minus = 1;
@@ -142,7 +142,7 @@ Start:
 	    yylval.num = 0;
 	    return BOOLEAN_;
 	}
-	yylval.str = strdup(string);
+	yylval.str = ck_strdup(string);
 	return SYMBOL_;
     }
 }

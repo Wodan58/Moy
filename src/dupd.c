@@ -1,7 +1,7 @@
 /*
     module  : dupd.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 05/26/19
 */
 #ifndef DUPD_X
 #define DUPD_C
@@ -16,6 +16,7 @@ void do_dupd(void)
 #else
 
 #ifndef DUP_C
+#undef DUP_X
 #include "dup.c"
 #define DUP_X
 #endif

@@ -23,7 +23,7 @@ endif()
 include_directories(. src bdwgc/include)
 add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       compile.c initmem.c initsym.c interp.c joy.c node.c optable.c
-	       outfile.c print.c scan.c symbol.c utils.c dict.c memory.c)
+	       outfile.c print.c scan.c symbol.c utils.c dict.c memory2.c)
 target_link_libraries(moy gc-lib)
 add_dependencies(moy always)
 add_custom_target(always

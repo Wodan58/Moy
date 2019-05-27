@@ -10,10 +10,10 @@ test:
 	-./$@3 | diff -w - OUT/$@.out
 
 jp-joytst:
-	-./$@4 | diff -w - OUT/$@.out
+	-./$@5 | diff -w - OUT/$@.out
 
 flatjoy:
-	./$@4 | diff -w - OUT/$@.out
+	./$@5 | diff -w - OUT/$@.out
 
 jp-reprodtst:
 	./$@3 | diff -w - OUT/$@.out
@@ -34,7 +34,7 @@ jp-church:
 	./$@3 | diff -w - OUT/$@.out
 
 grmtst:
-	./$@4 | diff -w - OUT/$@.out
+	./$@3 | diff -w - OUT/$@.out
 
 mtrtst:
 	-./$@3 | diff -w - OUT/$@.out
@@ -52,4 +52,4 @@ plgtst:
 	./$@3 | diff -w - OUT/$@.out
 
 lsptst:
-	-./$@1 <$@.inp | diff -w - OUT/$@.out
+	-./$@4 <$@.inp | diff -w - OUT/$@.out

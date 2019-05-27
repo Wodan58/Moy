@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.21
-    date    : 05/18/19
+    version : 1.22
+    date    : 05/20/19
 */
 #ifndef MAP_X
 #define MAP_C
@@ -60,7 +60,7 @@ int put_map(void)
 	fprintf(outfp, "} PUSH(LIST_, root); break;");
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = cur->u.str;");
-	fprintf(outfp, "for (ptr = strdup(str); *str; str++) {");
+	fprintf(outfp, "for (ptr = ck_strdup(str); *str; str++) {");
 	fprintf(outfp, "CONDITION; if ((save = stk) != 0) temp = *stk;");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
 	compile(prog);
@@ -128,7 +128,7 @@ PRIVATE void do_map(void)
 	break;
     case STRING_:
 	str = cur->u.str;
-	for (ptr = strdup(str); *str; str++) {
+	for (ptr = ck_strdup(str); *str; str++) {
 	    if ((save = stk) != 0)
 		temp = *stk;
 	    PUSH(CHAR_, (long_t)*str);

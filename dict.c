@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.7
-    date    : 07/14/18
+    version : 1.9
+    date    : 05/26/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -172,10 +172,10 @@ static int add_word_to_dictionary(char *ptr)
     dict_t dic, *pdic;
 
     initialise_entry(&dic);
-    dic.name = strdup(ptr);
+    dic.name = ck_strdup(ptr);
     if (!is_c_identifier(ptr)) {
 	sprintf(str, "%d", ++seq);
-	dic.print = strdup(str);
+	dic.print = ck_strdup(str);
     }
     pdic = vec_push(dict);
     *pdic = dic;
@@ -318,7 +318,7 @@ int check_anything_was_printed(void)
     return 0;
 }
 
-void iterate_dict_and_write_struct(void)
+void iterate_dict_and_write_struct(FILE *fp)
 {
     char *name;
     int i, leng;
@@ -326,9 +326,9 @@ void iterate_dict_and_write_struct(void)
     leng = vec_size(dict);
     for (i = 0; i < leng; i++)
 	if ((dict_flags(i) & IS_USED) && dict_body(i)) {
-	    printf("{ ");
+	    fprintf(fp, "{ ");
 	    if (!strcmp(name = dict_nickname(i), "pop"))
-		printf("(proc_t)");
-	    printf("do_%s, \"%s\" },\n", name, dict_descr(i));
+		fprintf(fp, "(proc_t)");
+	    fprintf(fp, "do_%s, \"%s\" },\n", name, dict_descr(i));
 	}
 }

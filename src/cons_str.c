@@ -1,7 +1,7 @@
 /*
     module  : cons_str.c
-    version : 1.3
-    date    : 07/15/18
+    version : 1.4
+    date    : 05/20/19
 */
 #ifndef CONS_STR_X
 #define CONS_STR_C
@@ -15,7 +15,7 @@ void do_cons_str(void)
     TRACE;
     str = (char *)do_pop();
     i = str ? strlen(str) : 0;
-    result = malloc_sec(i + 2);
+    result = ck_malloc_sec(i + 2);
     result[0] = stk[-1];
     if (str)
 	strcpy(result + 1, str);

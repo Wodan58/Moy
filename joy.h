@@ -1,8 +1,13 @@
 /*
     module  : joy.h
-    version : 1.23
-    date    : 05/19/19
+    version : 1.24
+    date    : 05/26/19
 */
+#ifndef JOY_H
+#define JOY_H
+
+#include <stdio.h>
+
 #ifdef _MSC_VER
 #include <io.h>
 #else
@@ -86,7 +91,7 @@ int old_buffer(void);
 void initout(void);
 FILE *nextfile(void);
 void closefile(FILE *fp);
-void printout(void);
+void printout(FILE *fp);
 void closeout(void);
 
 /* parse.y */
@@ -100,3 +105,4 @@ int yywrap(void);
 /* utils.c */
 void readfactor(int sym);
 void readterm(int sym);
+#endif

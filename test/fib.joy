@@ -3,4 +3,4 @@
 (*
     fib - benchmarking
 *)
-10 [ dup small ] [ ] [ pred dup pred ] [ + ] binrec put_int nl .
+40 [ dup small ] [ ] [ pred dup pred ] [ + ] binrec put_int nl .

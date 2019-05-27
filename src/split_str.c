@@ -1,7 +1,7 @@
 /*
     module  : split_str.c
-    version : 1.4
-    date    : 05/18/19
+    version : 1.5
+    date    : 05/20/19
 */
 #ifndef SPLIT_STR_X
 #define SPLIT_STR_C
@@ -19,8 +19,8 @@ void do_split_str(void)
 	do_push(0);
 	return;
     }
-    yesstring = strdup(str);
-    nostring = strdup(str);
+    yesstring = ck_strdup(str);
+    nostring = ck_strdup(str);
     for (; *str; str++) {
 	do_push(*str);
 	execute(prog);
@@ -50,8 +50,8 @@ int put_split_str(void)
     if (new_version) {
 	fprintf(outfp, "int yesptr = 0, noptr = 0; char *str, *yesstring = 0,");
 	fprintf(outfp, "*nostring = 0; if ((str = (char *)do_pop()) == 0)");
-	fprintf(outfp, "{ do_push(0); return; } yesstring = strdup(str);");
-	fprintf(outfp, "nostring = strdup(str); for (; *str; str++) {");
+	fprintf(outfp, "{ do_push(0); return; } yesstring = ck_strdup(str);");
+	fprintf(outfp, "nostring = ck_strdup(str); for (; *str; str++) {");
 	fprintf(outfp, "do_push(*str);");
 	compile(prog);
 	fprintf(outfp, "if (do_pop()) yesstring[yesptr++] = *str; else ");
@@ -80,8 +80,8 @@ int put_split_str(void)
 	fprintf(outfp, "PUSH(LIST_, root); PUSH(LIST_, head); break;");
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
-	fprintf(outfp, "yes_str = strdup(str);");
-	fprintf(outfp, "no_str = strdup(str);");
+	fprintf(outfp, "yes_str = ck_strdup(str);");
+	fprintf(outfp, "no_str = ck_strdup(str);");
 	fprintf(outfp, "for (; *str; str++) {");
 	fprintf(outfp, "CONDITION; save = stk;");
 	fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
@@ -159,8 +159,8 @@ PRIVATE void do_split_str(void)
     case STRING_:
 	str = stk->u.str;
 	POP(stk);
-	yesstring = strdup(str);
-	nostring = strdup(str);
+	yesstring = ck_strdup(str);
+	nostring = ck_strdup(str);
 	for (; str && *str; str++) {
 	    CONDITION;
 	    save = stk;

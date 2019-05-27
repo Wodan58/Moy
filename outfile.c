@@ -1,7 +1,7 @@
 /*
     module  : outfile.c
-    version : 1.3
-    date    : 07/02/18
+    version : 1.4
+    date    : 05/26/19
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,7 +47,7 @@ void closefile(FILE *fp)
 	}
 }
 
-void printout(void)
+void printout(FILE *fp)
 {
     int i, ch, found;
 
@@ -55,7 +55,7 @@ void printout(void)
 	rewind(tmpfp[i]);
 	found = 0;
 	while ((ch = fgetc(tmpfp[i])) != EOF) {
-	    putchar(ch);
+	    fputc(ch, fp);
 	    found = 1;
 	}
 	if (found) {

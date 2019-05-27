@@ -1,7 +1,7 @@
 /*
     module  : swapd.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 05/26/19
 */
 #ifndef SWAPD_X
 #define SWAPD_C
@@ -19,6 +19,7 @@ void do_swapd(void)
 #else
 
 #ifndef SWAP_C
+#undef SWAP_X
 #include "swap.c"
 #define SWAP_X
 #endif

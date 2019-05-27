@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.20
-    date    : 05/18/19
+    version : 1.21
+    date    : 05/20/19
 */
 #ifndef FILTER_X
 #define FILTER_C
@@ -67,7 +67,7 @@ int put_filter(void)
 	fprintf(outfp, "PUSH(LIST_, root); break;");
 	fprintf(outfp, "case STRING_:");
 	fprintf(outfp, "str = stk->u.str; POP(stk);");
-	fprintf(outfp, "for (ptr = strdup(str); *str; str++) {");
+	fprintf(outfp, "for (ptr = ck_strdup(str); *str; str++) {");
 	fprintf(outfp, "CONDITION; save = stk; PUSH(CHAR_, (long_t)*str);");
 	compile(prog);
 	fprintf(outfp, "if (stk->u.num)");
@@ -132,7 +132,7 @@ PRIVATE void do_filter(void)
     case STRING_:
 	str = stk->u.str;
 	POP(stk);
-	for (ptr = strdup(str); *str; str++) {
+	for (ptr = ck_strdup(str); *str; str++) {
 	    CONDITION;
 	    save = stk;
 	    PUSH(CHAR_, (long_t)*str);
