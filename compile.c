@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.38
-    date    : 05/26/19
+    version : 1.39
+    date    : 05/27/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -315,7 +315,11 @@ int FindNode(Node *node)
     cur->next = root;
     root = cur;
     if (old_version)
+#ifdef _MSC_VER
+	fprintf(declfp, "extern Node L%d[];", seqnr);
+#else
 	fprintf(declfp, "static Node L%d[];", seqnr);
+#endif
     else
 	fprintf(declfp, "void push_list_%d(void);", seqnr);
     return seqnr;
