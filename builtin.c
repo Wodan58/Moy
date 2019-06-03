@@ -1,7 +1,7 @@
 /*
     module  : builtin.c
-    version : 1.14
-    date    : 05/20/19
+    version : 1.15
+    date    : 05/30/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -169,6 +169,18 @@ void joy_init(int argc, char *argv[])
 #endif
 }
 
+code_t *joy_code(void)
+{
+    return ck_malloc(sizeof(code_t));
+}
+
+/*
+ * freemem releases the memory that was allocated outside definitions.
+ */
+void freemem(void)
+{
+}
+
 size_t joy_leng(code_t *cur)
 {
     size_t leng;
@@ -191,8 +203,7 @@ code_t *stk2lst(void)
 #else
     for (mem = memory; mem < stk; mem++) {
 #endif
-	if ((cur = joy_code()) == 0)
-	    return 0;
+	cur = joy_code();
 #ifdef VECTOR
 	mem = vec_index(theStack, i);
 #endif
@@ -304,12 +315,9 @@ void print_node(node_t cur)
 {
     char *ptr;
 
-#if 0
     if (print_dbl(cur))					// FLOAT_
 	;
-    else
-#endif
-    if (!cur || IS_INTEGER(cur))			// INTEGER_
+    else if (!cur || IS_INTEGER(cur))			// INTEGER_
 	printf("%d ", (int)cur);
     else if (IS_CODE(cur)) {
 	if ((ptr = procname((proc_t)cur)) == 0)

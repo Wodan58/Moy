@@ -1,7 +1,7 @@
 /*
     module  : cond.c
-    version : 1.14
-    date    : 07/15/18
+    version : 1.15
+    date    : 05/30/19
 */
 #ifndef COND_X
 #define COND_C
@@ -71,7 +71,7 @@ PRIVATE void do_cond(void)
     COMPILE;
 #endif
     ONEPARAM("cond");
-/* TODO must check for QUOTES in list */
+/* FIXME: must check for QUOTES in list */
     LIST("cond");
     CHECKEMPTYLIST(stk->u.lis, "cond");
     cur = stk->u.lis;

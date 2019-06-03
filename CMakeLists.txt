@@ -22,8 +22,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling co
 endif()
 include_directories(. src bdwgc/include)
 add_executable(moy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
-	       compile.c initmem.c initsym.c interp.c joy.c node.c optable.c
-	       outfile.c print.c scan.c symbol.c utils.c dict.c memory2.c)
+	       compile.c initmem.c initsym.c interp.c joy.c node1.c optable.c
+	       outfile.c print.c scan.c symbol.c utils.c dict.c memory.c)
 target_link_libraries(moy gc-lib)
 add_dependencies(moy always)
 add_custom_target(always

@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 05/30/19
 */
 #ifndef NOT_X
 #define NOT_C
@@ -35,23 +35,27 @@ PRIVATE void do_not(void)
 	else
 	    UNARY(SET_NEWNODE, ~stk->u.set);
 	return;
+#if 0
     case STRING_:
 	num = *stk->u.str != 0;
 	break;
     case LIST_:
 	num = !stk->u.lis;
 	break;
-    case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
+#endif
+    case BOOLEAN_:
 	num = !stk->u.num;
 	break;
+#if 0
     case FLOAT_:
 	num = !stk->u.dbl;
 	break;
     case FILE_:
 	num = !stk->u.fil;
 	break;
+#endif
     default:
 	BADDATA("not");
 	break;

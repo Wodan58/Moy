@@ -1,62 +1,13 @@
 /*
     module  : memory.c
-    version : 1.7
-    date    : 05/26/19
+    version : 1.8
+    date    : 05/30/19
 */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "gc.h"
 #include "joy.h"
-#include "decl.h"
-#include "symbol.h"
-
-static int memptr;
-static Node memory[MEMORYMAX];
-
-#ifdef REPORT
-static double count_memory;
-
-void report_memory()
-{
-    fprintf(stderr, "memory  = %.0f\n", count_memory);
-}
-#endif
-
-/*
- * getnode allocates nodes from a static array, unless definition is active and
- * as long as the array is not exhausted.
- */
-Node *getnode(void)
-{
-    Node *node;
-#ifdef REPORT
-    static int first;
-
-    if (!first) {
-	first = 1;
-	atexit(report_memory);
-    }
-    count_memory++;
-#endif
-
-    if (!definition && memptr < MEMORYMAX)
-	return &memory[memptr++];
-    if ((node = GC_malloc(sizeof(Node))) == 0)
-	execerror("memory", "allocator");
-    return node;
-}
-
-/*
- * freemem releases the memory that was allocated outside definitions.
- */
-void freemem(void)
-{
-#if 0
-    memset(memory, 0, memptr * sizeof(Node));
-    memptr = 0;
-#endif
-}
 
 /*
  * ck_strdup checks that there is no out-of-memory condition.

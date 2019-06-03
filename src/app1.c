@@ -1,7 +1,7 @@
 /*
     module  : app1.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 05/30/19
 */
 #ifndef APP1_X
 #define APP1_C
@@ -29,7 +29,7 @@ int put_app1(void)
 
 /**
 app1  :  X [P]  ->  R
-Executes P, pushes result R on stack with X.
+Executes P, pushes result R on stack.
 */
 PRIVATE void do_app1(void)
 {

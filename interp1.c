@@ -1,10 +1,9 @@
 /*
     module  : interp1.c
-    version : 1.6
-    date    : 07/14/18
+    version : 1.7
+    date    : 05/30/19
 */
 #define OLD_RUNTIME
-#include "runtime.h"
 #include "interp.c"
 
 /*
@@ -28,8 +27,8 @@ char *procname(proc_t proc)
 
     for (i = 0; table[i].proc; i++)
 	if (proc == table[i].proc)
-	    return table[i].name;
-    return 0;
+	    break;
+    return table[i].name;
 }
 
 proc_t nameproc(char *name)
@@ -38,6 +37,6 @@ proc_t nameproc(char *name)
 
     for (i = 0; table[i].proc; i++)
 	if (!strcmp(name, table[i].name))
-	    return table[i].proc;
-    return 0;
+	    break;
+    return table[i].proc;
 }
