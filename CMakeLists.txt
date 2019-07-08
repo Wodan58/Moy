@@ -1,6 +1,6 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.7
+#   version : 1.8
 #   date    : 07/08/19
 #
 cmake_minimum_required(VERSION 3.0)
@@ -15,6 +15,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-cove
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
 endif()
 include_directories(. src bdwgc/include)
+add_subdirectory(bdwgc)
 add_executable(moy main.c ${BISON_MyParser_OUTPUTS} yylex.c
 	       compile.c initmem.c initsym.c interp.c node1.c optable.c
 	       outfile.c print.c symbol.c utils.c dict.c memory.c)
@@ -27,7 +28,6 @@ add_custom_target(always
 		  COMMAND sh prims.sh
 		  COMMAND sh trans.sh
 		 )
-add_subdirectory(bdwgc)
 if(WIN32)
 else()
 add_subdirectory(test)
