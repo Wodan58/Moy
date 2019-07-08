@@ -1,6 +1,6 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.8
+#   version : 1.9
 #   date    : 07/08/19
 #
 cmake_minimum_required(VERSION 3.0)
@@ -28,7 +28,3 @@ add_custom_target(always
 		  COMMAND sh prims.sh
 		  COMMAND sh trans.sh
 		 )
-if(WIN32)
-else()
-add_subdirectory(test)
-endif()
