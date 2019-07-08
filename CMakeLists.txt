@@ -1,6 +1,6 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.9
+#   version : 1.10
 #   date    : 07/08/19
 #
 cmake_minimum_required(VERSION 3.0)
@@ -19,7 +19,11 @@ add_subdirectory(bdwgc)
 add_executable(moy main.c ${BISON_MyParser_OUTPUTS} yylex.c
 	       compile.c initmem.c initsym.c interp.c node1.c optable.c
 	       outfile.c print.c symbol.c utils.c dict.c memory.c)
+if(WIN32)
 target_link_libraries(moy gc-lib m)
+else()
+target_link_libraries(moy gc-lib)
+endif()
 add_dependencies(moy always)
 add_custom_target(always
 		  COMMAND sh banner.sh ${PROJECT_NAME} ${PROJECT_VERSION}
