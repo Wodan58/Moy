@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.11
-    date    : 05/19/19
+    version : 1.14
+    date    : 06/16/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -20,12 +20,16 @@ int autoput = INIAUTOPUT, tracegc = INITRACEGC, undeferror = INIUNDEFERR;
 
 void initsym(int argc, char **argv)
 {
+    FILE *fp;
     char *ptr;
     int i, rv = 0;
 
     setbuf(stdout, 0);
     startclock = clock();
+#ifndef WITHOUT_YYLEX
     setechoflag(INIECHOFLAG);
+    inilinebuffer(stdin, "stdin");
+#endif
     if (argc > 1) {
 	rv = 1;
 	if (argv[1][0] == '-') {
@@ -49,10 +53,15 @@ void initsym(int argc, char **argv)
 	ptr = argv[rv];
 	if (!ptr || isdigit(*ptr))
 	    rv--;
-	else if ((yyin = freopen(ptr, "r", stdin)) == 0) {
-	    fprintf(stderr, "failed to open the file '%s'.\n", ptr);
-	    exit(1);
+#ifndef WITHOUT_YYLEX
+	else {
+	    if ((fp = freopen(ptr, "r", stdin)) == 0) {
+		fprintf(stderr, "failed to open the file '%s'.\n", ptr);
+		exit(1);
+	    }
+	    inilinebuffer(fp, ptr);
 	}
+#endif
     }
     g_argc = argc - rv;
     g_argv = &argv[rv];

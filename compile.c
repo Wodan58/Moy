@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.39
-    date    : 05/27/19
+    version : 1.40
+    date    : 06/15/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -526,6 +526,7 @@ void initialise(void)
 {
     time_t t = time(0);
 
+    atexit(finalise);
     if (!mainfunc)
 	mainfunc = "main";
     fprintf(declfp = stdout, "/*\n * generated %s */\n", ctime(&t));
@@ -534,7 +535,10 @@ void initialise(void)
 	fprintf(declfp, "#include \"symbol.h\"\n");
     }
     initout();
-    outfp = nextfile();
+    if ((outfp = nextfile()) == 0) {
+	fprintf(stderr, "Failed to open outfile\n");
+	exit(1);
+    }
     if (new_version)
 	fprintf(outfp, "\n#include \"builtin.c\"\n");
     else

@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.23
-    date    : 05/06/19
+    version : 1.24
+    date    : 06/15/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -80,6 +80,30 @@ void writefactor(Node *node, FILE *stm)
 	break;
     case SYMBOL_:
 	fprintf(stm, "%s", node->u.str);
+	break;
+    case '(':
+    case ')':
+    case '[':
+    case ']':
+    case '{':
+    case '}':
+    case ';':
+	fprintf(stm, "%c", node->op);
+	break;
+    case JPUBLIC:
+	fprintf(stm, "JPUBLIC");
+	break;
+    case JPRIVATE:
+	fprintf(stm, "JPRIVATE");
+	break;
+    case END:
+	fprintf(stm, "END");
+	break;
+    case MODULE:
+	fprintf(stm, "MODULE");
+	break;
+    case JEQUAL:
+	fprintf(stm, "==");
 	break;
     default:
 	execerror("valid datatype", "writefactor");

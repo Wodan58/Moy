@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.24
-    date    : 05/26/19
+    version : 1.25
+    date    : 06/15/19
 */
 #ifndef JOY_H
 #define JOY_H
@@ -57,11 +57,9 @@ extern int g_argc, debugging, compiling, definition, new_version, old_version;
 extern int autoput, tracegc, undeferror;
 
 /* lexer.l */
-extern int yylineno;
-extern FILE *yyin, *yyout;
-
 int getechoflag(void);
 void setechoflag(int flag);
+void inilinebuffer(FILE *fp, char *str);
 
 /* compile.c */
 void printstack(FILE *fp);

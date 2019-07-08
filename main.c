@@ -1,7 +1,7 @@
 /*
     module  : main.c
-    version : 1.10
-    date    : 12/28/18
+    version : 1.12
+    date    : 07/06/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -30,8 +30,5 @@ int main(int argc, char **argv)
     if (compiling)
 	initialise();
     setjmp(begin);
-    argc = yyparse();
-    if (compiling)
-	finalise();
-    return argc;
+    return yyparse();
 }

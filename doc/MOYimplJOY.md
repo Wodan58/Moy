@@ -222,3 +222,19 @@ and disadvantages.
 - -o - This is the old version, designed to build with all standard C compilers.
 
 - -r - This is the retro version, designed for C compilers that support C99.
+
+Decommissioning of lexer.l
+==========================
+
+The lexical analyzer is now C, rather than (f)lex-generated. However much I like
+(f)lex, there are a number of problems:
+
+- The build system complains in the test-directory that lexer.c does not exist,
+  and because lexer.l was not found, it does not know how to build lexer.c
+
+- Echo of input to output is only partially solved in lexer.l. There is a problem
+  with multi-line comments. It can be solved completely with start conditions,
+  but that would complicate lexer.l
+
+- A handwritten lexical analyzer is easier to convert to Joy, in case the compiler
+  needs to be written in its own language.

@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.9
-    date    : 05/26/19
+    version : 1.10
+    date    : 07/06/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -215,7 +215,7 @@ static char *qualify(char *name)
  * Find locates a name in the hash table. First the qualified name is tried.
  * If that fails, the normal name is tried. And if that fails, -1 is returned.
  */
-int find(char *name)
+static int find(char *name)
 {
     khiter_t key;
     char *str = name;
@@ -228,7 +228,7 @@ int find(char *name)
     return -1;
 }
 
-void replace(char *old_name, char *new_name, int index)
+static void replace(char *old_name, char *new_name, int index)
 {
     int rv;
     khiter_t key;

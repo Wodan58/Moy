@@ -10,7 +10,7 @@ add_custom_command(OUTPUT ${src}1.c
 		   DEPENDS moy ${src}.joy
 		   COMMAND moy -o ${src}.joy | clang-format >${src}1.c)
 add_executable(${src}1 ${src}1.c ../initsym.c ../node.c ../memory.c ../error.c
-	       ../utils1.c ../yylex.c ../scan.c ../print.c)
+	       ../utils1.c ../yylex1.c ../print.c)
 target_link_libraries(${src}1 gc-lib)
 endmacro(exe1)
 
@@ -21,8 +21,7 @@ macro(exe2 src)
 add_custom_command(OUTPUT ${src}2.c
 		   DEPENDS moy ${src}.joy
 		   COMMAND moy -c ${src}.joy | clang-format >${src}2.c)
-add_executable(${src}2 ${src}2.c ../memory.c ../error.c ../factor.c ../yylex.c
-		../scan.c)
+add_executable(${src}2 ${src}2.c ../memory.c ../error.c ../factor.c ../yylex1.c)
 target_link_libraries(${src}2 gc-lib)
 endmacro(exe2)
 
@@ -44,8 +43,8 @@ macro(exe4 src)
 add_custom_command(OUTPUT ${src}4.c
 		   DEPENDS moy ${src}.joy
 		   COMMAND moy -r ${src}.joy | clang-format >${src}4.c)
-add_executable(${src}4 ${src}4.c ../initsym1.c ../node1.c ../memory.c ../error.c
-	       ../print.c ../yylex.c ../utils1.c ../scan.c)
+add_executable(${src}4 ${src}4.c ../initsym.c ../node1.c ../memory.c ../error.c
+	       ../print.c ../yylex1.c ../utils1.c)
 target_link_libraries(${src}4 gc-lib)
 endmacro(exe4)
 

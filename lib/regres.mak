@@ -43,13 +43,13 @@ plgtst:
 	../moy $@.joy 2>&1 | diff -w - OUT/$@.out
 
 jp-joytst:
-	-../moy $@.joy 2>&1 | diff -w - OUT/$@.out
+	../moy $@.joy 2>&1 | diff -w - OUT/$@.out
 
 modtst:
-	-../moy $@.joy 2>&1 | diff -w - OUT/$@.out
+	../moy $@.joy 2>&1 | diff -w - OUT/$@.out
 
 tutinp:
-	-cat $@.joy $@.inp | ../moy 2>&1 | diff -w - OUT/$@.out
+	cat $@.joy $@.inp | ../moy 2>&1 | diff -w - OUT/$@.out
 
 lsptst:
-	-cat $@.joy $@.inp | ../moy 2>&1 | diff -w - OUT/$@.out
+	cat $@.joy $@.inp | ../moy 2>&1 | diff -w - OUT/$@.out
