@@ -13,8 +13,10 @@ before_script:
   - lcov --directory . --zerocounters
 
 script:
-  - git clone https://github.com/ivmai/bdwgc.git
-  - cmake -G "Unix Makefiles"
+  - wget "https://www.hboehm.info/gc/gc_source/gc-8.0.4.tar.gz"
+  - tar xf gc-8.0.4.tar.gz
+  - mv gc-8.0.4 bdwgc
+  - cmake -G "Unix Makefiles" .
   - cmake --build . --config Release
 
 after_success:
