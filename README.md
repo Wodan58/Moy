@@ -32,5 +32,3 @@ And run:
 
     cd lib
     make -f regres.mak
-
-There is a *test* directory with an experimental tagless array version of the stack.

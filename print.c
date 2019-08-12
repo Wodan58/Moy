@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.24
-    date    : 06/15/19
+    version : 1.25
+    date    : 08/11/19
 */
 #include <stdio.h>
 #include <string.h>
@@ -59,9 +59,9 @@ void writefactor(Node *node, FILE *stm)
 	fputc('"', stm);
 	break;
     case LIST_:
-	fprintf(stm, "%s", "[ ");
+	fprintf(stm, "%s", "[");
 	writeterm(node->u.lis, stm);
-	fprintf(stm, "%s", " ]");
+	fprintf(stm, "%s", "]");
 	break;
     case FLOAT_:
 	fprintf(stm, "%g", node->u.dbl);

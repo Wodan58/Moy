@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.8
-    date    : 04/15/19
+    version : 1.9
+    date    : 07/19/19
 */
 #ifndef GETENV_X
 #define GETENV_C
@@ -12,7 +12,7 @@ void do_getenv(void)
     char *str;
 
     TRACE;
-    if ((str = getenv((char *)str[-1])) == 0)
+    if ((str = getenv((char *)stk[-1])) == 0)
 	str = "";
     stk[-1] = (node_t)str;
 }

@@ -321,4 +321,3 @@ E  ==
 [ "a" "black" "cat" "sits" "on" "Maria" "." ] E. 
  
 (* END  grmtst.joy *) 
-quit. 
