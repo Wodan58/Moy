@@ -1,7 +1,7 @@
 /*
     module  : yylex.c
-    version : 1.5
-    date    : 06/16/19
+    version : 1.6
+    date    : 09/02/19
 */
 #include "runtime.h"
 
@@ -171,7 +171,7 @@ static int read_string(void)
 
 static int read_number(int ch)
 {
-    int i = 0;
+    int i = 0, dot = 0;
     char string[INPLINEMAX];
 
     do {
@@ -179,8 +179,10 @@ static int read_number(int ch)
 	    string[i++] = ch;
 	ch = getch();
     } while (isdigit(ch));
-    if (ch == '.')
+    if (ch == '.') {
 	ch = getch();
+	dot = 1;
+    }
     if (isdigit(ch)) {
 	if (i < INPLINEMAX - 1)
 	    string[i++] = '.';
@@ -209,6 +211,8 @@ static int read_number(int ch)
 	return FLOAT_;
     }
     ungetch(ch);
+    if (dot)
+	ungetch('.');
     string[i] = '\0';
     yylval.num = strtol(string, NULL, 0);
     return INTEGER_;
