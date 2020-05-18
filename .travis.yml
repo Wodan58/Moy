@@ -2,6 +2,8 @@ language: c
 compiler: gcc
 
 install:
+  - git clone https://github.com/linux-test-project/lcov.git
+  - cd lcov; sudo make install; cd ..
   - gem install coveralls-lcov
   - lcov --version
   - gcc --version
