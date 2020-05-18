@@ -1,7 +1,7 @@
 /*
     module  : type.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -12,11 +12,8 @@ PRIVATE void PROCEDURE(void)
 	COMPILE;
 #endif
     ONEPARAM(NAME);
-    if (OUTSIDE) {
-	stk->u.num = stk->op REL TYP;
-	stk->op = BOOLEAN_;
-    } else
-	UNARY(BOOLEAN_NEWNODE, stk->op REL TYP);
+    stk->u.num = stk->op REL TYP;
+    stk->op = BOOLEAN_;
 }
 
 #undef PROCEDURE

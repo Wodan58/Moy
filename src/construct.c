@@ -1,37 +1,11 @@
 /*
     module  : construct.c
-    version : 1.13
-    date    : 05/18/19
+    version : 1.14
+    date    : 03/28/20
 */
-#ifndef CONSTRUCT_X
+#ifndef CONSTRUCT_C
 #define CONSTRUCT_C
 
-#ifdef NEW_RUNTIME
-void do_construct(void)
-{
-    code_t *list, *prog, *root = 0, *cur, *last, *save[2];
-
-    TRACE;
-    list = (code_t *)do_pop();
-    prog = (code_t *)do_pop();
-    save[0] = stk2lst();
-    execute(prog);
-    for (; list; list = list->next) {
-	save[1] = stk2lst();
-	execute(list->list);
-	cur = joy_code();
-	cur->num = do_pop();
-	if (!root)
-	    last = root = cur;
-	else
-	    last = last->next = cur;
-	lst2stk(save[1]);
-    }
-    lst2stk(save[0]);
-    for (cur = root; cur; cur = cur->next)
-	do_push(cur->num);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_construct(void)
 {
@@ -45,35 +19,21 @@ int put_construct(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CONSTRUCT */");
-    if (new_version)
-	fprintf(outfp, "code_t *root = 0, *cur, *last, *save[2];");
-    else
-	fprintf(outfp, "Node *root = 0, *save[2];");
+    fprintf(outfp, "Node *root = 0, *save[2];");
     fprintf(outfp, "save[0] = stk2lst();");
     compile(prog);
     for (; list; list = list->next) {
 	fprintf(outfp, "save[1] = stk2lst();");
 	compile(list->u.lis);
-	if (new_version) {
-	    fprintf(outfp, "cur = joy_code(); cur->num = do_pop();");
-	    fprintf(outfp, "if (!root) last = root = cur;");
-	    fprintf(outfp, "else last = last->next = cur;");
-	} else {
-	    fprintf(outfp, "root = newnode(stk->op, stk->u.ptr, root);");
-	    fprintf(outfp, "stk = 0;");
-	}
+	fprintf(outfp, "root = newnode(stk->op, stk->u.ptr, root);");
+	fprintf(outfp, "stk = 0;");
 	fprintf(outfp, "lst2stk(save[1]);");
     }
-    if (!new_version)
-	fprintf(outfp, "stk = 0;");
+    fprintf(outfp, "stk = 0;");
     fprintf(outfp, "lst2stk(save[0]);");
-    if (!new_version)
-	fprintf(outfp, "root = reverse(root);");
+    fprintf(outfp, "root = reverse(root);");
     fprintf(outfp, "while (root) {");
-    if (new_version)
-	fprintf(outfp, "do_push(root->num);");
-    else
-	fprintf(outfp, "DUPLICATE(root);");
+    fprintf(outfp, "DUPLICATE(root);");
     fprintf(outfp, "root = root->next; } }");
     return 1;
 }
@@ -113,5 +73,4 @@ PRIVATE void do_construct(void)
     for (list = reverse(root); list; list = list->next)
 	DUPLICATE(list);
 }
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : ferror.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef FERROR_X
+#ifndef FERROR_C
 #define FERROR_C
 
-#ifdef NEW_RUNTIME
-void do_ferror(void)
-{
-    TRACE;
-    do_push(ferror((FILE *)stk[-1]));
-}
-#else
 /**
 ferror  :  S  ->  S B
 B is the error status of stream S.
@@ -22,5 +15,4 @@ B is the error status of stream S.
 #define CONSTRUCTOR	BOOLEAN_
 #define EXPR		ferror(stk->u.fil)
 #include "fileget.h"
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : casting.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef CASTING_X
+#ifndef CASTING_C
 #define CASTING_C
 
-#ifdef NEW_VERSION
-void do_casting(void)
-{
-    TRACE;
-    (void)do_pop();
-}
-#else
 /**
 casting  :  X Y  ->  Z
 Z takes the value from X and the type from Y.
@@ -26,11 +19,7 @@ PRIVATE void do_casting(void)
 	COMPILE;
 #endif
     TWOPARAMS("casting");
-    if (OUTSIDE) {
-	stk->next->op = stk->op;
-	POP(stk);
-    } else
-	GBINARY(stk->op, stk->next->u.ptr);
+    stk->next->op = stk->op;
+    POP(stk);
 }
-#endif
 #endif

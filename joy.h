@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.25
-    date    : 06/15/19
+    version : 1.26
+    date    : 03/28/20
 */
 #ifndef JOY_H
 #define JOY_H
@@ -52,38 +52,20 @@ extern optable_t optable[];
 
 /* initsym.c */
 extern FILE *outfp, *declfp;
-extern char **g_argv, *mainfunc;
-extern int g_argc, debugging, compiling, definition, new_version, old_version;
+extern char **g_argv;
+extern int g_argc, compiling, debugging, definition, interpreter, nologo;
 extern int autoput, tracegc, undeferror;
-
-/* lexer.l */
-int getechoflag(void);
-void setechoflag(int flag);
-void inilinebuffer(FILE *fp, char *str);
 
 /* compile.c */
 void printstack(FILE *fp);
 void initialise(void);
 void finalise(void);
 
-/* error.c */
+/* main.c */
 void execerror(char *message, const char *op);
 
 /* initsym.c */
 void initsym(int argc, char **argv);
-
-/* joy.c */
-int ChrVal(char *str);
-char *StrVal(char *str);
-char *DelSpace(char *str);
-
-/* lexer.l */
-int yylook(void);
-int yyback(int *p, int m);
-int yyerror(char *str);
-int yylex(void);
-void new_buffer(void);
-int old_buffer(void);
 
 /* outfile.c */
 void initout(void);
@@ -95,10 +77,15 @@ void closeout(void);
 /* parse.y */
 int yyparse(void);
 
-/* scan.c */
+/* yylex.c */
+void inilinebuffer(FILE *fp, char *str);
 void redirect(FILE *fp);
 void include(char *filnam);
 int yywrap(void);
+int yylex(void);
+int getechoflag(void);
+void setechoflag(int flag);
+int yyerror(char *str);
 
 /* utils.c */
 void readfactor(int sym);

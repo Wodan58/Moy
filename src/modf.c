@@ -1,25 +1,11 @@
 /*
     module  : modf.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef MODF_X
+#ifndef MODF_C
 #define MODF_C
 
-#ifdef NEW_RUNTIME
-void do_modf(void)
-{
-    node_t temp;
-    float dbl, exp;
-
-    TRACE;
-    memcpy(&dbl, &stk[-1], sizeof(float));
-    dbl = modf(dbl, &exp);
-    memcpy(&stk[-1], &dbl, sizeof(node_t));
-    memcpy(&temp, &exp, sizeof(node_t));
-    do_push(temp);
-}
-#else
 /**
 modf  :  F  ->  G H
 G is the fractional part and H is the integer part
@@ -37,11 +23,7 @@ PRIVATE void do_modf(void)
 #endif
     ONEPARAM("modf");
     FLOAT("modf");
-    if (OUTSIDE)
-	stk->u.dbl = modf(FLOATVAL, &exp);
-    else
-	UNARY(FLOAT_NEWNODE, modf(FLOATVAL, &exp));
+    stk->u.dbl = modf(FLOATVAL, &exp);
     DBL_PUSH(exp);
 }
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : true.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef TRUE_X
+#ifndef TRUE_C
 #define TRUE_C
 
-#ifdef NEW_RUNTIME
-void do_true(void)
-{
-    TRACE;
-    do_push(1);
-}
-#else
 /**
 true  :  ->  true
 Pushes the value true.
@@ -22,5 +15,4 @@ PRIVATE void do_true(void)
     PUSH(BOOLEAN_, 1);
 }
 /* true.c */
-#endif
 #endif

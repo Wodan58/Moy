@@ -1,17 +1,11 @@
 /*
     module  : undefs.c
-    version : 1.11
-    date    : 05/18/19
+    version : 1.12
+    date    : 03/28/20
 */
-#ifndef UNDEFS_X
+#ifndef UNDEFS_C
 #define UNDEFS_C
 
-#ifdef NEW_RUNTIME
-void do_undefs(void)
-{
-    TRACE;
-}
-#else
 /**
 undefs  :  ->  [..]
 Push a list of all undefined symbols in the current symbol table.
@@ -32,5 +26,4 @@ PRIVATE void do_undefs(void)
     PUSH(LIST_, root);
 #endif
 }
-#endif
 #endif

@@ -1,9 +1,9 @@
 /*
     module  : atan.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef ATAN_X
+#ifndef ATAN_C
 #define ATAN_C
 
 /**

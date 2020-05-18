@@ -1,22 +1,11 @@
 /*
     module  : swap.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef SWAP_X
+#ifndef SWAP_C
 #define SWAP_C
 
-#ifdef NEW_RUNTIME
-void do_swap(void)
-{
-    node_t temp;
-
-    TRACE;
-    temp = stk[-1];
-    stk[-1] = stk[-2];
-    stk[-2] = temp;
-}
-#else
 /**
 swap  :  X Y  ->  Y X
 Interchanges X and Y on top of the stack.
@@ -34,15 +23,9 @@ PRIVATE void do_swap(void)
     TWOPARAMS("swap");
     temp = *stk;
     node = stk->next;
-    if (OUTSIDE) {
-	stk->u = node->u;
-	stk->op = node->op;
-	node->u = temp.u;
-	node->op = temp.op;
-	return;
-    }
-    GBINARY(temp.op, temp.u.ptr);
-    GNULLARY(node->op, node->u.ptr);
+    stk->u = node->u;
+    stk->op = node->op;
+    node->u = temp.u;
+    node->op = temp.op;
 }
-#endif
 #endif

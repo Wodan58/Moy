@@ -1,19 +1,11 @@
 /*
     module  : and.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef AND_X
+#ifndef AND_C
 #define AND_C
 
-#ifdef NEW_RUNTIME
-void do_and(void)
-{
-    TRACE;
-    stk[-2] &= stk[-1];
-    (void)do_pop();
-}
-#else
 /**
 and  :  X Y  ->  Z
 Z is the intersection of sets X and Y, logical conjunction for truth values.
@@ -23,5 +15,4 @@ Z is the intersection of sets X and Y, logical conjunction for truth values.
 #define OPER1		&
 #define OPER2		&&
 #include "andorxor.h"
-#endif
 #endif

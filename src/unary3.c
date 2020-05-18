@@ -1,34 +1,11 @@
 /*
     module  : unary3.c
-    version : 1.13
-    date    : 07/15/18
+    version : 1.14
+    date    : 03/28/20
 */
-#ifndef UNARY3_X
+#ifndef UNARY3_C
 #define UNARY3_C
 
-#ifdef NEW_RUNTIME
-void do_unary3(void)
-{
-    code_t *prog;
-    node_t temp[2], result[3];
-
-    TRACE;
-    prog = (code_t *)do_pop();
-    temp[1] = do_pop();		// X3
-    temp[0] = do_pop();		// X2
-    execute(prog);
-    result[0] = stk[-1];	// first result
-    stk[-1] = temp[0];		// restore X2
-    execute(prog);
-    result[1] = stk[-1];	// second result
-    stk[-1] = temp[1];		// restore X3
-    execute(prog);
-    result[2] = stk[-1];
-    stk[-1] = result[0];
-    do_push(result[1]);
-    do_push(result[2]);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_unary3(void)
 {
@@ -40,37 +17,19 @@ int put_unary3(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* UNARY3 */");
-    if (new_version) {
-	fprintf(outfp, "node_t temp[2], result[3];");
-	fprintf(outfp, "temp[1] = do_pop(); temp[0] = do_pop();");
-    } else {
-	fprintf(outfp, "Node first, second, *top, result[3];");
-	fprintf(outfp, "second = *stk; POP(stk); first = *stk; POP(stk);");
-	fprintf(outfp, "top = stk->next; CONDITION;");
-    }
+    fprintf(outfp, "Node first, second, *top, result[3];");
+    fprintf(outfp, "second = *stk; POP(stk); first = *stk; POP(stk);");
+    fprintf(outfp, "top = stk->next;");
     compile(prog);
-    if (new_version)
-	fprintf(outfp, "result[0] = stk[-1]; stk[-1] = temp[0];");
-    else {
-	fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-	fprintf(outfp, "DUPLICATE(&first); CONDITION;");
-    }
+    fprintf(outfp, "result[0] = *stk; stk = top;");
+    fprintf(outfp, "DUPLICATE(&first);");
     compile(prog);
-    if (new_version)
-	fprintf(outfp, "result[1] = stk[-1]; stk[-1] = temp[1];");
-    else {
-	fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
-	fprintf(outfp, "DUPLICATE(&second); CONDITION;");
-    }
+    fprintf(outfp, "result[1] = *stk; stk = top;");
+    fprintf(outfp, "DUPLICATE(&second);");
     compile(prog);
-    if (new_version) {
-	fprintf(outfp, "result[2] = stk[-1]; stk[-1] = result[0];");
-	fprintf(outfp, "do_push(result[1]); do_push(result[2]); }");
-    } else {
-	fprintf(outfp, "result[2] = *stk; RELEASE; stk = top;");
-	fprintf(outfp, "DUPLICATE(&result[0]); DUPLICATE(&result[1]);");
-	fprintf(outfp, "DUPLICATE(&result[2]); }");
-    }
+    fprintf(outfp, "result[2] = *stk; stk = top;");
+    fprintf(outfp, "DUPLICATE(&result[0]); DUPLICATE(&result[1]);");
+    fprintf(outfp, "DUPLICATE(&result[2]); }");
     return 1;
 }
 #endif
@@ -97,26 +56,19 @@ PRIVATE void do_unary3(void)
     first = *stk;
     POP(stk);
     top = stk->next;
-    CONDITION;
     exeterm(prog);
     result[0] = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&first);
-    CONDITION;
     exeterm(prog);
     result[1] = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&second);
-    CONDITION;
     exeterm(prog);
     result[2] = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&result[0]);
     DUPLICATE(&result[1]);
     DUPLICATE(&result[2]);
 }
-#endif
 #endif

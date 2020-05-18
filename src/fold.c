@@ -1,31 +1,24 @@
 /*
     module  : fold.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FOLD_X
+#ifndef FOLD_C
 #define FOLD_C
 
-#ifndef SWAPD_C
+#ifdef SWAPD_X
 #undef SWAPD_X
-#include "swapd.c"
-#define SWAPD_X
+#undef SWAPD_C
 #endif
 
-#ifndef STEP_C
+#ifdef STEP_X
 #undef STEP_X
-#include "step.c"
-#define STEP_X
+#undef STEP_C
 #endif
 
-#ifdef NEW_RUNTIME
-void do_fold(void)
-{
-    TRACE;
-    do_swapd();
-    do_step();
-}
-#else
+#include "swapd.c"
+#include "step.c"
+
 /**
 fold  :  A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
@@ -43,5 +36,4 @@ PRIVATE void do_fold(void)
     do_swapd();
     do_step();
 }
-#endif
 #endif

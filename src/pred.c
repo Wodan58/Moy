@@ -1,9 +1,9 @@
 /*
     module  : pred.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef PRED_X
+#ifndef PRED_C
 #define PRED_C
 
 /**

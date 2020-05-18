@@ -1,9 +1,9 @@
 /*
     module  : tanh.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef TANH_X
+#ifndef TANH_C
 #define TANH_C
 
 /**

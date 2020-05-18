@@ -1,18 +1,11 @@
 /*
     module  : argc.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef ARGC_X
+#ifndef ARGC_C
 #define ARGC_C
 
-#ifdef NEW_RUNTIME
-void do_argc(void)
-{
-    TRACE;
-    do_push(g_argc);
-}
-#else
 /**
 argc  :  ->  I
 Pushes the number of command line arguments. This is quivalent to 'argv size'.
@@ -24,5 +17,4 @@ PRIVATE void do_argc(void)
 #endif
     PUSH(INTEGER_, g_argc);
 }
-#endif
 #endif

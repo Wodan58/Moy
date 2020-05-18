@@ -1,24 +1,18 @@
 /*
     module  : condnestrec.c
-    version : 1.12
-    date    : 05/12/19
+    version : 1.13
+    date    : 03/28/20
 */
-#ifndef CONDNESTREC_X
+#ifndef CONDNESTREC_C
 #define CONDNESTREC_C
 
-#ifndef CONDLINREC_C
+#ifdef CONDLINREC_X
 #undef CONDLINREC_X
-#include "condlinrec.c"
-#define CONDLINREC_X
+#undef CONDLINREC_C
 #endif
 
-#ifdef NEW_RUNTIME
-void do_condnestrec(void)
-{
-    TRACE;
-    condnestrec((code_t *)do_pop());
-}
-#else
+#include "condlinrec.c"
+
 #ifndef OLD_RUNTIME
 int put_condnestrec(void);
 #endif
@@ -47,5 +41,4 @@ PRIVATE void do_condnestrec(void)
     POP(stk);
     condnestrec(prog);
 }
-#endif
 #endif

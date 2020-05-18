@@ -1,19 +1,11 @@
 /*
     module  : plus.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef PLUS_X
+#ifndef PLUS_C
 #define PLUS_C
 
-#ifdef NEW_RUNTIME
-void do_plus(void)
-{
-    TRACE;
-    stk[-2] += stk[-1];
-    (void)do_pop();
-}
-#else
 /**
 +  :  M I  ->  N
 Numeric N is the result of adding integer I to numeric M.
@@ -24,5 +16,4 @@ Also supports float.
 #define OPER		+
 #include "plusminus.h"
 /* plus.c */
-#endif
 #endif

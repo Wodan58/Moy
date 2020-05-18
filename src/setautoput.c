@@ -1,18 +1,11 @@
 /*
     module  : setautoput.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef SETAUTOPUT_X
+#ifndef SETAUTOPUT_C
 #define SETAUTOPUT_C
 
-#ifdef NEW_RUNTIME
-void do_setautoput(void)
-{
-    TRACE;
-    autoput = do_pop();
-}
-#else
 /**
 setautoput  :  I  ->
 Sets value of flag for automatic put to I (if I = 0, none;
@@ -28,5 +21,4 @@ PRIVATE void do_setautoput(void)
     autoput = stk->u.num;
     POP(stk);
 }
-#endif
 #endif

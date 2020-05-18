@@ -1,33 +1,11 @@
 /*
     module  : filter.c
-    version : 1.21
-    date    : 05/20/19
+    version : 1.22
+    date    : 03/28/20
 */
-#ifndef FILTER_X
+#ifndef FILTER_C
 #define FILTER_C
 
-#ifdef NEW_RUNTIME
-void do_filter(void)
-{
-    code_t *prog, *list, *root = 0, *cur;
-
-    TRACE;
-    prog = (code_t *)do_pop();
-    for (list = (code_t *)do_pop(); list; list = list->next) {
-	do_push(list->num);
-	execute(prog);
-	if (do_pop()) {
-	    if (!root)
-		cur = root = joy_code();
-	    else
-		cur = cur->next = joy_code();
-	    cur->num = list->num;
-	}
-	(void)do_pop();
-    }
-    do_push((node_t)root);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_filter(void)
 {
@@ -39,52 +17,40 @@ int put_filter(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* FILTER */");
-    if (new_version) {
-	fprintf(outfp, "code_t *list, *root = 0, *cur; TRACE;");
-	fprintf(outfp, "for (list = (code_t *)do_pop(); list;");
-	fprintf(outfp, "list = list->next) { do_push(list->num);");
-	compile(prog);
-	fprintf(outfp, "if (do_pop()) {");
-	fprintf(outfp, "if (!root) cur = root = joy_code();");
-	fprintf(outfp, "else cur = cur->next = joy_code();");
-	fprintf(outfp, "cur->num = list->num; } (void)do_pop(); }");
-	fprintf(outfp, "do_push((node_t)root); }");
-    } else {
-	fprintf(outfp, "int i = 0;");
-	fprintf(outfp, "char *str, *ptr;");
-	fprintf(outfp, "ulong_t set, zet = 0;");
-	fprintf(outfp, "Node *save, *list, *root = 0, *cur;");
-	fprintf(outfp, "switch (stk->op) {");
-	fprintf(outfp, "case LIST_:");
-	fprintf(outfp, "list = stk->u.lis; POP(stk);");
-	fprintf(outfp, "for (; list; list = list->next) {");
-	fprintf(outfp, "CONDITION; save = stk; DUPLICATE(list);");
-	compile(prog);
-	fprintf(outfp, "if (stk->u.num) { if (!root)");
-	fprintf(outfp, "cur = root = newnode(list->op, list->u.ptr,0); else ");
-	fprintf(outfp, "cur = cur->next = newnode(list->op, list->u.ptr, 0);");
-	fprintf(outfp, "} stk = save; RELEASE; }");
-	fprintf(outfp, "PUSH(LIST_, root); break;");
-	fprintf(outfp, "case STRING_:");
-	fprintf(outfp, "str = stk->u.str; POP(stk);");
-	fprintf(outfp, "for (ptr = ck_strdup(str); *str; str++) {");
-	fprintf(outfp, "CONDITION; save = stk; PUSH(CHAR_, (long_t)*str);");
-	compile(prog);
-	fprintf(outfp, "if (stk->u.num)");
-	fprintf(outfp, "ptr[i++] = *str;");
-	fprintf(outfp, "stk = save; RELEASE; } ptr[i] = 0;");
-	fprintf(outfp, "PUSH(STRING_, ptr); break;");
-	fprintf(outfp, "case SET_:");
-	fprintf(outfp, "set = stk->u.set; POP(stk);");
-	fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-	fprintf(outfp, "if (set & (1 << i)) {");
-	fprintf(outfp, "CONDITION; save = stk; PUSH(INTEGER_, i);");
-	compile(prog);
-	fprintf(outfp, "if (stk->u.num)");
-	fprintf(outfp, "zet |= 1 << i;");
-	fprintf(outfp, "stk = save; RELEASE; }");
-	fprintf(outfp, "PUSH(SET_, yes_set); break; } }");
-    }
+    fprintf(outfp, "int i = 0;");
+    fprintf(outfp, "char *str, *ptr;");
+    fprintf(outfp, "ulong_t set, zet = 0;");
+    fprintf(outfp, "Node *save, *list, *root = 0, *cur;");
+    fprintf(outfp, "switch (stk->op) {");
+    fprintf(outfp, "case LIST_:");
+    fprintf(outfp, "list = stk->u.lis; POP(stk);");
+    fprintf(outfp, "for (; list; list = list->next) {");
+    fprintf(outfp, "save = stk; DUPLICATE(list);");
+    compile(prog);
+    fprintf(outfp, "if (stk->u.num) { if (!root)");
+    fprintf(outfp, "cur = root = newnode(list->op, list->u.ptr,0); else ");
+    fprintf(outfp, "cur = cur->next = newnode(list->op, list->u.ptr, 0);");
+    fprintf(outfp, "} stk = save; }");
+    fprintf(outfp, "PUSH(LIST_, root); break;");
+    fprintf(outfp, "case STRING_:");
+    fprintf(outfp, "str = stk->u.str; POP(stk);");
+    fprintf(outfp, "for (ptr = ck_strdup(str); *str; str++) {");
+    fprintf(outfp, "save = stk; PUSH(CHAR_, (long_t)*str);");
+    compile(prog);
+    fprintf(outfp, "if (stk->u.num)");
+    fprintf(outfp, "ptr[i++] = *str;");
+    fprintf(outfp, "stk = save; } ptr[i] = 0;");
+    fprintf(outfp, "PUSH(STRING_, ptr); break;");
+    fprintf(outfp, "case SET_:");
+    fprintf(outfp, "set = stk->u.set; POP(stk);");
+    fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
+    fprintf(outfp, "if (set & ((long_t)1 << i)) {");
+    fprintf(outfp, "save = stk; PUSH(INTEGER_, i);");
+    compile(prog);
+    fprintf(outfp, "if (stk->u.num)");
+    fprintf(outfp, "zet |= (long_t)1 << i;");
+    fprintf(outfp, "stk = save; }");
+    fprintf(outfp, "PUSH(SET_, yes_set); break; } }");
     return 1;
 }
 #endif
@@ -114,7 +80,6 @@ PRIVATE void do_filter(void)
 	list = stk->u.lis;
 	POP(stk);
 	for (; list; list = list->next) {
-	    CONDITION;
 	    save = stk;
 	    DUPLICATE(list);
 	    exeterm(prog);
@@ -125,7 +90,6 @@ PRIVATE void do_filter(void)
 		    cur = cur->next = newnode(list->op, list->u.ptr, 0);
 	    }
 	    stk = save;
-	    RELEASE;
 	}
 	PUSH(LIST_, root);
 	break;
@@ -133,14 +97,12 @@ PRIVATE void do_filter(void)
 	str = stk->u.str;
 	POP(stk);
 	for (ptr = ck_strdup(str); *str; str++) {
-	    CONDITION;
 	    save = stk;
 	    PUSH(CHAR_, (long_t)*str);
 	    exeterm(prog);
 	    if (stk->u.num)
 		ptr[i++] = *str;
 	    stk = save;
-	    RELEASE;
 	}
 	ptr[i] = 0;
 	PUSH(STRING_, ptr);
@@ -149,15 +111,13 @@ PRIVATE void do_filter(void)
 	set = stk->u.set;
 	POP(stk);
 	for (i = 0; i < SETSIZE_; i++)
-	    if (set & (1 << i)) {
-		CONDITION;
+	    if (set & ((long_t)1 << i)) {
 		save = stk;
 		PUSH(INTEGER_, i);
 		exeterm(prog);
 		if (stk->u.num)
-		    zet |= 1 << i;
+		    zet |= (long_t)1 << i;
 		stk = save;
-		RELEASE;
 	    }
 	PUSH(SET_, zet);
 	break;
@@ -166,5 +126,4 @@ PRIVATE void do_filter(void)
 	break;
     }
 }
-#endif
 #endif

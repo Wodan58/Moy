@@ -1,38 +1,30 @@
 /*
     module  : enconcat.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef ENCONCAT_X
+#ifndef ENCONCAT_C
 #define ENCONCAT_C
 
-#ifndef SWAPD_C
+#ifdef SWAPD_X
 #undef SWAPD_X
-#include "swapd.c"
-#define SWAPD_X
+#undef SWAPD_C
 #endif
 
-#ifndef CONS_C
+#ifdef CONS_X
 #undef CONS_X
-#include "cons.c"
-#define CONS_X
+#undef CONS_C
 #endif
 
-#ifndef CONCAT_C
+#ifdef CONCAT_X
 #undef CONCAT_X
-#include "concat.c"
-#define CONCAT_X
+#undef CONCAT_C
 #endif
 
-#ifdef NEW_RUNTIME
-void do_enconcat(void)
-{
-    TRACE;
-    do_swapd();
-    do_cons();
-    do_concat();
-}
-#else
+#include "swapd.c"
+#include "cons.c"
+#include "concat.c"
+
 /**
 enconcat  :  X S T  ->  U
 Sequence U is the concatenation of sequences S and T
@@ -53,5 +45,4 @@ PRIVATE void do_enconcat(void)
     do_cons();
     do_concat();
 }
-#endif
 #endif

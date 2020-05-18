@@ -1,9 +1,9 @@
 /*
     module  : cos.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef COS_X
+#ifndef COS_C
 #define COS_C
 
 /**

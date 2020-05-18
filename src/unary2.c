@@ -1,29 +1,11 @@
 /*
     module  : unary2.c
-    version : 1.16
-    date    : 07/15/18
+    version : 1.17
+    date    : 03/28/20
 */
-#ifndef UNARY2_X
+#ifndef UNARY2_C
 #define UNARY2_C
 
-#ifdef NEW_RUNTIME
-void do_unary2(void)
-{
-    code_t *prog;
-    node_t temp, result[2];
-
-    TRACE;
-    prog = (code_t *)do_pop();
-    temp = do_pop();		// X2
-    execute(prog);
-    result[0] = stk[-1];	// first result
-    stk[-1] = temp;		// restore X2
-    execute(prog);
-    result[1] = stk[-1];	// second result
-    stk[-1] = result[0];
-    do_push(result[1]);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_unary2(void)
 {
@@ -35,28 +17,15 @@ int put_unary2(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* UNARY2 */");
-    if (new_version)
-	fprintf(outfp, "node_t temp, result[2]; temp = do_pop();");
-    else {
-	fprintf(outfp, "Node temp, *top, result[2];");
-	fprintf(outfp, "temp = *stk; POP(stk); top = stk->next; CONDITION;");
-    }
+    fprintf(outfp, "Node temp, *top, result[2];");
+    fprintf(outfp, "temp = *stk; POP(stk); top = stk->next;");
     compile(prog);
-    if (new_version)
-	fprintf(outfp, "result[0] = stk[-1]; stk[-1] = temp;");
-    else {
-	fprintf(outfp, "result[0] = *stk; RELEASE; stk = top;");
-	fprintf(outfp, "DUPLICATE(&temp); CONDITION;");
-    }
+    fprintf(outfp, "result[0] = *stk; stk = top;");
+    fprintf(outfp, "DUPLICATE(&temp);");
     compile(prog);
-    if (new_version) {
-	fprintf(outfp, "result[1] = stk[-1]; stk[-1] = result[0];");
-	fprintf(outfp, "do_push(result[1]); }");
-    } else {
-	fprintf(outfp, "result[1] = *stk; RELEASE; stk = top;");
-	fprintf(outfp, "DUPLICATE(&result[0]);");
-	fprintf(outfp, "DUPLICATE(&result[1]); }");
-    }
+    fprintf(outfp, "result[1] = *stk; stk = top;");
+    fprintf(outfp, "DUPLICATE(&result[0]);");
+    fprintf(outfp, "DUPLICATE(&result[1]); }");
     return 1;
 }
 #endif
@@ -82,19 +51,14 @@ PRIVATE void do_unary2(void)
     temp = *stk;
     POP(stk);
     top = stk->next;
-    CONDITION;
     exeterm(prog);
     result[0] = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&temp);
-    CONDITION;
     exeterm(prog);
     result[1] = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&result[0]);
     DUPLICATE(&result[1]);
 }
-#endif
 #endif

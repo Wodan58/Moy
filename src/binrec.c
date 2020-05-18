@@ -1,41 +1,11 @@
 /*
     module  : binrec.c
-    version : 1.15
-    date    : 07/15/18
+    version : 1.16
+    date    : 03/28/20
 */
-#ifndef BINREC_X
+#ifndef BINREC_C
 #define BINREC_C
 
-#ifdef NEW_RUNTIME
-void binrec(code_t *prog[])
-{
-    node_t temp;
-
-    execute(prog[0]);
-    if (do_pop())
-	execute(prog[1]);
-    else {
-	execute(prog[2]);
-	temp = do_pop();
-	binrec(prog);
-	do_push(temp);
-	binrec(prog);
-	execute(prog[3]);
-    }
-}
-
-void do_binrec(void)
-{
-    code_t *prog[4];
-
-    TRACE;
-    prog[3] = (code_t *)do_pop();
-    prog[2] = (code_t *)do_pop();
-    prog[1] = (code_t *)do_pop();
-    prog[0] = (code_t *)do_pop();
-    binrec(prog);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_binrec(void)
 {
@@ -59,27 +29,15 @@ int put_binrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void binrec_%d(void) {", ident);
-    if (new_version)
-	fprintf(outfp, "node_t temp; TRACE;");
-    else
-	fprintf(outfp, "int num; Node *save, temp; CONDITION; save = stk;");
+    fprintf(outfp, "int num; Node *save, temp; save = stk;");
     compile(prog[0]);
-    if (new_version)
-	fprintf(outfp, "if (do_pop()) {");
-    else
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+    fprintf(outfp, "num = stk->u.num; stk = save; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
-    if (new_version)
-	fprintf(outfp, "temp = do_pop();");
-    else
-	fprintf(outfp, "temp = *stk; POP(stk);\n");
+    fprintf(outfp, "temp = *stk; POP(stk);\n");
     fprintf(outfp, "binrec_%d();", ident);
-    if (new_version)
-	fprintf(outfp, "do_push(temp);");
-    else
-	fprintf(outfp, "DUPLICATE(&temp);");
+    fprintf(outfp, "DUPLICATE(&temp);");
     fprintf(outfp, "binrec_%d();", ident);
     compile(prog[3]);
     fprintf(outfp, "} }\n");
@@ -100,12 +58,10 @@ void binrec(Node *prog[])
     int num;
     Node *save, temp;
 
-    CONDITION;
     save = stk;
     exeterm(prog[0]);
     num = stk->u.num;
     stk = save;
-    RELEASE;
     if (num)
 	exeterm(prog[1]);
     else {
@@ -140,5 +96,4 @@ PRIVATE void do_binrec(void)
     POP(stk);
     binrec(prog);
 }
-#endif
 #endif

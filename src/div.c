@@ -1,22 +1,11 @@
 /*
     module  : div.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef DIV_X
+#ifndef DIV_C
 #define DIV_C
 
-#ifdef NEW_RUNTIME
-void do_div(void)
-{
-    ldiv_t result;
-
-    TRACE;
-    result = ldiv(stk[-2], stk[-1]);
-    stk[-2] = result.quot;
-    stk[-1] = result.rem;
-}
-#else
 /**
 div  :  I J  ->  K L
 Integers K and L are the quotient and remainder of dividing I by J.
@@ -43,13 +32,7 @@ PRIVATE void do_div(void)
 #else
     result = lldiv(stk->next->u.num, stk->u.num);
 #endif
-    if (OUTSIDE) {
-	stk->next->u.num = result.quot;
-	stk->u.num = result.rem;
-	return;
-    }
-    BINARY(INTEGER_NEWNODE, result.quot);
-    NULLARY(INTEGER_NEWNODE, result.rem);
+    stk->next->u.num = result.quot;
+    stk->u.num = result.rem;
 }
-#endif
 #endif

@@ -1,24 +1,19 @@
 /*
-    module  : __latex_manual.c
-    version : 1.4
-    date    : 07/15/18
+    module  : 
+    version : 1.5
+    date    : 03/28/20
 */
-#ifndef __LATEX_MANUAL_X
+#ifndef __LATEX_MANUAL_C
 #define __LATEX_MANUAL_C
 
-#ifdef NEW_RUNTIME
-void do___latex_manual(void)
-{
-    TRACE;
-}
-#else
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
 
-#ifndef MANUAL_C
+#ifdef MANUAL_X
 #undef MANUAL_X
-#include "manual.c"
-#define MANUAL_X
+#undef MANUAL_C
 #endif
+
+#include "manual.c"
 
 /**
 __latex_manual  :  ->
@@ -32,5 +27,4 @@ PRIVATE void do___latex_manual(void)
 #endif
     make_manual(2);
 }
-#endif
 #endif

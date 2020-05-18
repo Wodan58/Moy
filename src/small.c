@@ -1,18 +1,11 @@
 /*
     module  : small.c
-    version : 1.10
-    date    : 04/20/19
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef SMALL_X
+#ifndef SMALL_C
 #define SMALL_C
 
-#ifdef NEW_RUNTIME
-void do_small(void)
-{
-    TRACE;
-    stk[-1] = stk[-1] < 2;
-}
-#else
 /**
 small  :  X  ->  B
 Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
@@ -38,13 +31,13 @@ PRIVATE void do_small(void)
 	    small = 1;
 	else {
 	    int i = 0;
-	    while (!(stk->u.set & (1 << i)))
+	    while (!(stk->u.set & ((long_t)1 << i)))
 		i++;
-	    small = (stk->u.set & ~(1 << i)) == 0;
+	    small = (stk->u.set & ~((long_t)1 << i)) == 0;
 	}
 	break;
     case STRING_:
-	small = !stk->u.str || !*stk->u.str || !stk->u.str[1];
+	small = !stk->u.str[0] || !stk->u.str[1];
 	break;
     case LIST_:
 	small = !stk->u.lis || !stk->u.lis->next;
@@ -53,11 +46,7 @@ PRIVATE void do_small(void)
 	BADDATA("small");
 	break;
     }
-    if (OUTSIDE) {
-	stk->u.num = small;
-	stk->op = BOOLEAN_;
-    } else
-	UNARY(BOOLEAN_NEWNODE, small);
+    stk->u.num = small;
+    stk->op = BOOLEAN_;
 }
-#endif
 #endif

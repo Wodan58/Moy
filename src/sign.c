@@ -1,9 +1,9 @@
 /*
     module  : sign.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef SIGN_X
+#ifndef SIGN_C
 #define SIGN_C
 
 /**
@@ -21,13 +21,6 @@ PRIVATE double fsgn(double f)
 	return 0.0;
 }
 
-#ifdef NEW_RUNTIME
-void do_sign(void)
-{
-    TRACE;
-    stk[-1] = stk[-1] > 0 ? 1 : -1;
-}
-#else
 PRIVATE void do_sign(void)
 {
 #ifndef OLD_RUNTIME
@@ -38,15 +31,9 @@ PRIVATE void do_sign(void)
 #endif
     ONEPARAM("sign");
     FLOAT("sign");
-    if (OUTSIDE) {
-	if (stk->op == FLOAT_)
-	    stk->u.dbl = fsgn(stk->u.dbl);
-	else if (stk->u.num < 0 || stk->u.num > 1)
-	    stk->u.num = stk->u.num > 0 ? 1 : -1;
-    } else if (stk->op == FLOAT_)
-	UNARY(FLOAT_NEWNODE, fsgn(FLOATVAL));
+    if (stk->op == FLOAT_)
+	stk->u.dbl = fsgn(stk->u.dbl);
     else if (stk->u.num < 0 || stk->u.num > 1)
-	UNARY(INTEGER_NEWNODE, stk->u.num > 0 ? 1 : -1);
+	stk->u.num = stk->u.num > 0 ? 1 : -1;
 }
-#endif
 #endif

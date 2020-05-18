@@ -1,7 +1,7 @@
 /*
     module  : ofat.h
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -28,36 +28,27 @@ PRIVATE void PROCEDURE(void)
 		INDEXTOOLARGE(NAME);
 	    cur = cur->next;
 	}
-	if (OUTSIDE) {
-	    stk->next->u = cur->u;
-	    stk->next->op = cur->op;
-	    POP(stk);
-	} else
-	    GBINARY(cur->op, cur->u.ptr);
+	stk->next->u = cur->u;
+	stk->next->op = cur->op;
+	POP(stk);
 	break;
     case STRING_:
 	CHECKEMPTYSTRING(AGGR->u.str, NAME);
 	if (strlen(AGGR->u.str) < (size_t) INDEX->u.num)
 	    INDEXTOOLARGE(NAME);
-	if (OUTSIDE) {
-	    stk->next->u.num = AGGR->u.str[INDEX->u.num];
-	    stk->next->op = CHAR_;
-	    POP(stk);
-	} else
-	    BINARY(CHAR_NEWNODE, AGGR->u.str[INDEX->u.num]);
+	stk->next->u.num = AGGR->u.str[INDEX->u.num];
+	stk->next->op = CHAR_;
+	POP(stk);
 	break;
     case SET_:
 	j = INDEX->u.num;
 	CHECKEMPTYSET(AGGR->u.set, NAME);
 	for (i = 0; i < SETSIZE_; i++)
-	    if (AGGR->u.set & (1 << i)) {
+	    if (AGGR->u.set & ((long_t)1 << i)) {
 		if (!j) {
-		    if (OUTSIDE) {
-			stk->next->u.num = i;
-			stk->next->op = INTEGER_;
-			POP(stk);
-		    } else
-			BINARY(INTEGER_NEWNODE, i);
+		    stk->next->u.num = i;
+		    stk->next->op = INTEGER_;
+		    POP(stk);
 		    return;
 		}
 		j--;

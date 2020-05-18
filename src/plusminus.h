@@ -1,7 +1,7 @@
 /*
     module  : plusminus.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -20,21 +20,14 @@ PRIVATE void PROCEDURE(void)
     else
 	execerror("two floats or numerics", NAME);
 #endif
-    if (OUTSIDE) {
-	if (stk->next->op == FLOAT_)
-	    stk->next->u.dbl = stk->next->u.dbl OPER FLOATVAL;
-	else if (stk->op == FLOAT_) {
-	    stk->next->u.dbl = stk->next->u.num OPER stk->u.dbl;
-	    stk->next->op = FLOAT_;
-	} else
-	    stk->next->u.num = stk->next->u.num OPER stk->u.num;
-	POP(stk);
-    } else if (stk->next->op == FLOAT_ || stk->op == FLOAT_)
-	BINARY(FLOAT_NEWNODE, FLOATVAL2 OPER FLOATVAL);
-    else if (stk->next->op == CHAR_)
-	BINARY(CHAR_NEWNODE, stk->next->u.num OPER stk->u.num);
-    else
-	BINARY(INTEGER_NEWNODE, stk->next->u.num OPER stk->u.num);
+    if (stk->next->op == FLOAT_)
+	stk->next->u.dbl = stk->next->u.dbl OPER FLOATVAL;
+    else if (stk->op == FLOAT_) {
+	stk->next->u.dbl = stk->next->u.num OPER stk->u.dbl;
+	stk->next->op = FLOAT_;
+    } else
+	stk->next->u.num = stk->next->u.num OPER stk->u.num;
+    POP(stk);
 }
 
 #undef PROCEDURE

@@ -1,22 +1,11 @@
 /*
     module  : __memorymax.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef __MEMORYMAX_X
+#ifndef __MEMORYMAX_C
 #define __MEMORYMAX_C
 
-#ifdef NEW_RUNTIME
-PRIVATE void do___memorymax(void)
-{
-    TRACE;
-#ifdef VECTOR
-    do_push(vec_max(theStack));
-#else
-    do_push(MEMORYMAX);
-#endif
-}
-#else
 /**
 __memorymax  :  ->  I
 Pushes value of total size of memory.
@@ -28,5 +17,4 @@ PRIVATE void do___memorymax(void)
 #endif
     PUSH(INTEGER_, MEMORYMAX);
 }
-#endif
 #endif

@@ -1,23 +1,11 @@
 /*
     module  : float.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef FLOAT_X
+#ifndef FLOAT_C
 #define FLOAT_C
 
-#ifdef NEW_RUNTIME
-void do_float(void)
-{
-    float dbl;
-    char buf[MAXSTR];
-
-    TRACE;
-    memcpy(&dbl, &stk[-1], sizeof(float));
-    sprintf(buf, "%f", dbl);
-    stk[-1] = strcmp(buf, "0.000000") && strcmp(buf, "nan");
-}
-#else
 /**
 float  :  R  ->  B
 Tests whether R is a float.
@@ -27,5 +15,4 @@ Tests whether R is a float.
 #define REL		==
 #define TYP		FLOAT_
 #include "type.h"
-#endif
 #endif

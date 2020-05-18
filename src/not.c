@@ -1,18 +1,11 @@
 /*
     module  : not.c
-    version : 1.10
-    date    : 05/30/19
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef NOT_X
+#ifndef NOT_C
 #define NOT_C
 
-#ifdef NEW_RUNTIME
-void do_not(void)
-{
-    TRACE;
-    stk[-1] = !stk[-1];
-}
-#else
 /**
 not  :  X  ->  Y
 Y is the complement of set X, logical negation for truth values.
@@ -30,41 +23,16 @@ PRIVATE void do_not(void)
     ONEPARAM("not");
     switch (stk->op) {
     case SET_:
-	if (OUTSIDE)
-	    stk->u.set = ~stk->u.set;
-	else
-	    UNARY(SET_NEWNODE, ~stk->u.set);
+	stk->u.set = ~stk->u.set;
 	return;
-#if 0
-    case STRING_:
-	num = *stk->u.str != 0;
-	break;
-    case LIST_:
-	num = !stk->u.lis;
-	break;
-    case CHAR_:
-    case INTEGER_:
-#endif
     case BOOLEAN_:
 	num = !stk->u.num;
 	break;
-#if 0
-    case FLOAT_:
-	num = !stk->u.dbl;
-	break;
-    case FILE_:
-	num = !stk->u.fil;
-	break;
-#endif
     default:
 	BADDATA("not");
 	break;
     }
-    if (OUTSIDE) {
-	stk->u.num = num;
-	stk->op = BOOLEAN_;
-    } else
-	UNARY(BOOLEAN_NEWNODE, num);
+    stk->u.num = num;
+    stk->op = BOOLEAN_;
 }
-#endif
 #endif

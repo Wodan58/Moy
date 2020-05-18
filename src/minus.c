@@ -1,19 +1,11 @@
 /*
     module  : minus.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef MINUS_X
+#ifndef MINUS_C
 #define MINUS_C
 
-#ifdef NEW_RUNTIME
-void do_minus(void)
-{
-    TRACE;
-    stk[-2] -= stk[-1];
-    (void)do_pop();
-}
-#else
 /**
 -  :  M I  ->  N
 Numeric N is the result of subtracting integer I from numeric M.
@@ -24,5 +16,4 @@ Also supports float.
 #define OPER		-
 #include "plusminus.h"
 /* minus.c */
-#endif
 #endif

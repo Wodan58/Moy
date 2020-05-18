@@ -1,17 +1,11 @@
 /*
     module  : name.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef NAME_X
+#ifndef NAME_C
 #define NAME_C
 
-#ifdef NEW_RUNTIME
-void do_name(void)
-{
-    TRACE;
-}
-#else
 /**
 name  :  sym  ->  "sym"
 For operators and combinators, the string "sym" is the name of item sym,
@@ -48,12 +42,8 @@ PRIVATE void do_name(void)
 	BADDATA("name");
 	break;
     }
-    if (OUTSIDE) {
-	stk->u.str = str;
-	stk->op = STRING_;
-    } else
-	UNARY(STRING_NEWNODE, str);
+    stk->u.str = str;
+    stk->op = STRING_;
 #endif
 }
-#endif
 #endif

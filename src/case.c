@@ -1,12 +1,11 @@
 /*
     module  : case.c
-    version : 1.13
-    date    : 07/19/18
+    version : 1.14
+    date    : 03/28/20
 */
-#ifndef CASE_X
+#ifndef CASE_C
 #define CASE_C
 
-#ifndef NEW_RUNTIME
 PRIVATE double Compare(Node *first, Node *second, int *error)
 {
     char *name;
@@ -210,24 +209,6 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     *error = 1;
     return 0;
 }
-#endif
-
-#ifdef NEW_RUNTIME
-void do_case(void)
-{
-    code_t *cur;
-
-    TRACE;
-    for (cur = (code_t *)do_pop(); cur->next; cur = cur->next)
-	if (cur->list->num == stk[-1])
-	    break;
-    if (cur->next) {
-	(void)do_pop();
-	execute(cur->list->next);
-    } else
-	execute(cur->list);
-}
-#else
 
 #ifndef OLD_RUNTIME
 int put_case(void)
@@ -240,26 +221,16 @@ int put_case(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* CASE */");
-    if (new_version)
-	fprintf(outfp, "int num = 0; for (;;) {");
-    else
-	fprintf(outfp, "int num = 0, ok; for (;;) {");
+    fprintf(outfp, "int num = 0, ok; for (;;) {");
     for (; cur->next; cur = cur->next) {
-	PrintHead(cur, outfp);
-	if (new_version)
-	    fprintf(outfp, "if (stk[-1] == stk[-2]) { do_pop(); do_pop();");
-	else {
-	    fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
-	    fprintf(outfp, "POP(stk); POP(stk);");
-	}
+	printnode(cur, outfp);
+	fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
+	fprintf(outfp, "POP(stk); POP(stk);");
 	compile(cur->u.lis->next);
 	fprintf(outfp, "num = 1; break; }");
     }
     fprintf(outfp, "break; } if (!num) {");
-    if (new_version)
-	fprintf(outfp, "do_pop();");
-    else
-	fprintf(outfp, "POP(stk);");
+    fprintf(outfp, "POP(stk);");
     compile(cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
@@ -294,5 +265,4 @@ PRIVATE void do_case(void)
     } else
 	exeterm(cur->u.lis);
 }
-#endif
 #endif

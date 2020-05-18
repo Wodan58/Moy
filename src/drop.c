@@ -1,25 +1,11 @@
 /*
     module  : drop.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef DROP_X
+#ifndef DROP_C
 #define DROP_C
 
-#ifdef NEW_RUNTIME
-void do_drop(void)
-{
-    int num;
-    code_t *cur;
-
-    TRACE;
-    num = do_pop();
-    cur = (code_t *)stk[-1];
-    while (num-- > 0 && cur)
-	cur = cur->next;
-    stk[-1] = (node_t)cur;
-}
-#else
 /**
 drop  :  A N  ->  B
 Aggregate B is the result of deleting the first N elements of A.
@@ -44,34 +30,24 @@ PRIVATE void do_drop(void)
 	node = stk->u.lis;
 	while (num-- > 0 && node)
 	    node = node->next;
-	if (OUTSIDE)
-	    stk->u.lis = node;
-	else
-	    UNARY(LIST_NEWNODE, node);
+	stk->u.lis = node;
 	break;
     case STRING_:
-	if (OUTSIDE)
-	    stk->u.str += num;
-	else
-	    UNARY(STRING_NEWNODE, (stk->u.str + num));
+	stk->u.str += num;
 	break;
     case SET_:
 	for (set = i = 0; i < SETSIZE_; i++)
-	    if (stk->u.set & (1 << i)) {
+	    if (stk->u.set & ((long_t)1 << i)) {
 		if (num < 1)
-		    set |= 1 << i;
+		    set |= (long_t)1 << i;
 		else
 		    num--;
 	    }
-	if (OUTSIDE)
-	    stk->u.set = set;
-	else
-	    UNARY(SET_NEWNODE, set);
+	stk->u.set = set;
 	break;
     default:
 	BADAGGREGATE("drop");
 	break;
     }
 }
-#endif
 #endif

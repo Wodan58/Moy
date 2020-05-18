@@ -1,22 +1,11 @@
 /*
     module  : getenv.c
-    version : 1.9
-    date    : 07/19/19
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef GETENV_X
+#ifndef GETENV_C
 #define GETENV_C
 
-#ifdef NEW_RUNTIME
-void do_getenv(void)
-{
-    char *str;
-
-    TRACE;
-    if ((str = getenv((char *)stk[-1])) == 0)
-	str = "";
-    stk[-1] = (node_t)str;
-}
-#else
 /**
 getenv  :  "variable"  ->  "value"
 Retrieves the value of the environment variable "variable".
@@ -32,10 +21,6 @@ PRIVATE void do_getenv(void)
     STRING("getenv");
     if ((str = getenv(stk->u.str)) == 0)
 	str = "";
-    if (OUTSIDE)
-	stk->u.str = str;
-    else
-	UNARY(STRING_NEWNODE, str);
+    stk->u.str = str;
 }
-#endif
 #endif

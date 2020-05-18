@@ -1,18 +1,11 @@
 /*
     module  : stack.c
-    version : 1.11
-    date    : 05/18/19
+    version : 1.12
+    date    : 03/28/20
 */
-#ifndef STACK_X
+#ifndef STACK_C
 #define STACK_C
 
-#ifdef NEW_RUNTIME
-void do_stack(void)
-{
-    TRACE;
-    do_push((node_t)stk2lst());
-}
-#else
 /**
 stack  :  .. X Y Z  ->  .. X Y Z [Z Y X ..]
 Pushes the stack as a list.
@@ -28,5 +21,4 @@ PRIVATE void do_stack(void)
 	node = newnode(cur->op, cur->u.ptr, node);
     PUSH(LIST_, reverse(node));
 }
-#endif
 #endif

@@ -1,17 +1,11 @@
 /*
     module  : opcase.c
-    version : 1.10
-    date    : 05/16/19
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef OPCASE_X
+#ifndef OPCASE_C
 #define OPCASE_C
 
-#ifdef NEW_RUNTIME
-void do_opcase(void)
-{
-#error "opcase" is not supported in the new version
-}
-#else
 /**
 opcase  :  X [..[X Xs]..]  ->  X [Xs]
 Indexing on type of X, returns the list [Xs].
@@ -39,11 +33,7 @@ PRIVATE void do_opcase(void)
     }
     CHECKLIST(cur->op, "opcase");
     cur = cur->next ? cur->u.lis->next : cur->u.lis;
-    if (OUTSIDE) {
-	stk->u.lis = cur;
-	stk->op = LIST_;
-    } else
-	UNARY(LIST_NEWNODE, cur);
+    stk->u.lis = cur;
+    stk->op = LIST_;
 }
-#endif
 #endif

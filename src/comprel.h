@@ -1,23 +1,17 @@
 /*
     module  : comprel.h
-    version : 1.10
-    date    : 04/15/19
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef NEW_RUNTIME
-#ifndef CASE_C
+#ifdef CASE_X
 #undef CASE_X
+#undef CASE_C
+#endif
+
 #include "case.c"
-#define CASE_X
-#endif
-#endif
 
 PRIVATE void PROCEDURE(void)
 {
-#ifdef NEW_RUNTIME
-    TRACE;
-    stk[-2] = stk[-2] OPR stk[-1];
-    (void)do_pop();
-#else
     double cmp;
     int i, j, error, comp = 0;
 
@@ -39,16 +33,9 @@ PRIVATE void PROCEDURE(void)
 	else
 	    comp = cmp OPR 0;
     }
-    if (OUTSIDE) {
-	stk->next->op = CONSTRUCTOR;
-	stk->next->u.num = comp;
-	POP(stk);
-    } else {
-	POP(stk);
-	POP(stk);
-	PUSH(CONSTRUCTOR, (long_t)comp);
-    }
-#endif
+    stk->next->op = CONSTRUCTOR;
+    stk->next->u.num = comp;
+    POP(stk);
 }
 
 #undef PROCEDURE

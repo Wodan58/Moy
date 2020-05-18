@@ -1,18 +1,11 @@
 /*
     module  : size.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef SIZE_X
+#ifndef SIZE_C
 #define SIZE_C
 
-#ifdef NEW_RUNTIME
-void do_size(void)
-{
-    TRACE;
-    stk[-1] = joy_leng((code_t *)stk[-1]);
-}
-#else
 /**
 size  :  A  ->  I
 Integer I is the number of elements of aggregate A.
@@ -40,18 +33,14 @@ PRIVATE void do_size(void)
 	break;
     case SET_:
 	for (i = 0; i < SETSIZE_; i++)
-	    if (stk->u.set & (1 << i))
+	    if (stk->u.set & ((long_t)1 << i))
 		size++;
 	break;
     default:
 	BADAGGREGATE("size");
 	break;
     }
-    if (OUTSIDE) {
-	stk->u.num = size;
-	stk->op = INTEGER_;
-    } else
-	UNARY(INTEGER_NEWNODE, size);
+    stk->u.num = size;
+    stk->op = INTEGER_;
 }
-#endif
 #endif

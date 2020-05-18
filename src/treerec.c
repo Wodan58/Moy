@@ -1,45 +1,18 @@
 /*
     module  : treerec.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef TREEREC_X
+#ifndef TREEREC_C
 #define TREEREC_C
 
-#ifndef CONS_C
+#ifdef CONS_X
 #undef CONS_X
-#include "cons.c"
-#define CONS_X
+#undef CONS_C
 #endif
 
-#ifdef NEW_RUNTIME
-void treerec(void)
-{
-    code_t *code, *prog;
+#include "cons.c"
 
-    TRACE;
-    if (IS_LIST(stk[-2])) {
-	code = (code_t *)stk[-1];
-	prog = code->next;
-	code = joy_code();
-	code->fun = treerec;
-	do_push((node_t)code);
-	do_cons();
-	code = (code_t *)stk[-1];
-	execute(prog);
-    } else {
-	code = (code_t *)do_pop();
-	execute(code->list);
-    }
-}
-
-void do_treerec(void)
-{
-    TRACE;
-    do_cons();
-    treerec();
-}
-#else
 #ifndef OLD_RUNTIME
 int put_treerec(void)
 {
@@ -58,20 +31,11 @@ int put_treerec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void treerec_%d(void) {", ident);
-    if (new_version) {
-	fprintf(outfp, "code_t *code; TRACE; if (IS_LIST(stk[-2])) {");
-	fprintf(outfp, "code = joy_code(); code->fun = treerec_%d;", ident);
-	fprintf(outfp, "do_push((node_t)code);");
-    } else {
-	fprintf(outfp, "if (stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
-	fprintf(outfp, "ANON_FUNCT_NEWNODE(treerec_%d, 0));", ident);
-    }
+    fprintf(outfp, "if (stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
+    fprintf(outfp, "ANON_FUNCT_NEWNODE(treerec_%d, 0));", ident);
     fprintf(outfp, "do_cons();");
     compile(prog[1]);
-    if (new_version)
-	fprintf(outfp, "} else { (void)do_pop();");
-    else
-	fprintf(outfp, "} else { POP(stk);");
+    fprintf(outfp, "} else { POP(stk);");
     compile(prog[0]);
     fprintf(outfp, "} }");
     closefile(outfp);
@@ -111,5 +75,4 @@ PRIVATE void do_treerec(void)
     do_cons();
     treerec();
 }
-#endif
 #endif

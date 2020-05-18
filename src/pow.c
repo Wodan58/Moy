@@ -1,9 +1,9 @@
 /*
     module  : pow.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef POW_X
+#ifndef POW_C
 #define POW_C
 
 /**

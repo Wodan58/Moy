@@ -1,25 +1,17 @@
 /*
     module  : popd.c
-    version : 1.8
-    date    : 05/26/19
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef POPD_X
+#ifndef POPD_C
 #define POPD_C
 
-#ifdef NEW_RUNTIME
-void do_popd(void)
-{
-    TRACE;
-    stk[-2] = stk[-1];
-    (void)do_pop();
-}
-#else
-
-#ifndef POP_C
+#ifdef POP_X
 #undef POP_X
-#include "pop.c"
-#define POP_X
+#undef POP_C
 #endif
+
+#include "pop.c"
 
 /**
 popd  :  Y Z  ->  Z
@@ -30,5 +22,4 @@ As if defined by:   popd  ==  [pop] dip
 #define PARAMCOUNT	TWOPARAMS
 #define ARGUMENT	do_pop
 #include "dipped.h"
-#endif
 #endif

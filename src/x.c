@@ -1,18 +1,11 @@
 /*
     module  : x.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef X_X
+#ifndef X_C
 #define X_C
 
-#ifdef NEW_RUNTIME
-void do_x(void)
-{
-    TRACE;
-    execute((code_t *)stk[-1]);
-}
-#else
 /**
 x  :  [P] x  ->  ...
 Executes P without popping [P]. So, [P] x  ==  [P] P.
@@ -26,5 +19,4 @@ PRIVATE void do_x(void)
     ONEQUOTE("x");
     exeterm(stk->u.lis);
 }
-#endif
 #endif

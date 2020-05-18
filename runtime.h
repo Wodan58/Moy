@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.17
-    date    : 04/20/19
+    version : 1.18
+    date    : 03/28/20
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -31,9 +31,6 @@ extern clock_t startclock;
 #endif
 
 #define PRIVATE
-#define OUTSIDE		1
-#define CONDITION
-#define RELEASE
 
 #define exeterm(x)	interprete(x)
 #define POP(x)		(x) = (x)->next;

@@ -1,21 +1,11 @@
 /*
     module  : first.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef FIRST_X
+#ifndef FIRST_C
 #define FIRST_C
 
-#ifdef NEW_RUNTIME
-void do_first(void)
-{
-    code_t *cur;
-
-    TRACE;
-    cur = (code_t *)stk[-1];
-    stk[-1] = cur->num;
-}
-#else
 /**
 first  :  A  ->  F
 F is the first member of the non-empty aggregate A.
@@ -34,34 +24,24 @@ PRIVATE void do_first(void)
     switch (stk->op) {
     case LIST_:
 	CHECKEMPTYLIST(stk->u.lis, "first");
-	if (OUTSIDE) {
-	    stk->op = stk->u.lis->op;
-	    stk->u = stk->u.lis->u;
-	} else
-	    GUNARY(stk->u.lis->op, stk->u.lis->u.ptr);
+	stk->op = stk->u.lis->op;
+	stk->u = stk->u.lis->u;
 	break;
     case STRING_:
 	CHECKEMPTYSTRING(stk->u.str, "first");
-	if (OUTSIDE) {
-	    stk->u.num = *stk->u.str;
-	    stk->op = CHAR_;
-	} else
-	    UNARY(CHAR_NEWNODE, *stk->u.str);
+	stk->u.num = *stk->u.str;
+	stk->op = CHAR_;
 	break;
     case SET_:
 	CHECKEMPTYSET(stk->u.set, "first");
-	while (!(stk->u.set & (1 << i)))
+	while (!(stk->u.set & ((long_t)1 << i)))
 	    i++;
-	if (OUTSIDE) {
-	    stk->u.num = i;
-	    stk->op = INTEGER_;
-	} else
-	    UNARY(INTEGER_NEWNODE, i);
+	stk->u.num = i;
+	stk->op = INTEGER_;
 	break;
     default:
 	BADAGGREGATE("first");
 	break;
     }
 }
-#endif
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : inhas.h
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -36,24 +36,18 @@ PRIVATE void PROCEDURE(void)
 	found = *str != 0;
 	break;
     case SET_:
-	found = (AGGR->u.set & (1 << ELEM->u.num)) > 0;
+	found = (AGGR->u.set & ((long_t)1 << ELEM->u.num)) > 0;
 	break;
     default:
 	BADAGGREGATE(NAME);
 	break;
     }
-    if (OUTSIDE) {
-	stk->next->u.num = found;
-	stk->next->op = BOOLEAN_;
-	POP(stk);
-    } else
-	BINARY(BOOLEAN_NEWNODE, found);
+    stk->next->u.num = found;
+    stk->next->op = BOOLEAN_;
+    POP(stk);
 }
 
 #undef PROCEDURE
-#ifdef CORRECT_INHAS_COMPARE
-#undef CORRECT_INHAS_COMPARE
-#endif
 #undef NAME
 #undef AGGR
 #undef ELEM

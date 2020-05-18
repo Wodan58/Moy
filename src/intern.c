@@ -1,18 +1,11 @@
 /*
     module  : intern.c
-    version : 1.13
-    date    : 07/15/18
+    version : 1.14
+    date    : 03/28/20
 */
-#ifndef INTERN_X
+#ifndef INTERN_C
 #define INTERN_C
 
-#ifdef NEW_RUNTIME
-void do_intern(void)
-{
-    TRACE;
-    stk[-1] = (node_t)nameproc((char *)stk[-1]);
-}
-#else
 /**
 intern  :  "sym"  ->  sym
 Pushes the item whose name is "sym".
@@ -41,19 +34,13 @@ PRIVATE void do_intern(void)
 	execerror("valid name", id);
 #endif
     i = lookup(id);
-    if (OUTSIDE) {
-	if (dict_flags(i) & IS_BUILTIN) {
-	    stk->op = ANON_FUNCT_;
-	    stk->u.proc = (proc_t)dict_body(i);
-	} else {
-	    stk->op = USR_;
-	    stk->u.num = i;
-	}
-    } else if (dict_flags(i) & IS_BUILTIN)
-	UNARY(ANON_FUNCT_NEWNODE, (proc_t)dict_body(i));
-    else
-	UNARY(USR_NEWNODE, i);
+    if (dict_flags(i) & IS_BUILTIN) {
+	stk->op = ANON_FUNCT_;
+	stk->u.proc = (proc_t)dict_body(i);
+    } else {
+	stk->op = USR_;
+	stk->u.num = i;
+    }
 #endif
 }
-#endif
 #endif

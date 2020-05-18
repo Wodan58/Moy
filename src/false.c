@@ -1,18 +1,11 @@
 /*
     module  : false.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FALSE_X
+#ifndef FALSE_C
 #define FALSE_C
 
-#ifdef NEW_RUNTIME
-void do_false(void)
-{
-    TRACE;
-    do_push(0);
-}
-#else
 /**
 false  :  ->  false
 Pushes the value false.
@@ -22,5 +15,4 @@ PRIVATE void do_false(void)
     PUSH(BOOLEAN_, 0);
 }
 /* false.c */
-#endif
 #endif

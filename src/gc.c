@@ -1,9 +1,9 @@
 /*
     module  : gc.c
-    version : 1.5
-    date    : 07/15/18
+    version : 1.6
+    date    : 03/28/20
 */
-#ifndef GC_X
+#ifndef GC_C
 #define GC_C
 
 /**
@@ -12,9 +12,6 @@ Initiates garbage collection.
 */
 PRIVATE void do_gc(void)
 {
-#ifdef NEW_RUNTIME
-    TRACE;
-#endif
 #ifndef OLD_RUNTIME
     COMPILE;
 #endif

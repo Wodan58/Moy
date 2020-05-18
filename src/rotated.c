@@ -1,27 +1,17 @@
 /*
     module  : rotated.c
-    version : 1.7
-    date    : 07/20/18
+    version : 1.8
+    date    : 03/28/20
 */
 #ifndef ROTATED_X
 #define ROTATED_C
 
-#ifdef RUNTIME
-void do_rotated(void)
-{
-    node_t temp;
-
-    TRACE;
-    temp = stk[-2];
-    stk[-2] = stk[-4];
-    stk[-4] = temp;
-}
-#else
-#ifndef ROTATE_C
+#ifdef ROTATE_X
 #undef ROTATE_X
-#include "rotate.c"
-#define ROTATE_X
+#undef ROTATE_C
 #endif
+
+#include "rotate.c"
 
 /**
 rotated  :  X Y Z W  ->  Z Y X W
@@ -32,5 +22,4 @@ As if defined by:   rotated  ==  [rotate] dip
 #define PARAMCOUNT	FOURPARAMS
 #define ARGUMENT	do_rotate
 #include "dipped.h"
-#endif
 #endif

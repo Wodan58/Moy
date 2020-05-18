@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.13
-    date    : 05/26/19
+    version : 1.14
+    date    : 03/28/20
 */
 #ifndef SYMBOL_H
 #define SYMBOL_H
@@ -27,16 +27,12 @@ typedef void (*proc_t)(void);
 
 #include "node.h"
 
-/* memory.c */
-Node *getnode(void);
-void freemem(void);
-
 /* interp.c */
 void interprete(Node *code);
 void execute(Node *code);
 
 /* compile.c */
-void PrintHead(Node *node, FILE *fp);
+void printnode(Node *node, FILE *fp);
 void compile(Node *node);
 
 /* print.c */
@@ -58,20 +54,19 @@ char *iterate(char *name);
 /* dict.c */
 int symtabmax(void);
 int symtabindex(void);
-void init_dict(void);
-int lookup(char *name);
-void enteratom(char *name, Node *cur);
-void dump(void);
 unsigned dict_flags(int index);
 void dict_setflags(int index, unsigned flags);
+char *dict_descr(int index);
 char *dict_name(int index);
 char *dict_nickname(int index);
 Node *dict_body(int index);
 int dict_size(void);
-char *dict_descr(int index);
-int check_anything_was_printed(void);
-void iterate_dict_and_write_struct(FILE *fp);
-
 char *procname(proc_t proc);
 proc_t nameproc(char *name);
+void init_dict(void);
+int lookup(char *name);
+void enteratom(char *name, Node *cur);
+void dump(void);
+int check_anything_was_printed(void);
+void iterate_dict_and_write_struct(FILE *fp);
 #endif

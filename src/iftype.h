@@ -1,9 +1,8 @@
 /*
     module  : iftype.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef NEW_RUNTIME
 #ifndef OLD_RUNTIME
 #define CAT(a, b)	a ## b
 #define PUT_PROC(a)	CAT(put_, a)()
@@ -28,13 +27,9 @@ int PUT_PROC(PROCEDURE)
     return 1;
 }
 #endif
-#endif
 
 PRIVATE void PROCEDURE(void)
 {
-#ifdef NEW_RUNTIME
-    TRACE;
-#else
     Node *first, *second;
 
 #ifndef OLD_RUNTIME
@@ -49,7 +44,6 @@ PRIVATE void PROCEDURE(void)
     first = stk->u.lis;
     POP(stk);
     exeterm(stk->op == TYP ? first : second);
-#endif
 }
 
 #undef PROCEDURE

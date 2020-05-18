@@ -1,18 +1,11 @@
 /*
     module  : i.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef I_X
+#ifndef I_C
 #define I_C
 
-#ifdef NEW_RUNTIME
-void do_i(void)
-{
-    TRACE;
-    execute((code_t *)do_pop());
-}
-#else
 #ifndef OLD_RUNTIME
 int put_i(void)
 {
@@ -46,5 +39,4 @@ PRIVATE void do_i(void)
     POP(stk);
     exeterm(prog);
 }
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : unstack.c
-    version : 1.11
-    date    : 04/15/19
+    version : 1.12
+    date    : 03/28/20
 */
-#ifndef UNSTACK_X
+#ifndef UNSTACK_C
 #define UNSTACK_C
 
-#ifdef NEW_RUNTIME
-void do_unstack(void)
-{
-    TRACE;
-    lst2stk((code_t *)do_pop());
-}
-#else
 /**
 unstack  :  [X Y ..]  ->  ..Y X
 The list [X Y ..] becomes the new stack.
@@ -29,5 +22,4 @@ PRIVATE void do_unstack(void)
     for (cur = reverse(stk->u.lis), stk = 0; cur; cur = cur->next)
 	DUPLICATE(cur);
 }
-#endif
 #endif

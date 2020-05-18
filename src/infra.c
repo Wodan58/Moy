@@ -1,27 +1,11 @@
 /*
     module  : infra.c
-    version : 1.14
-    date    : 05/13/19
+    version : 1.15
+    date    : 03/28/20
 */
-#ifndef INFRA_X
+#ifndef INFRA_C
 #define INFRA_C
 
-#ifdef NEW_RUNTIME
-void do_infra(void)
-{
-    code_t *prog, *list, *save;
-
-    TRACE;
-    prog = (code_t *)do_pop();
-    list = (code_t *)do_pop();
-    save = stk2lst();
-    lst2stk(list);
-    execute(prog);
-    list = stk2lst();
-    lst2stk(save);
-    do_push((node_t)list);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_infra(void)
 {
@@ -33,23 +17,15 @@ int put_infra(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* INFRA */");
-    if (new_version)
-	fprintf(outfp, "code_t *list, *save; list = (code_t *)do_pop();");
-    else
-	fprintf(outfp, "Node *list, *save; list = stk->u.lis; POP(stk);");
+    fprintf(outfp, "Node *list, *save; list = stk->u.lis; POP(stk);");
     fprintf(outfp, "save = stk2lst();");
-    if (!new_version)
-	fprintf(outfp, "stk = 0;");
+    fprintf(outfp, "stk = 0;");
     fprintf(outfp, "lst2stk(list);");
     compile(prog);
     fprintf(outfp, "list = stk2lst();");
-    if (!new_version)
-	fprintf(outfp, "stk = 0;");
+    fprintf(outfp, "stk = 0;");
     fprintf(outfp, "lst2stk(save);");
-    if (new_version)
-	fprintf(outfp, "do_push((node_t)list); }");
-    else
-	fprintf(outfp, "PUSH(LIST_, list); }");
+    fprintf(outfp, "PUSH(LIST_, list); }");
     return 1;
 }
 #endif
@@ -97,5 +73,4 @@ PRIVATE void do_infra(void)
     lst2stk(save);		// 9
     PUSH(LIST_, list);		// 10
 }
-#endif
 #endif

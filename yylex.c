@@ -1,9 +1,15 @@
 /*
     module  : yylex.c
-    version : 1.6
-    date    : 09/02/19
+    version : 1.7
+    date    : 03/28/20
 */
-#include "runtime.h"
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "joy.h"
+#include "symbol.h"
+#include "decl.h"
 
 static FILE *yyin;
 static char line[INPLINEMAX], unget[2];
@@ -227,7 +233,8 @@ static int read_symbol(int ch)
 	if (i < INPLINEMAX - 1)
 	    string[i++] = ch;
 	ch = getch();
-    } while (isalnum(ch) || strchr("-=_", ch) || (i == 1 && strchr("*+/<>", ch)));
+    } while (isalnum(ch) || strchr("-=_", ch) ||
+	    (i == 1 && strchr("*+/<>", ch)));
     if (ch == '.') {
 	if (strchr("-=_", ch = getch()) || isalnum(ch)) {
 	    if (i < INPLINEMAX - 1)
@@ -396,16 +403,16 @@ void setechoflag(int flag)
     moy_echo = flag;
 }
 
-#ifndef WITHOUT_YYERROR
 int yyerror(char *str)
 {
     Node node;
 
     node.u = yylval;
     node.op = moy_code;
-    fprintf(stderr, "%s in file %s line %d near ", str, infile[ilevel].name, lineno);
+    fprintf(stderr, "%s in file %s line %d near ", str, infile[ilevel].name,
+	    lineno);
     writefactor(&node, stderr);
     fputc('\n', stderr);
+    execerror(0, 0);
     return 0;
 }
-#endif

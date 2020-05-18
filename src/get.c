@@ -1,18 +1,11 @@
 /*
     module  : get.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef GET_X
+#ifndef GET_C
 #define GET_C
 
-#ifdef NEW_RUNTIME
-void do_get(void)
-{
-    TRACE;
-    readfactor(yylex());
-}
-#else
 /**
 get  :  ->  F
 Reads a factor from input and pushes it onto stack.
@@ -24,5 +17,4 @@ PRIVATE void do_get(void)
 #endif
     readfactor(yylex());
 }
-#endif
 #endif

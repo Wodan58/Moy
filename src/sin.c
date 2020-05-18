@@ -1,9 +1,9 @@
 /*
     module  : sin.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef SIN_X
+#ifndef SIN_C
 #define SIN_C
 
 /**

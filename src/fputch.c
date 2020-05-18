@@ -1,21 +1,11 @@
 /*
     module  : fputch.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FPUTCH_X
+#ifndef FPUTCH_C
 #define FPUTCH_C
 
-#ifdef NEW_RUNTIME
-void do_fputch(void)
-{
-    int ch;
-
-    TRACE;
-    ch = do_pop();
-    putc(ch, (FILE *)stk[-1]);
-}
-#else
 /**
 fputch  :  S C  ->  S
 The character C is written to the current position of stream S.
@@ -34,5 +24,4 @@ PRIVATE void do_fputch(void)
     FILE("fputch");
     putc(ch, stk->u.fil);
 }
-#endif
 #endif

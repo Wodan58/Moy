@@ -1,12 +1,14 @@
 /*
     module  : joygc.h
-    version : 1.8
-    date    : 05/26/19
+    version : 1.9
+    date    : 05/14/20
 */
-#define malloc(x)	ck_malloc(x)
-#define calloc(x,y)	ck_calloc(x,y)
-#define realloc(x,y)	ck_realloc(x,y)
-#define free(x)		ck_free(x)
+#define malloc(x)		ck_malloc(x)
+#define mem_malloc(x)		ck_malloc(x)
+#define calloc(x,y)		ck_calloc(x,y)
+#define realloc(x,y)		ck_realloc(x,y)
+#define mem_realloc(x,y)	ck_realloc(x,y)
+#define free(x)			ck_free(x)
 
 char *ck_strdup(char *str);
 void *ck_malloc(size_t size);

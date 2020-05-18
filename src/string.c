@@ -1,18 +1,11 @@
 /*
     module  : string.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef STRING_X
+#ifndef STRING_C
 #define STRING_C
 
-#ifdef NEW_RUNTIME
-void do_string(void)
-{
-    TRACE;
-    stk[-1] = IS_STRING(stk[-1]);
-}
-#else
 /**
 string  :  X  ->  B
 Tests whether X is a string.
@@ -22,5 +15,4 @@ Tests whether X is a string.
 #define REL		==
 #define TYP		STRING_
 #include "type.h"
-#endif
 #endif

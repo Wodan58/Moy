@@ -1,20 +1,11 @@
 /*
     module  : fclose.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FCLOSE_X
+#ifndef FCLOSE_C
 #define FCLOSE_C
 
-#ifdef NEW_RUNTIME
-void do_fclose(void)
-{
-    FILE *fp;
-
-    TRACE;
-    if ((fp = (FILE *)do_pop()) != 0)
-	fclose(fp);
-#else
 /**
 fclose  :  S  ->
 Stream S is closed and removed from the stack.
@@ -32,5 +23,4 @@ PRIVATE void do_fclose(void)
 	fclose(fp);
     POP(stk);
 }
-#endif
 #endif

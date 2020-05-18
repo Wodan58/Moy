@@ -1,14 +1,10 @@
 /*
     module  : predsucc.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
-#ifdef NEW_RUNTIME
-    TRACE;
-    stk[-1] = stk[-1] OPER 1;
-#else
 #ifndef OLD_RUNTIME
     if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
 	;
@@ -17,13 +13,7 @@ PRIVATE void PROCEDURE(void)
 #endif
     ONEPARAM(NAME);
     NUMERICTYPE(NAME);
-    if (OUTSIDE)
-	stk->u.num = stk->u.num OPER 1;
-    else if (stk->op == CHAR_)
-	UNARY(CHAR_NEWNODE, stk->u.num OPER 1);
-    else
-	UNARY(INTEGER_NEWNODE, stk->u.num OPER 1);
-#endif
+    stk->u.num = stk->u.num OPER 1;
 }
 
 #undef PROCEDURE

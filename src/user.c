@@ -1,17 +1,11 @@
 /*
     module  : user.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef USER_X
+#ifndef USER_C
 #define USER_C
 
-#ifdef NEW_RUNTIME
-void do_user(void)
-{
-    TRACE;
-}
-#else
 /**
 user  :  X  ->  B
 Tests whether X is a user-defined symbol.
@@ -21,5 +15,4 @@ Tests whether X is a user-defined symbol.
 #define REL		==
 #define TYP		USR_
 #include "type.h"
-#endif
 #endif

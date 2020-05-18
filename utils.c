@@ -1,7 +1,7 @@
 /*
     module  : utils.c
-    version : 1.16
-    date    : 07/02/18
+    version : 1.1
+    date    : 05/13/20
 */
 #include "runtime.h"
 
@@ -14,7 +14,7 @@ void readfactor(int sym)
     case '{':
 	while ((sym = yylex()) != '}')
 	    if (sym == CHAR_ || sym == INTEGER_)
-		set |= 1 << yylval.num;
+		set |= (ulong_t)1 << yylval.num;
 	    else
 		execerror("numeric", "set");
 	temp.op = SET_;
@@ -25,8 +25,15 @@ void readfactor(int sym)
 	readterm(yylex());
 	break;
     case SYMBOL_:
-	temp.op = USR_;
-	temp.u.num = lookup(yylval.str);
+	if (interpreter) {
+	    temp.op = USR_;
+	    temp.u.num = lookup(yylval.str);
+	} else if ((temp.u.proc = nameproc(yylval.str)) != 0)
+	    temp.op = ANON_FUNCT_;
+	else {
+	    temp.op = SYMBOL_;
+	    temp.u.str = yylval.str;
+	}
 	DUPLICATE(&temp);
 	break;
     default:

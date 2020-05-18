@@ -1,0 +1,95 @@
+[[rep.duco] rep.duco] 
+[[rep.duco] rep.duco] 
+[[[dup *] dip rep.duco] [dup *] dip rep.duco] 
+4 
+16 
+256 
+[[0 [succ] infra rep.dureco] [succ] infra rep.dureco] 
+5 
+[[6 [succ] infra rep.dureco] [succ] infra rep.dureco] 
+[[0 [succ] infra [10 *] dip rep.dureco] [succ] infra [10 *] dip rep.dureco] 
+300000 
+5 
+[[1 rep.dureco] rep.dureco] 
+[[1 rep.dureco] rep.dureco] 
+1 
+[[1 [2 /] infra rep.dureco] [2 /] infra rep.dureco] 
+[[0.125 [2 /] infra rep.dureco] [2 /] infra rep.dureco] 
+0.125 
+[[42 [succ] infra rep.dureco] [succ] infra rep.dureco] 
+47 
+[[1 dup [first] dip rep.dureco] dup [first] dip rep.dureco] 
+1 
+1 
+1 
+[[1 dup [first] dip [2 /] infra rep.dureco] dup [first] dip [2 /] infra rep.dureco] 
+0.0625 
+0.125 
+0.25 
+0.5 
+1 
+[[2 dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco] dup [first] dip [succ [dup prime not] [succ] while] infra rep.dureco] 
+11 
+7 
+5 
+3 
+2 
+[[0 2 [pop dup dup * [2 +] dip] infra rep.durereco] [pop dup dup * [2 +] dip] infra rep.durereco] 
+0 
+4 
+16 
+36 
+64 
+[[[0 1] 10 dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra rep.durereco] dup [first] dip [pop dup [] cons [dup log10] infra [10 *] dip] infra rep.durereco] 
+[5 100000] 
+[4 10000] 
+[3 1000] 
+[2 100] 
+[1 10] 
+[0 1] 
+[[[] uncons [cons] dip cons rep.dureco] uncons [cons] dip cons rep.dureco] 
+[1 2 3 4 5] 
+[[0 uncons [+] dip cons rep.dureco] uncons [+] dip cons rep.dureco] 
+15 
+[[[] uncons [[*] dip cons] dip cons rep.dureco] uncons [[*] dip cons] dip cons rep.dureco] 
+[10 200 3000 40000] 
+[[3 [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte] [dup first null] [pop [[rep.duco] rep.duco]] [[pred] infra [+] dip rep.dureco] ifte] 
+3 
+6 
+10 
+10 
+5 
+15 
+720 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
+720 
+[[rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] rep.duco [over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte] 
+720 
+120 24 6 
+120 24 6 
+steps: 15 
+120 24 6 
+trace: [0 1 2 3 0 1 2 3 4 0 1 2 3 4 5] 
+[[rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] rep.duco [over small] [[pop 1] dip] [[pred dup pred] dip dip swap i [+] dip] ifte] 
+13 
+13 
+steps: 25 
+13 
+trace: [0 1 2 1 0 1 2 3 4 1 0 1 2 3 0 1 2 1 0 1 2 3 4 5 6] 
+24 
+3 5 
+trace: [[] [6] [7 6] [3 7 6] [5 3 7 6] [2 5 3 7 6] [] [c] [b c] [a b c]] 
+13 
+6 5 4 3 2 1 0 1 2 1 0 3 2 1 0 1 4 3 2 1 0 1 2 1 0 
+13 
+
+29 
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20] 
+25 
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20] 
+39 
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20] 
+39 
+[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20] 
+55 
+"      ,Yaaccefgilnnooooorrrsssssttuu" 

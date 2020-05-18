@@ -1,40 +1,17 @@
 /*
     module  : equal.c
-    version : 1.12
-    date    : 05/26/19
+    version : 1.13
+    date    : 03/28/20
 */
-#ifndef EQUAL_X
+#ifndef EQUAL_C
 #define EQUAL_C
 
-#ifdef NEW_RUNTIME
-int equal_list(code_t *first, code_t *second)
-{
-    for (; first && second; first = first->next, second = second->next) {
-	if (IS_LIST(first->num) && IS_LIST(second->num)) {
-	    if (!equal_list(first->list, second->list))
-		return 0;
-	} else if (first->num != second->num)
-	    return 0;
-    }
-    return !first && !second;
-}
-
-void do_equal(void)
-{
-    TRACE;
-    if (IS_LIST(stk[-2]) && IS_LIST(stk[-1]))
-	stk[-2] = equal_list((code_t *)stk[-2], (code_t *)stk[-1]);
-    else
-	stk[-2] = stk[-2] == stk[-1];
-    (void)do_pop();
-}
-#else
-
-#ifndef CASE_C
+#ifdef CASE_X
 #undef CASE_X
-#include "case.c"
-#define CASE_X
+#undef CASE_C
 #endif
+
+#include "case.c"
 
 PRIVATE int equal_list(Node *first, Node *second);
 
@@ -72,12 +49,8 @@ PRIVATE void do_equal(void)
 	COMPILE;
 #endif
     TWOPARAMS("equal");
-    if (OUTSIDE) {
-	stk->next->u.num = equal(stk, stk->next);
-	stk->next->op = BOOLEAN_;
-	POP(stk);
-    } else
-	BINARY(BOOLEAN_NEWNODE, equal(stk, stk->next));
+    stk->next->u.num = equal(stk, stk->next);
+    stk->next->op = BOOLEAN_;
+    POP(stk);
 }
-#endif
 #endif

@@ -167,11 +167,11 @@ static const double __ac_HASH_UPPER = 0.77;
 		khval_t *vals; \
 	} kh_##name##_t;
 
-#define __KHASH_PROTOTYPES(name, khkey_t, khval_t)						\
+#define __KHASH_PROTOTYPES(name, khkey_t, khval_t)	 					\
 	extern kh_##name##_t *kh_init_##name(void);							\
 	extern void kh_destroy_##name(kh_##name##_t *h);					\
 	extern void kh_clear_##name(kh_##name##_t *h);						\
-	extern khint_t kh_get_##name(const kh_##name##_t *h, khkey_t key);	\
+	extern khint_t kh_get_##name(const kh_##name##_t *h, khkey_t key); 	\
 	extern int kh_resize_##name(kh_##name##_t *h, khint_t new_n_buckets); \
 	extern khint_t kh_put_##name(kh_##name##_t *h, khkey_t key, int *ret); \
 	extern void kh_del_##name(kh_##name##_t *h, khint_t x);
@@ -195,7 +195,7 @@ static const double __ac_HASH_UPPER = 0.77;
 			h->size = h->n_occupied = 0;								\
 		}																\
 	}																	\
-	SCOPE khint_t kh_get_##name(const kh_##name##_t *h, khkey_t key)	\
+	SCOPE khint_t kh_get_##name(const kh_##name##_t *h, khkey_t key) 	\
 	{																	\
 		if (h->n_buckets) {												\
 			khint_t k, i, last, mask, step = 0; \
@@ -214,7 +214,7 @@ static const double __ac_HASH_UPPER = 0.77;
 		khint32_t *new_flags = 0;										\
 		khint_t j = 1;													\
 		{																\
-			kroundup32(new_n_buckets);									\
+			kroundup32(new_n_buckets); 									\
 			if (new_n_buckets < 4) new_n_buckets = 4;					\
 			if (h->size >= (khint_t)(new_n_buckets * __ac_HASH_UPPER + 0.5)) j = 0;	/* requested size is too small */ \
 			else { /* hash table size to be changed (shrink or expand); rehash */ \
@@ -239,7 +239,7 @@ static const double __ac_HASH_UPPER = 0.77;
 					khkey_t key = h->keys[j];							\
 					khval_t val;										\
 					khint_t new_mask;									\
-					new_mask = new_n_buckets - 1;						\
+					new_mask = new_n_buckets - 1; 						\
 					if (kh_is_map) val = h->vals[j];					\
 					__ac_set_isdel_true(h->flags, j);					\
 					while (1) { /* kick-out process; sort of like in Cuckoo hashing */ \
@@ -322,12 +322,12 @@ static const double __ac_HASH_UPPER = 0.77;
 		}																\
 	}
 
-#define KHASH_DECLARE(name, khkey_t, khval_t)							\
-	__KHASH_TYPE(name, khkey_t, khval_t)								\
+#define KHASH_DECLARE(name, khkey_t, khval_t)		 					\
+	__KHASH_TYPE(name, khkey_t, khval_t) 								\
 	__KHASH_PROTOTYPES(name, khkey_t, khval_t)
 
 #define KHASH_INIT2(name, SCOPE, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
-	__KHASH_TYPE(name, khkey_t, khval_t)								\
+	__KHASH_TYPE(name, khkey_t, khval_t) 								\
 	__KHASH_IMPL(name, SCOPE, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal)
 
 #define KHASH_INIT(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
@@ -544,7 +544,7 @@ static kh_inline khint_t __ac_Wang_hash(khint_t key)
 		code;												\
 	} }
 
-/* More conenient interfaces */
+/* More convenient interfaces */
 
 /*! @function
   @abstract     Instantiate a hash set containing integer keys
@@ -562,7 +562,7 @@ static kh_inline khint_t __ac_Wang_hash(khint_t key)
 	KHASH_INIT(name, khint32_t, khval_t, 1, kh_int_hash_func, kh_int_hash_equal)
 
 /*! @function
-  @abstract     Instantiate a hash map containing 64-bit integer keys
+  @abstract     Instantiate a hash set containing 64-bit integer keys
   @param  name  Name of the hash table [symbol]
  */
 #define KHASH_SET_INIT_INT64(name)										\

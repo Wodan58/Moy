@@ -1,18 +1,11 @@
 /*
     module  : getch.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef GETCH_X
+#ifndef GETCH_C
 #define GETCH_C
 
-#ifdef NEW_RUNTIME
-void do_getch(void)
-{
-    TRACE;
-    do_push(getchar());
-}
-#else
 /**
 getch  :  ->  N
 Reads a character from input and puts it onto stack.
@@ -24,5 +17,4 @@ PRIVATE void do_getch(void)
 #endif
     PUSH(CHAR_, getchar());
 }
-#endif
 #endif

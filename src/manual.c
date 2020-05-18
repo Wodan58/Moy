@@ -1,9 +1,9 @@
 /*
     module  : manual.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef MANUAL_X
+#ifndef MANUAL_C
 #define MANUAL_C
 
 #define PLAIN (style == 0)
@@ -20,12 +20,6 @@
 	if (HTML) printf("</B><BR><BR>");			\
 	printf("\n\n"); }
 
-#ifdef NEW_RUNTIME
-void do_manual(void)
-{
-    TRACE;
-}
-#else
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 {
     char *name;
@@ -90,5 +84,4 @@ PRIVATE void do_manual(void)
 #endif
     make_manual(0);
 }
-#endif
 #endif

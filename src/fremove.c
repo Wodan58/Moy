@@ -1,19 +1,11 @@
 /*
     module  : fremove.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FREMOVE_X
+#ifndef FREMOVE_C
 #define FREMOVE_C
 
-#ifdef NEW_RUNTIME
-void do_fremove(void)
-{
-    TRACE;
-    stk[-2] = !remove((char *)stk[-1]);
-    (void)do_pop();
-}
-#else
 /**
 fremove  :  P  ->  B
 The file system object with pathname P is removed from the file system.
@@ -26,12 +18,8 @@ PRIVATE void do_fremove(void)
 #endif
     ONEPARAM("fremove");
     STRING("fremove");
-    if (OUTSIDE) {
-	stk->next->u.num = !remove(stk->u.str);
-	stk->next->op = BOOLEAN_;
-	POP(stk);
-    } else
-	UNARY(BOOLEAN_NEWNODE, !remove(stk->u.str));
+    stk->next->u.num = !remove(stk->u.str);
+    stk->next->op = BOOLEAN_;
+    POP(stk);
 }
-#endif
 #endif

@@ -1,17 +1,11 @@
 /*
     module  : __manual_list.c
-    version : 1.7
-    date    : 05/18/19
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef __MANUAL_LIST_X
+#ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
 
-#ifdef NEW_RUNTIME
-void do___manual_list(void)
-{
-    TRACE;
-}
-#else
 /**
 __manual_list  :  ->  L
 Pushes a list L of lists (one per operator) of three documentation strings.
@@ -33,5 +27,4 @@ PRIVATE void do___manual_list(void)
     }
     PUSH(LIST_, cur);
 }
-#endif
 #endif

@@ -1,8 +1,8 @@
 %{
 /*
     module  : parse.y
-    version : 1.24
-    date    : 05/12/19
+    version : 1.25
+    date    : 03/28/20
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -107,6 +107,7 @@ list : '[' opt_term ']' { $$ = $2; } ;
 
 set : '{' opt_set '}' { $$ = $2; } ;
 
-opt_set : opt_set char_or_int { $$ |= 1 << $2; } | /* empty */ { $$ = 0; } ;
+opt_set : opt_set char_or_int { $$ |= (long_t)1 << $2; }
+	| /* empty */ { $$ = 0; } ;
 
 char_or_int : CHAR_ | INTEGER_ ;

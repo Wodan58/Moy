@@ -1,35 +1,11 @@
 /*
     module  : tailrec.c
-    version : 1.15
-    date    : 07/15/18
+    version : 1.16
+    date    : 03/28/20
 */
-#ifndef TAILREC_X
+#ifndef TAILREC_C
 #define TAILREC_C
 
-#ifdef NEW_RUNTIME
-void tailrec(code_t *prog[])
-{
-tail:
-    execute(prog[0]);
-    if (do_pop())
-	execute(prog[1]);
-    else {
-	execute(prog[2]);
-	goto tail;
-    }
-}
-
-void do_tailrec(void)
-{
-    code_t *prog[3];
-
-    TRACE;
-    prog[2] = (code_t *)do_pop();
-    prog[1] = (code_t *)do_pop();
-    prog[0] = (code_t *)do_pop();
-    tailrec(prog);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_tailrec(void)
 {
@@ -51,17 +27,10 @@ int put_tailrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void tailrec_%d(void) {", ident);
-    if (new_version)
-	fprintf(outfp, "TRACE; for (;;) {");
-    else {
-	fprintf(outfp, "int num; Node *save; for (;;) {");
-	fprintf(outfp, "CONDITION; save = stk;");
-    }
+    fprintf(outfp, "int num; Node *save; for (;;) {");
+    fprintf(outfp, "save = stk;");
     compile(prog[0]);
-    if (new_version)
-	fprintf(outfp, "if (do_pop()) {");
-    else
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+    fprintf(outfp, "num = stk->u.num; stk = save; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "break; }");
     compile(prog[2]);
@@ -83,12 +52,10 @@ void tailrec(Node *prog[])
     Node *save;
 
 tailrec:
-    CONDITION;
     save = stk;
     exeterm(prog[0]);
     num = stk->u.num;
     stk = save;
-    RELEASE;
     if (num)
 	exeterm(prog[1]);
     else {
@@ -116,5 +83,4 @@ PRIVATE void do_tailrec(void)
     POP(stk);
     tailrec(prog);
 }
-#endif
 #endif

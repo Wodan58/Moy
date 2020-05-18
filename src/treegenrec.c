@@ -1,45 +1,18 @@
 /*
     module  : treegenrec.c
-    version : 1.11
-    date    : 07/15/18
+    version : 1.12
+    date    : 03/28/20
 */
-#ifndef TREEGENREC_X
+#ifndef TREEGENREC_C
 #define TREEGENREC_C
 
-#ifndef CONS_C
+#ifdef CONS_X
 #undef CONS_X
-#include "cons.c"
-#define CONS_X
+#undef CONS_C
 #endif
 
-#ifdef NEW_RUNTIME
-void treegenrec(void)
-{
-    code_t *code;
+#include "cons.c"
 
-    TRACE;
-    code = (code_t *)do_pop();
-    if (IS_LIST(stk[-1])) {
-	execute(code->next->list);
-	do_push((node_t)code);
-	code = joy_code();
-	code->fun = treegenrec;
-	do_push((node_t)code);
-	do_cons();
-	code = (code_t *)stk[-1];
-	execute(code->list->next->next);
-    } else
-	execute(code->list);
-}
-
-void do_treegenrec(void)
-{
-    TRACE;
-    do_cons();
-    do_cons();
-    treegenrec();
-}
-#else
 #ifndef OLD_RUNTIME
 int put_treegenrec(void)
 {
@@ -60,24 +33,13 @@ int put_treegenrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void treegenrec_%d(void) {", ident);
-    if (new_version) {
-	fprintf(outfp, "code_t *code; TRACE; code = (code_t *)do_pop();");
-	fprintf(outfp, "if (IS_LIST(stk[-1])) {");
-    } else {
-	fprintf(outfp, "Node *save = stk; POP(stk);");
-	fprintf(outfp, "if (stk->op == LIST_) {");
-    }
+    fprintf(outfp, "Node *save = stk; POP(stk);");
+    fprintf(outfp, "if (stk->op == LIST_) {");
     compile(prog[1]);
-    if (new_version) {
-	fprintf(outfp, "do_push((node_t)code);");
-	fprintf(outfp, "code = joy_code(); code->fun = treegenrec_%d;", ident);
-	fprintf(outfp, "do_push((node_t)code); do_cons();");
-    } else {
-	fprintf(outfp, "DUPLICATE(save);");
-	fprintf(outfp, "NULLARY(LIST_NEWNODE,");
-	fprintf(outfp, "ANON_FUNCT_NEWNODE(treegenrec_%d, 0));", ident);
-	fprintf(outfp, "do_cons();");
-    }
+    fprintf(outfp, "DUPLICATE(save);");
+    fprintf(outfp, "NULLARY(LIST_NEWNODE,");
+    fprintf(outfp, "ANON_FUNCT_NEWNODE(treegenrec_%d, 0));", ident);
+    fprintf(outfp, "do_cons();");
     compile(prog[2]);
     fprintf(outfp, "} else {");
     compile(prog[0]);
@@ -122,5 +84,4 @@ PRIVATE void do_treegenrec(void)
     do_cons();
     treegenrec();
 }
-#endif
 #endif

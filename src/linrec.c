@@ -1,36 +1,11 @@
 /*
     module  : linrec.c
-    version : 1.15
-    date    : 07/15/18
+    version : 1.16
+    date    : 03/28/20
 */
-#ifndef LINREC_X
+#ifndef LINREC_C
 #define LINREC_C
 
-#ifdef NEW_RUNTIME
-void linrec(code_t *prog[])
-{
-    execute(prog[0]);
-    if (do_pop())
-	execute(prog[1]);
-    else {
-	execute(prog[2]);
-	linrec(prog);
-	execute(prog[3]);
-    }
-}
-
-void do_linrec(void)
-{
-    code_t *prog[4];
-
-    TRACE;
-    prog[3] = (code_t *)do_pop();
-    prog[2] = (code_t *)do_pop();
-    prog[1] = (code_t *)do_pop();
-    prog[0] = (code_t *)do_pop();
-    linrec(prog);
-}
-#else
 #ifndef OLD_RUNTIME
 int put_linrec(void)
 {
@@ -54,15 +29,9 @@ int put_linrec(void)
     oldfp = outfp;
     outfp = nextfile();
     fprintf(outfp, "void linrec_%d(void) {", ident);
-    if (new_version)
-	fprintf(outfp, "TRACE;");
-    else
-	fprintf(outfp, "int num; Node *save; CONDITION; save = stk;");
+    fprintf(outfp, "int num; Node *save; save = stk;");
     compile(prog[0]);
-    if (new_version)
-	fprintf(outfp, "if (do_pop()) {");
-    else
-	fprintf(outfp, "num = stk->u.num; stk = save; RELEASE; if (num) {");
+    fprintf(outfp, "num = stk->u.num; stk = save; if (num) {");
     compile(prog[1]);
     fprintf(outfp, "} else {");
     compile(prog[2]);
@@ -85,12 +54,10 @@ void linrec(Node *prog[])
     int num;
     Node *save;
 
-    CONDITION;
     save = stk;
     exeterm(prog[0]);
     num = stk->u.num;
     stk = save;
-    RELEASE;
     if (num)
 	exeterm(prog[1]);
     else {
@@ -121,5 +88,4 @@ PRIVATE void do_linrec(void)
     POP(stk);
     linrec(prog);
 }
-#endif
 #endif

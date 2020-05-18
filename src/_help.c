@@ -1,17 +1,11 @@
 /*
     module  : _help.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef _HELP_X
+#ifndef _HELP_C
 #define _HELP_C
 
-#ifdef NEW_RUNTIME
-void do__help(void)
-{
-    TRACE;
-}
-#else
 /**
 _help  :  ->
 Lists all hidden symbols in library and then all hidden builtin symbols.
@@ -21,5 +15,4 @@ Lists all hidden symbols in library and then all hidden builtin symbols.
 #include "help.h"
 
 /* _help.c */
-#endif
 #endif

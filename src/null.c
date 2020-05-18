@@ -1,18 +1,11 @@
 /*
     module  : null.c
-    version : 1.10
-    date    : 04/20/19
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef NULL_X
+#ifndef NULL_C
 #define NULL_C
 
-#ifdef NEW_RUNTIME
-void do_null(void)
-{
-    TRACE;
-    stk[-1] = !stk[-1];
-}
-#else
 /**
 null  :  X  ->  B
 Tests for empty aggregate X or zero numeric.
@@ -53,11 +46,7 @@ PRIVATE void do_null(void)
 	BADDATA("null");
 	break;
     }
-    if (OUTSIDE) {
-	stk->u.num = num;
-	stk->op = BOOLEAN_;
-    } else
-	UNARY(BOOLEAN_NEWNODE, num);
+    stk->u.num = num;
+    stk->op = BOOLEAN_;
 }
-#endif
 #endif

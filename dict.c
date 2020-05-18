@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.10
-    date    : 07/06/19
+    version : 1.12
+    date    : 05/14/20
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +11,7 @@
 #include "joy.h"
 #include "symbol.h"
 #include "builtin.h"
-#include "vector.h"
+#include "kvec.h"
 #include "khash.h"
 #include "decl.h"
 
@@ -62,7 +62,7 @@ unsigned dict_flags(int index)
 {
     dict_t *pdic;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     return pdic->flags;
 }
 
@@ -70,7 +70,7 @@ void dict_setflags(int index, unsigned flags)
 {
     dict_t *pdic;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     pdic->flags = flags;
 }
 
@@ -78,7 +78,7 @@ char *dict_descr(int index)
 {
     dict_t *pdic;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     return pdic->name;
 }
 
@@ -86,7 +86,7 @@ char *dict_name(int index)
 {
     dict_t *pdic;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     return pdic->print && isalpha(*pdic->print) ? pdic->print : pdic->name;
 }
 
@@ -95,7 +95,7 @@ char *dict_nickname(int index)
     dict_t *pdic;
     char *name, *ptr;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     name = pdic->print ? pdic->print : pdic->name;
     if ((ptr = strchr(name, '.')) != 0)
 	name = ++ptr;
@@ -106,7 +106,7 @@ Node *dict_body(int index)
 {
     dict_t *pdic;
 
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     return pdic->body;
 }
 
@@ -115,14 +115,30 @@ int dict_size(void)
     return vec_size(dict);
 }
 
+/*
+ * translate function address to symbol name
+ */
 char *procname(proc_t proc)
 {
     int i;
 
-    for (i = 0; table[i].name; i++)
+    for (i = 0; table[i].proc; i++)
 	if (proc == table[i].proc)
-	    return table[i].name;
-    return "unknown";
+	    break;
+    return table[i].name;
+}
+
+/*
+ * translate symbol name to function address
+ */
+proc_t nameproc(char *name)
+{
+    int i;
+
+    for (i = 0; table[i].proc; i++)
+	if (!strcmp(name, table[i].name))
+	    break;
+    return table[i].proc;
 }
 
 /*
@@ -131,18 +147,18 @@ char *procname(proc_t proc)
 void init_dict(void)
 {
     int i, rv;
-    dict_t *pdic;
+    dict_t dic;
     khiter_t key;
 
     vec_init(dict);
     hash = kh_init(symtab);
     for (i = 0; table[i].name; i++) {
-	pdic = vec_push(dict);
-	pdic->name = table[i].name;
-	pdic->print = table[i].print;
-	pdic->flags = IS_ORIGINAL | IS_BUILTIN;
-	pdic->proc = table[i].proc;
-	key = kh_put(symtab, hash, pdic->name, &rv);
+	dic.name = table[i].name;
+	dic.print = table[i].print;
+	dic.flags = IS_ORIGINAL | IS_BUILTIN;
+	dic.proc = table[i].proc;
+	vec_push(dict, dic);
+	key = kh_put(symtab, hash, dic.name, &rv);
 	kh_value(hash, key) = i;
     }
 }
@@ -167,9 +183,9 @@ static int add_word_to_dictionary(char *ptr)
 {
     static int seq;
     int i, rv;
+    dict_t dic;
     khiter_t key;
     char str[MAXSTR];
-    dict_t dic, *pdic;
 
     initialise_entry(&dic);
     dic.name = ck_strdup(ptr);
@@ -177,10 +193,9 @@ static int add_word_to_dictionary(char *ptr)
 	sprintf(str, "%d", ++seq);
 	dic.print = ck_strdup(str);
     }
-    pdic = vec_push(dict);
-    *pdic = dic;
+    vec_push(dict, dic);
     i = vec_size(dict) - 1;
-    key = kh_put(symtab, hash, pdic->name, &rv);
+    key = kh_put(symtab, hash, dic.name, &rv);
     kh_value(hash, key) = i;
     return i;
 }
@@ -268,7 +283,7 @@ void enteratom(char *name, Node *cur)
     str = qualify(name);
     if ((index = find(name)) == -1)
 	index = lookup(str);
-    pdic = vec_index(dict, index);
+    pdic = &vec_at(dict, index);
     if (strcmp(pdic->name, str)) {
 	replace(pdic->name, str, index);
 	pdic->name = str;
@@ -293,7 +308,7 @@ void dump(void)
     }
     leng = vec_size(dict);
     for (i = 0; i < leng; i++) {
-	pdic = vec_index(dict, i);
+	pdic = &vec_at(dict, i);
 	if (pdic->flags & IS_BUILTIN)
 	    fprintf(fp, "%s\t%p\t%d\n", pdic->name, pdic->proc,
 		    (pdic->flags & IS_USED) ? 1 : 0);

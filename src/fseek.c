@@ -1,24 +1,11 @@
 /*
     module  : fseek.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FSEEK_X
+#ifndef FSEEK_C
 #define FSEEK_C
 
-#ifdef NEW_RUNTIME
-void do_fseek(void)
-{
-    long_t pos;
-    int whence;
-
-    TRACE;
-    whence = do_pop();
-    pos = do_pop();
-    whence = fseek((FILE *)stk[-1], pos, whence) != 0;
-    do_push(whence);
-}
-#else
 /**
 fseek  :  S P W  ->  S B
 Stream S is repositioned to position P relative to whence-point W,
@@ -43,5 +30,4 @@ PRIVATE void do_fseek(void)
     whence = fseek(stk->u.fil, pos, whence) != 0;
     PUSH(BOOLEAN_, whence);
 }
-#endif
 #endif

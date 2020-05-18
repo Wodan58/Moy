@@ -1,7 +1,7 @@
 /*
     module  : nary.h
-    version : 1.13
-    date    : 07/15/18
+    version : 1.14
+    date    : 03/28/20
 */
 #ifndef OLD_RUNTIME
 #define CAT(a, b)	a ## b
@@ -16,13 +16,10 @@ int PUT_PROC(PROCEDURE)
     prog = stk->u.lis;
     POP(stk);
     printstack(outfp);
-    if (!new_version) {
-	fprintf(outfp, "{ /* %s */", NAME);
-	fprintf(outfp, "Node temp, *top = %s; CONDITION;", TOPSTR);
-    }
+    fprintf(outfp, "{ /* %s */", NAME);
+    fprintf(outfp, "Node temp, *top = %s;", TOPSTR);
     compile(prog);
-    if (!new_version)
-	fprintf(outfp, "temp = *stk; RELEASE; stk = top; DUPLICATE(&temp); }");
+    fprintf(outfp, "temp = *stk; stk = top; DUPLICATE(&temp); }");
     return 1;
 }
 #endif
@@ -41,14 +38,12 @@ PRIVATE void PROCEDURE(void)
     prog = stk->u.lis;
     POP(stk);
     top = TOP;
-    CONDITION;
     exeterm(prog);
 #ifndef NCHECK
     if (!stk)
 	execerror("value to push", NAME);
 #endif
     temp = *stk;
-    RELEASE;
     stk = top;
     DUPLICATE(&temp);
 }

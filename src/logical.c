@@ -1,18 +1,11 @@
 /*
     module  : logical.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef LOGICAL_X
+#ifndef LOGICAL_C
 #define LOGICAL_C
 
-#ifdef NEW_RUNTIME
-void do_logical(void)
-{
-    TRACE;
-    stk[-1] = !stk[-1] || stk[-1] == 1;
-}
-#else
 /**
 logical  :  X  ->  B
 Tests whether X is a logical.
@@ -22,5 +15,4 @@ Tests whether X is a logical.
 #define REL		==
 #define TYP		BOOLEAN_
 #include "type.h"
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : setundeferror.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef SETUNDEFERROR_X
+#ifndef SETUNDEFERROR_C
 #define SETUNDEFERROR_C
 
-#ifdef NEW_RUNTIME
-void do_setundeferror(void)
-{
-    TRACE;
-    undeferror = do_pop();
-}
-#else
 /**
 setundeferror  :  I  ->
 Sets flag that controls behavior of undefined functions
@@ -25,5 +18,4 @@ PRIVATE void do_setundeferror(void)
     undeferror = stk->u.num;
     POP(stk);
 }
-#endif
 #endif

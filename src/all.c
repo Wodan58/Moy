@@ -1,30 +1,11 @@
 /*
     module  : all.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef ALL_X
+#ifndef ALL_C
 #define ALL_C
 
-#ifdef NEW_RUNTIME
-void do_all(void)
-{
-    int num = 1;
-    code_t *prog, *list;
-
-    TRACE;
-    prog = (code_t *)do_pop();
-    for (list = (code_t *)do_pop(); list; list = list->next) {
-	do_push(list->num);
-	execute(prog);
-	num = do_pop();
-	do_pop();
-	if (!num)
-	    break;
-    }
-    do_push(num);
-}
-#else
 /**
 all  :  A [B]  ->  X
 Applies test B to members of aggregate A, X = true if all pass.
@@ -34,5 +15,4 @@ Applies test B to members of aggregate A, X = true if all pass.
 #define INITIAL		1
 #include "someall.h"
 /* all.c */
-#endif
 #endif

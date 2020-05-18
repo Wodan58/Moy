@@ -1,9 +1,9 @@
 /*
     module  : greater.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef GREATER_X
+#ifndef GREATER_C
 #define GREATER_C
 
 /**

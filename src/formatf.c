@@ -1,38 +1,11 @@
 /*
     module  : formatf.c
-    version : 1.10
-    date    : 07/15/18
+    version : 1.11
+    date    : 03/28/20
 */
-#ifndef FORMATF_X
+#ifndef FORMATF_C
 #define FORMATF_C
 
-#ifdef NEW_RUNTIME
-void do_formatf(void)
-{
-    float dbl;
-    int width, prec, leng;
-    char format[7], *result;
-
-    TRACE;
-    prec = do_pop();
-    width = do_pop();
-    strcpy(format, "%*.*lg");
-    format[5] = do_pop();
-    memcpy(&dbl, &stk[-1], sizeof(float));
-#ifdef _MSC_VER
-    leng = INPLINEMAX;
-#else
-    leng = snprintf(0, 0, format, width, prec, (long double)dbl) + 1;
-#endif
-    result = ck_malloc_sec(leng + 1);
-#ifdef _MSC_VER
-    sprintf(result, format, width, prec, (long double)dbl);
-#else
-    snprintf(result, leng, format, width, prec, (long double)dbl);
-#endif
-    stk[-1] = result;
-}
-#else
 /**
 formatf  :  F C I J  ->  S
 S is the formatted version of F in mode C
@@ -79,11 +52,7 @@ PRIVATE void do_formatf(void)
 #else
     snprintf(result, leng, format, width, prec, (long double)stk->u.dbl);
 #endif
-    if (OUTSIDE) {
-	stk->u.str = result;
-	stk->op = STRING_;
-    } else
-	UNARY(STRING_NEWNODE, result);
+    stk->u.str = result;
+    stk->op = STRING_;
 }
-#endif
 #endif

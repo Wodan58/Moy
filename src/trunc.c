@@ -1,21 +1,11 @@
 /*
     module  : trunc.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef TRUNC_X
+#ifndef TRUNC_C
 #define TRUNC_C
 
-#ifdef NEW_RUNTIME
-void do_trunc(void)
-{
-    float dbl;
-
-    TRACE;
-    memcpy(&dbl, &stk[-1], sizeof(float));
-    stk[-1] = (int)dbl;
-}
-#else
 /**
 trunc  :  F  ->  I
 I is an integer equal to the float F truncated toward zero.
@@ -30,11 +20,7 @@ PRIVATE void do_trunc(void)
 #endif
     ONEPARAM("trunc");
     FLOAT("trunc");
-    if (OUTSIDE) {
-	stk->u.num = FLOATVAL;
-	stk->op = INTEGER_;
-    } else
-	UNARY(INTEGER_NEWNODE, (long_t) FLOATVAL);
+    stk->u.num = FLOATVAL;
+    stk->op = INTEGER_;
 }
-#endif
 #endif

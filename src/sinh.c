@@ -1,9 +1,9 @@
 /*
     module  : sinh.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef SINH_X
+#ifndef SINH_C
 #define SINH_C
 
 /**

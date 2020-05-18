@@ -1,21 +1,11 @@
 /*
     module  : fputchars.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef FPUTCHARS_X
+#ifndef FPUTCHARS_C
 #define FPUTCHARS_C
 
-#ifdef NEW_RUNTIME
-void do_fputchars(void)
-{
-    char *str;
-
-    TRACE;
-    str = (char *)do_pop();
-    fprintf((FILE *)stk[-1], "%s", str);
-}
-#else
 /**
 fputchars  :  S "abc.."  ->  S
 The string abc.. (no quotes) is written to the current position of stream S.
@@ -36,5 +26,4 @@ PRIVATE void do_fputchars(void)
     POP(stk);
     fprintf(stk->u.fil, "%s", str);
 }
-#endif
 #endif

@@ -1,17 +1,11 @@
 /*
     module  : helpdetail.c
-    version : 1.14
-    date    : 07/15/18
+    version : 1.15
+    date    : 03/28/20
 */
-#ifndef HELPDETAIL_X
+#ifndef HELPDETAIL_C
 #define HELPDETAIL_C
 
-#ifdef NEW_RUNTIME
-void do_helpdetail(void)
-{
-    TRACE;
-}
-#else
 #ifndef OLD_RUNTIME
 int search(char *name)
 {
@@ -65,5 +59,4 @@ PRIVATE void do_helpdetail(void)
     POP(stk);
 #endif
 }
-#endif
 #endif

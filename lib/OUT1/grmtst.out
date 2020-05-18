@@ -1,0 +1,150 @@
+["The" "cat" "sat" "on" "the" "mat"] 
+["The" "dog" "sat" "on" "the" "mat"] 
+["The" "cat" "sat" "on" "the" "lawn"] 
+["The" "dog" "sat" "on" "the" "lawn"] 
+["The" "tree"] 
+["The" "big" "tree"] 
+["The" "very" "big" "tree"] 
+"The" "big" "tree" 
+"The" "very" "big" "tree" 
+"The" "very" "very" "big" "tree" 
+The very big tree 
+The very big very big tree 
+Smith Peter "(Pete)" CS [20 22 18 16] 76 'B 
+Jones Robert "(BOB)" LG [12 19 13 14] 58 'D 
+0 0 0 
+1 0 0 
+0 1 0 
+1 1 0 
+0 0 1 
+1 0 1 
+0 1 1 
+1 1 1 
+x
+(x+x)
+((x+x)+x)
+(((x+x)+x)+x)
+((x+(x+x))+x)
+(x+(x+x))
+((x+x)+(x+x))
+(x+((x+x)+x))
+(x+(x+(x+x)))
+x 
+( x ) 
+( ( x ) ) 
+( ( ( x ) ) ) 
+( ( x * x ) ) 
+( ( x + x ) ) 
+( x * x ) 
+( ( x ) * x ) 
+( x * x * x ) 
+( x * ( x ) ) 
+( x + x ) 
+( ( x ) + x ) 
+( x * x + x ) 
+( x + x + x ) 
+( x + ( x ) ) 
+( x + x * x ) 
+x * x 
+( x ) * x 
+( ( x ) ) * x 
+( x * x ) * x 
+( x + x ) * x 
+x * x * x 
+( x ) * x * x 
+x * x * x * x 
+x * ( x ) * x 
+x * ( x ) 
+( x ) * ( x ) 
+x * x * ( x ) 
+x * ( ( x ) ) 
+x * ( x * x ) 
+x * ( x + x ) 
+x + x 
+( x ) + x 
+( ( x ) ) + x 
+( x * x ) + x 
+( x + x ) + x 
+x * x + x 
+( x ) * x + x 
+x * x * x + x 
+x * ( x ) + x 
+x + x + x 
+( x ) + x + x 
+x * x + x + x 
+x + x + x + x 
+x + ( x ) + x 
+x + x * x + x 
+x + ( x ) 
+( x ) + ( x ) 
+x * x + ( x ) 
+x + x + ( x ) 
+x + ( ( x ) ) 
+x + ( x * x ) 
+x + ( x + x ) 
+x + x * x 
+( x ) + x * x 
+x * x + x * x 
+x + x + x * x 
+x + ( x ) * x 
+x + x * x * x 
+x + x * ( x ) 
+[["The" "dog" "sat" "on" "the" "lawn"] ["The" "cat" "sat" "on" "the" "lawn"] ["The" "dog" "sat" "on" "the" "mat"] ["The" "cat" "sat" "on" "the" "mat"]]
+60
+31
+16
+x 
+( x ) 
+( ( x ) ) 
+( ( ( x ) ) ) 
+( ( x * x ) ) 
+( ( x + x ) ) 
+( x * x ) 
+( ( x ) * x ) 
+( x * x * x ) 
+( x * ( x ) ) 
+( x + x ) 
+( ( x ) + x ) 
+( x * x + x ) 
+( x + x + x ) 
+( x + ( x ) ) 
+( x + x * x ) 
+true
+true
+true
+true
+false
+true
+true 
+false
+false
+true
+false
+true
+false
+false
+true
+false
+6
+4
+3
+1 : NNpNANNpC 
+2 : NpNANNpC 
+3 : pNANNpC 
+4 : NNpC 
+5 : NpC 
+6 : pC 
+7 :  
+1 : NNpNABNpC 
+2 : NpNABNpC 
+3 : pNABNpC 
+4 : BNpC 
+1 : "and" "the" "cat" "sleeps" "." 
+2 : "." 
+1 : "and" "the" "dog" "is" "black" "." 
+2 : "." 
+1 : "und" "the" "dog" "is" "black" "." 
+1 : "and" "the" "duck" "is" "black" "." 
+1 : "and" "John" "is" "not" "rich" "." 
+2 : "." 
+1 : "." 

@@ -1,9 +1,9 @@
 /*
     module  : round.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef ROUND_X
+#ifndef ROUND_C
 #define ROUND_C
 
 PRIVATE double round2(double num)

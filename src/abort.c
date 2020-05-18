@@ -1,18 +1,11 @@
 /*
     module  : abort.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef ABORT_X
+#ifndef ABORT_C
 #define ABORT_C
 
-#ifdef NEW_RUNTIME
-void do_abort(void)
-{
-    TRACE;
-    exit(1);
-}
-#else
 /**
 abort  :  ->
 Aborts execution of current Joy program, returns to Joy main cycle.
@@ -24,5 +17,4 @@ PRIVATE void do_abort(void)
 #endif
     exit(1);
 }
-#endif
 #endif

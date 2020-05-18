@@ -1,34 +1,10 @@
 /*
     module  : identical.c
-    version : 1.2
-    date    : 05/27/19
+    version : 1.3
+    date    : 03/28/20
 */
-#ifndef IDENTICAL_X
+#ifndef IDENTICAL_C
 #define IDENTICAL_C
-
-#ifdef NEW_RUNTIME
-int identical_list(code_t *first, code_t *second)
-{
-    for (; first && second; first = first->next, second = second->next) {
-	if (IS_LIST(first->num) && IS_LIST(second->num)) {
-	    if (!identical_list(first->list, second->list))
-		return 0;
-	} else if (first->num != second->num)
-	    return 0;
-    }
-    return !first && !second;
-}
-
-void do_identical(void)
-{
-    TRACE;
-    if (IS_LIST(stk[-2]) && IS_LIST(stk[-1]))
-	stk[-2] = identical_list((code_t *)stk[-2], (code_t *)stk[-1]);
-    else
-	stk[-2] = stk[-2] == stk[-1];
-    (void)do_pop();
-}
-#else
 
 PRIVATE int identical_list(Node *first, Node *second);
 
@@ -66,12 +42,8 @@ PRIVATE void do_identical(void)
 	COMPILE;
 #endif
     TWOPARAMS("identical");
-    if (OUTSIDE) {
-	stk->next->u.num = identical(stk, stk->next);
-	stk->next->op = BOOLEAN_;
-	POP(stk);
-    } else
-	BINARY(BOOLEAN_NEWNODE, identical(stk, stk->next));
+    stk->next->u.num = identical(stk, stk->next);
+    stk->next->op = BOOLEAN_;
+    POP(stk);
 }
-#endif
 #endif

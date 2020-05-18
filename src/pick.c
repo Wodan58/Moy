@@ -1,18 +1,11 @@
 /*
     module  : pick.c
-    version : 1.5
-    date    : 07/15/18
+    version : 1.6
+    date    : 03/28/20
 */
-#ifndef PICK_X
+#ifndef PICK_C
 #define PICK_C
 
-#ifdef NEW_RUNTIME
-void do_pick(void)
-{
-    TRACE;
-    stk[-1] = stk[-2 - stk[-1]];
-}
-#else
 /**
 pick  :  X Y Z 2  ->  X Y Z X
 Pushes an extra copy of nth (e.g. 2) item X on top of the stack.
@@ -35,5 +28,4 @@ PRIVATE void do_pick(void)
 	;
     DUPLICATE(look);
 }
-#endif
 #endif

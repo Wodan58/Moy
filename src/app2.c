@@ -1,16 +1,17 @@
 /*
     module  : app2.c
-    version : 1.4
-    date    : 07/15/18
+    version : 1.5
+    date    : 03/28/20
 */
-#ifndef APP2_X
+#ifndef APP2_C
 #define APP2_C
 
-#ifndef UNARY2_C
+#ifdef UNARY2_X
 #undef UNARY2_X
-#include "unary2.c"
-#define UNARY2_X
+#undef UNARY2_C
 #endif
+
+#include "unary2.c"
 
 /**
 app2  :  X1 X2 [P]  ->  R1 R2

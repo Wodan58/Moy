@@ -1,9 +1,9 @@
 /*
     module  : ifinteger.c
-    version : 1.6
-    date    : 07/15/18
+    version : 1.7
+    date    : 03/28/20
 */
-#ifndef IFINTEGER_X
+#ifndef IFINTEGER_C
 #define IFINTEGER_C
 
 /**

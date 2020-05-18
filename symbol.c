@@ -1,7 +1,7 @@
 /*
     module  : symbol.c
-    version : 1.14
-    date    : 05/12/19
+    version : 1.15
+    date    : 03/28/20
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +11,8 @@
 #include "decl.h"
 
 static char *module;
-static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide, inside_pub;
+static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide,
+	   inside_pub;
 
 /*
  * initmod registers str as module name and sets definition to 1.

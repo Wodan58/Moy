@@ -1,7 +1,7 @@
 /*
     module  : unmktime.h
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
 PRIVATE void PROCEDURE(void)
 {
@@ -31,11 +31,8 @@ PRIVATE void PROCEDURE(void)
     cur = INTEGER_NEWNODE(t->tm_mday, cur);
     cur = INTEGER_NEWNODE(t->tm_mon + 1, cur);
     cur = INTEGER_NEWNODE(t->tm_year + 1900, cur);
-    if (OUTSIDE) {
-	stk->u.lis = cur;
-	stk->op = LIST_;
-    } else
-	UNARY(LIST_NEWNODE, cur);
+    stk->u.lis = cur;
+    stk->op = LIST_;
 }
 
 #undef PROCEDURE

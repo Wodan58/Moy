@@ -1,35 +1,20 @@
 /*
     module  : strftime.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef STRFTIME_X
+#ifndef STRFTIME_C
 #define STRFTIME_C
 
 PRIVATE void decode_time(struct tm *t);
 
-#ifndef MKTIME_C
+#ifdef MKTIME_X
 #undef MKTIME_X
-#include "mktime.c"
-#define MKTIME_X
+#undef MKTIME_C
 #endif
 
-#ifdef NEW_RUNTIME
-void do_strftime(void)
-{
-    struct tm t;
-    size_t length;
-    char *fmt, *result;
+#include "mktime.c"
 
-    TRACE;
-    fmt = (char *)do_pop();
-    decode_time(&t);
-    length = INPLINEMAX;
-    result = ck_malloc_sec(length);
-    strftime(result, length, fmt, &t);
-    stk[-1] = (node_t)result;
-}
-#else
 /**
 strftime  :  T S1  ->  S2
 Formats a list T in the format of localtime or gmtime
@@ -58,5 +43,4 @@ PRIVATE void do_strftime(void)
     strftime(result, length, fmt, &t);
     PUSH(STRING_, result);
 }
-#endif
 #endif

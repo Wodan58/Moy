@@ -1,24 +1,19 @@
 /*
     module  : __html_manual.c
-    version : 1.4
-    date    : 07/15/18
+    version : 1.5
+    date    : 03/28/20
 */
-#ifndef __HTML_MANUAL_X
+#ifndef __HTML_MANUAL_C
 #define __HTML_MANUAL_C
 
-#ifdef NEW_RUNTIME
-void do___html_manual(void)
-{
-    TRACE;
-}
-#else
 PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
 
-#ifndef MANUAL_C
+#ifdef MANUAL_X
 #undef MANUAL_X
-#include "manual.c"
-#define MANUAL_X
+#undef MANUAL_C
 #endif
+
+#include "manual.c"
 
 /**
 __html_manual  :  ->
@@ -31,5 +26,4 @@ PRIVATE void do___html_manual(void)
 #endif
     make_manual(1);
 }
-#endif
 #endif

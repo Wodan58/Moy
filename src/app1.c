@@ -1,18 +1,11 @@
 /*
     module  : app1.c
-    version : 1.9
-    date    : 05/30/19
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef APP1_X
+#ifndef APP1_C
 #define APP1_C
 
-#ifdef NEW_RUNTIME
-void do_app1(void)
-{
-    TRACE;
-    execute((code_t *)do_pop());
-}
-#else
 #ifndef OLD_RUNTIME
 int put_app1(void)
 {
@@ -46,5 +39,4 @@ PRIVATE void do_app1(void)
     POP(stk);
     exeterm(prog);
 }
-#endif
 #endif

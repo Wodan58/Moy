@@ -1,23 +1,11 @@
 /*
     module  : in1.c
-    version : 1.5
-    date    : 05/12/19
+    version : 1.6
+    date    : 03/28/20
 */
-#ifndef IN1_X
+#ifndef IN1_C
 #define IN1_C
 
-#ifdef NEW_RUNTIME
-void do_in1(void)
-{
-    code_t *cur;
-
-    TRACE;
-    for (cur = (code_t *)do_pop(); cur; cur = cur->next)
-	if (stk[-1] == cur->num)
-	    break;
-    stk[-1] = cur != 0;
-}
-#else
 /**
 in1  :  X A  ->  B
 Tests whether X is a member of aggregate A.
@@ -25,10 +13,13 @@ Tests whether X is a member of aggregate A.
 #define PROCEDURE	do_in1
 #ifdef CORRECT_INHAS_COMPARE
 #undef CORRECT_INHAS_COMPARE
+#define CORRECT_INHAS_COMPARE_X
 #endif
 #define NAME		"in1"
 #define AGGR		stk
 #define ELEM		stk->next
 #include "inhas.h"
+#ifdef CORRECT_INHAS_COMPARE_X
+#define CORRECT_INHAS_COMPARE
 #endif
 #endif

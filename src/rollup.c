@@ -1,23 +1,11 @@
 /*
     module  : rollup.c
-    version : 1.9
-    date    : 07/15/18
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef ROLLUP_X
+#ifndef ROLLUP_C
 #define ROLLUP_C
 
-#ifdef NEW_RUNTIME
-void do_rollup(void)
-{
-    node_t temp;
-
-    TRACE;
-    temp = stk[-1];
-    stk[-1] = stk[-2];
-    stk[-2] = stk[-3];
-    stk[-3] = temp;
-}
-#else
 /**
 rollup  :  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
@@ -36,18 +24,11 @@ PRIVATE void do_rollup(void)
     temp = *stk;
     node = stk->next;
     next = node->next;
-    if (OUTSIDE) {
-	stk->u = node->u;
-	stk->op = node->op;
-	node->u = next->u;
-	node->op = next->op;
-	next->u = temp.u;
-	next->op = temp.op;
-	return;
-    }
-    GTERNARY(temp.op, temp.u.ptr);
-    GNULLARY(next->op, next->u.ptr);
-    GNULLARY(node->op, node->u.ptr);
+    stk->u = node->u;
+    stk->op = node->op;
+    node->u = next->u;
+    node->op = next->op;
+    next->u = temp.u;
+    next->op = temp.op;
 }
-#endif
 #endif

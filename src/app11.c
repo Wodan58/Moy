@@ -1,32 +1,11 @@
 /*
     module  : app11.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef APP11_X
+#ifndef APP11_C
 #define APP11_C
 
-#ifndef APP1_C
-#undef APP1_X
-#include "app1.c"
-#define APP1_X
-#endif
-
-#ifdef NEW_RUNTIME
-
-#ifndef POPD_C
-#undef POPD_X
-#include "popd.c"
-#define POPD_X
-#endif
-
-void do_app11(void)
-{
-    TRACE;
-    do_app1();
-    do_popd();
-}
-#else
 /**
 app11  :  X Y [P]  ->  R
 Executes P, pushes result R on stack.
@@ -41,5 +20,4 @@ PRIVATE void do_app11(void)
     do_app1();
     stk->next = stk->next->next;
 }
-#endif
 #endif

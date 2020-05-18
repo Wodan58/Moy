@@ -1,22 +1,24 @@
 /*
     module  : decl.h
-    version : 1.1
-    date    : 07/02/18
+    version : 1.6
+    date    : 05/13/20
 */
-#define MAXNUM		20
-#define MAXSTR		128
-#define MAXLINE		1000
-#define MAX_INCLUDE	10
-#define MAXCOND		100
-#define MEMORYMAX	2000
 #define MAXOUT		10
-#define INPSTACKMAX	10
-#define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
+#define MAXNUM		20
+#define MAXFIL		20
 #define ALEN		22
-#define SYMTABMAX	700
-#define INPLINEMAX	1000
+#define MAXSTR		128
 #define LINEWIDTH	72
+#define SHELLESCAPE	'$'	/* configure */
+#define INPSTACKMAX	10
+#define INPLINEMAX	1000
+#define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
+#define MEMORYMAX	2000
 #define INIECHOFLAG	0
 #define INIAUTOPUT	1
 #define INITRACEGC	1
 #define INIUNDEFERR	0
+#define JLAP_INVALID	1
+#define JLAP_PACKAGE	2
+#define MIN_INT		-1000000
+#define MAX_INT		0x400000

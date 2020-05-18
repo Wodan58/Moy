@@ -1,3 +1,0 @@
-DEFINE	nl == 10 putch.
-
-40 [dup small] [] [pred dup pred] [+] binrec put_int nl.

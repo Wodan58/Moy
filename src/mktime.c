@@ -1,55 +1,11 @@
 /*
     module  : mktime.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef MKTIME_X
+#ifndef MKTIME_C
 #define MKTIME_C
 
-#ifdef NEW_RUNTIME
-void decode_time(struct tm *t)
-{
-    code_t *cur;
-
-    memset(t, 0, sizeof(struct tm));
-    if ((cur = (code_t *)stk[-1])
-	return;
-    t->tm_year = cur->num - 1900;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_mon = cur->num - 1;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_mday = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_hour = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_min = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_sec = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_isdst = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_yday = cur->num;
-    if ((cur = cur->next) == 0)
-	return;
-    t->tm_wday = cur->num;
-}
-
-void do_mktime(void)
-{
-    struct tm t;
-
-    TRACE;
-    decode_time(&t);
-    stk[-1] = mktime(&t);
-}
-#else
 PRIVATE void decode_time(struct tm *t)
 {
     Node *p;
@@ -115,5 +71,4 @@ PRIVATE void do_mktime(void)
     decode_time(&t);
     PUSH(INTEGER_, mktime(&t));
 }
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : putchars.c
-    version : 1.9
-    date    : 04/20/19
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef PUTCHARS_X
+#ifndef PUTCHARS_C
 #define PUTCHARS_C
 
-#ifdef NEW_RUNTIME
-void do_putchars(void)
-{
-    TRACE;
-    printf("%s", (char *)do_pop());
-}
-#else
 /**
 putchars  :  "abc.."  ->
 Writes abc.. (without quotes)
@@ -27,5 +20,4 @@ PRIVATE void do_putchars(void)
     printf("%s", stk->u.str);
     POP(stk);
 }
-#endif
 #endif

@@ -1,18 +1,11 @@
 /*
     module  : list.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef LIST_X
+#ifndef LIST_C
 #define LIST_C
 
-#ifdef NEW_RUNTIME
-void do_list(void)
-{
-    TRACE;
-    stk[-1] = IS_LIST(stk[-1]);
-}
-#else
 /**
 list  :  X  ->  B
 Tests whether X is a list.
@@ -22,5 +15,4 @@ Tests whether X is a list.
 #define REL		==
 #define TYP		LIST_
 #include "type.h"
-#endif
 #endif

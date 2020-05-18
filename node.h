@@ -1,7 +1,7 @@
 /*
     module  : node.h
-    version : 1.9
-    date    : 05/26/19
+    version : 1.10
+    date    : 03/28/20
 */
 #ifdef _MSC_VER
 extern Node *stk;
@@ -12,6 +12,7 @@ extern Node *stk;
 register Node *stk asm("bl");
 #endif
 
+void freemem(void);
 Node *newnode(Operator op, void *u, Node *next);
 Node *dblnode(double dbl, Node *next);
 Node *reverse(Node *cur);

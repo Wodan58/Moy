@@ -1,18 +1,11 @@
 /*
     module  : setecho.c
-    version : 1.8
-    date    : 07/15/18
+    version : 1.9
+    date    : 03/28/20
 */
-#ifndef SETECHO_X
+#ifndef SETECHO_C
 #define SETECHO_C
 
-#ifdef NEW_RUNTIME
-void do_setechoflag(void)
-{
-    TRACE;
-    setechoflag(do_pop());
-}
-#else
 /**
 setecho  :  I  ->
 Sets value of echo flag for listing.
@@ -25,5 +18,4 @@ PRIVATE void do_setecho(void)
     setechoflag(stk->u.num);
     POP(stk);
 }
-#endif
 #endif

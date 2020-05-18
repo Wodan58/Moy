@@ -1,23 +1,11 @@
 /*
     module  : at.c
-    version : 1.7
-    date    : 07/15/18
+    version : 1.8
+    date    : 03/28/20
 */
-#ifndef AT_X
+#ifndef AT_C
 #define AT_C
 
-#ifdef NEW_RUNTIME
-void do_at(void)
-{
-    int i;
-    code_t *cur;
-
-    TRACE;
-    for (i = do_pop(), cur = (code_t *)stk[-1]; i > 0; i--)
-	cur = cur->next;
-    stk[-1] = cur->num;
-}
-#else
 /**
 at  :  A I  ->  X
 X (= A[I]) is the member of A at position I.
@@ -27,5 +15,4 @@ X (= A[I]) is the member of A at position I.
 #define AGGR		stk->next
 #define	INDEX		stk
 #include "ofat.h"
-#endif
 #endif

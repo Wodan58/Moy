@@ -1,44 +1,17 @@
 /*
     module  : stop.c
-    version : 1.9
-    date    : 05/18/19
+    version : 1.10
+    date    : 03/28/20
 */
-#ifndef STOP_X
+#ifndef STOP_C
 #define STOP_C
 
-#ifdef NEW_RUNTIME
-
-#ifndef POP_C
-#undef POP_X
-#include "pop.c"
-#define POP_X
-#endif
-
-void do_stop(void)
-{
-    TRACE;
-#ifdef VECTOR
-    if (autoput && !vec_empty(theStack)) {
-#else
-    if (autoput && stk > memory) {
-#endif
-	print_node(do_pop());
-	putchar('\n');
-    }
-#ifdef VECTOR
-    if (vec_empty(theStack))
-#else
-    if (stk == memory)
-#endif
-	freemem();
-}
-#else
-
-#ifndef PUT_C
+#ifdef PUT_X
 #undef PUT_X
-#include "put.c"
-#define PUT_X
+#undef PUT_C
 #endif
+
+#include "put.c"
 
 PRIVATE void do_stop(void)
 {
@@ -62,5 +35,4 @@ PRIVATE void do_stop(void)
     if (!stk)
 	freemem();
 }
-#endif
 #endif
