@@ -1,0 +1,129 @@
+%INCLUDE ../lib/stdlib.joy
+
+true put_bool nl .
+false put_bool nl .
+setsize .
+maxint put_int nl .
+__symtabmax .
+__memorymax .
+__dump .
+conts .
+__symtabindex .
+rand put_int nl .
+echo .
+autoput .
+undeferror .
+clock .
+[] stack .
+[] unstack .
+[ stack ] first name .
+"PATH" getenv .
+"PAT" getenv .
+1 2 3 4 rolldownd . . . .
+1 2 3 4 rotated . . . .
+'A ord .
+65 chr put_char nl .
+1 abs .
+1.5 fabs .
+-1 abs .
+-1.5 fabs .
+1 sign.
+0.0 fsign .
+-0.0 fsign .
+1.5 fsign.
+-1 sign .
+-1.5 fsign .
+1 neg .
+1.5 fneg .
+-1 neg .
+-1.5 fneg .
+2 1 / .
+2 0 / .
+2 1 div . .
+"1.0" strtod .
+1 'd 10 10 format .
+1.5 'f 10 10 formatf .
+localtime "%c" strftime .
+gmtime mktime .
+1.5 acos .
+1.5 asin .
+1.5 atan .
+1.5 ceil .
+1.5 cosh .
+1.5 exp .
+1.5 floor .
+1.5 log .
+1.5 sinh .
+1.5 sqrt .
+1.5 tanh .
+1.5 2.5 atan2 .
+1.5 2.5 pow .
+1.5 frexp .
+1.5 modf .
+1 2.5 ldexp .
+[] unstack .
+1.5 2 ldexp .
+3.0 2 ldexp .
+1.5 trunc .
+1.5 2.5 fmax .
+1.5 2.5 fmin .
+1.5 2.5 != put_bool nl .
+1.5 2.5 fcompare .
+{} {0} compare .
+1.5 2.5 sametype put_bool nl .
+"test" first_str put_char nl .
+{ 1 2 3 } first_set .
+"test" rest_str .
+{ 1 2 3 } rest_set put_set nl .
+{ 1 2 3 } uncons_set put_set nl . .
+{ 1 2 3 } unswons_set . put_set nl .
+"test" unswons_str put_char nl . .
+true 1.5 2.5 choice .
+false 1.5 2.5 choice .
+{ 1 2 3 } 1 drop_set put_set nl .
+"test" 1 drop_str .
+[ 1 2 3 ] 1 drop .
+{ 1 2 3 } 1 take_set put_set nl .
+"test" 1 take_str .
+[ 1 2 3 ] 1 take .
+{ 1 2 3 } { 4 5 6 } concat_set put_set nl .
+1.5 null put_bool nl .
+stdin null put_bool nl .
+{ 0 } null put_bool nl .
+"test" not put_bool nl .
+[ 1 2 3 ] not put_bool nl .
+1.5 not put_bool nl .
+stdin not put_bool nl .
+{ 1 2 3 } size_set .
+"test" size_str .
+{ 1 2 3 } small_set put_bool nl .
+'A char put_bool nl .
+true logical put_bool nl .
+{ 1 2 3 } set put_bool nl .
+stdin file put_bool nl .
+[ nothing ] first user put_bool nl .
+"date" system .
+help .
+_help .
+1 2 3 [ + ] binary .
+1 2 3 [ + ] ternary .
+1 2 3 [ + ] app1 .
+1 2 3 [ + ] app11 .
+1 2 3 4 [ over + ] unary3 . . .
+1 2 3 4 5 [ over + ] unary4 . . . .
+1 2 3 4 5 [ over + ] app12 .
+[] unstack .
+"test" [ 1 + ] map_str .
+{ 1 2 3 } [ 1 + ] map_set put_set nl .
+0 { 1 2 3 } [ + ] step_set .
+1 [ "integer\n" putchars ] [ "no\n" putchars ] ifinteger .
+'A [ "char\n" putchars ] [ "no\n" putchars ] ifchar put_char nl .
+true [ "logical\n" putchars ] [ "no\n" putchars ] iflogical put_bool nl .
+"test" [ "string\n" putchars ] [ "no\n" putchars ] ifstring .
+{ 1 2 3 } [ "set\n" putchars ] [ "no\n" putchars ] ifset put_set nl .
+1.5 [ "float\n" putchars ] [ "no\n" putchars ] iffloat .
+stdin [ "file\n" putchars ] [ "no\n" putchars ] iffile .
+{ 1 2 3 } [ 2 < ] filter_set put_set nl .
+"test" [ 't < ] filter_str .
+{ 1 2 3 } [ 2 < ] split_set put_set nl put_set nl .
+[ 1 2 3 ] [ 2 < ] all put_bool nl .

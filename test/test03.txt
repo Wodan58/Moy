@@ -1,0 +1,42 @@
+false 
+false 
+one
+two
+other
+3 
+3 
+5 1 
+0 
+-1 
+6 
+5 
+2  512 
+14 
+9 
+5 
+14 
+15 
+10 
+6 
+3 
+15 
+9 
+3 
+9 
+2 
+2 
+5 
+8 
+false
+1 
+true
+2 
+false
+1 
+true
+1 
+[9 8 7 6 5 4 3 2 1] 
+"987654321" 
+one true 
+other false 
+other false 

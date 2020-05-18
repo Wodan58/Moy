@@ -1,0 +1,4 @@
+(* interp.c *)
+"PAD" getenv .
+0.0 sign .
+{1 2 3} {1 2 3} equal .
