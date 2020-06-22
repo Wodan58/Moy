@@ -1,4 +1,4 @@
-regres: fib gcd test flatjoy jp-reprodtst jp-nestrec laztst jp-church grmtst mtrtst reptst tut symtst plgtst jp-joytst modtst tutinp lsptst
+regres: fib gcd test flatjoy jp-reprodtst jp-nestrec laztst jp-church grmtst mtrtst reptst tutorial symtst plgtst jp-joytst modtst tutinp lsptst
 
 fib:
 	../joy $@.joy 2>&1 | diff -w - OUT/$@.out
@@ -33,7 +33,7 @@ mtrtst:
 reptst:
 	../joy $@.joy 2>&1 | diff -w - OUT/$@.out
 
-tut:
+tutorial:
 	../joy $@.joy 2>&1 | diff -w - OUT/$@.out
 
 symtst:

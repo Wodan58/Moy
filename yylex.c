@@ -1,15 +1,9 @@
 /*
     module  : yylex.c
-    version : 1.7
-    date    : 03/28/20
+    version : 1.9
+    date    : 06/21/20
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
-#include "decl.h"
+#include "runtime.h"
 
 static FILE *yyin;
 static char line[INPLINEMAX], unget[2];
@@ -30,6 +24,8 @@ void inilinebuffer(FILE *fp, char *str)
 
 void redirect(FILE *fp)
 {
+    if (infile[ilevel].fp == fp)
+	return;
     infile[ilevel].lineno = lineno;
     if (ilevel + 1 == INPSTACKMAX)
 	execerror("fewer include files", "redirect");

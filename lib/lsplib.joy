@@ -164,7 +164,7 @@ lib0 ==
 
 l-prompt == "L: ";
 
-joy0 == [+ and or > and map prime filter include];		(* R.W. *)
+joy0 == [/ - * + and or > map prime filter include pred];	(* R.W. *)
 
 lisp ==
 	[ "\nLisp interpreter\n"

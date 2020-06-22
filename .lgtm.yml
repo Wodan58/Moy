@@ -6,7 +6,7 @@ extraction:
       - mv gc-8.0.4 bdwgc
     configure:
       command:
-        - cmake -G "Unix Makefiles" .
+        - cmake .
     index:
       build_command:
-        - cmake --build . --config Release
+        - cmake --build .

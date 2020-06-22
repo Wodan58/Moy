@@ -29,3 +29,12 @@ exe1(tutorial)
 exe1(symtst)
 exe1(plgtst)
 exe1(lsptst)
+
+add_custom_target(test00.txt ALL
+		  DEPENDS joy fib1 gcd1 test1 jp-joytst1 flatjoy1 jp-reprodtst1
+			  modtst1 jp-nestrec1 laztst1 tutinp1 jp-church1
+			  grmtst1 mtrtst1 reptst1 tutorial1 symtst1 plgtst1
+			  lsptst1
+		  COMMAND make -f regres.mak
+		  COMMAND make -f regres1.mak
+		  COMMAND touch test00.txt)

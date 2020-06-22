@@ -52,4 +52,4 @@ plgtst:
 	./$@1 | diff -w - OUT1/$@.out
 
 lsptst:
-	./$@1 $@.inp | diff -w - OUT1/$@.out
+	-./$@1 $@.inp | diff -w - OUT1/$@.out

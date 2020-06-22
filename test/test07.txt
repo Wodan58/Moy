@@ -1,6 +1,0 @@
-JOY  -  compiled at 11:39:21 on May 13 2020 (BDW)
-Copyright 2001 by Manfred von Thun
-10 
-file:0x56022b863c30 
-file:0x56022b864e70 
-'1 

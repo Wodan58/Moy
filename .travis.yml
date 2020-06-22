@@ -2,6 +2,9 @@ language: c
 compiler: gcc
 
 install:
+  - wget "https://www.hboehm.info/gc/gc_source/gc-8.0.4.tar.gz"
+  - tar xf gc-8.0.4.tar.gz
+  - mv gc-8.0.4 bdwgc
   - git clone https://github.com/linux-test-project/lcov.git
   - cd lcov; sudo make install; cd ..
   - gem install coveralls-lcov
@@ -12,9 +15,6 @@ before_script:
   - lcov --directory . --zerocounters
 
 script:
-  - wget "https://www.hboehm.info/gc/gc_source/gc-8.0.4.tar.gz"
-  - tar xf gc-8.0.4.tar.gz
-  - mv gc-8.0.4 bdwgc
   - cmake .
   - cmake --build .
 

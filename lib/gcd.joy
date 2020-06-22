@@ -1,4 +1,4 @@
-#!../moy
+#!../joy
 %INCLUDE usrlib.joy
 
 argv rest [10 strtol] map uncons uncons pop	# get two params

@@ -21,9 +21,9 @@ build_script:
   - curl -O "https://www.hboehm.info/gc/gc_source/gc-8.0.4.tar.gz"
   - tar xf gc-8.0.4.tar.gz
   - mv gc-8.0.4 bdwgc
-  - cmake -G "NMake Makefiles" .
-  - cmake --build . --config Release
+  - cmake .
+  - cmake --build .
 
 artifacts:
-  - path: moy.exe
-    name: Moy
+  - path: joy.exe
+    name: Joy
