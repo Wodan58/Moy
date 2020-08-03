@@ -1,37 +1,37 @@
 /*
     module  : yylex.c
-    version : 1.9
-    date    : 06/21/20
+    version : 1.10
+    date    : 07/31/20
 */
 #include "runtime.h"
 
 static FILE *yyin;
 static char line[INPLINEMAX], unget[2];
-static int moy_code, moy_echo, lineno, ilevel;
+static int moy_echo, ilevel, linenum, linepos;
 
 static struct {
     FILE *fp;
     char *name;
-    int lineno;
+    int linenum;
 } infile[INPSTACKMAX];
 
 void inilinebuffer(FILE *fp, char *str)
 {
     infile[0].fp = yyin = fp;
     infile[0].name = str;
-    infile[0].lineno = 0;
+    infile[0].linenum = 0;
 }
 
 void redirect(FILE *fp)
 {
     if (infile[ilevel].fp == fp)
 	return;
-    infile[ilevel].lineno = lineno;
+    infile[ilevel].linenum = linenum;
     if (ilevel + 1 == INPSTACKMAX)
 	execerror("fewer include files", "redirect");
     infile[++ilevel].fp = yyin = fp;
     infile[ilevel].name = 0;
-    infile[ilevel].lineno = lineno = 0;
+    infile[ilevel].linenum = linenum = 0;
 }
 
 void include(char *filnam)
@@ -51,16 +51,16 @@ int yywrap(void)
     if (!ilevel)
 	exit(0);
     yyin = infile[--ilevel].fp;
-    lineno = infile[ilevel].lineno;
+    linenum = infile[ilevel].linenum;
     return 0;
 }
 
 static void putline(void)
 {
     if (moy_echo > 2)
-	fprintf(stderr, "%4d", lineno);
+	fprintf(stderr, "%4d", linenum);
     if (moy_echo > 1)
-	fprintf(stderr, "\t");
+	fputc('\t', stderr);
     fprintf(stderr, "%s", line);
 }
 
@@ -83,7 +83,6 @@ static int restofline(void)
 
 static int getch(void)
 {
-    static int linepos;
     int ch;
 
     if (unget[1]) {
@@ -102,7 +101,7 @@ static int getch(void)
     if (!line[linepos]) {
 	while (!fgets(line, INPLINEMAX, yyin))
 	    yywrap();
-	lineno++;
+	linenum++;
 	linepos = 0;
 	if (moy_echo)
 	    putline();
@@ -119,7 +118,7 @@ static void ungetch(int ch)
 
 static int specialchar(void)
 {
-    int ch;
+    int ch, num;
 
     if (strchr("\"'\\btnvfr", ch = getch()))
 	switch (ch) {
@@ -138,11 +137,19 @@ static int specialchar(void)
 	default:
 	    return ch;
 	}
-    ch = 10 * (ch - '0');
-    ch += getch() - '0';
-    ch *= 10;
-    ch += getch() - '0';
-    return ch;
+    if (!isdigit(ch))
+	return ch;
+    num = 10 * (ch - '0');
+    ch = getch();
+    if (!isdigit(ch))
+	yyerror("digit expected");
+    num += ch - '0';
+    num *= 10;
+    ch = getch();
+    if (!isdigit(ch))
+	yyerror("digit expected");
+    num += ch - '0';
+    return num;
 }
 
 static int read_char(void)
@@ -385,8 +392,7 @@ start:
 
 int yylex(void)
 {
-    moy_code = getsym();
-    return moy_code;
+    return getsym();
 }
 
 int getechoflag(void)
@@ -401,14 +407,15 @@ void setechoflag(int flag)
 
 int yyerror(char *str)
 {
-    Node node;
+    int i, pos;
 
-    node.u = yylval;
-    node.op = moy_code;
-    fprintf(stderr, "%s in file %s line %d near ", str, infile[ilevel].name,
-	    lineno);
-    writefactor(&node, stderr);
-    fputc('\n', stderr);
+    fprintf(stderr, "\nIn file %s line %d:\n", infile[ilevel].name, linenum);
+    putline();
+    if (moy_echo > 1)
+	fputc('\t', stderr);
+    for (i = 0, pos = linepos - 1; i < pos; i++)
+	fputc(' ', stderr);
+    fprintf(stderr, "^\n\t%s\n\n", str);
     execerror(0, 0);
     return 0;
 }
