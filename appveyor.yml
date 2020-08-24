@@ -7,10 +7,6 @@ environment:
   BDWGC_ARCHIVE: gc-%BDWGC_VERSION%.tar.gz
   WINFLEXBISON_ARCHIVE: win_flex_bison-latest.zip
 
-cache:
-  - %BDWGC_ARCHIVE%
-  - %WINFLEXBISON_ARCHIVE%
-
 install:
   # install BDWGC and flex/bison
   - if not exist %BDWGC_ARCHIVE% appveyor DownloadFile "https://github.com/ivmai/bdwgc/releases/download/v%BDWGC_VERSION%/%BDWGC_ARCHIVE%"
