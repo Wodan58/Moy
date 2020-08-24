@@ -17,7 +17,7 @@ before_script:
   - lcov --directory . --zerocounters
 
 script:
-  - cmake .
+  - cmake -DRUN_TESTS:BOOL=ON .
   - cmake --build .
 
 after_success:

@@ -1,4 +1,4 @@
 (*
-    Fibonacci, only for benchmarking.
+    Multiline comment
 *)
 10 [dup small] [] [pred dup pred] [+] binrec.

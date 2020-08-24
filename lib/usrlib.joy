@@ -18,8 +18,8 @@ LIBRA
 HIDE
     returned == "\007\nReturned to Joy\n" putchars
 IN
-						(* unix:
     unix == true;
+						(* unix:
     control-eof == 'D;
     terminal == "/dev/tty";
     ls == "ls -la" system;
@@ -30,7 +30,7 @@ IN
 	returned;
     						etc *)
 
-						(* vms: *)
+						(* vms:
     vms == true;
     control-eof == 'Z;
     terminal == "tt:";
@@ -41,7 +41,7 @@ IN
 	control-eof putch  '\n putch
 	"@tt:" system
 	returned;
-						(* etc *)
+						etc *)
 
     edit ==
 	dup editor swap concat system
@@ -63,7 +63,7 @@ IN
 END.						(* end HIDE and LIBRA *)
 
 						(* demo:
-"library"   "*.joy"  find-in.
+# "library"   "*.joy"  find-in.
 						etc *)
 
 %PUT usrlib  is loaded

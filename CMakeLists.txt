@@ -1,24 +1,28 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.13
-#   date    : 05/13/20
+#   version : 1.14
+#   date    : 08/11/20
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
 set(CMAKE_BUILD_TYPE Release)
+option(RUN_TESTS "Run standard tests" OFF)
 find_package(BISON)
+find_package(FLEX)
 BISON_TARGET(MyParser parse.y parse.c)
 if(WIN32)
+FLEX_TARGET(MyScanner lexer.l lexer.c COMPILE_FLAGS --wincompat)
 add_definitions(-DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
 else()
+FLEX_TARGET(MyScanner lexer.l lexer.c)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
 endif()
 include_directories(. src bdwgc/include)
 add_subdirectory(bdwgc)
-add_executable(joy main.c ${BISON_MyParser_OUTPUTS} yylex.c compile.c
-               initsym.c interp.c optable.c outfile.c print.c symbol.c
-               utils.c dict.c memory.c node.c)
+add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
+	       joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
+	       symbol.c utils.c dict.c memory.c node.c scan.c)
 if(WIN32)
 target_link_libraries(joy gc-lib)
 else()
@@ -32,8 +36,7 @@ add_custom_target(always
 		  COMMAND sh prims.sh
 		  COMMAND sh trans.sh
 		 )
-if(WIN32)
-else()
+if(RUN_TESTS)
 add_subdirectory(lib)
 add_subdirectory(test)
 endif()

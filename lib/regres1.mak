@@ -10,46 +10,46 @@ test:
 	./$@1 | diff -w - OUT1/$@.out
 
 jp-joytst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 flatjoy:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 jp-reprodtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 modtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 jp-nestrec:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 laztst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 tutinp:
-	./$@1 $@.inp | diff -w - OUT1/$@.out
+	./$@1 $@.inp | diff -Bw - OUT1/$@.out
 
 jp-church:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 grmtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 mtrtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 reptst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 tutorial:
 	./$@1 | diff -w - OUT1/$@.out
 
 symtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 plgtst:
-	./$@1 | diff -w - OUT1/$@.out
+	./$@1 | diff -Bw - OUT1/$@.out
 
 lsptst:
-	-./$@1 $@.inp | diff -w - OUT1/$@.out
+	./$@1 $@.inp | diff -Bw - OUT1/$@.out

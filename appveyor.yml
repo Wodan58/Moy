@@ -2,14 +2,14 @@ version: 1.0.0.{build}
 
 image: Visual Studio 2017
 
-cache:
-  - gc-8.0.4.tar.gz
-  - win_flex_bison-latest.zip
-
 environment:
   BDWGC_VERSION: 8.0.4
   BDWGC_ARCHIVE: gc-%BDWGC_VERSION%.tar.gz
   WINFLEXBISON_ARCHIVE: win_flex_bison-latest.zip
+
+cache:
+  - %BDWGC_ARCHIVE%
+  - %WINFLEXBISON_ARCHIVE%
 
 install:
   # install BDWGC and flex/bison
@@ -28,7 +28,3 @@ build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
   - cmake .
   - cmake --build .
-
-artifacts:
-  - path: joy.exe
-    name: Joy

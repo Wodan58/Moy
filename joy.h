@@ -79,15 +79,24 @@ int yyparse(void);
 
 /* yylex.c */
 void inilinebuffer(FILE *fp, char *str);
-void redirect(FILE *fp);
-void include(char *filnam);
-int yywrap(void);
 int yylex(void);
 int getechoflag(void);
 void setechoflag(int flag);
 int yyerror(char *str);
+void new_buffer(void);
+int old_buffer(void);
 
 /* utils.c */
 void readfactor(int sym);
 void readterm(int sym);
+
+/* joy.c */
+int ChrVal(char *str);
+char *StrVal(char *str);
+char *DelSpace(char *str);
+
+/* scan.c */
+void redirect(FILE *fp);
+void include(char *filnam);
+int yywrap(void);
 #endif
