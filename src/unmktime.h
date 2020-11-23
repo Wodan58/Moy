@@ -1,13 +1,13 @@
 /*
     module  : unmktime.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 11/18/20
 */
 PRIVATE void PROCEDURE(void)
 {
     int wday;
     Node *cur;
-    struct tm *t;
+    struct tm t;
     time_t timval;
 
 #ifndef OLD_RUNTIME
@@ -19,18 +19,18 @@ PRIVATE void PROCEDURE(void)
     ONEPARAM(NAME);
     INTEGER(NAME);
     timval = stk->u.num;
-    t = FUNC(&timval);
-    if ((wday = t->tm_wday) == 0)
+    FUNC(&timval, &t);
+    if ((wday = t.tm_wday) == 0)
 	wday = 7;
     cur = INTEGER_NEWNODE(wday, 0);
-    cur = INTEGER_NEWNODE(t->tm_yday, cur);
-    cur = BOOLEAN_NEWNODE(t->tm_isdst, cur);
-    cur = INTEGER_NEWNODE(t->tm_sec, cur);
-    cur = INTEGER_NEWNODE(t->tm_min, cur);
-    cur = INTEGER_NEWNODE(t->tm_hour, cur);
-    cur = INTEGER_NEWNODE(t->tm_mday, cur);
-    cur = INTEGER_NEWNODE(t->tm_mon + 1, cur);
-    cur = INTEGER_NEWNODE(t->tm_year + 1900, cur);
+    cur = INTEGER_NEWNODE(t.tm_yday, cur);
+    cur = BOOLEAN_NEWNODE(t.tm_isdst, cur);
+    cur = INTEGER_NEWNODE(t.tm_sec, cur);
+    cur = INTEGER_NEWNODE(t.tm_min, cur);
+    cur = INTEGER_NEWNODE(t.tm_hour, cur);
+    cur = INTEGER_NEWNODE(t.tm_mday, cur);
+    cur = INTEGER_NEWNODE(t.tm_mon + 1, cur);
+    cur = INTEGER_NEWNODE(t.tm_year + 1900, cur);
     stk->u.lis = cur;
     stk->op = LIST_;
 }

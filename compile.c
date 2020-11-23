@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.41
-    date    : 03/28/20
+    version : 1.42
+    date    : 11/18/20
 */
 #include <stdio.h>
 #include <string.h>
@@ -88,16 +88,16 @@ static char *PrintString(char *str)
 
 static Node *copy(Node *node)
 {
-    Node *root = 0, **cur;
+    Node *my_root = 0, **cur;
 
-    for (cur = &root; node; node = node->next) {
+    for (cur = &my_root; node; node = node->next) {
 	if ((*cur = ck_malloc(sizeof(Node))) == 0)
 	    return 0;
 	**cur = *node;
 	cur = &(*cur)->next;
 	*cur = 0;
     }
-    return root;
+    return my_root;
 }
 
 static void printlist(Node *cur, FILE *fp);
