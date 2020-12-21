@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.42
-    date    : 11/18/20
+    version : 1.43
+    date    : 11/23/20
 */
 #include <stdio.h>
 #include <string.h>
@@ -200,8 +200,8 @@ static int FindNode(Node *node)
 static int PrintNode(FILE *fp)
 {
     Node *node;
+    int changed;
     NodeList *cur;
-    int changed, leng, index;
 
     for (changed = 0, cur = root; cur; cur = cur->next) {
 	if (cur->print)
