@@ -1,12 +1,12 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.16
+#   version : 1.17
 #   date    : 01/25/21
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
 set(CMAKE_BUILD_TYPE Release)
-option(RUN_TESTS "Run standard tests" ON)
+option(RUN_TESTS "Run standard tests" OFF)
 find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser parse.y parse.c)
