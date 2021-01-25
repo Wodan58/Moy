@@ -1,3 +1,8 @@
+#
+#   module  : CMakeLists.txt
+#   version : 1.1
+#   date    : 01/24/21
+#
 add_custom_target(test15.txt ALL
 		  DEPENDS joy
 		  COMMAND ../joy fib.joy >test15.txt)
@@ -61,8 +66,9 @@ add_custom_command(OUTPUT ${src}1.c
 		   DEPENDS joy ${src}.joy
 		   COMMAND joy -c ${src}.joy | clang-format >${src}1.c)
 add_executable(${src}1 ../main.c ${src}1.c ../initsym.c ../node.c ../memory.c
-               ../utils.c ../yylex.c ../print.c ../runtime.c)
-target_link_libraries(${src}1 gc-lib)
+               ../utils.c ../yylex.c ../print.c ../runtime.c ../srand.c
+	       ../rand.c)
+target_link_libraries(${src}1 "${BDWGC}" m)
 endmacro(exe1)
 
 exe1(fib)

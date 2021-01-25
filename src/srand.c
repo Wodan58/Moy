@@ -1,10 +1,12 @@
 /*
     module  : srand.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 01/24/21
 */
 #ifndef SRAND_C
 #define SRAND_C
+
+void my_srand(unsigned num);
 
 /**
 srand  :  I  ->
@@ -17,7 +19,7 @@ PRIVATE void do_srand(void)
 #endif
     ONEPARAM("srand");
     INTEGER("srand");
-    srand(stk->u.num);
+    my_srand(stk->u.num);
     POP(stk);
 }
 #endif

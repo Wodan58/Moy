@@ -1,11 +1,13 @@
 /*
     module  : outfile.c
-    version : 1.4
-    date    : 05/26/19
+    version : 1.5
+    date    : 01/24/21
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include "decl.h"
+
+FILE *my_tmpfile();
 
 static int avail[MAXOUT];
 static FILE *tmpfp[MAXOUT];
@@ -15,7 +17,7 @@ void initout(void)
     int i;
 
     for (i = 0; i < MAXOUT; i++) {
-	if ((tmpfp[i] = tmpfile()) == 0) {
+	if ((tmpfp[i] = my_tmpfile()) == 0) {
 	    fprintf(stderr, "error creating outfile\n");
 	    exit(1);
 	}
@@ -60,7 +62,7 @@ void printout(FILE *fp)
 	}
 	if (found) {
 	    fclose(tmpfp[i]);
-	    if ((tmpfp[i] = tmpfile()) == 0) {
+	    if ((tmpfp[i] = my_tmpfile()) == 0) {
 		fprintf(stderr, "error creating tmpfile\n");
 		exit(1);
 	    }

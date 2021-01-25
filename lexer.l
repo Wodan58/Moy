@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.21
-    date    : 08/17/20
+    version : 1.22
+    date    : 01/24/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -165,8 +165,8 @@ linecom		#.*
 <COMMENT>.	addline(yytext[0]);
 <COMMENT>\n	putline("\n", 1, WITHIN_COM);
 
-[\n]+.*\n	{ int i; putline(yytext, yyleng, OUT_OF_COM); for (i = 0;
-		  yytext[i] == '\n'; i++); yyless(i); }
+[\n]+.*\n	{ int i = 0; putline(yytext, yyleng, OUT_OF_COM);
+		  while (yytext[i] == '\n') i++; yyless(i); }
 LIBRA		|
 DEFINE		|
 IN		|

@@ -1,3 +1,8 @@
+#
+#   module  : regres.mak
+#   version : 1.8
+#   date    : 01/24/21
+#
 regres: fib gcd test flatjoy jp-reprodtst jp-nestrec laztst jp-church grmtst mtrtst reptst tutorial symtst plgtst jp-joytst modtst tutinp lsptst
 
 fib:

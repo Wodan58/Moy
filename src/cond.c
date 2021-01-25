@@ -1,7 +1,7 @@
 /*
     module  : cond.c
-    version : 1.17
-    date    : 11/18/20
+    version : 1.18
+    date    : 01/24/21
 */
 #ifndef COND_C
 #define COND_C
@@ -17,7 +17,7 @@ int put_cond(void)
     POP(stk);
     printstack(outfp);
     fprintf(outfp, "{ /* COND */");
-    fprintf(outfp, "int num = 0; Node *save; for (;;) {");
+    fprintf(outfp, "int num = 0; Node *save; do {");
     for (; cur->next; cur = cur->next) {
 	fprintf(outfp, "save = stk;");
 	list = cur->u.lis->u.lis;
@@ -27,7 +27,7 @@ int put_cond(void)
 	compile(cur->u.lis->next);
 	fprintf(outfp, "break; }");
     }
-    fprintf(outfp, "break; } if (!num) {");
+    fprintf(outfp, "break; } while (0); if (!num) {");
     compile(cur->u.lis);
     fprintf(outfp, "} }");
     return 1;

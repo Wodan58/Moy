@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.14
-    date    : 03/28/20
+    version : 1.15
+    date    : 01/24/21
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
@@ -28,6 +28,7 @@ int put_construct(void)
 	fprintf(outfp, "root = newnode(stk->op, stk->u.ptr, root);");
 	fprintf(outfp, "stk = 0;");
 	fprintf(outfp, "lst2stk(save[1]);");
+	fprintf(outfp, "if (!stk) break;");
     }
     fprintf(outfp, "stk = 0;");
     fprintf(outfp, "lst2stk(save[0]);");
@@ -67,6 +68,8 @@ PRIVATE void do_construct(void)
 	root = newnode(stk->op, stk->u.ptr, root);
 	stk = 0;
 	lst2stk(save[1]);
+	if (!stk)
+	    break;
     }
     stk = 0;
     lst2stk(save[0]);

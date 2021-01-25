@@ -1,10 +1,12 @@
 /*
     module  : rand.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 01/24/21
 */
 #ifndef RAND_C
 #define RAND_C
+
+int my_rand(void);
 
 /**
 rand  :  ->  I
@@ -15,6 +17,6 @@ PRIVATE void do_rand(void)
 #ifndef OLD_RUNTIME
     COMPILE;
 #endif
-    PUSH(INTEGER_, rand());
+    PUSH(INTEGER_, my_rand());
 }
 #endif

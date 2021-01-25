@@ -1,14 +1,15 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.14
-#   date    : 08/11/20
+#   version : 1.15
+#   date    : 01/24/21
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
 set(CMAKE_BUILD_TYPE Release)
-option(RUN_TESTS "Run standard tests" OFF)
+option(RUN_TESTS "Run standard tests" ON)
 find_package(BISON)
 find_package(FLEX)
+find_library(BDWGC gc)
 BISON_TARGET(MyParser parse.y parse.c)
 if(WIN32)
 FLEX_TARGET(MyScanner lexer.l lexer.c COMPILE_FLAGS --wincompat)
@@ -22,11 +23,12 @@ include_directories(. src bdwgc/include)
 add_subdirectory(bdwgc)
 add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
-	       symbol.c utils.c dict.c memory.c node.c scan.c)
+	       symbol.c utils.c dict.c memory.c node.c scan.c srand.c rand.c
+	       tmpfile.c)
 if(WIN32)
-target_link_libraries(joy gc-lib)
+target_link_libraries(joy "${BDWGC}")
 else()
-target_link_libraries(joy gc-lib m)
+target_link_libraries(joy "${BDWGC}" m)
 endif()
 add_dependencies(joy always)
 add_custom_target(always
