@@ -1,7 +1,7 @@
 /*
     module  : tmpfile.c
-    version : 1.1
-    date    : 01/24/21
+    version : 1.2
+    date    : 01/25/21
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@
 
 static int filenum;
 
-static void rmtmp(void)
+static void my_rmtmp(void)
 {
     int i, j = 0;
     char str[MAXNUM];
@@ -28,7 +28,7 @@ FILE *my_tmpfile(void)
     char str[MAXNUM];
 
     if (!filenum)
-	atexit(rmtmp);
+	atexit(my_rmtmp);
     sprintf(str, "t%d", ++filenum);
     return fopen(str, "w+");
 }
