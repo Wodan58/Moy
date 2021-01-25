@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.1
-#   date    : 01/24/21
+#   version : 1.2
+#   date    : 01/25/21
 #
 add_custom_target(test15.txt ALL
 		  DEPENDS joy
@@ -68,7 +68,7 @@ add_custom_command(OUTPUT ${src}1.c
 add_executable(${src}1 ../main.c ${src}1.c ../initsym.c ../node.c ../memory.c
                ../utils.c ../yylex.c ../print.c ../runtime.c ../srand.c
 	       ../rand.c)
-target_link_libraries(${src}1 "${BDWGC}" m)
+target_link_libraries(${src}1 gc-lib m)
 endmacro(exe1)
 
 exe1(fib)
