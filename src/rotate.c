@@ -1,7 +1,7 @@
 /*
     module  : rotate.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef ROTATE_C
 #define ROTATE_C
@@ -10,7 +10,7 @@
 rotate  :  X Y Z  ->  Z Y X
 Interchanges X and Z.
 */
-PRIVATE void do_rotate(void)
+PRIVATE void do_rotate(pEnv env)
 {
     Node temp, *node, *next;
 
@@ -21,11 +21,11 @@ PRIVATE void do_rotate(void)
 	COMPILE;
 #endif
     THREEPARAMS("rotate");
-    temp = *stk;
-    node = stk->next;
+    temp = *env->stk;
+    node = env->stk->next;
     next = node->next;
-    stk->u = next->u;
-    stk->op = next->op;
+    env->stk->u = next->u;
+    env->stk->op = next->op;
     next->u = temp.u;
     next->op = temp.op;
 }

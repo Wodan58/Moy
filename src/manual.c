@@ -1,7 +1,7 @@
 /*
     module  : manual.c
-    version : 1.11
-    date    : 01/24/21
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef MANUAL_C
 #define MANUAL_C
@@ -78,7 +78,7 @@ PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 manual  :  ->
 Writes this manual of all Joy primitives to output file.
 */
-PRIVATE void do_manual(void)
+PRIVATE void do_manual(pEnv env)
 {
 #ifndef OLD_RUNTIME
     COMPILE;

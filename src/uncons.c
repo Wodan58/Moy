@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.15
-    date    : 03/28/20
+    version : 1.16
+    date    : 03/15/21
 */
 #ifndef UNCONS_C
 #define UNCONS_C
@@ -10,7 +10,7 @@
 uncons  :  A  ->  F R
 F and R are the first and the rest of non-empty aggregate A.
 */
-PRIVATE void do_uncons(void)
+PRIVATE void do_uncons(pEnv env)
 {
     char *str;
     int i = 0;
@@ -18,36 +18,36 @@ PRIVATE void do_uncons(void)
     ulong_t set;
 
 #ifndef OLD_RUNTIME
-    if (compiling && stk && ((stk->op == LIST_ && stk->u.lis->op > USR_ &&
-	stk->u.lis->op <= SYMBOL_) || stk->op == STRING_ || stk->op == SET_))
+    if (compiling && env->stk && ((env->stk->op == LIST_ && env->stk->u.lis->op > USR_ &&
+	env->stk->u.lis->op <= SYMBOL_) || env->stk->op == STRING_ || env->stk->op == SET_))
 	;
     else
 	COMPILE;
 #endif
     ONEPARAM("uncons");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case LIST_:
-	CHECKEMPTYLIST(stk->u.lis, "uncons");
-	save = stk->u.lis;
-	stk->op = stk->u.lis->op;
-	stk->u = stk->u.lis->u;
-	PUSH(LIST_, save->next);
+	CHECKEMPTYLIST(env->stk->u.lis, "uncons");
+	save = env->stk->u.lis;
+	env->stk->op = env->stk->u.lis->op;
+	env->stk->u = env->stk->u.lis->u;
+	PUSH_PTR(LIST_, save->next);
 	break;
     case STRING_:
-	str = stk->u.str;
+	str = env->stk->u.str;
 	CHECKEMPTYSTRING(str, "uncons");
-	stk->u.num = *str;
-	stk->op = CHAR_;
-	PUSH(STRING_, ++str);
+	env->stk->u.num = *str;
+	env->stk->op = CHAR_;
+	PUSH_PTR(STRING_, GC_strdup(++str));
 	break;
     case SET_:
-	set = stk->u.set;
+	set = env->stk->u.set;
 	CHECKEMPTYSET(set, "uncons");
 	while (!(set & ((long_t)1 << i)))
 	    i++;
-	stk->u.num = i;
-	stk->op = INTEGER_;
-	PUSH(SET_, set & ~((long_t)1 << i));
+	env->stk->u.num = i;
+	env->stk->op = INTEGER_;
+	PUSH_NUM(SET_, set & ~((long_t)1 << i));
 	break;
     default:
 	BADAGGREGATE("uncons");

@@ -1,9 +1,9 @@
 /*
     module  : predsucc.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
@@ -13,7 +13,7 @@ PRIVATE void PROCEDURE(void)
 #endif
     ONEPARAM(NAME);
     NUMERICTYPE(NAME);
-    stk->u.num = stk->u.num OPER 1;
+    env->stk->u.num = env->stk->u.num OPER 1;
 }
 
 #undef PROCEDURE

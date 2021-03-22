@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.22
-    date    : 01/24/21
+    version : 1.23
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -195,6 +195,6 @@ maxint		{ yylval.num = MAXINT_; return INTEGER_; }
 ^\%INCLUDE.*	include(DelSpace(yytext + 8));
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 ^\%LISTING.*	moy_echo = atoi(yytext + 8);
-{symbol}	{ yylval.str = ck_strdup(yytext); return SYMBOL_; }
+{symbol}	{ yylval.str = GC_strdup(yytext); return SYMBOL_; }
 [;[\]{}]	|
 .		return yytext[0];

@@ -1,7 +1,7 @@
 /*
     module  : sign.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef SIGN_C
 #define SIGN_C
@@ -21,7 +21,7 @@ PRIVATE double fsgn(double f)
 	return 0.0;
 }
 
-PRIVATE void do_sign(void)
+PRIVATE void do_sign(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
@@ -31,9 +31,9 @@ PRIVATE void do_sign(void)
 #endif
     ONEPARAM("sign");
     FLOAT("sign");
-    if (stk->op == FLOAT_)
-	stk->u.dbl = fsgn(stk->u.dbl);
-    else if (stk->u.num < 0 || stk->u.num > 1)
-	stk->u.num = stk->u.num > 0 ? 1 : -1;
+    if (env->stk->op == FLOAT_)
+	env->stk->u.dbl = fsgn(env->stk->u.dbl);
+    else if (env->stk->u.num < 0 || env->stk->u.num > 1)
+	env->stk->u.num = env->stk->u.num > 0 ? 1 : -1;
 }
 #endif

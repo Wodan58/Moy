@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef FIRST_C
 #define FIRST_C
@@ -10,7 +10,7 @@
 first  :  A  ->  F
 F is the first member of the non-empty aggregate A.
 */
-PRIVATE void do_first(void)
+PRIVATE void do_first(pEnv env)
 {
     int i = 0;
 
@@ -21,23 +21,23 @@ PRIVATE void do_first(void)
 	COMPILE;
 #endif
     ONEPARAM("first");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case LIST_:
-	CHECKEMPTYLIST(stk->u.lis, "first");
-	stk->op = stk->u.lis->op;
-	stk->u = stk->u.lis->u;
+	CHECKEMPTYLIST(env->stk->u.lis, "first");
+	env->stk->op = env->stk->u.lis->op;
+	env->stk->u = env->stk->u.lis->u;
 	break;
     case STRING_:
-	CHECKEMPTYSTRING(stk->u.str, "first");
-	stk->u.num = *stk->u.str;
-	stk->op = CHAR_;
+	CHECKEMPTYSTRING(env->stk->u.str, "first");
+	env->stk->u.num = *env->stk->u.str;
+	env->stk->op = CHAR_;
 	break;
     case SET_:
-	CHECKEMPTYSET(stk->u.set, "first");
-	while (!(stk->u.set & ((long_t)1 << i)))
+	CHECKEMPTYSET(env->stk->u.set, "first");
+	while (!(env->stk->u.set & ((long_t)1 << i)))
 	    i++;
-	stk->u.num = i;
-	stk->op = INTEGER_;
+	env->stk->u.num = i;
+	env->stk->op = INTEGER_;
 	break;
     default:
 	BADAGGREGATE("first");

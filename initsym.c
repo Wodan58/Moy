@@ -1,7 +1,7 @@
 /*
     module  : initsym.c
-    version : 1.15
-    date    : 03/28/20
+    version : 1.16
+    date    : 03/22/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -36,7 +36,7 @@ static int is_interpreter(char *prog)
     return !strcmp(str, "JOY");
 }
 
-void initsym(int argc, char **argv)
+void initsym(pEnv env, int argc, char **argv)
 {
     FILE *fp;
     char *ptr;
@@ -75,6 +75,6 @@ void initsym(int argc, char **argv)
     }
     g_argc = argc - rv;
     g_argv = &argv[rv];
-    init_dict();
-    stk = 0;
+    init_dict(env);
+    env->stk = 0;
 }

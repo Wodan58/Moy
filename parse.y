@@ -2,9 +2,8 @@
 /*
     module  : parse.y
     version : 1.25
-    date    : 03/28/20
+    date    : 03/15/21
 */
-#include <stdio.h>
 #include <stdlib.h>
 #define PARSER
 #include "joy.h"
@@ -35,12 +34,14 @@
     real_t dbl;
     FILE *fil;
     struct Node *lis;
-    void (*proc)(void);
+    proc_t proc;
     void *ptr;
 };
 
 %{
 #include "symbol.h"
+
+extern YYSTYPE bucket;
 %}
 
 %%
@@ -50,7 +51,7 @@
 */
 cycle : cycle def_or_term END | /* empty */ ;
 
-def_or_term : compound_def | opt_term { execute($1); } ;
+def_or_term : compound_def | opt_term { execute(environment, $1); } ;
 
 /*
     A compound definition is an optional module, followed by an optional
@@ -78,7 +79,7 @@ seq_definition : seq_definition ';' opt_definition | opt_definition ;
 /*
     A definition is an atomic symbol and a term, separated by '==' .
 */
-opt_definition : SYMBOL_ JEQUAL opt_term { enteratom($1, $3); }
+opt_definition : SYMBOL_ JEQUAL opt_term { enteratom(environment, $1, $3); }
 	       | private public END { exitpriv(); }
 	       | module opt_private opt_public END { exitpriv(); exitmod(); }
 	       | /* empty */ ;
@@ -93,21 +94,20 @@ term : term factor { $2->next = $1; $$ = $2; } | factor ;
 /*
     A factor is a constant, or a list, or a set.
 */
-factor  : SYMBOL_ { $$ = newnode(USR_, (void *)(long_t)lookup($1), 0); }
-	| BOOLEAN_ { $$ = newnode(BOOLEAN_, (void *)$1, 0); }
-	| CHAR_ { $$ = newnode(CHAR_, (void *)$1, 0); }
-	| INTEGER_ { $$ = newnode(INTEGER_, (void *)$1, 0); }
-	| STRING_ { $$ = newnode(STRING_, $1, 0); }
+factor  : SYMBOL_ { $$ = USR_NEWNODE(lookup(environment, $1), 0); }
+	| BOOLEAN_ { $$ = BOOLEAN_NEWNODE($1, 0); }
+	| CHAR_ { $$ = CHAR_NEWNODE($1, 0); }
+	| INTEGER_ { $$ = INTEGER_NEWNODE($1, 0); }
+	| STRING_ { $$ = STRING_NEWNODE($1, 0); }
 	| FLOAT_ { $$ = dblnode($1, 0); }
-	| list { $$ = newnode(LIST_, $1, 0); }
-	| set { $$ = newnode(SET_, (void *)$1, 0); }
+	| list { $$ = LIST_NEWNODE($1, 0); }
+	| set { $$ = SET_NEWNODE($1, 0); }
 	;
 
 list : '[' opt_term ']' { $$ = $2; } ;
 
 set : '{' opt_set '}' { $$ = $2; } ;
 
-opt_set : opt_set char_or_int { $$ |= (long_t)1 << $2; }
-	| /* empty */ { $$ = 0; } ;
+opt_set : opt_set char_or_int { $$ |= 1 << $2; } | /* empty */ { $$ = 0; } ;
 
 char_or_int : CHAR_ | INTEGER_ ;

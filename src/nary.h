@@ -1,50 +1,50 @@
 /*
     module  : nary.h
-    version : 1.14
-    date    : 03/28/20
+    version : 1.15
+    date    : 03/15/21
 */
 #ifndef OLD_RUNTIME
 #define CAT(a, b)	a ## b
-#define PUT_PROC(a)	CAT(put_, a)()
+#define PUT_PROC(a)	CAT(put_, a)
 
-int PUT_PROC(PROCEDURE)
+int PUT_PROC(PROCEDURE)(pEnv env)
 {
     Node *prog;
 
     if (!LIST_1)
 	return 0;
-    prog = stk->u.lis;
-    POP(stk);
-    printstack(outfp);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    printstack(env, outfp);
     fprintf(outfp, "{ /* %s */", NAME);
     fprintf(outfp, "Node temp, *top = %s;", TOPSTR);
-    compile(prog);
-    fprintf(outfp, "temp = *stk; stk = top; DUPLICATE(&temp); }");
+    compile(env, prog);
+    fprintf(outfp, "temp = *env->stk; env->stk = top; DUPLICATE(&temp); }");
     return 1;
 }
 #endif
 
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     Node *prog, *top, temp;
 
 #ifndef OLD_RUNTIME
-    if (compiling && PUT_PROC(PROCEDURE))
+    if (compiling && PUT_PROC(PROCEDURE)(env))
 	return;
     COMPILE;
 #endif
     PARAMCOUNT(NAME);
     ONEQUOTE(NAME);
-    prog = stk->u.lis;
-    POP(stk);
+    prog = env->stk->u.lis;
+    POP(env->stk);
     top = TOP;
-    exeterm(prog);
+    exeterm(env, prog);
 #ifndef NCHECK
-    if (!stk)
+    if (!env->stk)
 	execerror("value to push", NAME);
 #endif
-    temp = *stk;
-    stk = top;
+    temp = *env->stk;
+    env->stk = top;
     DUPLICATE(&temp);
 }
 

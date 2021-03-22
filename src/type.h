@@ -1,9 +1,9 @@
 /*
     module  : type.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && VALID_1)
@@ -12,8 +12,8 @@ PRIVATE void PROCEDURE(void)
 	COMPILE;
 #endif
     ONEPARAM(NAME);
-    stk->u.num = stk->op REL TYP;
-    stk->op = BOOLEAN_;
+    env->stk->u.num = env->stk->op REL TYP;
+    env->stk->op = BOOLEAN_;
 }
 
 #undef PROCEDURE

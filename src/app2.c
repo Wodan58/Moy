@@ -1,7 +1,7 @@
 /*
     module  : app2.c
-    version : 1.5
-    date    : 03/28/20
+    version : 1.6
+    date    : 03/15/21
 */
 #ifndef APP2_C
 #define APP2_C
@@ -17,9 +17,9 @@
 app2  :  X1 X2 [P]  ->  R1 R2
 Obsolescent.  ==  unary2
 */
-PRIVATE void do_app2(void)
+PRIVATE void do_app2(pEnv env)
 {
-    do_unary2();
+    do_unary2(env);
 }
 /* app2.c */
 #endif

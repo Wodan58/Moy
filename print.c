@@ -1,7 +1,7 @@
 /*
     module  : print.c
-    version : 1.25
-    date    : 08/11/19
+    version : 1.26
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,7 +10,7 @@
 #include "joy.h"
 #include "symbol.h"
 
-void writefactor(Node *node, FILE *stm)
+void writefactor(pEnv env, Node *node, FILE *stm)
 {
     char *ptr;
     long_t set;
@@ -18,7 +18,7 @@ void writefactor(Node *node, FILE *stm)
 
     switch (node->op) {
     case USR_:
-	fprintf(stm, "%s", dict_descr(node->u.num));
+	fprintf(stm, "%s", dict_descr(env, node->u.num));
 	break;
     case ANON_FUNCT_:
 	if ((ptr = procname(node->u.proc)) != 0)
@@ -36,7 +36,7 @@ void writefactor(Node *node, FILE *stm)
 	    fprintf(stm, "'%c", (int)node->u.num);
 	break;
     case INTEGER_:
-	fprintf(stm, PRINT_NUM, node->u.num);
+	fprintf(stm, "%ld", (long)node->u.num);
 	break;
     case SET_:
 	fprintf(stm, "{");
@@ -60,7 +60,7 @@ void writefactor(Node *node, FILE *stm)
 	break;
     case LIST_:
 	fprintf(stm, "%s", "[");
-	writeterm(node->u.lis, stm);
+	writeterm(env, node->u.lis, stm);
 	fprintf(stm, "%s", "]");
 	break;
     case FLOAT_:
@@ -111,25 +111,25 @@ void writefactor(Node *node, FILE *stm)
     }
 }
 
-void writeterm(Node *code, FILE *stm)
+void writeterm(pEnv env, Node *code, FILE *stm)
 {
     while (code) {
-	writefactor(code, stm);
+	writefactor(env, code, stm);
 	if (code->next)
 	    putc(' ', stm);
 	code = code->next;
     }
 }
 
-void writestack(Node *code, FILE *stm)
+void writestack(pEnv env, Node *code, FILE *stm)
 {
     if (code) {
 	if (code == code->next)
 	    execerror("non-circular stack", "writestack");
 	else {
-	    writestack(code->next, stm);
+	    writestack(env, code->next, stm);
 	    putc(' ', stm);
 	}
-	writefactor(code, stm);
+	writefactor(env, code, stm);
     }
 }

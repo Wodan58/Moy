@@ -1,9 +1,9 @@
 /*
     module  : dipped.h
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     Node temp;
 
@@ -14,9 +14,9 @@ PRIVATE void PROCEDURE(void)
 	COMPILE;
 #endif
     PARAMCOUNT(NAME);
-    temp = *stk;
-    POP(stk);
-    ARGUMENT();
+    temp = *env->stk;
+    POP(env->stk);
+    ARGUMENT(env);
     DUPLICATE(&temp);
 }
 

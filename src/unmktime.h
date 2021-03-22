@@ -1,12 +1,12 @@
 /*
     module  : unmktime.h
-    version : 1.9
-    date    : 01/24/21
+    version : 1.10
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
-    int wday;
     Node *cur;
+    long_t wday;
     struct tm t;
     time_t timval;
 
@@ -18,7 +18,7 @@ PRIVATE void PROCEDURE(void)
 #endif
     ONEPARAM(NAME);
     INTEGER(NAME);
-    timval = stk->u.num;
+    timval = env->stk->u.num;
     FUNC(&timval, &t);
     if ((wday = t.tm_wday) == 0)
 	wday = 7;
@@ -31,8 +31,8 @@ PRIVATE void PROCEDURE(void)
     cur = INTEGER_NEWNODE(t.tm_mday, cur);
     cur = INTEGER_NEWNODE(t.tm_mon + 1, cur);
     cur = INTEGER_NEWNODE(t.tm_year + 1900, cur);
-    stk->u.lis = cur;
-    stk->op = LIST_;
+    env->stk->u.lis = cur;
+    env->stk->op = LIST_;
 }
 
 #undef PROCEDURE

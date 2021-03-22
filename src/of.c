@@ -1,7 +1,7 @@
 /*
     module  : of.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef OF_C
 #define OF_C
@@ -12,7 +12,7 @@ X (= A[I]) is the I-th member of aggregate A.
 */
 #define PROCEDURE	do_of
 #define NAME		"of"
-#define AGGR		stk
-#define	INDEX		stk->next
+#define AGGR		env->stk
+#define	INDEX		env->stk->next
 #include "ofat.h"
 #endif

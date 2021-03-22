@@ -1,9 +1,9 @@
 #
-#  module  : prims.sh
-#  version : 1.3
-#  date    : 03/28/20
+#   module  : prims.sh
+#   version : 1.3
+#   date    : 03/15/21
 #
-#  Generate builtin.c and builtin.h
+#   Generate builtin.c and builtin.h
 #
 echo checking builtin.c and builtin.h
 todo=0
@@ -27,5 +27,5 @@ if [ $todo -eq 1 ]
 then
   rm -f builtin.c builtin.h
   mv prims.tmp builtin.c
-  sed 's/.*\//void do_/;s/\..*/(void);/' <builtin.c >builtin.h
+  sed 's/.*\//void do_/;s/\..*/(pEnv env);/' <builtin.c >builtin.h
 fi

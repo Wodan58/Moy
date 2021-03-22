@@ -1,9 +1,9 @@
 /*
     module  : ofat.h
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     int i, j;
     Node *cur;
@@ -28,17 +28,17 @@ PRIVATE void PROCEDURE(void)
 		INDEXTOOLARGE(NAME);
 	    cur = cur->next;
 	}
-	stk->next->u = cur->u;
-	stk->next->op = cur->op;
-	POP(stk);
+	env->stk->next->u = cur->u;
+	env->stk->next->op = cur->op;
+	POP(env->stk);
 	break;
     case STRING_:
 	CHECKEMPTYSTRING(AGGR->u.str, NAME);
 	if (strlen(AGGR->u.str) < (size_t) INDEX->u.num)
 	    INDEXTOOLARGE(NAME);
-	stk->next->u.num = AGGR->u.str[INDEX->u.num];
-	stk->next->op = CHAR_;
-	POP(stk);
+	env->stk->next->u.num = AGGR->u.str[INDEX->u.num];
+	env->stk->next->op = CHAR_;
+	POP(env->stk);
 	break;
     case SET_:
 	j = INDEX->u.num;
@@ -46,9 +46,9 @@ PRIVATE void PROCEDURE(void)
 	for (i = 0; i < SETSIZE_; i++)
 	    if (AGGR->u.set & ((long_t)1 << i)) {
 		if (!j) {
-		    stk->next->u.num = i;
-		    stk->next->op = INTEGER_;
-		    POP(stk);
+		    env->stk->next->u.num = i;
+		    env->stk->next->op = INTEGER_;
+		    POP(env->stk);
 		    return;
 		}
 		j--;

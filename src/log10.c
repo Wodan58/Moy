@@ -1,7 +1,7 @@
 /*
     module  : log10.c
-    version : 1.7
-    date    : 03/28/20
+    version : 1.8
+    date    : 03/15/21
 */
 #ifndef LOG10_C
 #define LOG10_C

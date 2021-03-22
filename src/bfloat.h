@@ -1,9 +1,9 @@
 /*
     module  : bfloat.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1 && NUMERIC_2)
@@ -13,9 +13,9 @@ PRIVATE void PROCEDURE(void)
 #endif
     TWOPARAMS(NAME);
     FLOAT2(NAME);
-    stk->next->u.dbl = FUNC(FLOATVAL2, FLOATVAL);
-    stk->next->op = FLOAT_;
-    POP(stk);
+    env->stk->next->u.dbl = FUNC(FLOATVAL2, FLOATVAL);
+    env->stk->next->op = FLOAT_;
+    POP(env->stk);
 }
 
 #undef PROCEDURE

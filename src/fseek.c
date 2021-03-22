@@ -1,7 +1,7 @@
 /*
     module  : fseek.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FSEEK_C
 #define FSEEK_C
@@ -11,7 +11,7 @@ fseek  :  S P W  ->  S B
 Stream S is repositioned to position P relative to whence-point W,
 where W = 0, 1, 2 for beginning, current position, end respectively.
 */
-PRIVATE void do_fseek(void)
+PRIVATE void do_fseek(pEnv env)
 {
     long_t pos;
     int whence;
@@ -22,12 +22,12 @@ PRIVATE void do_fseek(void)
     THREEPARAMS("fseek");
     INTEGER("fseek");
     INTEGER2("fseek");
-    whence = stk->u.num;
-    POP(stk);
-    pos = stk->u.num;
-    POP(stk);
+    whence = env->stk->u.num;
+    POP(env->stk);
+    pos = env->stk->u.num;
+    POP(env->stk);
     FILE("fseek");
-    whence = fseek(stk->u.fil, pos, whence) != 0;
-    PUSH(BOOLEAN_, whence);
+    whence = fseek(env->stk->u.fil, pos, whence) != 0;
+    PUSH_NUM(BOOLEAN_, whence);
 }
 #endif

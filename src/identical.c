@@ -1,7 +1,7 @@
 /*
     module  : identical.c
-    version : 1.3
-    date    : 03/28/20
+    version : 1.4
+    date    : 03/15/21
 */
 #ifndef IDENTICAL_C
 #define IDENTICAL_C
@@ -33,7 +33,7 @@ PRIVATE int identical_list(Node *first, Node *second)
     return !first && !second;
 }
 
-PRIVATE void do_identical(void)
+PRIVATE void do_identical(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
@@ -42,8 +42,8 @@ PRIVATE void do_identical(void)
 	COMPILE;
 #endif
     TWOPARAMS("identical");
-    stk->next->u.num = identical(stk, stk->next);
-    stk->next->op = BOOLEAN_;
-    POP(stk);
+    env->stk->next->u.num = identical(env->stk, env->stk->next);
+    env->stk->next->op = BOOLEAN_;
+    POP(env->stk);
 }
 #endif

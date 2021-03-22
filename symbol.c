@@ -1,7 +1,7 @@
 /*
     module  : symbol.c
     version : 1.15
-    date    : 03/28/20
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -10,7 +10,7 @@
 #include "symbol.h"
 #include "decl.h"
 
-static char *module;
+static char module[ALEN];
 static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide,
 	   inside_pub;
 
@@ -19,7 +19,8 @@ static int hide_stack[DISPLAYMAX], hide_index, hide_count, inside_hide,
  */
 void initmod(char *str)
 {
-    module = str;
+    strncpy(module, str, ALEN);
+    module[ALEN - 1] = 0;
     definition = 1;
 }
 
@@ -28,8 +29,8 @@ void initmod(char *str)
  */
 void exitmod(void)
 {
-    if (module) {
-	module = 0;
+    if (*module) {
+	*module = 0;
 	definition = 0;
     }
 }
@@ -61,7 +62,7 @@ void exitpriv(void)
 {
     if (hide_index)
 	hide_index--;
-    if (!hide_index && !module && !inside_pub)
+    if (!hide_index && !*module && !inside_pub)
 	definition = 0;
 }
 
@@ -70,7 +71,7 @@ void exitpriv(void)
  */
 void initpub(void)
 {
-    if (!hide_index && !module) {
+    if (!hide_index && !*module) {
 	definition = 1;
 	inside_pub = 1;
     }
@@ -81,7 +82,7 @@ void initpub(void)
  */
 void exitpub(void)
 {
-    if (!hide_index && !module) {
+    if (!hide_index && !*module) {
 	definition = 0;
 	inside_pub = 0;
     }
@@ -115,14 +116,14 @@ char *iterate(char *name)
     if (index) {
 	sprintf(buf, "%d", hide_stack[index--]);
 	leng = strlen(buf) + strlen(ptr) + 2;
-	str = ck_malloc_sec(leng);
+	str = GC_malloc_atomic(leng);
 	sprintf(str, "%s.%s", buf, ptr);
 	return str;
     }
-    if (module && !done) {
+    if (*module && !done) {
 	done = 1;
 	leng = strlen(module) + strlen(ptr) + 2;
-	str = ck_malloc_sec(leng);
+	str = GC_malloc_atomic(leng);
 	sprintf(str, "%s.%s", module, ptr);
 	return str;
     }

@@ -1,9 +1,9 @@
 /*
     module  : consswons.h
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     char *str;
 
@@ -16,27 +16,27 @@ PRIVATE void PROCEDURE(void)
     TWOPARAMS(NAME);
     switch (AGGR->op) {
     case LIST_:
-	stk->next->u.lis = newnode(ELEM->op, ELEM->u.ptr, AGGR->u.lis);
-	stk->next->op = LIST_;
-	POP(stk);
+	env->stk->next->u.lis = newnode(ELEM->op, ELEM->u, AGGR->u.lis);
+	env->stk->next->op = LIST_;
+	POP(env->stk);
 	break;
     case STRING_:
 #ifndef NCHECK
 	if (ELEM->op != CHAR_)
 	    execerror("character", NAME);
 #endif
-	str = ck_malloc_sec(strlen(AGGR->u.str) + 2);
+	str = GC_malloc_atomic(strlen(AGGR->u.str) + 2);
 	str[0] = (char)ELEM->u.num;
 	strcpy(str + 1, AGGR->u.str);
-	stk->next->u.str = str;
-	stk->next->op = STRING_;
-	POP(stk);
+	env->stk->next->u.str = str;
+	env->stk->next->op = STRING_;
+	POP(env->stk);
 	break;
     case SET_:
 	CHECKSETMEMBER(ELEM, NAME);
-	stk->next->u.set = AGGR->u.set | ((long_t)1 << ELEM->u.num);
-	stk->next->op = SET_;
-	POP(stk);
+	env->stk->next->u.set = AGGR->u.set | ((long_t)1 << ELEM->u.num);
+	env->stk->next->op = SET_;
+	POP(env->stk);
 	break;
     default:
 	BADAGGREGATE(NAME);

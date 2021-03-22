@@ -1,7 +1,7 @@
 /*
     module  : or.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef OR_C
 #define OR_C

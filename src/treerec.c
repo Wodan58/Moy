@@ -1,7 +1,7 @@
 /*
     module  : treerec.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef TREEREC_C
 #define TREEREC_C
@@ -14,7 +14,7 @@
 #include "cons.c"
 
 #ifndef OLD_RUNTIME
-int put_treerec(void)
+int put_treerec(pEnv env)
 {
     static int ident;
     FILE *oldfp;
@@ -22,21 +22,21 @@ int put_treerec(void)
 
     if (!(LIST_1 && LIST_2))
 	return 0;
-    prog[1] = stk->u.lis;
-    prog[0] = stk->next->u.lis;
-    printstack(outfp);
-    fprintf(outfp, "do_cons();");
-    fprintf(declfp, "void treerec_%d(void);", ++ident);
-    fprintf(outfp, "treerec_%d();", ident);
+    prog[1] = env->stk->u.lis;
+    prog[0] = env->stk->next->u.lis;
+    printstack(env, outfp);
+    fprintf(outfp, "do_cons(env);");
+    fprintf(declfp, "void treerec_%d(pEnv env);", ++ident);
+    fprintf(outfp, "treerec_%d(env);", ident);
     oldfp = outfp;
     outfp = nextfile();
-    fprintf(outfp, "void treerec_%d(void) {", ident);
-    fprintf(outfp, "if (stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
+    fprintf(outfp, "void treerec_%d(pEnv env) {", ident);
+    fprintf(outfp, "if (env->stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
     fprintf(outfp, "ANON_FUNCT_NEWNODE(treerec_%d, 0));", ident);
-    fprintf(outfp, "do_cons();");
-    compile(prog[1]);
-    fprintf(outfp, "} else { POP(stk);");
-    compile(prog[0]);
+    fprintf(outfp, "do_cons(env);");
+    compile(env, prog[1]);
+    fprintf(outfp, "} else { POP(env->stk);");
+    compile(env, prog[0]);
     fprintf(outfp, "} }");
     closefile(outfp);
     outfp = oldfp;
@@ -48,31 +48,31 @@ int put_treerec(void)
 treerec  :  T [O] [C]  ->  ...
 T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
-void treerec(void)
+void treerec(pEnv env)
 {
     Node *save;
 
-    if (stk->next->op == LIST_) {
+    if (env->stk->next->op == LIST_) {
 	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treerec, 0));
-	do_cons();
-	exeterm(stk->u.lis->u.lis->next);
+	do_cons(env);
+	exeterm(env, env->stk->u.lis->u.lis->next);
     } else {
-	save = stk;
-	POP(stk);
-	exeterm(save->u.lis->u.lis);
+	save = env->stk;
+	POP(env->stk);
+	exeterm(env, save->u.lis->u.lis);
     }
 }
 
-PRIVATE void do_treerec(void)
+PRIVATE void do_treerec(pEnv env)
 {
 #ifndef OLD_RUNTIME
-    if (compiling && put_treerec())
+    if (compiling && put_treerec(env))
 	return;
     COMPILE;
 #endif
     THREEPARAMS("treerec");
     TWOQUOTES("treerec");
-    do_cons();
-    treerec();
+    do_cons(env);
+    treerec(env);
 }
 #endif

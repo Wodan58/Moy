@@ -1,7 +1,7 @@
 /*
     module  : formatf.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef FORMATF_C
 #define FORMATF_C
@@ -13,7 +13,7 @@ S is the formatted version of F in mode C
 'g or G = general with lower or upper case letters)
 with maximum width I and precision J.
 */
-PRIVATE void do_formatf(void)
+PRIVATE void do_formatf(pEnv env)
 {
     int width, prec, leng;
     char spec, format[7], *result;
@@ -27,32 +27,32 @@ PRIVATE void do_formatf(void)
     FOURPARAMS("formatf");
     INTEGER("formatf");
     INTEGER2("formatf");
-    prec = stk->u.num;
-    POP(stk);
-    width = stk->u.num;
-    POP(stk);
+    prec = env->stk->u.num;
+    POP(env->stk);
+    width = env->stk->u.num;
+    POP(env->stk);
     CHARACTER("formatf");
-    spec = stk->u.num;
-    POP(stk);
+    spec = env->stk->u.num;
+    POP(env->stk);
 #ifndef NCHECK
     if (!strchr("eEfgG", spec))
 	execerror("one of: e E f g G", "formatf");
 #endif
-    strcpy(format, "%*.*lg");
+    strcpy(format, "%*.*g");
     format[5] = spec;
     FLOAT("formatf");
 #ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
-    leng = snprintf(0, 0, format, width, prec, (long double)stk->u.dbl) + 1;
+    leng = snprintf(0, 0, format, width, prec, (double)env->stk->u.dbl) + 1;
 #endif
-    result = ck_malloc_sec(leng + 1);
+    result = GC_malloc_atomic(leng + 1);
 #ifdef _MSC_VER
-    sprintf(result, format, width, prec, (long double)stk->u.dbl);
+    sprintf(result, format, width, prec, (double)env->stk->u.dbl);
 #else
-    snprintf(result, leng, format, width, prec, (long double)stk->u.dbl);
+    snprintf(result, leng, format, width, prec, (double)env->stk->u.dbl);
 #endif
-    stk->u.str = result;
-    stk->op = STRING_;
+    env->stk->u.str = result;
+    env->stk->op = STRING_;
 }
 #endif

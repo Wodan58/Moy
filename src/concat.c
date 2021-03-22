@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.14
-    date    : 03/28/20
+    version : 1.15
+    date    : 03/15/21
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -10,7 +10,7 @@
 concat  :  S T  ->  U
 Sequence U is the concatenation of sequences S and T.
 */
-PRIVATE void do_concat(void)
+PRIVATE void do_concat(pEnv env)
 {
     char *str;
     unsigned i;
@@ -18,40 +18,40 @@ PRIVATE void do_concat(void)
 
 #ifndef OLD_RUNTIME
     if (compiling && VALID_2 && AGGREGATE_1 && AGGREGATE_2 &&
-	stk->op == stk->next->op)
+	env->stk->op == env->stk->next->op)
 	;
     else
 	COMPILE;
 #endif
     TWOPARAMS("concat");
     SAME2TYPES("concat");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case LIST_:
-	if (!stk->next->u.lis) {
-	    stk->next->u.lis = stk->u.lis;
-	    POP(stk);
+	if (!env->stk->next->u.lis) {
+	    env->stk->next->u.lis = env->stk->u.lis;
+	    POP(env->stk);
 	    return;
 	}
-	for (cur = stk->next->u.lis; cur; cur = cur->next)
+	for (cur = env->stk->next->u.lis; cur; cur = cur->next)
 	    if (!root)
-		last = root = newnode(cur->op, cur->u.ptr, 0);
+		last = root = newnode(cur->op, cur->u, 0);
 	    else
-		last = last->next = newnode(cur->op, cur->u.ptr, 0);
-	last->next = stk->u.lis;
-	stk->next->u.lis = root;
-	POP(stk);
+		last = last->next = newnode(cur->op, cur->u, 0);
+	last->next = env->stk->u.lis;
+	env->stk->next->u.lis = root;
+	POP(env->stk);
 	break;
     case STRING_:
-	i = strlen(stk->next->u.str);
-	str = ck_malloc_sec(i + strlen(stk->u.str) + 1);
-	strcpy(str, stk->next->u.str);
-	strcpy(str + i, stk->u.str);
-	stk->next->u.str = str;
-	POP(stk);
+	i = strlen(env->stk->next->u.str);
+	str = GC_malloc_atomic(i + strlen(env->stk->u.str) + 1);
+	strcpy(str, env->stk->next->u.str);
+	strcpy(str + i, env->stk->u.str);
+	env->stk->next->u.str = str;
+	POP(env->stk);
 	break;
     case SET_:
-	stk->next->u.set |= stk->u.set;
-	POP(stk);
+	env->stk->next->u.set |= env->stk->u.set;
+	POP(env->stk);
 	break;
     default:
 	BADAGGREGATE("concat");

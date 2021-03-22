@@ -1,7 +1,7 @@
 /*
     module  : rollup.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef ROLLUP_C
 #define ROLLUP_C
@@ -10,7 +10,7 @@
 rollup  :  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
 */
-PRIVATE void do_rollup(void)
+PRIVATE void do_rollup(pEnv env)
 {
     Node temp, *node, *next;
 
@@ -21,11 +21,11 @@ PRIVATE void do_rollup(void)
 	COMPILE;
 #endif
     THREEPARAMS("rollup");
-    temp = *stk;
-    node = stk->next;
+    temp = *env->stk;
+    node = env->stk->next;
     next = node->next;
-    stk->u = node->u;
-    stk->op = node->op;
+    env->stk->u = node->u;
+    env->stk->op = node->op;
     node->u = next->u;
     node->op = next->op;
     next->u = temp.u;

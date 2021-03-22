@@ -1,6 +1,6 @@
-MODULE m .
+(* MODULE m .
 
-m 10 .
+m 10 . *)
 
 [10] [pop] map .
 

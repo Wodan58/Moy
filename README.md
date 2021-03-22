@@ -7,28 +7,27 @@ status|[![Travis CI build status](https://travis-ci.com/Wodan58/Moy.svg?branch=m
 
 This project implements a variant of [Joy](https://github.com/Wodan58/joy1).
 Conditions do not restore the stack to what it was before the condition
-started. This project depends on the
+started. This project uses the
 [BDW garbage collector](https://github.com/ivmai/bdwgc).
 
 Changes
 -------
 
 Most builtins of Joy are supported in Moy.
-Some other ones have been added: casting, fget, filetime, getch, index, over,
-pick, round, and sametype.
+Some other ones have been added: casting, fget, filetime, getch, identical,
+in1, index, over, pick, round, and sametype.
 The build system requires new builtins in only one location: as a .c file in
 the src-directory.
 
 Installation
 ------------
 
-In addition to the BDW garbage collector, it is wise to install CMake. Then run:
+Run:
 
-    ln -s ../bdwgc
     cmake .
     cmake --build .
 
-And run:
+And:
 
     cd lib
     make -f regres.mak

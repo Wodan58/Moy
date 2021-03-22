@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef NOT_C
 #define NOT_C
@@ -10,7 +10,7 @@
 not  :  X  ->  Y
 Y is the complement of set X, logical negation for truth values.
 */
-PRIVATE void do_not(void)
+PRIVATE void do_not(pEnv env)
 {
     int num = 0;
 
@@ -21,18 +21,18 @@ PRIVATE void do_not(void)
 	COMPILE;
 #endif
     ONEPARAM("not");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case SET_:
-	stk->u.set = ~stk->u.set;
+	env->stk->u.set = ~env->stk->u.set;
 	return;
     case BOOLEAN_:
-	num = !stk->u.num;
+	num = !env->stk->u.num;
 	break;
     default:
 	BADDATA("not");
 	break;
     }
-    stk->u.num = num;
-    stk->op = BOOLEAN_;
+    env->stk->u.num = num;
+    env->stk->op = BOOLEAN_;
 }
 #endif

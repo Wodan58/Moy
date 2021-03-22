@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -12,7 +12,7 @@
 filetime  :  F  ->  T
 T is the modification time of file F.
 */
-PRIVATE void do_filetime(void)
+PRIVATE void do_filetime(pEnv env)
 {
     struct stat buf;
 
@@ -20,9 +20,9 @@ PRIVATE void do_filetime(void)
     COMPILE;
 #endif
     ONEPARAM("filetime");
-    if (stat(stk->u.str, &buf) == -1)
+    if (stat(env->stk->u.str, &buf) == -1)
 	buf.st_mtime = 0;
-    stk->op = INTEGER_;
-    stk->u.num = buf.st_mtime;
+    env->stk->op = INTEGER_;
+    env->stk->u.num = buf.st_mtime;
 }
 #endif

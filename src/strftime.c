@@ -1,12 +1,12 @@
 /*
     module  : strftime.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
 
-PRIVATE void decode_time(struct tm *t);
+PRIVATE void decode_time(pEnv env, struct tm *t);
 
 #ifdef MKTIME_X
 #undef MKTIME_X
@@ -20,7 +20,7 @@ strftime  :  T S1  ->  S2
 Formats a list T in the format of localtime or gmtime
 using string S1 and pushes the result S2.
 */
-PRIVATE void do_strftime(void)
+PRIVATE void do_strftime(pEnv env)
 {
     struct tm t;
     size_t length;
@@ -34,13 +34,13 @@ PRIVATE void do_strftime(void)
 #endif
     TWOPARAMS("strftime");
     STRING("strftime");
-    fmt = stk->u.str;
-    POP(stk);
+    fmt = env->stk->u.str;
+    POP(env->stk);
     LIST("strftime");
-    decode_time(&t);
+    decode_time(env, &t);
     length = INPLINEMAX;
-    result = ck_malloc_sec(length);
+    result = GC_malloc_atomic(length);
     strftime(result, length, fmt, &t);
-    PUSH(STRING_, result);
+    PUSH_PTR(STRING_, result);
 }
 #endif

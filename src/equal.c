@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.13
-    date    : 03/28/20
+    version : 1.14
+    date    : 03/15/21
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -13,13 +13,13 @@
 
 #include "case.c"
 
-PRIVATE int equal_list(Node *first, Node *second);
+PRIVATE int equal_list(pEnv env, Node *first, Node *second);
 
 /**
 equal  :  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
-PRIVATE int equal(Node *first, Node *second)
+PRIVATE int equal(pEnv env, Node *first, Node *second)
 {
     int ok;
 
@@ -28,19 +28,19 @@ PRIVATE int equal(Node *first, Node *second)
     if (!first || !second)
 	return 0;
     if (first->op == LIST_ && second->op == LIST_)
-	return equal_list(first->u.lis, second->u.lis);
-    return Compare(first, second, &ok) == ok;
+	return equal_list(env, first->u.lis, second->u.lis);
+    return Compare(env, first, second, &ok) == ok;
 }
 
-PRIVATE int equal_list(Node *first, Node *second)
+PRIVATE int equal_list(pEnv env, Node *first, Node *second)
 {
     for (; first && second; first = first->next, second = second->next)
-	if (!equal(first, second))
+	if (!equal(env, first, second))
 	    return 0;
     return !first && !second;
 }
 
-PRIVATE void do_equal(void)
+PRIVATE void do_equal(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && VALID_1 && VALID_2)
@@ -49,8 +49,8 @@ PRIVATE void do_equal(void)
 	COMPILE;
 #endif
     TWOPARAMS("equal");
-    stk->next->u.num = equal(stk, stk->next);
-    stk->next->op = BOOLEAN_;
-    POP(stk);
+    env->stk->next->u.num = equal(env, env->stk, env->stk->next);
+    env->stk->next->op = BOOLEAN_;
+    POP(env->stk);
 }
 #endif

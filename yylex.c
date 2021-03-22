@@ -1,9 +1,11 @@
 /*
     module  : yylex.c
-    version : 1.10
-    date    : 07/31/20
+    version : 1.12
+    date    : 03/15/21
 */
 #include "runtime.h"
+
+YYSTYPE yylval;		/* copy */
 
 static FILE *yyin;
 static char line[INPLINEMAX], unget[2];
@@ -11,14 +13,15 @@ static int moy_echo, ilevel, linenum, linepos;
 
 static struct {
     FILE *fp;
-    char *name;
+    char name[ALEN];
     int linenum;
 } infile[INPSTACKMAX];
 
 void inilinebuffer(FILE *fp, char *str)
 {
     infile[0].fp = yyin = fp;
-    infile[0].name = str;
+    strncpy(infile[0].name, str, ALEN);
+    infile[0].name[ALEN - 1] = 0;
     infile[0].linenum = 0;
 }
 
@@ -30,7 +33,7 @@ void redirect(FILE *fp)
     if (ilevel + 1 == INPSTACKMAX)
 	execerror("fewer include files", "redirect");
     infile[++ilevel].fp = yyin = fp;
-    infile[ilevel].name = 0;
+    infile[ilevel].name[0] = 0;
     infile[ilevel].linenum = linenum = 0;
 }
 
@@ -41,7 +44,8 @@ void include(char *filnam)
     if ((fp = fopen(filnam, "r")) == 0)
 	execerror("valid file name", "include");
     redirect(fp);
-    infile[ilevel].name = ck_strdup(filnam);
+    strncpy(infile[ilevel].name, filnam, ALEN);
+    infile[ilevel].name[ALEN - 1] = 0;
 }
 
 int yywrap(void)
@@ -152,17 +156,17 @@ static int specialchar(void)
     return num;
 }
 
-static int read_char(void)
+static int read_char(pEnv env)
 {
     int ch;
 
     if ((ch = getch()) == '\\')
 	ch = specialchar();
-    yylval.num = ch;
+    env->yylval.num = ch;
     return CHAR_;
 }
 
-static int read_string(void)
+static int read_string(pEnv env)
 {
     int ch, i = 0;
     char string[INPLINEMAX];
@@ -174,11 +178,11 @@ static int read_string(void)
 	    string[i++] = ch;
     }
     string[i] = '\0';
-    yylval.str = ck_strdup(string);
+    env->yylval.str = GC_strdup(string);
     return STRING_;
 }
 
-static int read_number(int ch)
+static int read_number(pEnv env, int ch)
 {
     int i = 0, dot = 0;
     char string[INPLINEMAX];
@@ -216,18 +220,18 @@ static int read_number(int ch)
 	}
 	ungetch(ch);
 	string[i] = '\0';
-	yylval.dbl = strtod(string, NULL);
+	env->yylval.dbl = strtod(string, NULL);
 	return FLOAT_;
     }
     ungetch(ch);
     if (dot)
 	ungetch('.');
     string[i] = '\0';
-    yylval.num = strtol(string, NULL, 0);
+    env->yylval.num = strtol(string, NULL, 0);
     return INTEGER_;
 }
 
-static int read_symbol(int ch)
+static int read_symbol(pEnv env, int ch)
 {
     int i = 0;
     char string[INPLINEMAX];
@@ -270,42 +274,42 @@ static int read_symbol(int ch)
     if (!strcmp(string, "=="))
 	return JEQUAL;
     if (!strcmp(string, "true")) {
-	yylval.num = 1;
+	env->yylval.num = 1;
 	return BOOLEAN_;
     }
     if (!strcmp(string, "false")) {
-	yylval.num = 0;
+	env->yylval.num = 0;
 	return BOOLEAN_;
     }
     if (!strcmp(string, "maxint")) {
-	yylval.num = MAXINT_;
+	env->yylval.num = MAXINT_;
 	return INTEGER_;
     }
-    yylval.str = ck_strdup(string);
+    env->yylval.str = GC_strdup(string);
     return SYMBOL_;
 }
 
-static int read_end(void)
+static int read_end(pEnv env)
 {
     int ch;
 
     ungetch(ch = getch());
     if (isalnum(ch) || strchr("-*+/<=>_", ch))
-	return read_symbol('.');
+	return read_symbol(env, '.');
     return END;
 }
 
-static int read_minus(void)
+static int read_minus(pEnv env)
 {
     int ch;
 
     ungetch(ch = getch());
     if (isdigit(ch))
-	return read_number('-');
-    return read_symbol('-');
+	return read_number(env, '-');
+    return read_symbol(env, '-');
 }
 
-static int read_octal(void)
+static int read_octal(pEnv env)
 {
     int ch, i = 0;
     char string[INPLINEMAX];
@@ -328,11 +332,11 @@ static int read_octal(void)
     ungetch(ch);
     if (ch == '.')
 	return '0';
-    yylval.num = strtol(string, NULL, 0);
+    env->yylval.num = strtol(string, NULL, 0);
     return INTEGER_;
 }
 
-static int getsym(void)
+static int getsym(pEnv env)
 {
     int ch;
 
@@ -363,15 +367,15 @@ start:
     case ';':
 	return ch;
     case '.':
-	return read_end();
+	return read_end(env);
     case '\'':
-	return read_char();
+	return read_char(env);
     case '"':
-	return read_string();
+	return read_string(env);
     case '-':
-	return read_minus();
+	return read_minus(env);
     case '0':
-	if ((ch = read_octal()) != '0')
+	if ((ch = read_octal(env)) != '0')
 	    return ch;
     case '1':
     case '2':
@@ -382,9 +386,9 @@ start:
     case '7':
     case '8':
     case '9':
-	return read_number(ch);
+	return read_number(env, ch);
     default:
-	if ((ch = read_symbol(ch)) == 0)
+	if ((ch = read_symbol(env, ch)) == 0)
 	    goto start;
 	return ch;
     }
@@ -392,7 +396,12 @@ start:
 
 int yylex(void)
 {
-    return getsym();
+    int rv;
+    pEnv env = environment;
+
+    rv = getsym(env);
+    yylval = env->yylval;
+    return rv;
 }
 
 int getechoflag(void)

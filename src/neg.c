@@ -1,7 +1,7 @@
 /*
     module  : neg.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef NEG_C
 #define NEG_C
@@ -10,7 +10,7 @@
 neg  :  I  ->  J
 Integer J is the negative of integer I.  Also supports float.
 */
-PRIVATE void do_neg(void)
+PRIVATE void do_neg(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
@@ -20,9 +20,9 @@ PRIVATE void do_neg(void)
 #endif
     ONEPARAM("neg");
     FLOAT("neg");
-    if (stk->op == FLOAT_)
-	stk->u.dbl = -stk->u.dbl;
+    if (env->stk->op == FLOAT_)
+	env->stk->u.dbl = -env->stk->u.dbl;
     else
-	stk->u.num = -stk->u.num;
+	env->stk->u.num = -env->stk->u.num;
 }
 #endif

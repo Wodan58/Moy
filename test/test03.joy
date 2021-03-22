@@ -1,4 +1,4 @@
-%INCLUDE ../lib/stdlib.joy
+%INCLUDE stdlib.joy
 
 'A ['B 'C 'D] [equal] some put_bool nl .
 

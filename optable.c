@@ -1,7 +1,7 @@
 /*
     module  : optable.c
-    version : 1.18
-    date    : 03/28/20
+    version : 1.19
+    date    : 03/15/21
 */
 #include "joy.h"
 
@@ -14,7 +14,7 @@ struct optable_t optable[] = {
 "no message ever, used for gc.\n"},
 
 {"__USR",		"->",
-"user node."},
+"user node.\n"},
 
 {"__ANON_FUNCT",	"->",
 "op for anonymous function call.\n"},

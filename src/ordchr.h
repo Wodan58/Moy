@@ -1,9 +1,9 @@
 /*
     module  : ordchr.h
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && (INTEGER_1 || CHAR_1 || BOOLEAN_1))
@@ -13,7 +13,7 @@ PRIVATE void PROCEDURE(void)
 #endif
     ONEPARAM(NAME);
     NUMERICTYPE(NAME);
-    stk->op = RESULTTYP;
+    env->stk->op = RESULTTYP;
 }
 
 #undef PROCEDURE

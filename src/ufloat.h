@@ -1,9 +1,9 @@
 /*
     module  : ufloat.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1)
@@ -13,7 +13,7 @@ PRIVATE void PROCEDURE(void)
 #endif
     ONEPARAM(NAME);
     FLOAT(NAME);
-    stk->u.dbl = FUNC(FLOATVAL);
+    env->stk->u.dbl = FUNC(FLOATVAL);
 }
 
 #undef PROCEDURE

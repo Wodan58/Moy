@@ -1,21 +1,21 @@
 /*
     module  : i.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef I_C
 #define I_C
 
 #ifndef OLD_RUNTIME
-int put_i(void)
+int put_i(pEnv env)
 {
     Node *prog;
 
     if (!LIST_1)
 	return 0;
-    prog = stk->u.lis;
-    POP(stk);
-    compile(prog);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    compile(env, prog);
     return 1;
 }
 #endif
@@ -24,19 +24,19 @@ int put_i(void)
 i  :  [P]  ->  ...
 Executes P. So, [P] i  ==  P.
 */
-PRIVATE void do_i(void)
+PRIVATE void do_i(pEnv env)
 {
     Node *prog;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_i())
+    if (compiling && put_i(env))
 	return;
     COMPILE;
 #endif
     ONEPARAM("i");
     ONEQUOTE("i");
-    prog = stk->u.lis;
-    POP(stk);
-    exeterm(prog);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    exeterm(env, prog);
 }
 #endif

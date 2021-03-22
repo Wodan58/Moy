@@ -1,11 +1,11 @@
 /*
     module  : utils.c
-    version : 1.1
-    date    : 05/13/20
+    version : 1.2
+    date    : 03/15/21
 */
 #include "runtime.h"
 
-void readfactor(int sym)
+void readfactor(pEnv env, int sym)
 {
     Node temp;
     ulong_t set = 0;
@@ -22,12 +22,12 @@ void readfactor(int sym)
 	DUPLICATE(&temp);
 	break;
     case '[':
-	readterm(yylex());
+	readterm(env, yylex());
 	break;
     case SYMBOL_:
 	if (interpreter) {
 	    temp.op = USR_;
-	    temp.u.num = lookup(yylval.str);
+	    temp.u.num = lookup(env, yylval.str);
 	} else if ((temp.u.proc = nameproc(yylval.str)) != 0)
 	    temp.op = ANON_FUNCT_;
 	else {
@@ -44,19 +44,19 @@ void readfactor(int sym)
     }
 }
 
-void readterm(int sym)
+void readterm(pEnv env, int sym)
 {
     Node **cur;
 
-    stk = LIST_NEWNODE(0, stk);
+    env->stk = LIST_NEWNODE(0, env->stk);
     if (sym == ']')
 	return;
-    cur = &stk->u.lis;
+    cur = &env->stk->u.lis;
     do {
-	readfactor(sym);
-	*cur = stk;
-	 cur = &stk->next;
-	 stk = *cur;
+	readfactor(env, sym);
+	*cur = env->stk;
+	 cur = &env->stk->next;
+	 env->stk = *cur;
 	*cur = 0;
     } while ((sym = yylex()) != ']');
 }

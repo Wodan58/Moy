@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
     version : 1.14
-    date    : 03/28/20
+    date    : 03/15/21
 */
 #ifndef SYMBOL_H
 #define SYMBOL_H
@@ -23,22 +23,29 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-typedef void (*proc_t)(void);
-
 #include "node.h"
+#include "environ.h"
 
 /* interp.c */
-void interprete(Node *code);
-void execute(Node *code);
+void interprete(pEnv env, Node *code);
+void execute(pEnv env, Node *code);
 
 /* compile.c */
-void printnode(Node *node, FILE *fp);
-void compile(Node *node);
+void printnode(pEnv env, Node *node, FILE *fp);
+void printstack(pEnv env, FILE *fp);
+void compile(pEnv env, Node *node);
+
+/* initsym.c */
+void initsym(pEnv env, int argc, char **argv);
 
 /* print.c */
-void writefactor(Node *node, FILE *stm);
-void writeterm(Node *code, FILE *stm);
-void writestack(Node *code, FILE *stm);
+void writefactor(pEnv env, Node *node, FILE *stm);
+void writeterm(pEnv env, Node *code, FILE *stm);
+void writestack(pEnv env, Node *code, FILE *stm);
+
+/* utils.c */
+void readfactor(pEnv env, int sym);
+void readterm(pEnv env, int sym);
 
 /* symbol.c */
 void initmod(char *str);
@@ -52,21 +59,25 @@ char *prefix(int *hide, int *local);
 char *iterate(char *name);
 
 /* dict.c */
-int symtabmax(void);
-int symtabindex(void);
-unsigned dict_flags(int index);
-void dict_setflags(int index, unsigned flags);
-char *dict_descr(int index);
-char *dict_name(int index);
-char *dict_nickname(int index);
-Node *dict_body(int index);
-int dict_size(void);
+int symtabmax(pEnv env);
+int symtabindex(pEnv env);
+
+void init_dict(pEnv env);
+int lookup(pEnv env, char *name);
+void enteratom(pEnv env, char *name, Node *cur);
+void dump(pEnv env);
+
+unsigned dict_flags(pEnv env, int index);
+void dict_setflags(pEnv env, int index, unsigned flags);
+char *dict_descr(pEnv env, int index);
+char *dict_name(pEnv env, int index);
+char *dict_nickname(pEnv env, int index);
+Node *dict_body(pEnv env, int index);
+int dict_size(pEnv env);
+
+int check_anything_was_printed(pEnv env);
+void iterate_dict_and_write_struct(pEnv env, FILE *fp);
+
 char *procname(proc_t proc);
 proc_t nameproc(char *name);
-void init_dict(void);
-int lookup(char *name);
-void enteratom(char *name, Node *cur);
-void dump(void);
-int check_anything_was_printed(void);
-void iterate_dict_and_write_struct(FILE *fp);
 #endif

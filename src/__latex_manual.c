@@ -1,7 +1,7 @@
 /*
     module  : 
-    version : 1.5
-    date    : 03/28/20
+    version : 1.6
+    date    : 03/15/21
 */
 #ifndef __LATEX_MANUAL_C
 #define __LATEX_MANUAL_C
@@ -20,7 +20,7 @@ __latex_manual  :  ->
 Writes this manual of all Joy primitives to output file in Latex style
 but without the head and tail.
 */
-PRIVATE void do___latex_manual(void)
+PRIVATE void do___latex_manual(pEnv env)
 {
 #ifndef OLD_RUNTIME
     COMPILE;

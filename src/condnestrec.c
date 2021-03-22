@@ -1,7 +1,7 @@
 /*
     module  : condnestrec.c
-    version : 1.13
-    date    : 03/28/20
+    version : 1.14
+    date    : 03/15/21
 */
 #ifndef CONDNESTREC_C
 #define CONDNESTREC_C
@@ -14,7 +14,7 @@
 #include "condlinrec.c"
 
 #ifndef OLD_RUNTIME
-int put_condnestrec(void);
+int put_condnestrec(pEnv env);
 #endif
 
 /**
@@ -25,20 +25,20 @@ Each [Ci] is of the form [[B] [R1] [R2] .. [Rn]] and [D] is of the form
 For the case taken, executes each [Ri] but recurses between any two
 consecutive [Ri] (n > 3 would be exceptional.)
 */
-PRIVATE void do_condnestrec(void)
+PRIVATE void do_condnestrec(pEnv env)
 {
     Node *prog;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_condnestrec())
+    if (compiling && put_condnestrec(env))
 	return;
     COMPILE;
 #endif
     ONEPARAM("condnestrec");
     LIST("condnestrec");
-    CHECKEMPTYLIST(stk->u.lis, "condnestrec");
-    prog = stk->u.lis;
-    POP(stk);
-    condnestrec(prog);
+    CHECKEMPTYLIST(env->stk->u.lis, "condnestrec");
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    condnestrec(env, prog);
 }
 #endif

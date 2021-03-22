@@ -1,9 +1,9 @@
 /*
     module  : inhas.h
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     Node *cur;
     char *str;
@@ -23,7 +23,7 @@ PRIVATE void PROCEDURE(void)
     case LIST_:
 	for (cur = AGGR->u.lis; cur; cur = cur->next)
 #ifdef CORRECT_INHAS_COMPARE
-	    if (Compare(cur, ELEM, &ok) == ok)
+	    if (Compare(env, cur, ELEM, &ok) == ok)
 #else
 	    if (cur->u.num == ELEM->u.num)
 #endif
@@ -42,9 +42,9 @@ PRIVATE void PROCEDURE(void)
 	BADAGGREGATE(NAME);
 	break;
     }
-    stk->next->u.num = found;
-    stk->next->op = BOOLEAN_;
-    POP(stk);
+    env->stk->next->u.num = found;
+    env->stk->next->op = BOOLEAN_;
+    POP(env->stk);
 }
 
 #undef PROCEDURE

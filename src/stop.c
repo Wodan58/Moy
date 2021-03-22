@@ -1,7 +1,7 @@
 /*
     module  : stop.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef STOP_C
 #define STOP_C
@@ -13,26 +13,24 @@
 
 #include "put.c"
 
-PRIVATE void do_stop(void)
+PRIVATE void do_stop(pEnv env)
 {
 #ifndef OLD_RUNTIME
     COMPILE;
 #endif
-    if (stk) {
+    if (env->stk) {
 	switch (autoput) {
 	case 0:
 	    break;
 	case 1:
-	    do_put();
+	    do_put(env);
 	    break;
 	case 2:
-	    writeterm(stk, stdout);
+	    writeterm(env, env->stk, stdout);
 	    break;
 	}
 	if (autoput)
 	    putchar('\n');
     }
-    if (!stk)
-	freemem();
 }
 #endif

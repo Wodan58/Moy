@@ -1,22 +1,25 @@
 /*
     module  : interp.c
     version : 1.17
-    date    : 03/28/20
+    date    : 03/15/21
 */
 #include "runtime.h"
 #include "builtin.c"
 
+#define DEBUG
+
 #ifdef REPORT
 double count_execute;
 
-void report_execute()
+static void report_execute(void)
 {
     fprintf(stderr, "execute = %.0f\n", count_execute);
 }
 #endif
 
-void interprete(Node *node)
+void interprete(pEnv env, Node *node)
 {
+    Node *cur;
 #ifndef OLD_RUNTIME
     int index;
     Node *code;
@@ -35,36 +38,36 @@ void interprete(Node *node)
 #ifndef OLD_RUNTIME
 start:
 #endif
-    for (; node; node = node->next) {
+    for (cur = node; cur; cur = cur->next) {
 #ifdef DEBUG
 	if (debugging) {
-	    writestack(stk, stderr);
+	    writestack(env, env->stk, stderr);
 	    fprintf(stderr, " : ");
-	    writeterm(node, stderr);
+	    writeterm(env, cur, stderr);
 	    fprintf(stderr, "\n");
 	}
 #endif
-	switch (node->op) {
+	switch (cur->op) {
 #ifndef OLD_RUNTIME
 	case USR_:
-	    index = node->u.num;
-	    if ((code = dict_body(index)) != 0) {
-		if ((flags = dict_flags(index)) & IS_BUILTIN) {
-		    dict_setflags(index, flags | IS_USED);
-		    (*(proc_t)code)();
+	    index = cur->u.num;
+	    if ((code = dict_body(env, index)) != 0) {
+		if ((flags = dict_flags(env, index)) & IS_BUILTIN) {
+		    dict_setflags(env, index, flags | IS_USED);
+		    (*(proc_t)code)(env);
 		} else {
-		    if (!node->next) {
+		    if (!cur->next) {
 			node = code;
 			goto start;
 		    }
-		    interprete(code);
+		    interprete(env, code);
 		}
 	    } else if (undeferror)
-		execerror("definition", dict_descr(index));
+		execerror("definition", dict_descr(env, index));
 	    break;
 #endif
 	case ANON_FUNCT_:
-	    (*node->u.proc)();
+	    (*cur->u.proc)(env);
 	    break;
 	case BOOLEAN_:
 	case CHAR_:
@@ -75,7 +78,7 @@ start:
 	case FLOAT_:
 	case FILE_:
 	case SYMBOL_:
-	    DUPLICATE(node);
+	    DUPLICATE(cur);
 	    break;
 	default:
 	    execerror("valid datatype", "interpreter");
@@ -84,8 +87,8 @@ start:
     }
 }
 
-void execute(Node *node)
+void execute(pEnv env, Node *node)
 {
-    interprete(node);
-    do_stop();
+    interprete(env, node);
+    do_stop(env);
 }

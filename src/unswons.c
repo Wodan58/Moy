@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
@@ -10,7 +10,7 @@
 unswons  :  A  ->  R F
 R and F are the rest and the first of non-empty aggregate A.
 */
-PRIVATE void do_unswons(void)
+PRIVATE void do_unswons(pEnv env)
 {
     char *str;
     int i = 0;
@@ -21,26 +21,26 @@ PRIVATE void do_unswons(void)
     COMPILE;
 #endif
     ONEPARAM("unswons");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case LIST_:
-	CHECKEMPTYLIST(stk->u.lis, "unswons");
-	save = stk->u.lis;
-	stk->u.lis = stk->u.lis->next;
+	CHECKEMPTYLIST(env->stk->u.lis, "unswons");
+	save = env->stk->u.lis;
+	env->stk->u.lis = env->stk->u.lis->next;
 	DUPLICATE(save);
 	break;
     case STRING_:
-	str = stk->u.str;
+	str = env->stk->u.str;
 	CHECKEMPTYSTRING(str, "unswons");
-	stk->u.str = str + 1;
-	PUSH(CHAR_, (long_t)*str);
+	env->stk->u.str = GC_strdup(str + 1);
+	PUSH_NUM(CHAR_, *str);
 	break;
     case SET_:
-	set = stk->u.set;
+	set = env->stk->u.set;
 	CHECKEMPTYSET(set, "unswons");
 	while (!(set & ((long_t)1 << i)))
 	    i++;
-	stk->u.set = set & ~((long_t)1 << i);
-	PUSH(INTEGER_, i);
+	env->stk->u.set = set & ~((long_t)1 << i);
+	PUSH_NUM(INTEGER_, i);
 	break;
     default:
 	BADAGGREGATE("unswons");

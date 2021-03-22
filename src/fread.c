@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.13
-    date    : 03/28/20
+    version : 1.14
+    date    : 03/15/21
 */
 #ifndef FREAD_C
 #define FREAD_C
@@ -11,7 +11,7 @@ fread  :  S I  ->  S L
 I bytes are read from the current position of stream S
 and returned as a list of I integers.
 */
-PRIVATE void do_fread(void)
+PRIVATE void do_fread(pEnv env)
 {
     int i, count;
     Node *cur = 0;
@@ -22,12 +22,12 @@ PRIVATE void do_fread(void)
 #endif
     TWOPARAMS("fread");
     INTEGER("fread");
-    count = stk->u.num;
-    POP(stk);
+    count = env->stk->u.num;
+    POP(env->stk);
     FILE("fread");
-    buf = ck_malloc_sec(count);
-    for (i = fread(buf, 1, count, stk->u.fil) - 1; i >= 0; i--)
-	cur = newnode(INTEGER_, (void *)(long_t)buf[i], cur);
-    PUSH(LIST_, cur);
+    buf = GC_malloc_atomic(count);
+    for (i = fread(buf, 1, count, env->stk->u.fil) - 1; i >= 0; i--)
+	cur = INTEGER_NEWNODE(buf[i], cur);
+    PUSH_PTR(LIST_, cur);
 }
 #endif

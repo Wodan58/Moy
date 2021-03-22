@@ -1,7 +1,7 @@
 /*
     module  : rem.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef REM_C
 #define REM_C
@@ -10,7 +10,7 @@
 rem  :  I J  ->  K
 Integer K is the remainder of dividing I by J.  Also supports float.
 */
-PRIVATE void do_rem(void)
+PRIVATE void do_rem(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && NUMERIC_1 && NUMERIC_2)
@@ -21,17 +21,17 @@ PRIVATE void do_rem(void)
     TWOPARAMS("rem");
     FLOAT2("rem");
 #ifndef NCHECK
-    if ((stk->op == FLOAT_ && !stk->u.dbl) ||
-	(stk->op == INTEGER_ && !stk->u.num))
+    if ((env->stk->op == FLOAT_ && !env->stk->u.dbl) ||
+	(env->stk->op == INTEGER_ && !env->stk->u.num))
 	execerror("non-zero operand", "rem");
 #endif
-    if (stk->next->op == FLOAT_)
-	stk->next->u.dbl = fmod(stk->next->u.dbl, FLOATVAL);
-    else if (stk->op == FLOAT_) {
-	stk->next->u.dbl = fmod((double) stk->next->u.num, stk->u.dbl);
-	stk->next->op = FLOAT_;
+    if (env->stk->next->op == FLOAT_)
+	env->stk->next->u.dbl = fmod(env->stk->next->u.dbl, FLOATVAL);
+    else if (env->stk->op == FLOAT_) {
+	env->stk->next->u.dbl = fmod((double) env->stk->next->u.num, env->stk->u.dbl);
+	env->stk->next->op = FLOAT_;
     } else
-	stk->next->u.num %= stk->u.num;
-    POP(stk);
+	env->stk->next->u.num %= env->stk->u.num;
+    POP(env->stk);
 }
 #endif

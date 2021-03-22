@@ -21,8 +21,8 @@ script:
   - cmake --build .
 
 after_success:
-  - lcov --directory . --capture --output-file coverage.info # capture coverage info
-  - lcov --remove coverage.info 'bdwgc/*' '/usr/*' --output-file coverage.info # filter out system, test, and external code
+  - lcov --capture --base-directory . --directory . --output-file coverage.info # capture coverage info
+  - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter out system, test, and external code
   - lcov --list coverage.info # debug before upload
   - coveralls-lcov coverage.info # uploads to coveralls
   - bash <(curl -s https://codecov.io/bash)

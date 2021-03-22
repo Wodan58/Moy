@@ -1,34 +1,34 @@
 /*
     module  : cond.c
-    version : 1.18
-    date    : 01/24/21
+    version : 1.19
+    date    : 03/15/21
 */
 #ifndef COND_C
 #define COND_C
 
 #ifndef OLD_RUNTIME
-int put_cond(void)
+int put_cond(pEnv env)
 {
     Node *cur, *list;
 
     if (!LIST_1)
 	return 0;
-    cur = stk->u.lis;
-    POP(stk);
-    printstack(outfp);
+    cur = env->stk->u.lis;
+    POP(env->stk);
+    printstack(env, outfp);
     fprintf(outfp, "{ /* COND */");
     fprintf(outfp, "int num = 0; Node *save; do {");
     for (; cur->next; cur = cur->next) {
-	fprintf(outfp, "save = stk;");
+	fprintf(outfp, "save = env->stk;");
 	list = cur->u.lis->u.lis;
-	compile(list);
-	fprintf(outfp, "num = stk->u.num; stk = save;");
+	compile(env, list);
+	fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
 	fprintf(outfp, "if (num) {");
-	compile(cur->u.lis->next);
+	compile(env, cur->u.lis->next);
 	fprintf(outfp, "break; }");
     }
     fprintf(outfp, "break; } while (0); if (!num) {");
-    compile(cur->u.lis);
+    compile(env, cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
 }
@@ -39,33 +39,33 @@ cond  :  [..[[Bi] Ti]..[D]]  ->  ...
 Tries each Bi. If that yields true, then executes Ti and exits.
 If no Bi yields true, executes default D.
 */
-PRIVATE void do_cond(void)
+PRIVATE void do_cond(pEnv env)
 {
     int num = 0;
     Node *cur, *list, *save;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_cond())
+    if (compiling && put_cond(env))
 	return;
     COMPILE;
 #endif
     ONEPARAM("cond");
     LIST("cond");
-    CHECKEMPTYLIST(stk->u.lis, "cond");
+    CHECKEMPTYLIST(env->stk->u.lis, "cond");
 /* must check for QUOTES in list */
-    for (cur = stk->u.lis; cur->next; cur = cur->next)
+    for (cur = env->stk->u.lis; cur->next; cur = cur->next)
 	CHECKLIST(cur->u.lis->op, "cond");
-    cur = stk->u.lis;
-    POP(stk);
+    cur = env->stk->u.lis;
+    POP(env->stk);
     for (; cur->next; cur = cur->next) {
 	list = cur->u.lis->u.lis;
-	save = stk;
-	exeterm(list);
-	num = stk->u.num;
-	stk = save;
+	save = env->stk;
+	exeterm(env, list);
+	num = env->stk->u.num;
+	env->stk = save;
 	if (num)
 	    break;
     }
-    exeterm(num ? cur->u.lis->next : cur->u.lis);
+    exeterm(env, num ? cur->u.lis->next : cur->u.lis);
 }
 #endif

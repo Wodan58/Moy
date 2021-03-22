@@ -1,19 +1,9 @@
 /*
     module  : runtime.c
-    version : 1.1
-    date    : 05/13/20
+    version : 1.3
+    date    : 03/15/21
 */
 #include "runtime.h"
-
-YYSTYPE yylval;
-
-/*
- * lookup is replaced by procname/nameproc
- */
-int lookup(char *str)
-{
-    return 0;
-}
 
 /*
  * initialise the compiler
@@ -23,18 +13,32 @@ void initialise(void)
 }
 
 /*
- * dict_descr used in writefactor
+ * finalize the compiled program
  */
-char *dict_descr(int index)
+void finalise(pEnv env)
 {
-    return "unknown";
 }
 
 /*
  * init_dict used in initsym
  */
-void init_dict(void)
+void init_dict(pEnv env)
 {
+}
+/*
+ * dict_descr used in writefactor
+ */
+char *dict_descr(pEnv env, int index)
+{
+    return "unknown";
+}
+
+/*
+ * lookup is replaced by procname/nameproc
+ */
+int lookup(pEnv env, char *str)
+{
+    return 0;
 }
 
 /*

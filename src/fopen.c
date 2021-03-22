@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FOPEN_C
 #define FOPEN_C
@@ -11,7 +11,7 @@ fopen  :  P M  ->  S
 The file system object with pathname P is opened with mode M (r, w, a, etc.)
 and stream object S is pushed; if the open fails, file:NULL is pushed.
 */
-PRIVATE void do_fopen(void)
+PRIVATE void do_fopen(pEnv env)
 {
 #ifndef OLD_RUNTIME
     COMPILE;
@@ -19,8 +19,8 @@ PRIVATE void do_fopen(void)
     TWOPARAMS("fopen");
     STRING("fopen");
     STRING2("fopen");
-    stk->next->u.fil = fopen(stk->next->u.str, stk->u.str);
-    stk->next->op = FILE_;
-    POP(stk);
+    env->stk->next->u.fil = fopen(env->stk->next->u.str, env->stk->u.str);
+    env->stk->next->op = FILE_;
+    POP(env->stk);
 }
 #endif

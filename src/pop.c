@@ -1,7 +1,7 @@
 /*
     module  : pop.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef POP_C
 #define POP_C
@@ -10,7 +10,7 @@
 pop  :  X  ->
 Removes X from top of the stack.
 */
-PRIVATE void do_pop(void)
+PRIVATE void do_pop(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && VALID_1)
@@ -19,6 +19,6 @@ PRIVATE void do_pop(void)
 	COMPILE;
 #endif
     ONEPARAM("pop");
-    POP(stk);
+    POP(env->stk);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : rolldown.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef ROLLDOWN_C
 #define ROLLDOWN_C
@@ -10,7 +10,7 @@
 rolldown  :  X Y Z  ->  Y Z X
 Moves Y and Z down, moves X up.
 */
-PRIVATE void do_rolldown(void)
+PRIVATE void do_rolldown(pEnv env)
 {
     Node temp, *node, *next;
 
@@ -21,14 +21,14 @@ PRIVATE void do_rolldown(void)
 	COMPILE;
 #endif
     THREEPARAMS("rolldown");
-    node = stk->next;
+    node = env->stk->next;
     next = node->next;
     temp = *next;
     next->u = node->u;
     next->op = node->op;
-    node->u = stk->u;
-    node->op = stk->op;
-    stk->u = temp.u;
-    stk->op = temp.op;
+    node->u = env->stk->u;
+    node->op = env->stk->op;
+    env->stk->u = temp.u;
+    env->stk->op = temp.op;
 }
 #endif

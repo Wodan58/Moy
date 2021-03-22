@@ -1,7 +1,7 @@
 /*
     module  : in1.c
-    version : 1.6
-    date    : 03/28/20
+    version : 1.7
+    date    : 03/15/21
 */
 #ifndef IN1_C
 #define IN1_C
@@ -16,8 +16,8 @@ Tests whether X is a member of aggregate A.
 #define CORRECT_INHAS_COMPARE_X
 #endif
 #define NAME		"in1"
-#define AGGR		stk
-#define ELEM		stk->next
+#define AGGR		env->stk
+#define ELEM		env->stk->next
 #include "inhas.h"
 #ifdef CORRECT_INHAS_COMPARE_X
 #define CORRECT_INHAS_COMPARE

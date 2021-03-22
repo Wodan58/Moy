@@ -1,7 +1,7 @@
 /*
     module  : ldexp.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef LDEXP_C
 #define LDEXP_C
@@ -10,7 +10,7 @@
 ldexp  :  F I  ->  G
 G is F times 2 to the Ith power.
 */
-PRIVATE void do_ldexp(void)
+PRIVATE void do_ldexp(pEnv env)
 {
     int exp;
 
@@ -22,9 +22,9 @@ PRIVATE void do_ldexp(void)
 #endif
     TWOPARAMS("ldexp");
     INTEGER("ldexp");
-    exp = stk->u.num;
-    POP(stk);
+    exp = env->stk->u.num;
+    POP(env->stk);
     FLOAT("ldexp");
-    stk->u.dbl = ldexp(FLOATVAL, exp);
+    env->stk->u.dbl = ldexp(FLOATVAL, exp);
 }
 #endif

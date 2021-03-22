@@ -1,7 +1,7 @@
 /*
     module  : strtod.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef STRTOD_C
 #define STRTOD_C
@@ -10,7 +10,7 @@
 strtod  :  S  ->  R
 String S is converted to the float R.
 */
-PRIVATE void do_strtod(void)
+PRIVATE void do_strtod(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && STRING_1)
@@ -20,7 +20,7 @@ PRIVATE void do_strtod(void)
 #endif
     ONEPARAM("strtod");
     STRING("strtod");
-    stk->u.num = strtod(stk->u.str, 0);
-    stk->op = FLOAT_;
+    env->stk->u.num = strtod(env->stk->u.str, 0);
+    env->stk->op = FLOAT_;
 }
 #endif

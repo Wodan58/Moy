@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.12
-    date    : 05/14/20
+    version : 1.13
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,8 +11,6 @@
 #include "joy.h"
 #include "symbol.h"
 #include "builtin.h"
-#include "kvec.h"
-#include "khash.h"
 #include "decl.h"
 
 typedef struct entry_t {
@@ -25,94 +23,77 @@ static entry_t table[] = {
     { 0, 0 }
 };
 
-typedef struct dict_t {
-    char *name, *print;
-    unsigned flags;
-    union {
-	proc_t proc;
-	Node *body;
-    };
-} dict_t;
-
-typedef vector(dict_t) Dict;
-
-static Dict *dict;
-
-KHASH_MAP_INIT_STR(symtab, int);
-
-static khash_t(symtab) *hash;
-
-int symtabmax(void)
+int symtabmax(pEnv env)
 {
-    return vec_max(dict);
+    return vec_max(env->dict);
 #if 0
-    return kh_n_buckets(hash);
+    return kh_n_buckets(env->hash);
 #endif
 }
 
-int symtabindex(void)
+int symtabindex(pEnv env)
 {
-    return vec_size(dict);
+    return vec_size(env->dict);
 #if 0
-    return kh_size(hash);
+    return kh_size(env->hash);
 #endif
 }
 
-unsigned dict_flags(int index)
+unsigned dict_flags(pEnv env, int index)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     return pdic->flags;
 }
 
-void dict_setflags(int index, unsigned flags)
+void dict_setflags(pEnv env, int index, unsigned flags)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     pdic->flags = flags;
 }
 
-char *dict_descr(int index)
+char *dict_descr(pEnv env, int index)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     return pdic->name;
 }
 
-char *dict_name(int index)
+char *dict_name(pEnv env, int index)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     return pdic->print && isalpha(*pdic->print) ? pdic->print : pdic->name;
 }
 
-char *dict_nickname(int index)
+char *dict_nickname(pEnv env, int index)
 {
     dict_t *pdic;
     char *name, *ptr;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     name = pdic->print ? pdic->print : pdic->name;
     if ((ptr = strchr(name, '.')) != 0)
 	name = ++ptr;
     return name;
 }
 
-Node *dict_body(int index)
+Node *dict_body(pEnv env, int index)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(dict, index);
+    pdic = &vec_at(env->dict, index);
     return pdic->body;
 }
 
-int dict_size(void)
+int dict_size(pEnv env)
 {
-    return vec_size(dict);
+    return vec_size(env->dict);
 }
 
 /*
@@ -144,22 +125,22 @@ proc_t nameproc(char *name)
 /*
  * Init_dict initialises the dictionary with builtins.
  */
-void init_dict(void)
+void init_dict(pEnv env)
 {
     int i, rv;
     dict_t dic;
     khiter_t key;
 
-    vec_init(dict);
-    hash = kh_init(symtab);
+    env->dict = 0;
+    env->hash = kh_init(symtab);
     for (i = 0; table[i].name; i++) {
 	dic.name = table[i].name;
 	dic.print = table[i].print;
 	dic.flags = IS_ORIGINAL | IS_BUILTIN;
 	dic.proc = table[i].proc;
-	vec_push(dict, dic);
-	key = kh_put(symtab, hash, dic.name, &rv);
-	kh_value(hash, key) = i;
+	key = kh_put(symtab, env->hash, dic.name, &rv);
+	kh_value(env->hash, key) = i;
+	vec_push(env->dict, dic);
     }
 }
 
@@ -179,7 +160,7 @@ static int is_c_identifier(char *str)
     return 1;
 }
 
-static int add_word_to_dictionary(char *ptr)
+static int add_word_to_dictionary(pEnv env, char *ptr)
 {
     static int seq;
     int i, rv;
@@ -188,15 +169,15 @@ static int add_word_to_dictionary(char *ptr)
     char str[MAXSTR];
 
     initialise_entry(&dic);
-    dic.name = ck_strdup(ptr);
+    dic.name = GC_strdup(ptr);
     if (!is_c_identifier(ptr)) {
 	sprintf(str, "%d", ++seq);
-	dic.print = ck_strdup(str);
+	dic.print = GC_strdup(str);
     }
-    vec_push(dict, dic);
-    i = vec_size(dict) - 1;
-    key = kh_put(symtab, hash, dic.name, &rv);
-    kh_value(hash, key) = i;
+    vec_push(env->dict, dic);
+    i = vec_size(env->dict) - 1;
+    key = kh_put(symtab, env->hash, dic.name, &rv);
+    kh_value(env->hash, key) = i;
     return i;
 }
 
@@ -214,12 +195,12 @@ static char *qualify(char *name)
     if (hide && local) {
 	sprintf(buf, "%d", hide);
 	leng = strlen(buf) + strlen(name) + 2;
-	str = ck_malloc_sec(leng);
+	str = GC_malloc_atomic(leng);
 	sprintf(str, "%s.%s", buf, name);
 	name = str;
-    } else if (module) {
+    } else if (*module) {
 	leng = strlen(module) + strlen(name) + 2;
-	str = ck_malloc_sec(leng);
+	str = GC_malloc_atomic(leng);
 	sprintf(str, "%s.%s", module, name);
 	name = str;
     }
@@ -230,28 +211,28 @@ static char *qualify(char *name)
  * Find locates a name in the hash table. First the qualified name is tried.
  * If that fails, the normal name is tried. And if that fails, -1 is returned.
  */
-static int find(char *name)
+static int find(pEnv env, char *name)
 {
     khiter_t key;
     char *str = name;
 
     while ((str = iterate(str)) != 0)
-	if ((key = kh_get(symtab, hash, str)) != kh_end(hash))
-	    return kh_value(hash, key);
-    if ((key = kh_get(symtab, hash, name)) != kh_end(hash))
-	return kh_value(hash, key);
+	if ((key = kh_get(symtab, env->hash, str)) != kh_end(env->hash))
+	    return kh_value(env->hash, key);
+    if ((key = kh_get(symtab, env->hash, name)) != kh_end(env->hash))
+	return kh_value(env->hash, key);
     return -1;
 }
 
-static void replace(char *old_name, char *new_name, int index)
+static void replace(pEnv env, char *old_name, char *new_name, int index)
 {
     int rv;
     khiter_t key;
 
-    key = kh_get(symtab, hash, old_name);
-    kh_del(symtab, hash, key);
-    key = kh_put(symtab, hash, new_name, &rv);
-    kh_value(hash, key) = index;
+    key = kh_get(symtab, env->hash, old_name);
+    kh_del(symtab, env->hash, key);
+    key = kh_put(symtab, env->hash, new_name, &rv);
+    kh_value(env->hash, key) = index;
 }
 
 /*
@@ -259,13 +240,13 @@ static void replace(char *old_name, char *new_name, int index)
  * dictionary. First search the qualified name. If not found, search the
  * normal name. If not found, add the normal name.
  */
-int lookup(char *name)
+int lookup(pEnv env, char *name)
 {
     int index;
 
-    if ((index = find(name)) != -1)
+    if ((index = find(env, name)) != -1)
 	return index;
-    return add_word_to_dictionary(name);
+    return add_word_to_dictionary(env, name);
 }
 
 /*
@@ -274,18 +255,18 @@ int lookup(char *name)
  * First the normal name is located in the dictionary, and if found that entry
  * is updated.
  */
-void enteratom(char *name, Node *cur)
+void enteratom(pEnv env, char *name, Node *cur)
 {
     char *str;
     int index;
     dict_t *pdic;
 
     str = qualify(name);
-    if ((index = find(name)) == -1)
-	index = lookup(str);
-    pdic = &vec_at(dict, index);
+    if ((index = find(env, name)) == -1)
+	index = lookup(env, str);
+    pdic = &vec_at(env->dict, index);
     if (strcmp(pdic->name, str)) {
-	replace(pdic->name, str, index);
+	replace(env, pdic->name, str, index);
 	pdic->name = str;
     }
     if (pdic->flags & IS_BUILTIN) {
@@ -296,7 +277,7 @@ void enteratom(char *name, Node *cur)
     pdic->body = cur;
 }
 
-void dump(void)
+void dump(pEnv env)
 {
     FILE *fp;
     int i, leng;
@@ -306,15 +287,15 @@ void dump(void)
 	fprintf(stderr, "Failed to write %s\n", "dict.txt");
 	exit(1);
     }
-    leng = vec_size(dict);
+    leng = vec_size(env->dict);
     for (i = 0; i < leng; i++) {
-	pdic = &vec_at(dict, i);
+	pdic = &vec_at(env->dict, i);
 	if (pdic->flags & IS_BUILTIN)
 	    fprintf(fp, "%s\t%p\t%d\n", pdic->name, pdic->proc,
 		    (pdic->flags & IS_USED) ? 1 : 0);
 	else if (pdic->body) {
 	    fprintf(fp, "%s == ", pdic->name);
-	    writeterm(pdic->body, fp);
+	    writeterm(env, pdic->body, fp);
 	    putc('\n', fp);
 	} else
 	    fprintf(fp, "%s ==\n", pdic->name);
@@ -322,28 +303,25 @@ void dump(void)
     fclose(fp);
 }
 
-int check_anything_was_printed(void)
+int check_anything_was_printed(pEnv env)
 {
     int i, leng;
 
-    leng = vec_size(dict);
+    leng = vec_size(env->dict);
     for (i = 0; i < leng; i++)
-	if (dict_flags(i) & IS_PRINTED)
+	if (dict_flags(env, i) & IS_PRINTED)
 	    return 1;
     return 0;
 }
 
-void iterate_dict_and_write_struct(FILE *fp)
+void iterate_dict_and_write_struct(pEnv env, FILE *fp)
 {
     char *name;
     int i, leng;
 
-    leng = vec_size(dict);
+    leng = vec_size(env->dict);
     for (i = 0; i < leng; i++)
-	if ((dict_flags(i) & IS_USED) && dict_body(i)) {
-	    fprintf(fp, "{ ");
-	    if (!strcmp(name = dict_nickname(i), "pop"))
-		fprintf(fp, "(proc_t)");
-	    fprintf(fp, "do_%s, \"%s\" },\n", name, dict_descr(i));
-	}
+	if ((dict_flags(env, i) & IS_USED) && dict_body(env, i))
+	    fprintf(fp, "{ do_%s, \"%s\" },\n", dict_nickname(env, i),
+		    dict_descr(env, i));
 }

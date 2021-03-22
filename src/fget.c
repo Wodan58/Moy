@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef FGET_C
 #define FGET_C
@@ -10,17 +10,17 @@
 fget  :  S  ->  S F
 Reads a factor from stream S and pushes it onto stack.
 */
-PRIVATE void do_fget(void)
+PRIVATE void do_fget(pEnv env)
 {
 #ifndef OLD_RUNTIME
     COMPILE;
 #endif
     ONEPARAM("fget");
 #ifndef NCHECK
-    if (stk->op != FILE_ || !stk->u.fil)
+    if (env->stk->op != FILE_ || !env->stk->u.fil)
 	execerror("file", "fget");
 #endif
-    redirect(stk->u.fil);
-    readfactor(yylex());
+    redirect(env->stk->u.fil);
+    readfactor(env, yylex());
 }
 #endif

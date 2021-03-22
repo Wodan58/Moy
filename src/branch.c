@@ -1,27 +1,27 @@
 /*
     module  : branch.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef BRANCH_C
 #define BRANCH_C
 
 #ifndef OLD_RUNTIME
-int put_branch(void)
+int put_branch(pEnv env)
 {
     Node *prog[2];
 
     if (!(LIST_1 && LIST_2))
 	return 0;
-    prog[1] = stk->u.lis;
-    POP(stk);
-    prog[0] = stk->u.lis;
-    printstack(outfp);
+    prog[1] = env->stk->u.lis;
+    POP(env->stk);
+    prog[0] = env->stk->u.lis;
+    printstack(env, outfp);
     fprintf(outfp, "{ /* BRANCH */");
-    fprintf(outfp, "int num = stk->u.num; POP(stk); if (num) {");
-    compile(prog[0]);
+    fprintf(outfp, "int num = env->stk->u.num; POP(env->stk); if (num) {");
+    compile(env, prog[0]);
     fprintf(outfp, "} else {");
-    compile(prog[1]);
+    compile(env, prog[1]);
     fprintf(outfp, "} }");
     return 1;
 }
@@ -31,24 +31,24 @@ int put_branch(void)
 branch  :  B [T] [F]  ->  ...
 If B is true, then executes T else executes F.
 */
-PRIVATE void do_branch(void)
+PRIVATE void do_branch(pEnv env)
 {
     int num;
     Node *prog[2];
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_branch())
+    if (compiling && put_branch(env))
 	return;
     COMPILE;
 #endif
     THREEPARAMS("branch");
     TWOQUOTES("branch");
-    prog[1] = stk->u.lis;
-    POP(stk);
-    prog[0] = stk->u.lis;
-    POP(stk);
-    num = stk->u.num;
-    POP(stk);
-    exeterm(num ? prog[0] : prog[1]);
+    prog[1] = env->stk->u.lis;
+    POP(env->stk);
+    prog[0] = env->stk->u.lis;
+    POP(env->stk);
+    num = env->stk->u.num;
+    POP(env->stk);
+    exeterm(env, num ? prog[0] : prog[1]);
 }
 #endif

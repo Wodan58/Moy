@@ -1,7 +1,7 @@
 /*
     module  : binary.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef BINARY_C
 #define BINARY_C
@@ -15,8 +15,8 @@ exactly two are removed from the stack.
 #define PROCEDURE	do_binary
 #define NAME		"binary"
 #define PARAMCOUNT	THREEPARAMS
-#define TOP		stk->next->next
-#define TOPSTR		"stk->next->next"
+#define TOP		env->stk->next->next
+#define TOPSTR		"env->stk->next->next"
 #define ARITY		2
 #include "nary.h"
 #endif

@@ -1,12 +1,12 @@
 /*
     module  : case.c
-    version : 1.14
-    date    : 03/28/20
+    version : 1.15
+    date    : 03/15/21
 */
 #ifndef CASE_C
 #define CASE_C
 
-PRIVATE double Compare(Node *first, Node *second, int *error)
+PRIVATE double Compare(pEnv env, Node *first, Node *second, int *error)
 {
     char *name;
 
@@ -14,10 +14,10 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
     switch (first->op) {
 #ifndef OLD_RUNTIME
     case USR_:
-	name = dict_descr(first->u.num);
+	name = dict_descr(env, first->u.num);
 	switch (second->op) {
 	case USR_:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -33,7 +33,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 	}
 	break;
 #endif
@@ -42,7 +42,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	switch (second->op) {
 #ifndef OLD_RUNTIME
 	case USR_:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 #endif
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
@@ -60,7 +60,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	    break;
 	default:
 #ifndef OLD_RUNTIME
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 #endif
 	    break;
 	}
@@ -114,7 +114,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	switch (second->op) {
 #ifndef OLD_RUNTIME
 	case USR_:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 #endif
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
@@ -132,7 +132,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	    break;
 	default:
 #ifndef OLD_RUNTIME
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 #endif
 	    break;
 	}
@@ -182,10 +182,10 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	break;
     default:
 #ifndef OLD_RUNTIME
-	name = dict_descr(first->u.num);
+	name = dict_descr(env, first->u.num);
 	switch (second->op) {
 	case USR_:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 	case ANON_FUNCT_:
 	    return strcmp(name, procname(second->u.proc));
 	case BOOLEAN_:
@@ -201,7 +201,7 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 	case FILE_:
 	    break;
 	default:
-	    return strcmp(name, dict_descr(second->u.num));
+	    return strcmp(name, dict_descr(env, second->u.num));
 	}
 #endif
 	break;
@@ -211,27 +211,27 @@ PRIVATE double Compare(Node *first, Node *second, int *error)
 }
 
 #ifndef OLD_RUNTIME
-int put_case(void)
+int put_case(pEnv env)
 {
     Node *cur;
 
     if (!LIST_1)
 	return 0;
-    cur = stk->u.lis;
-    POP(stk);
-    printstack(outfp);
+    cur = env->stk->u.lis;
+    POP(env->stk);
+    printstack(env, outfp);
     fprintf(outfp, "{ /* CASE */");
     fprintf(outfp, "int num = 0, ok; for (;;) {");
     for (; cur->next; cur = cur->next) {
-	printnode(cur, outfp);
-	fprintf(outfp, "if (Compare(stk->u.lis, stk->next, &ok) == ok) {");
-	fprintf(outfp, "POP(stk); POP(stk);");
-	compile(cur->u.lis->next);
+	printnode(env, cur, outfp);
+	fprintf(outfp, "if (Compare(env, env->stk->u.lis, env->stk->next, &ok) == ok) {");
+	fprintf(outfp, "POP(env->stk); POP(env->stk);");
+	compile(env, cur->u.lis->next);
 	fprintf(outfp, "num = 1; break; }");
     }
     fprintf(outfp, "break; } if (!num) {");
-    fprintf(outfp, "POP(stk);");
-    compile(cur->u.lis);
+    fprintf(outfp, "POP(env->stk);");
+    compile(env, cur->u.lis);
     fprintf(outfp, "} }");
     return 1;
 }
@@ -241,28 +241,28 @@ int put_case(void)
 case  :  X [..[X Y]..]  ->  Y i
 Indexing on the value of X, execute the matching Y.
 */
-PRIVATE void do_case(void)
+PRIVATE void do_case(pEnv env)
 {
     int ok;
     Node *cur;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_case())
+    if (compiling && put_case(env))
 	return;
     COMPILE;
 #endif
     TWOPARAMS("case");
     LIST("case");
-    CHECKEMPTYLIST(stk->u.lis, "case");
-    cur = stk->u.lis;
-    POP(stk);
+    CHECKEMPTYLIST(env->stk->u.lis, "case");
+    cur = env->stk->u.lis;
+    POP(env->stk);
     for (; cur->next; cur = cur->next)
-	if (Compare(cur->u.lis, stk, &ok) == ok)
+	if (Compare(env, cur->u.lis, env->stk, &ok) == ok)
 	    break;
     if (cur->next) {
-	POP(stk);
-	exeterm(cur->u.lis->next);
+	POP(env->stk);
+	exeterm(env, cur->u.lis->next);
     } else
-	exeterm(cur->u.lis);
+	exeterm(env, cur->u.lis);
 }
 #endif

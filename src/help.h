@@ -1,17 +1,17 @@
 /*
     module  : help.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     char *ptr;
     int i, column = 0, leng;
 
     COMPILE;
-    for (i = dict_size() - 1; i >= 0; i--) {
-	ptr = dict_descr(i);
+    for (i = dict_size(env) - 1; i >= 0; i--) {
+	ptr = dict_descr(env, i);
 	if (*ptr REL '_' && !isdigit(*ptr)) {
 	    leng = strlen(ptr) + 1;
 	    if (column + leng > LINEWIDTH) {

@@ -1,110 +1,110 @@
 /*
     module  : someall.h
-    version : 1.18
-    date    : 03/28/20
+    version : 1.19
+    date    : 03/15/21
 */
 #ifndef OLD_RUNTIME
 #define CAT(a, b)	a ## b
-#define PUT_PROC(a)	CAT(put_, a)()
+#define PUT_PROC(a)	CAT(put_, a)
 
-int PUT_PROC(PROCEDURE)
+int PUT_PROC(PROCEDURE)(pEnv env)
 {
     Node *prog;
 
     if (!LIST_1)
 	return 0;
-    prog = stk->u.lis;
-    POP(stk);
-    printstack(outfp);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    printstack(env, outfp);
     fprintf(outfp, "{ /* SOMEALL */");
-    fprintf(outfp, "unsigned i, num = %d;", INITIAL);
-    fprintf(outfp, "char *str;");
     fprintf(outfp, "ulong_t set;");
+    fprintf(outfp, "char *str, *volatile ptr;");
+    fprintf(outfp, "unsigned i, num = %d;", INITIAL);
     fprintf(outfp, "Node *list, *save;");
-    fprintf(outfp, "switch (stk->op) {");
+    fprintf(outfp, "switch (env->stk->op) {");
     fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "list = stk->u.lis; POP(stk);");
+    fprintf(outfp, "list = env->stk->u.lis; POP(env->stk);");
     fprintf(outfp, "for (; list; list = list->next) {");
-    fprintf(outfp, "save = stk;");
+    fprintf(outfp, "save = env->stk;");
     fprintf(outfp, "DUPLICATE(list);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
+    compile(env, prog);
+    fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
     fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
     fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "str = stk->u.str; POP(stk);");
+    fprintf(outfp, "ptr = str = GC_strdup(env->stk->u.str); POP(env->stk);");
     fprintf(outfp, "for (; *str; str++) {");
-    fprintf(outfp, "save = stk;");
-    fprintf(outfp, "PUSH(CHAR_, (long_t)*str);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
+    fprintf(outfp, "save = env->stk;");
+    fprintf(outfp, "PUSH_NUM(CHAR_, *str);");
+    compile(env, prog);
+    fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
     fprintf(outfp, "if (num != %d) break; } break;", INITIAL);
     fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = stk->u.set; POP(stk);");
+    fprintf(outfp, "set = env->stk->u.set; POP(env->stk);");
     fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
     fprintf(outfp, "if (set & ((long_t)1 << i)) {");
-    fprintf(outfp, "save = stk;");
-    fprintf(outfp, "PUSH(INTEGER_, i);");
-    compile(prog);
-    fprintf(outfp, "num = stk->u.num; stk = save;");
+    fprintf(outfp, "save = env->stk;");
+    fprintf(outfp, "PUSH_NUM(INTEGER_, i);");
+    compile(env, prog);
+    fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
     fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
-    fprintf(outfp, "PUSH(BOOLEAN_, num); }");
+    fprintf(outfp, "PUSH_NUM(BOOLEAN_, num); }");
     return 1;
 }
 #endif
 
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
-    char *str;
     ulong_t set;
     int i, num = INITIAL;
+    char *str, *volatile ptr;
     Node *prog, *list, *save;
 
 #ifndef OLD_RUNTIME
-    if (compiling && PUT_PROC(PROCEDURE))
+    if (compiling && PUT_PROC(PROCEDURE)(env))
 	return;
     COMPILE;
 #endif
     TWOPARAMS(NAME);
     ONEQUOTE(NAME);
-    prog = stk->u.lis;
-    POP(stk);
-    switch (stk->op) {
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    switch (env->stk->op) {
     case LIST_:
-	list = stk->u.lis;
-	POP(stk);
+	list = env->stk->u.lis;
+	POP(env->stk);
 	for (; list; list = list->next) {
-	    save = stk;
+	    save = env->stk;
 	    DUPLICATE(list);
-	    exeterm(prog);
-	    num = stk->u.num;
-	    stk = save;
+	    exeterm(env, prog);
+	    num = env->stk->u.num;
+	    env->stk = save;
 	    if (num != INITIAL)
 		break;
 	}
 	break;
     case STRING_:
-	str = stk->u.str;
-	POP(stk);
+	ptr = str = GC_strdup(env->stk->u.str);
+	POP(env->stk);
 	for (; *str; str++) {
-	    save = stk;
-	    PUSH(CHAR_, (long_t)*str);
-	    exeterm(prog);
-	    num = stk->u.num;
-	    stk = save;
+	    save = env->stk;
+	    PUSH_NUM(CHAR_, *str);
+	    exeterm(env, prog);
+	    num = env->stk->u.num;
+	    env->stk = save;
 	    if (num != INITIAL)
 		break;
 	}
 	break;
     case SET_:
-	set = stk->u.set;
-	POP(stk);
+	set = env->stk->u.set;
+	POP(env->stk);
 	for (i = 0; i < SETSIZE_; i++)
 	    if (set & ((long_t)1 << i)) {
-		save = stk;
-		PUSH(INTEGER_, i);
-		exeterm(prog);
-		num = stk->u.num;
-		stk = save;
+		save = env->stk;
+		PUSH_NUM(INTEGER_, i);
+		exeterm(env, prog);
+		num = env->stk->u.num;
+		env->stk = save;
 		if (num != INITIAL)
 		    break;
 	    }
@@ -113,7 +113,7 @@ PRIVATE void PROCEDURE(void)
 	BADAGGREGATE(NAME);
 	break;
     }
-    PUSH(BOOLEAN_, num);
+    PUSH_NUM(BOOLEAN_, num);
 }
 
 #undef PROCEDURE

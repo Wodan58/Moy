@@ -1,21 +1,21 @@
 /*
     module  : app1.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef APP1_C
 #define APP1_C
 
 #ifndef OLD_RUNTIME
-int put_app1(void)
+int put_app1(pEnv env)
 {
     Node *prog;
 
     if (!LIST_1)
 	return 0;
-    prog = stk->u.lis;
-    POP(stk);
-    compile(prog);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    compile(env, prog);
     return 1;
 }
 #endif
@@ -24,19 +24,19 @@ int put_app1(void)
 app1  :  X [P]  ->  R
 Executes P, pushes result R on stack.
 */
-PRIVATE void do_app1(void)
+PRIVATE void do_app1(pEnv env)
 {
     Node *prog;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_app1())
+    if (compiling && put_app1(env))
 	return;
     COMPILE;
 #endif
     TWOPARAMS("app1");
     ONEQUOTE("app1");
-    prog = stk->u.lis;
-    POP(stk);
-    exeterm(prog);
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    exeterm(env, prog);
 }
 #endif

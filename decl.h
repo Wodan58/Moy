@@ -1,7 +1,7 @@
 /*
     module  : decl.h
-    version : 1.6
-    date    : 05/13/20
+    version : 1.8
+    date    : 03/15/21
 */
 #define MAXOUT		10
 #define MAXNUM		20
@@ -13,12 +13,11 @@
 #define INPSTACKMAX	10
 #define INPLINEMAX	1000
 #define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
-#define MEMORYMAX	2000
 #define INIECHOFLAG	0
 #define INIAUTOPUT	1
 #define INITRACEGC	1
 #define INIUNDEFERR	0
-#define JLAP_INVALID	1
-#define JLAP_PACKAGE	2
+#define JLAP_INVALID	(intptr_t)1
+#define JLAP_PACKAGE	(intptr_t)2
 #define MIN_INT		-1000000
 #define MAX_INT		0x400000

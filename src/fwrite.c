@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef FWRITE_C
 #define FWRITE_C
@@ -10,7 +10,7 @@
 fwrite  :  S L  ->  S
 A list of integers are written as bytes to the current position of stream S.
 */
-PRIVATE void do_fwrite(void)
+PRIVATE void do_fwrite(pEnv env)
 {
     Node *node;
     int i, leng;
@@ -21,17 +21,17 @@ PRIVATE void do_fwrite(void)
 #endif
     TWOPARAMS("fwrite");
     LIST("fwrite");
-    for (node = stk->u.lis, leng = 0; node; node = node->next, leng++) {
+    for (node = env->stk->u.lis, leng = 0; node; node = node->next, leng++) {
 #ifndef NCHECK
 	if (node->op != INTEGER_)
 	    execerror("numeric list", "fwrite");
 #endif
     }
-    buf = ck_malloc_sec(leng);
-    for (node = stk->u.lis, i = 0; node; node = node->next, i++)
+    buf = GC_malloc_atomic(leng);
+    for (node = env->stk->u.lis, i = 0; node; node = node->next, i++)
 	buf[i] = node->u.num;
-    POP(stk);
+    POP(env->stk);
     FILE("fwrite");
-    fwrite(buf, leng, 1, stk->u.fil);
+    fwrite(buf, leng, 1, env->stk->u.fil);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : fputstring.c
-    version : 1.2
-    date    : 03/28/20
+    version : 1.3
+    date    : 03/15/21
 */
 #ifndef FPUTSTRING_C
 #define FPUTSTRING_C
@@ -17,9 +17,9 @@
 fputstring  :  S "abc.."  ->  S
 == fputchars, as a temporary alternative.
 */
-PRIVATE void do_fputstring(void)
+PRIVATE void do_fputstring(pEnv env)
 {
-    do_fputchars();
+    do_fputchars(env);
 }
 /* fputchars.c */
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef GETENV_C
 #define GETENV_C
@@ -10,7 +10,7 @@
 getenv  :  "variable"  ->  "value"
 Retrieves the value of the environment variable "variable".
 */
-PRIVATE void do_getenv(void)
+PRIVATE void do_getenv(pEnv env)
 {
     char *str;
 
@@ -19,8 +19,8 @@ PRIVATE void do_getenv(void)
 #endif
     ONEPARAM("getenv");
     STRING("getenv");
-    if ((str = getenv(stk->u.str)) == 0)
+    if ((str = getenv(env->stk->u.str)) == 0)
 	str = "";
-    stk->u.str = str;
+    env->stk->u.str = str;
 }
 #endif

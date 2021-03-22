@@ -1,7 +1,7 @@
 /*
     module  : integer.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef INTEGER_C
 #define INTEGER_C

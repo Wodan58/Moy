@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.6
-    date    : 08/17/20
+    version : 1.7
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -19,14 +19,15 @@ static int ilevel;
 
 static struct {
     FILE *fp;
-    char *name;
+    char name[ALEN];
     int linenum;
 } infile[INPSTACKMAX];
 
 void inilinebuffer(FILE *fp, char *str)
 {
     infile[0].fp = yyin = fp;
-    infile[0].name = str;
+    strncpy(infile[0].name, str, ALEN);
+    infile[0].name[ALEN - 1] = 0;
     infile[0].linenum = 0;
 }
 
@@ -38,7 +39,7 @@ void redirect(FILE *fp)
     if (ilevel + 1 == INPSTACKMAX)
 	execerror("fewer include files", "redirect");
     infile[++ilevel].fp = yyin = fp;
-    infile[ilevel].name = 0;
+    infile[ilevel].name[0] = 0;
     infile[ilevel].linenum = yylineno = 0;
     new_buffer();
 }
@@ -52,7 +53,8 @@ void include(char *filnam)
     if ((fp = fopen(filnam, "r")) == 0)
 	execerror("valid file name", "include");
     redirect(fp);
-    infile[ilevel].name = ck_strdup(filnam);
+    strncpy(infile[ilevel].name, filnam, ALEN);
+    infile[ilevel].name[ALEN - 1] = 0;
 }
 
 int yywrap(void)

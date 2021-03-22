@@ -1,7 +1,7 @@
 /*
     module  : string.c
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
 #ifndef STRING_C
 #define STRING_C

@@ -1,7 +1,7 @@
 /*
     module  : strtol.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef STRTOL_C
 #define STRTOL_C
@@ -12,7 +12,7 @@ String S is converted to the integer J using base I.
 If I = 0, assumes base 10,
 but leading "0" means base 8 and leading "0x" means base 16.
 */
-PRIVATE void do_strtol(void)
+PRIVATE void do_strtol(pEnv env)
 {
     int base;
     long_t num;
@@ -25,15 +25,11 @@ PRIVATE void do_strtol(void)
 #endif
     TWOPARAMS("strtol");
     INTEGER("strtol");
-    base = stk->u.num;
-    POP(stk);
+    base = env->stk->u.num;
+    POP(env->stk);
     STRING("strtol");
-#ifdef _MSC_VER
-    num = strtol(stk->u.str, 0, base);
-#else
-    num = strtoll(stk->u.str, 0, base);
-#endif
-    stk->u.num = num;
-    stk->op = INTEGER_;
+    num = strtol(env->stk->u.str, 0, base);
+    env->stk->u.num = num;
+    env->stk->op = INTEGER_;
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : fputchars.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FPUTCHARS_C
 #define FPUTCHARS_C
@@ -10,7 +10,7 @@
 fputchars  :  S "abc.."  ->  S
 The string abc.. (no quotes) is written to the current position of stream S.
 */
-PRIVATE void do_fputchars(void)
+PRIVATE void do_fputchars(pEnv env)
 {
     char *str;
 
@@ -19,11 +19,11 @@ PRIVATE void do_fputchars(void)
 #endif
     TWOPARAMS("fputchars");
 #ifndef NCHECK
-    if (stk->next->op != FILE_ || !stk->next->u.fil)
+    if (env->stk->next->op != FILE_ || !env->stk->next->u.fil)
 	execerror("file", "fputchars");
 #endif
-    str = stk->u.str;
-    POP(stk);
-    fprintf(stk->u.fil, "%s", str);
+    str = env->stk->u.str;
+    POP(env->stk);
+    fprintf(env->stk->u.fil, "%s", str);
 }
 #endif

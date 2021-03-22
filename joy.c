@@ -1,7 +1,7 @@
 /*
     module  : joy.c
-    version : 1.6
-    date    : 08/17/20
+    version : 1.7
+    date    : 03/15/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -48,7 +48,7 @@ char *StrVal(char *str)
     int i = 0;
     char *buf;
 
-    buf = ck_strdup(str);
+    buf = GC_strdup(str);
     while (*str != '"')
 	if (*str != '\\')
 	    buf[i++] = *str++;

@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.10
-    date    : 03/28/20
+    version : 1.11
+    date    : 03/15/21
 */
 #ifndef DROP_C
 #define DROP_C
@@ -10,8 +10,9 @@
 drop  :  A N  ->  B
 Aggregate B is the result of deleting the first N elements of A.
 */
-PRIVATE void do_drop(void)
+PRIVATE void do_drop(pEnv env)
 {
+    char *str;
     int i, num;
     Node *node;
     ulong_t set;
@@ -23,27 +24,30 @@ PRIVATE void do_drop(void)
 	COMPILE;
 #endif
     TWOPARAMS("drop");
-    num = stk->u.num;
-    POP(stk);
-    switch (stk->op) {
+    num = env->stk->u.num;
+    POP(env->stk);
+    switch (env->stk->op) {
     case LIST_:
-	node = stk->u.lis;
+	node = env->stk->u.lis;
 	while (num-- > 0 && node)
 	    node = node->next;
-	stk->u.lis = node;
+	env->stk->u.lis = node;
 	break;
     case STRING_:
-	stk->u.str += num;
+	str = env->stk->u.str;
+	while (num-- > 0 && *str)
+	    str++;
+	env->stk->u.str = GC_strdup(str);
 	break;
     case SET_:
 	for (set = i = 0; i < SETSIZE_; i++)
-	    if (stk->u.set & ((long_t)1 << i)) {
+	    if (env->stk->u.set & ((long_t)1 << i)) {
 		if (num < 1)
 		    set |= (long_t)1 << i;
 		else
 		    num--;
 	    }
-	stk->u.set = set;
+	env->stk->u.set = set;
 	break;
     default:
 	BADAGGREGATE("drop");

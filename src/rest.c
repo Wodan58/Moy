@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef REST_C
 #define REST_C
@@ -10,7 +10,7 @@
 rest  :  A  ->  R
 R is the non-empty aggregate A with its first member removed.
 */
-PRIVATE void do_rest(void)
+PRIVATE void do_rest(pEnv env)
 {
     int i = 0;
     char *str;
@@ -22,21 +22,21 @@ PRIVATE void do_rest(void)
 	COMPILE;
 #endif
     ONEPARAM("rest");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case LIST_:
-	CHECKEMPTYLIST(stk->u.lis, "rest");
-	stk->u.lis = stk->u.lis->next;
+	CHECKEMPTYLIST(env->stk->u.lis, "rest");
+	env->stk->u.lis = env->stk->u.lis->next;
 	break;
     case STRING_:
-	str = stk->u.str;
+	str = env->stk->u.str;
 	CHECKEMPTYSTRING(str, "rest");
-	stk->u.str = ++str;
+	env->stk->u.str = GC_strdup(++str);
 	break;
     case SET_:
-	CHECKEMPTYSET(stk->u.set, "rest");
-	while (!(stk->u.set & ((long_t)1 << i)))
+	CHECKEMPTYSET(env->stk->u.set, "rest");
+	while (!(env->stk->u.set & ((long_t)1 << i)))
 	    i++;
-	stk->u.set = stk->u.set & ~((long_t)1 << i);
+	env->stk->u.set = env->stk->u.set & ~((long_t)1 << i);
 	break;
     default:
 	BADAGGREGATE("rest");

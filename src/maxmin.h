@@ -1,9 +1,9 @@
 /*
     module  : maxmin.h
-    version : 1.8
-    date    : 03/28/20
+    version : 1.9
+    date    : 03/15/21
 */
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && ((NUMERIC_1 && NUMERIC_2) || (CHAR_1 && CHAR_2)))
@@ -13,23 +13,23 @@ PRIVATE void PROCEDURE(void)
 #endif
     TWOPARAMS(NAME);
 #ifndef NCHECK
-    if ((((stk->op == FLOAT_ || stk->op == INTEGER_) &&
-	  (stk->next->op == FLOAT_ || stk->next->op == INTEGER_)) ||
-	  (stk->op == CHAR_ && stk->next->op == CHAR_)));
+    if ((((env->stk->op == FLOAT_ || env->stk->op == INTEGER_) &&
+	  (env->stk->next->op == FLOAT_ || env->stk->next->op == INTEGER_)) ||
+	  (env->stk->op == CHAR_ && env->stk->next->op == CHAR_)));
     else
 	execerror("two floats or numerics", NAME);
 #endif
-    if (stk->next->op == FLOAT_)
-	stk->next->u.dbl =
+    if (env->stk->next->op == FLOAT_)
+	env->stk->next->u.dbl =
 	    FLOATVAL OPER FLOATVAL2 ? FLOATVAL2 : FLOATVAL;
-    else if (stk->op == FLOAT_) {
-	stk->next->u.dbl =
+    else if (env->stk->op == FLOAT_) {
+	env->stk->next->u.dbl =
 	    FLOATVAL OPER FLOATVAL2 ? FLOATVAL2 : FLOATVAL;
-	stk->next->op = FLOAT_;
+	env->stk->next->op = FLOAT_;
     } else
-	stk->next->u.num = stk->u.num OPER stk->next->u.num ?
-	    stk->next->u.num : stk->u.num;
-    POP(stk);
+	env->stk->next->u.num = env->stk->u.num OPER env->stk->next->u.num ?
+	    env->stk->next->u.num : env->stk->u.num;
+    POP(env->stk);
 }
 
 #undef PROCEDURE

@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.12
-    date    : 03/28/20
+    version : 1.13
+    date    : 03/15/21
 */
 #ifndef FORMAT_C
 #define FORMAT_C
@@ -13,7 +13,7 @@ S is the formatted version of N in mode C
 'X = hex with lower or upper case letters)
 with maximum width I and minimum width J.
 */
-PRIVATE void do_format(void)
+PRIVATE void do_format(pEnv env)
 {
     int width, prec, leng;
     char spec, format[8], *result;
@@ -27,32 +27,32 @@ PRIVATE void do_format(void)
     FOURPARAMS("format");
     INTEGER("format");
     INTEGER2("format");
-    prec = stk->u.num;
-    POP(stk);
-    width = stk->u.num;
-    POP(stk);
+    prec = env->stk->u.num;
+    POP(env->stk);
+    width = env->stk->u.num;
+    POP(env->stk);
     CHARACTER("format");
-    spec = stk->u.num;
-    POP(stk);
+    spec = env->stk->u.num;
+    POP(env->stk);
 #ifndef NCHECK
     if (!strchr("dioxX", spec))
 	execerror("one of: d i o x X", "format");
 #endif
-    strcpy(format, "%*.*lld");
+    strcpy(format, "%*.*ld");
     format[6] = spec;
     NUMERICTYPE("format");
 #ifdef _MSC_VER
     leng = INPLINEMAX;
 #else
-    leng = snprintf(0, 0, format, width, prec, (long long)stk->u.num) + 1;
+    leng = snprintf(0, 0, format, width, prec, (long)env->stk->u.num) + 1;
 #endif
-    result = ck_malloc_sec(leng + 1);
+    result = GC_malloc_atomic(leng + 1);
 #ifdef _MSC_VER
-    sprintf(result, format, width, prec, (long long)stk->u.num);
+    sprintf(result, format, width, prec, (long)env->stk->u.num);
 #else
-    snprintf(result, leng, format, width, prec, (long long)stk->u.num);
+    snprintf(result, leng, format, width, prec, (long)env->stk->u.num);
 #endif
-    stk->u.str = result;
-    stk->op = STRING_;
+    env->stk->u.str = result;
+    env->stk->op = STRING_;
 }
 #endif

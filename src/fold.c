@@ -1,7 +1,7 @@
 /*
     module  : fold.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FOLD_C
 #define FOLD_C
@@ -24,7 +24,7 @@ fold  :  A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
 and combines with binary operator P to produce value V.
 */
-PRIVATE void do_fold(void)
+PRIVATE void do_fold(pEnv env)
 {
 #ifndef OLD_RUNTIME
     if (compiling && LIST_1 && VALID_2 && VALID_3)
@@ -33,7 +33,7 @@ PRIVATE void do_fold(void)
 	COMPILE;
 #endif
     THREEPARAMS("fold");
-    do_swapd();
-    do_step();
+    do_swapd(env);
+    do_step(env);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : compile.c
-    version : 1.43
-    date    : 11/23/20
+    version : 1.46
+    date    : 03/16/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -12,9 +12,9 @@
 #include "symbol.h"
 #include "decl.h"
 
-static unsigned ListLeng(Node *cur)
+static int ListLeng(Node *cur)
 {
-    unsigned leng;
+    int leng;
 
     for (leng = 0; cur; cur = cur->next) {
 	leng++;
@@ -24,9 +24,9 @@ static unsigned ListLeng(Node *cur)
     return leng;
 }
 
-static unsigned StringLeng(char *str)
+static int StringLeng(char *str)
 {
-    unsigned i;
+    int i;
 
     for (i = 2; *str; i++, str++)
 	if (strchr("\"'\\", *str) || (*str >= 8 && *str <= 13))
@@ -77,11 +77,11 @@ static void StringPrint(char *ptr, char *str)
 
 static char *PrintString(char *str)
 {
+    int leng;
     char *ptr;
-    unsigned leng;
 
     leng = StringLeng(str);
-    ptr = ck_malloc_sec(leng + 1);
+    ptr = GC_malloc_atomic(leng + 1);
     StringPrint(ptr, str);
     return ptr;
 }
@@ -91,7 +91,7 @@ static Node *copy(Node *node)
     Node *my_root = 0, **cur;
 
     for (cur = &my_root; node; node = node->next) {
-	if ((*cur = ck_malloc(sizeof(Node))) == 0)
+	if ((*cur = GC_malloc(sizeof(Node))) == 0)
 	    return 0;
 	**cur = *node;
 	cur = &(*cur)->next;
@@ -100,188 +100,152 @@ static Node *copy(Node *node)
     return my_root;
 }
 
-static void printlist(Node *cur, FILE *fp);
-
-static void printmember(Node *cur, FILE *fp)
+static void PrintMember(pEnv env, Node *cur, int list, int *pindex, FILE *fp)
 {
-    int index;
     char *name;
-    unsigned flags;
+    int offset, flags, index = *pindex;
 
+    if (!cur)
+	return;
+    fprintf(fp, "{");
     switch (cur->op) {
     case USR_ :
-	index = cur->u.num;
-	if (dict_body(index) == 0) {
-	    name = dict_name(index);
-	    fprintf(fp, "list = SYM_NEWNODE(\"%s\", list);", name);
+	offset = cur->u.num;
+	if (dict_body(env, offset) == 0) {
+	    fprintf(fp, ".u.str=\"%s\",", dict_name(env, offset));
+	    fprintf(fp, ".op=SYMBOL_");
 	} else {
-	    flags = dict_flags(index);
-	    name = dict_nickname(index);
-	    if ((flags & IS_BUILTIN) == 0) {
+	    flags = dict_flags(env, offset);
+	    name = dict_nickname(env, offset);
+	    if ((flags & IS_BUILTIN) == 0)
 		if ((flags & IS_DECLARED) == 0) {
 		    flags |= IS_DECLARED;
-		    fprintf(declfp, "void do_%s(void);", name);
+		    fprintf(declfp, "void do_%s(pEnv env);", name);
 		}
-	    }
-	    dict_setflags(index, flags |= IS_USED);
-	    fprintf(fp, "list = ANON_FUNCT_NEWNODE(do_%s, list);", name);
+	    dict_setflags(env, offset, flags |= IS_USED);
+	    fprintf(fp, ".u.proc=do_%s,", name);
+	    fprintf(fp, ".op=ANON_FUNCT_");
 	}
 	break;
     case ANON_FUNCT_ :
-	name = procname(cur->u.proc);
-	fprintf(fp, "list = ANON_FUNCT_NEWNODE(do_%s, list);", name);
+	fprintf(fp, ".u.proc=do_%s,", procname(cur->u.proc));
+	fprintf(fp, ".op=ANON_FUNCT_");
 	break;
     case BOOLEAN_ :
-	fprintf(fp, "list = BOOLEAN_NEWNODE(%d, list);", cur->u.num != 0);
+	fprintf(fp, ".u.num=%d,", cur->u.num != 0);
+	fprintf(fp, ".op=BOOLEAN_");
 	break;
     case CHAR_ :
-	fprintf(fp, "list = CHAR_NEWNODE(%d, list);", (int)cur->u.num);
+	fprintf(fp, ".u.num=%d,", (int)cur->u.num);
+	fprintf(fp, ".op=CHAR_");
 	break;
     case INTEGER_ :
-	fprintf(fp, "list = INTEGER_NEWNODE(" PRINT_NUM ", list);", cur->u.num);
+	fprintf(fp, ".u.num=%ld,", (long)cur->u.num);
+	fprintf(fp, ".op=INTEGER_");
 	break;
     case SET_ :
-	fprintf(fp, "list = SET_NEWNODE(" PRINT_SET ", list);", cur->u.set);
+	fprintf(fp, ".u.num=%lu,", (unsigned long)cur->u.set);
+	fprintf(fp, ".op=SET_");
 	break;
     case STRING_ :
-	if (!cur->u.str)
-	    fprintf(fp, "list = STRING_NEWNODE(0, list);");
-	else {
-	    name = PrintString(cur->u.str);
-	    fprintf(fp, "list = STRING_NEWNODE(%s, list);", name);
-	}
+	fprintf(fp, ".u.str=%s,", PrintString(cur->u.str));
+	fprintf(fp, ".op=STRING_");
 	break;
     case LIST_ :
-	if (!cur->u.lis)
-	    fprintf(fp, "list = LIST_NEWNODE(0, list);");
-	else {
-	    printlist(cur->u.lis,fp);
-	    fprintf(fp, "list = LIST_NEWNODE(stk->u.lis, list);");
-	    fprintf(fp, "POP(stk);");
-	}
-	break;
+	if (cur->u.lis)
+	    fprintf(fp, ".u.lis=L%d+%d,", list, index + 1);
+	fprintf(fp, ".op=LIST_");
+	if (cur->next)
+	   fprintf(fp, ",.next=L%d+%d", list, index + 1 + ListLeng(cur->u.lis));
+	fprintf(fp, "},\n");
+	*pindex = index + 1;
+	for (cur = cur->u.lis; cur; cur = cur->next)
+	    PrintMember(env, cur, list, pindex, fp);
+	return;
     case FLOAT_ :
-	fprintf(fp, "list = FLOAT_NEWNODE(%g, list);", cur->u.dbl);
-	break;
-    default :
-	execerror("valid datatype", "printmember");
+	fprintf(fp, ".u.dbl=%g,", cur->u.dbl);
+	fprintf(fp, ".op=FLOAT_");
 	break;
     }
+    if (cur->next)
+	fprintf(fp, ",.next=L%d+%d", list, index + 1);
+    fprintf(fp, "},\n");
+    *pindex = index + 1;
 }
 
-typedef struct NodeList {
-    int seqnr, print;
-    Node *node;
-    struct NodeList *next;
-} NodeList;
-
-static NodeList *root;
-
-int identical_list(Node *first, Node *second);
-
-static int FindNode(Node *node)
+static int PrintList(pEnv env, Node *cur, FILE *fp)
 {
-    static int seqnr;
-    NodeList *cur;
+    static int list;
+    int leng, index;
 
-    for (cur = root; cur; cur = cur->next)
-	if (identical_list(node, cur->node))
-	    return cur->seqnr;
-    cur = ck_malloc(sizeof(NodeList));
-    cur->print = 0;
-    cur->seqnr = ++seqnr;
-    cur->node = copy(node);
-    cur->next = root;
-    root = cur;
-    fprintf(declfp, "void push_list_%d(void);", seqnr);
-    return seqnr;
+    leng = ListLeng(cur);
+    fprintf(fp, "static Node L%d[%d] = {\n", ++list, leng);
+    for (index = 0; cur; cur = cur->next)
+	PrintMember(env, cur, list, &index, fp);
+    fprintf(fp, "};\n");
+    return list;
 }
 
-static int PrintNode(FILE *fp)
-{
-    Node *node;
-    int changed;
-    NodeList *cur;
-
-    for (changed = 0, cur = root; cur; cur = cur->next) {
-	if (cur->print)
-	    continue;
-	changed = cur->print = 1;
-	fprintf(fp, "void push_list_%d(void) {", cur->seqnr);
-	fprintf(fp, "static Node *list;");
-	fprintf(fp, "if (!list) {");
-	for (node = reverse(copy(cur->node)); node; node = node->next)
-	    printmember(node, fp);
-	fprintf(fp, "} PUSH(LIST_, list); }");
-    }
-    return changed;
-}
-
-static void printlist(Node *cur, FILE *fp)
-{
-    fprintf(fp, "push_list_%d();", FindNode(cur));
-}
-
-void printnode(Node *node, FILE *fp)
+void printnode(pEnv env, Node *node, FILE *fp)
 {
     Node *cur;
-    int index;
     char *name;
-    unsigned flags;
+    int index, flags;
 
     switch (node->op) {
     case USR_ :
 	index = node->u.num;
-	if ((cur = dict_body(index)) == 0) {
-	    name = dict_name(index);
-	    fprintf(fp, "PUSH(SYMBOL_, \"%s\");", name);
+	if ((cur = dict_body(env, index)) == 0) {
+	    name = dict_name(env, index);
+	    fprintf(fp, "PUSH_PTR(SYMBOL_, \"%s\");", name);
 	} else {
-	    flags = dict_flags(index);
-	    name = dict_nickname(index);
+	    flags = dict_flags(env, index);
+	    name = dict_nickname(env, index);
 	    if ((flags & IS_BUILTIN) == 0) {
 		if ((flags & IS_ACTIVE) == 0 && (flags & IS_USED) == 0) {
-		    dict_setflags(index, flags | IS_ACTIVE);
-		    compile(cur);
-		    flags = dict_flags(index);
-		    dict_setflags(index, flags & ~IS_ACTIVE);
+		    dict_setflags(env, index, flags | IS_ACTIVE);
+		    compile(env, cur);
+		    flags = dict_flags(env, index);
+		    dict_setflags(env, index, flags & ~IS_ACTIVE);
 		    break;
 		}
 		if ((flags & IS_DECLARED) == 0) {
 		    flags |= IS_DECLARED;
-		    fprintf(declfp, "void do_%s(void);", name);
+		    fprintf(declfp, "void do_%s(pEnv env);", name);
 		}
 	    }
-	    dict_setflags(index, flags | IS_USED);
-	    fprintf(outfp, "do_%s();", name);
+	    dict_setflags(env, index, flags | IS_USED);
+	    fprintf(outfp, "do_%s(env);", name);
 	}
 	break;
     case BOOLEAN_:
-	fprintf(fp, "PUSH(BOOLEAN_, %d);", node->u.num != 0);
+	fprintf(fp, "PUSH_NUM(BOOLEAN_, %d);", node->u.num != 0);
 	break;
     case CHAR_:
-	fprintf(fp, "PUSH(CHAR_, %d);", (int)node->u.num);
+	fprintf(fp, "PUSH_NUM(CHAR_, %d);", (int)node->u.num);
 	break;
     case INTEGER_:
-	fprintf(fp, "PUSH(INTEGER_, " PRINT_NUM ");", node->u.num);
+	fprintf(fp, "PUSH_NUM(INTEGER_, %ld);", (long)node->u.num);
 	break;
     case SET_:
-	fprintf(fp, "PUSH(SET_, " PRINT_SET ");", node->u.set);
+	fprintf(fp, "PUSH_NUM(SET_, %lu);", (unsigned long)node->u.set);
 	break;
     case STRING_:
 	name = PrintString(node->u.str);
-	fprintf(fp, "PUSH(STRING_, %s);", name);
+	fprintf(fp, "PUSH_PTR(STRING_, %s);", name);
 	break;
     case LIST_:
 	if (!node->u.lis)
-	    fprintf(fp, "PUSH(LIST_, 0);");
+	    fprintf(fp, "PUSH_PTR(LIST_, 0);");
 	else
-	    printlist(node->u.lis, fp);
+	    fprintf(fp, "PUSH_PTR(LIST_, L%d);",
+		    PrintList(env, node->u.lis, fp));
 	break;
     case FLOAT_:
-	fprintf(fp, "DBL_PUSH((real_t)%g);", node->u.dbl);
+	fprintf(fp, "PUSH_DBL(%g);", node->u.dbl);
 	break;
     case SYMBOL_:
-	fprintf(fp, "PUSH(SYMBOL_, \"%s\");", node->u.str);
+	fprintf(fp, "PUSH_PTR(SYMBOL_, \"%s\");", node->u.str);
 	break;
     default:
 	execerror("valid datatype", "printnode");
@@ -289,23 +253,30 @@ void printnode(Node *node, FILE *fp)
     }
 }
 
-void printstack(FILE *fp)
+void printstack(pEnv env, FILE *fp)
 {
-    for (stk = reverse(stk); stk; stk = stk->next)
-	printnode(stk, fp);
+    for (env->stk = reverse(env->stk); env->stk; env->stk = env->stk->next)
+	printnode(env, env->stk, fp);
 }
 
-void compile(Node *node)
+void compile(pEnv env, Node *node)
 {
-    for (printstack(outfp); node; node = node->next)
-	printnode(node, outfp);
+    for (printstack(env, outfp); node; node = node->next)
+	printnode(env, node, outfp);
+}
+
+static void finalise(pEnv env);
+
+static void my_finalise(void)
+{
+    finalise(environment);
 }
 
 void initialise(void)
 {
     time_t t = time(0);
 
-    atexit(finalise);
+    atexit(my_finalise);
     fprintf(declfp = stdout, "/*\n * generated %s */\n", ctime(&t));
     fprintf(declfp, "#define OLD_RUNTIME\n");
     fprintf(declfp, "#include \"runtime.h\"\n");
@@ -314,22 +285,21 @@ void initialise(void)
 	fprintf(stderr, "Failed to open outfile\n");
 	exit(1);
     }
-    fprintf(outfp, "int yyparse() {");
+    fprintf(outfp, "int yyparse() { pEnv env = environment;");
 }
 
-static void declare(FILE *fp)
+static void declare(pEnv env, FILE *fp)
 {
     char *name;
-    unsigned flags;
-    int i, j, leng;
+    int i, j, leng, flags;
 
-    leng = dict_size();
+    leng = dict_size(env);
     for (i = 0; i < leng; i++) {
-	flags = dict_flags(i);
+	flags = dict_flags(env, i);
 	if (((flags & IS_ORIGINAL) && !(flags & IS_BUILTIN)) ||
 	    ((flags & IS_ORIGINAL) && !(flags & IS_USED))) {
 	    fprintf(fp, "#define ");
-	    name = dict_nickname(i);
+	    name = dict_nickname(env, i);
 	    for (j = 0; name[j]; j++)
 		fputc(toupper(name[j]), fp);
 	    fprintf(fp, "_X\n");
@@ -341,33 +311,29 @@ static void declare(FILE *fp)
     }
 }
 
-void finalise(void)
+static void finalise(pEnv env)
 {
     Node *body;
-    unsigned flags;
-    char *name, *parm;
-    int i, j, leng, changed;
+    char *name;
+    int i, leng, flags, changed;
 
     fprintf(outfp, "return 0; }");
     do {
-	changed = PrintNode(outfp);
-	for (leng = dict_size(), i = 0; i < leng; i++) {
-	    if ((flags = dict_flags(i)) & IS_BUILTIN)
+	changed = 0;
+	for (leng = dict_size(env), i = 0; i < leng; i++) {
+	    if ((flags = dict_flags(env, i)) & IS_BUILTIN)
 		continue;
-	    if ((body = dict_body(i)) == 0)
+	    if ((body = dict_body(env, i)) == 0)
 		continue;
 	    if ((flags & IS_USED) && (flags & IS_PRINTED) == 0) {
-		dict_setflags(i, flags | IS_PRINTED);
-		name = dict_nickname(i);
-		if (body->op == USR_) {
-		    j = body->u.num;
-		    parm = dict_nickname(j);
-		    if (!strcmp(name, parm))
+		dict_setflags(env, i, flags | IS_PRINTED);
+		name = dict_nickname(env, i);
+		if (body->op == USR_)
+		    if (!strcmp(name, dict_nickname(env, body->u.num)))
 			continue;
-		}
 		changed = 1;
-		fprintf(outfp, "void do_%s(void) {", name);
-		compile(body);
+		fprintf(outfp, "void do_%s(pEnv env) {", name);
+		compile(env, body);
 		fprintf(outfp, "}");
 	    }
 	}
@@ -375,8 +341,8 @@ void finalise(void)
     printout(declfp);
     closeout();
     fprintf(declfp, "table_t table[] = {");
-    iterate_dict_and_write_struct(declfp);
+    iterate_dict_and_write_struct(env, declfp);
     fprintf(declfp, "{ 0, 0 }, };");
-    declare(declfp);
+    declare(env, declfp);
     fprintf(declfp, "#include \"interp.c\"\n");
 }

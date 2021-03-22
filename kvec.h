@@ -23,8 +23,8 @@
   An example:
 
 #include <stdlib.h>
-#define mem_malloc	malloc
-#define mem_realloc	realloc
+#define GC_malloc	malloc
+#define GC_realloc	realloc
 #include "kvec.h"
 
 int main()
@@ -42,8 +42,8 @@ int main()
 
 /*
     module  : kvec.h
-    version : 1.2
-    date    : 01/20/20
+    version : 1.4
+    date    : 06/22/20
 
  1. Change type of n, m from size_t to unsigned. Reason: takes less memory.
  2. Remove (type*) casts. Reason: not needed for C.
@@ -74,6 +74,8 @@ int main()
 23. Rename vec_resize to vec_grow. Reason: vector can only grow.
 24. Add vec_shrink macro. Reason: reduce memory footprint of large vectors.
 25. Add vec_end macro. Reason: can be used as stack pointer.
+26. Use GC_malloc and GC_realloc. Reason: simpler interface.
+27. Remove stk_ macros. Reason: Two different memory allocators is confusing.
 
   2008-09-22 (0.1.0):
 	* The initial version.
@@ -82,7 +84,7 @@ int main()
 #define AC_KVEC_H
 
 #define vector(type)		struct { unsigned n, m; type *a; }
-#define vec_init(v)		do { (v) = mem_malloc(sizeof(*(v))); \
+#define vec_init(v)		do { (v) = GC_malloc(sizeof(*(v))); \
 				(v)->n = (v)->m = 0; (v)->a = 0; } while (0)
 #define vec_destroy(v)		do { free((v)->a); free((v)); } while (0)
 #define vec_at(v, i)		((v)->a[(i)])
@@ -92,10 +94,10 @@ int main()
 #define vec_size(v)		((v) ? (v)->n : 0)
 #define vec_setsize(v, s)	((v)->n = (s))
 #define vec_max(v)		((v)->m)
-#define vec_grow(v, s)		((v)->m = (s), (v)->a = mem_realloc((v)->a, \
+#define vec_grow(v, s)		((v)->m = (s), (v)->a = GC_realloc((v)->a, \
 				sizeof(*(v)->a) * (v)->m))
 #define vec_shrink(v)		do { if ((v)->n) { ((v)->m = (v)->n; (v)->a = \
-				mem_realloc((v)->a, sizeof(*(v)->a) * (v)->m));\
+				GC_realloc((v)->a, sizeof(*(v)->a) * (v)->m));\
 				} } while (0)
 #define vec_equal(v, w)		((v)->n == (w)->n && !memcmp((v)->a, (w)->a, \
 				sizeof(*(v)) * (v)->n))
@@ -115,7 +117,7 @@ int main()
 	    if (!(v)) vec_init((v));					\
 	    if ((v)->n == (v)->m) {					\
 		(v)->m = (v)->m ? (v)->m << 1 : 1;			\
-		(v)->a = mem_realloc((v)->a, sizeof(*(v)->a) * (v)->m);	\
+		(v)->a = GC_realloc((v)->a, sizeof(*(v)->a) * (v)->m);	\
 	    } (v)->a[(v)->n++] = (x);					\
 	} while (0)
 
@@ -128,19 +130,5 @@ int main()
 		vec_at((v), i) = vec_at((v), j);			\
 		vec_at((v), j) = vec_at((v), k);			\
 	    } vec_pop((v));						\
-	} while (0)
-
-/* stk_init -- non-garbage collecting memory allocator unlike vec_init */
-#define stk_init(v)	do { (v) = chk_malloc(sizeof(*(v)));		\
-			(v)->n = (v)->m = 0; (v)->a = 0; } while (0)
-
-/* stk_push does not check whether v needs to be initialized -- faster */
-#define stk_push(v, x) 							\
-	do {								\
-	    if ((v)->n == (v)->m) {					\
-		(v)->m = (v)->m ? (v)->m << 1 : 1;			\
-		(v)->a = chk_realloc((v)->a, sizeof(*(v)->a) * (v)->m);	\
-	    }								\
-	    (v)->a[(v)->n++] = (x);					\
 	} while (0)
 #endif

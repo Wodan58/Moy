@@ -1,13 +1,13 @@
 /*
     module  : condlinrec.c
-    version : 1.17
-    date    : 03/28/20
+    version : 1.18
+    date    : 03/15/21
 */
 #ifndef CONDLINREC_C
 #define CONDLINREC_C
 
 #ifndef OLD_RUNTIME
-int put_condnestrec(void)
+int put_condnestrec(pEnv env)
 {
     static int ident;
     FILE *oldfp;
@@ -15,33 +15,33 @@ int put_condnestrec(void)
 
     if (!LIST_1)
 	return 0;
-    root = stk->u.lis;
-    POP(stk);
-    printstack(outfp);
-    fprintf(declfp, "void condnestrec_%d(void);", ++ident);
-    fprintf(outfp, "condnestrec_%d();", ident);
+    root = env->stk->u.lis;
+    POP(env->stk);
+    printstack(env, outfp);
+    fprintf(declfp, "void condnestrec_%d(pEnv env);", ++ident);
+    fprintf(outfp, "condnestrec_%d(env);", ident);
     oldfp = outfp;
     outfp = nextfile();
-    fprintf(outfp, "void condnestrec_%d(void) {", ident);
+    fprintf(outfp, "void condnestrec_%d(pEnv env) {", ident);
     fprintf(outfp, "Node *save; int num;");
     for (cur = root; cur->next; cur = cur->next) {
-	fprintf(outfp, "save = stk;");
+	fprintf(outfp, "save = env->stk;");
 	list = cur->u.lis->u.lis;
-	compile(list);
-	fprintf(outfp, "num = stk->u.num; stk = save; if (num) {");
+	compile(env, list);
+	fprintf(outfp, "num = env->stk->u.num; env->stk = save; if (num) {");
 	node = cur->u.lis->next;
-	compile(node->u.lis);
+	compile(env, node->u.lis);
 	while ((node = node->next) != 0) {
-	    fprintf(outfp, "condnestrec_%d();", ident);
-	    compile(node->u.lis);
+	    fprintf(outfp, "condnestrec_%d(env);", ident);
+	    compile(env, node->u.lis);
 	}
 	fprintf(outfp, "return; }");
     }
     cur = cur->u.lis;
-    compile(cur->u.lis);
+    compile(env, cur->u.lis);
     while ((cur = cur->next) != 0) {
-	fprintf(outfp, "condnestrec_%d();", ident);
-	compile(cur->u.lis);
+	fprintf(outfp, "condnestrec_%d(env);", ident);
+	compile(env, cur->u.lis);
     }
     fprintf(outfp, "}");
     closefile(outfp);
@@ -50,25 +50,25 @@ int put_condnestrec(void)
 }
 #endif
 
-PRIVATE void condnestrec(Node *root)
+PRIVATE void condnestrec(pEnv env, Node *root)
 {
     int num = 0;
     Node *cur, *list, *save;
 
     for (cur = root; cur->next; cur = cur->next) {
 	list = cur->u.lis->u.lis;
-	save = stk;
-	exeterm(list);
-	num = stk->u.num;
-	stk = save;
+	save = env->stk;
+	exeterm(env, list);
+	num = env->stk->u.num;
+	env->stk = save;
 	if (num)
 	    break;
     }
     cur = num ? cur->u.lis->next : cur->u.lis;
-    exeterm(cur->u.lis);
+    exeterm(env, cur->u.lis);
     while ((cur = cur->next) != 0) {
-	condnestrec(root);
-	exeterm(cur->u.lis);
+	condnestrec(env, root);
+	exeterm(env, cur->u.lis);
     }
 }
 
@@ -81,20 +81,20 @@ Subsequent case are ignored. If no B yields true, then [D] is used.
 It is then of the form [[T]] or [[R1] [R2]]. For the former, executes T.
 For the latter executes R1, recurses, executes R2.
 */
-PRIVATE void do_condlinrec(void)
+PRIVATE void do_condlinrec(pEnv env)
 {
     Node *prog;
 
 #ifndef OLD_RUNTIME
-    if (compiling && put_condnestrec())
+    if (compiling && put_condnestrec(env))
 	return;
     COMPILE;
 #endif
     ONEPARAM("condlinrec");
     LIST("condlinrec");
-    CHECKEMPTYLIST(stk->u.lis, "condlinrec");
-    prog = stk->u.lis;
-    POP(stk);
-    condnestrec(prog);
+    CHECKEMPTYLIST(env->stk->u.lis, "condlinrec");
+    prog = env->stk->u.lis;
+    POP(env->stk);
+    condnestrec(env, prog);
 }
 #endif

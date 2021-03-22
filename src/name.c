@@ -1,7 +1,7 @@
 /*
     module  : name.c
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifndef NAME_C
 #define NAME_C
@@ -11,7 +11,7 @@ name  :  sym  ->  "sym"
 For operators and combinators, the string "sym" is the name of item sym,
 for literals sym the result string is its type.
 */
-PRIVATE void do_name(void)
+PRIVATE void do_name(pEnv env)
 {
 #ifndef OLD_RUNTIME
     char *str;
@@ -21,9 +21,9 @@ PRIVATE void do_name(void)
     else
 	COMPILE;
     ONEPARAM("name");
-    switch (stk->op) {
+    switch (env->stk->op) {
     case USR_:
-	str = dict_descr(stk->u.num);
+	str = dict_descr(env, env->stk->u.num);
 	break;
     case BOOLEAN_:
     case CHAR_:
@@ -33,17 +33,17 @@ PRIVATE void do_name(void)
     case LIST_:
     case FLOAT_:
     case FILE_:
-	str = optable[stk->op].name;
+	str = optable[env->stk->op].name;
 	break;
     case SYMBOL_:
-	str = stk->u.str;
+	str = env->stk->u.str;
 	break;
     default:
 	BADDATA("name");
 	break;
     }
-    stk->u.str = str;
-    stk->op = STRING_;
+    env->stk->u.str = str;
+    env->stk->op = STRING_;
 #endif
 }
 #endif

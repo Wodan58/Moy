@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.15
-    date    : 03/28/20
+    version : 1.16
+    date    : 03/15/21
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -22,7 +22,7 @@ int search(char *name)
 helpdetail  :  [ S1 S2 .. ]  ->
 Gives brief help on each symbol S in the list.
 */
-PRIVATE void do_helpdetail(void)
+PRIVATE void do_helpdetail(pEnv env)
 {
 #ifndef OLD_RUNTIME
     int i;
@@ -32,13 +32,13 @@ PRIVATE void do_helpdetail(void)
     COMPILE;
     ONEPARAM("HELP");
     LIST("HELP");
-    for (printf("\n"), node = stk->u.lis; node; node = node->next) {
+    for (printf("\n"), node = env->stk->u.lis; node; node = node->next) {
 	i = node->u.num;
 	if (node->op == USR_) {
-	    name = dict_descr(i);
-	    if ((dict_flags(i) & IS_BUILTIN) == 0) {
+	    name = dict_descr(env, i);
+	    if ((dict_flags(env, i) & IS_BUILTIN) == 0) {
 		printf("%s  ==\n    ", name);
-		writeterm(dict_body(i), stdout);
+		writeterm(env, dict_body(env, i), stdout);
 		printf("\n\n");
 		continue;
 	    }
@@ -56,7 +56,7 @@ PRIVATE void do_helpdetail(void)
 	    continue;
 	printf("%s  :  %s.\n%s\n", name, optable[i].messg1, optable[i].messg2);
     }
-    POP(stk);
+    POP(env->stk);
 #endif
 }
 #endif

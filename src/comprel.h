@@ -1,7 +1,7 @@
 /*
     module  : comprel.h
-    version : 1.11
-    date    : 03/28/20
+    version : 1.12
+    date    : 03/15/21
 */
 #ifdef CASE_X
 #undef CASE_X
@@ -10,7 +10,7 @@
 
 #include "case.c"
 
-PRIVATE void PROCEDURE(void)
+PRIVATE void PROCEDURE(pEnv env)
 {
     double cmp;
     int i, j, error, comp = 0;
@@ -22,20 +22,20 @@ PRIVATE void PROCEDURE(void)
 	COMPILE;
 #endif
     TWOPARAMS(NAME);
-    if (stk->op == SET_) {
-	i = stk->next->u.num;
-	j = stk->u.num;
+    if (env->stk->op == SET_) {
+	i = env->stk->next->u.num;
+	j = env->stk->u.num;
 	comp = SETCMP;
     } else {
-	cmp = Compare(stk->next, stk, &error);
+	cmp = Compare(env, env->stk->next, env->stk, &error);
 	if (error)
 	    BADDATA(NAME);
 	else
 	    comp = cmp OPR 0;
     }
-    stk->next->op = CONSTRUCTOR;
-    stk->next->u.num = comp;
-    POP(stk);
+    env->stk->next->op = CONSTRUCTOR;
+    env->stk->next->u.num = comp;
+    POP(env->stk);
 }
 
 #undef PROCEDURE

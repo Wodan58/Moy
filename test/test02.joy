@@ -1,4 +1,4 @@
-%INCLUDE ../lib/stdlib.joy
+%INCLUDE stdlib.joy
 
 true put_bool nl .
 false put_bool nl .

@@ -1,7 +1,7 @@
 /*
     module  : frexp.c
-    version : 1.9
-    date    : 03/28/20
+    version : 1.10
+    date    : 03/15/21
 */
 #ifndef FREXP_C
 #define FREXP_C
@@ -11,7 +11,7 @@ frexp  :  F  ->  G I
 G is the mantissa and I is the exponent of F.
 Unless F = 0, 0.5 <= abs(G) < 1.0.
 */
-PRIVATE void do_frexp(void)
+PRIVATE void do_frexp(pEnv env)
 {
     int exp;
 
@@ -23,7 +23,7 @@ PRIVATE void do_frexp(void)
 #endif
     ONEPARAM("frexp");
     FLOAT("frexp");
-    stk->u.dbl = frexp(FLOATVAL, &exp);
-    PUSH(INTEGER_, exp);
+    env->stk->u.dbl = frexp(FLOATVAL, &exp);
+    PUSH_NUM(INTEGER_, exp);
 }
 #endif
