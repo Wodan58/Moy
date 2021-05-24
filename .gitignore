@@ -9,3 +9,10 @@ builtin.c
 builtin.h
 table.c
 trans.c
+lexer.c
+joy
+fib.joy
+lib/*.c
+lib/*1
+lib/test*.txt
+test/test*.txt
