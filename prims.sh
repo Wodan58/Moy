@@ -1,14 +1,14 @@
 #
 #   module  : prims.sh
-#   version : 1.3
-#   date    : 03/15/21
+#   version : 1.4
+#   date    : 04/28/21
 #
 #   Generate builtin.c and builtin.h
 #
 echo checking builtin.c and builtin.h
 todo=0
-ls -1Q src/*.c | sed 's/^/#include /' >prims.tmp
-if [ ! -f builtin.c ]
+ls -1Q src/*.c gui/*.c | sed 's/^/#include /' >prims.tmp
+if [ ! -f builtin.c -o ! -f builtin.h ]
 then
   echo creating builtin.c and builtin.h
   todo=1

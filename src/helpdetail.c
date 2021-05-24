@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.16
-    date    : 03/15/21
+    version : 1.17
+    date    : 04/28/21
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -47,7 +47,7 @@ PRIVATE void do_helpdetail(pEnv env)
 	} else if (node->op > USR_ && node->op < SYMBOL_) {
 	    if (node->op == BOOLEAN_)
 		i = i ? search("true") : search("false");
-	    else if (node->op == INTEGER_ && i == MAXINT_)
+	    else if (node->op == INTEGER_ && node->u.num == MAXINT_)
 		i = search("maxint");
 	    else
 		i = node->op;

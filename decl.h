@@ -1,17 +1,17 @@
 /*
     module  : decl.h
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 04/28/21
 */
 #define MAXOUT		10
 #define MAXNUM		20
 #define MAXFIL		20
-#define ALEN		22
 #define MAXSTR		128
 #define LINEWIDTH	72
 #define SHELLESCAPE	'$'	/* configure */
 #define INPSTACKMAX	10
-#define INPLINEMAX	1000
+#define INPLINEMAX	255
+#define ALEN		22
 #define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
 #define INIECHOFLAG	0
 #define INIAUTOPUT	1

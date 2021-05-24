@@ -1,7 +1,7 @@
 /*
     module  : joy.h
-    version : 1.27
-    date    : 03/15/21
+    version : 1.28
+    date    : 04/28/21
 */
 #ifndef JOY_H
 #define JOY_H
@@ -40,6 +40,7 @@ typedef struct Env *pEnv;
 
 typedef void (*proc_t)(pEnv env);
 
+#include "japi.h"
 #include "gc.h"
 #ifndef PARSER
 #include "parse.h"

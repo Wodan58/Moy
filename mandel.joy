@@ -1,0 +1,45 @@
+3 setecho .
+
+%INCLUDE japi.joy
+
+1 setundeferror .
+
+LIBRA 
+
+ps == "stack: " putchars stack put '\n putch ;
+
+# zre zim maxiter x y iter tmp-x tmp-y
+
+calc-tmp-x == 2 pick dup * 2 pick dup * - 6 pick + ;
+calc-tmp-y == 3 pick 3 pick * 2 * 6 pick + ;
+update-xy == 3 poke 3 poke ;
+test-iter == 2 pick dup * 2 pick dup * + 4.0 > ;
+update-maxiter == [test-iter] [popd popd popd dup [0.0 0.0] dip] []
+		  ifte ;
+iter-mandel == 0.0 0.0 0 [dup 4 pick <] [succ calc-tmp-x calc-tmp-y
+	       update-xy update-maxiter] while popd popd popd popd
+	       popd ;
+
+not-quit == dup 9 pick != over 9 pick != and ;
+test-work == [pop dup] [jgetaction] [jnextaction] ifte ;
+test-stop == [dup 6 pick =] [0 rotate pop] [] ifte ;
+test-start == [dup 7 pick =] [[pop pop pop dup J_WHITE jsetnamedcolor
+	      dup 0 0 320 240 jfillrect -1 -1 1] dip] [] ifte ;
+update-x == 3 pick succ 320 rem 4 poke ;
+update-y == [3 pick] [] [2 pick succ 240 rem 3 poke] ifte ;
+test-done == 3 pick 319 = 3 pick 239 = and ;
+calc-x == 3 pick 2.6 * 320 / 1.8 - ;
+calc-y == 3 pick 2.0 * 240 / 1.0 - ;
+calc-mandel == calc-x calc-y 512 iter-mandel ;
+calc-pixel == calc-mandel 5 pick swap dup [11 *] dip dup [13 *] dip 17 *
+	      jsetcolor 4 pick 4 pick 4 pick jdrawpixel ;
+test-finish == [test-done] [0 rotate pop] [calc-pixel] ifte ;
+take-action == update-x update-y test-finish ;
+test-action == test-work test-stop test-start take-action .
+
+# frame quit start stop canvas x y do_work obj
+
+jstart "" jframe dup jmenubar dup "File" jmenu "Quit" jmenuitem swap
+"Calc" jmenu dup "Start" jmenuitem swap "Stop" jmenuitem 3 pick 320 240
+jcanvas 4 pick jshow 4 pick jpack 4 pick J_FALSE jsetresizable -1 -1 0 0
+[not-quit] [test-action] while jquit .

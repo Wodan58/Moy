@@ -1,7 +1,7 @@
 /*
     module  : yylex.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 04/28/21
 */
 #include "runtime.h"
 
@@ -103,9 +103,13 @@ static int getch(void)
     if (!yyin)
 	yyin = stdin;
     if (!line[linepos]) {
-	while (!fgets(line, INPLINEMAX, yyin))
+again:
+	if (fgets(line, INPLINEMAX, yyin))
+	    linenum++;
+	else {
 	    yywrap();
-	linenum++;
+	    goto again;
+	}
 	linepos = 0;
 	if (moy_echo)
 	    putline();

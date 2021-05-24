@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexer.l
-    version : 1.23
-    date    : 03/15/21
+    version : 1.24
+    date    : 04/28/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -17,7 +17,7 @@
 #define LEAVE_COMM	2
 
 char line[INPLINEMAX + 1];
-static int moy_echo, comment;
+static int moy_echo, comment, linenum = 1;
 
 #ifdef FLEX_SCANNER
 int include_stack_ptr;
@@ -68,7 +68,7 @@ static void addline(int ch)
 static void putline(char *str, int leng, int status)
 {
     static int first;
-    int i, linenum, start, finish;
+    int i, start, finish;
 
     start = strstr(str, "(*") != 0;
     finish = strstr(str, "*)") != 0;
@@ -95,11 +95,14 @@ skip:
     if (!moy_echo)
 	return;
     if (moy_echo > 2) {
+	i = linenum;
 	if (status == LEAVE_COMM)
 	    linenum = yylineno;	/* yylineno should not be corrected */
 	else
 	    linenum = yylineno - 1;
-	fprintf(stderr, "%4d", linenum);
+	for (; i < linenum; i++)
+	    fprintf(stderr, "%4d\n", i);
+	fprintf(stderr, "%4d", linenum++);
     }
     if (moy_echo > 1)
 	fprintf(stderr, "\t");
@@ -118,6 +121,7 @@ void new_buffer(void)
 
 int old_buffer(void)
 {
+   linenum = yylineno + 1;
 #ifdef FLEX_SCANNER
     if (--include_stack_ptr >= 0)
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
@@ -167,16 +171,16 @@ linecom		#.*
 
 [\n]+.*\n	{ int i = 0; putline(yytext, yyleng, OUT_OF_COM);
 		  while (yytext[i] == '\n') i++; yyless(i); }
-LIBRA		|
-DEFINE		|
-IN		|
-PUBLIC		return JPUBLIC;
-HIDE		|
-PRIVATE		return JPRIVATE;
-"."		|
-END		return END;
-MODULE		return MODULE;
-"=="		return JEQUAL;
+LIBRA[ \t]*	|
+DEFINE[ \t]*	|
+IN[ \t]*	|
+PUBLIC[ \t]*	return JPUBLIC;
+HIDE[ \t]*	|
+PRIVATE[ \t]*	return JPRIVATE;
+"."[ \t]*	|
+END[ \t]*	return END;
+MODULE[ \t]*	return MODULE;
+"=="[ \t]*	return JEQUAL;
 
 false		{ yylval.num = 0; return BOOLEAN_; }
 true		{ yylval.num = 1; return BOOLEAN_; }

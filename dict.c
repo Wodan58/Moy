@@ -1,7 +1,7 @@
 /*
     module  : dict.c
-    version : 1.13
-    date    : 03/15/21
+    version : 1.14
+    date    : 03/22/21
 */
 #include <stdio.h>
 #include <string.h>
@@ -316,7 +316,6 @@ int check_anything_was_printed(pEnv env)
 
 void iterate_dict_and_write_struct(pEnv env, FILE *fp)
 {
-    char *name;
     int i, leng;
 
     leng = vec_size(env->dict);

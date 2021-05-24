@@ -1,7 +1,7 @@
 /*
     module  : runtime.h
-    version : 1.18
-    date    : 03/15/21
+    version : 1.19
+    date    : 04/28/21
 */
 #ifndef RUNTIME_H
 #define RUNTIME_H
@@ -40,9 +40,17 @@ extern clock_t startclock;
 #define POP(x) (x) = (x)->next;
 #define DUPLICATE(x) env->stk = newnode((x)->op, (x)->u, env->stk);
 #define PUSH_NUM(x, y)                                                         \
-do { YYSTYPE u; u.num = (y); env->stk = newnode((x), u, env->stk); } while (0)
+    do {                                                                       \
+        YYSTYPE u;                                                             \
+        u.num = (y);                                                           \
+        env->stk = newnode((x), u, env->stk);                                  \
+    } while (0)
 #define PUSH_PTR(x, y)                                                         \
-do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
+    do {                                                                       \
+        YYSTYPE u;                                                             \
+        u.ptr = (y);                                                           \
+        env->stk = newnode((x), u, env->stk);                                  \
+    } while (0)
 #define PUSH_DBL(x) env->stk = dblnode((x), env->stk);
 #define FLOATVAL                                                               \
     (env->stk->op == FLOAT_ ? env->stk->u.dbl : (double)env->stk->u.num)
@@ -58,6 +66,11 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
 #define THREEPARAMS(NAME)
 #define FOURPARAMS(NAME)
 #define FIVEPARAMS(NAME)
+#define SIXPARAMS(NAME)
+#define SEVENPARAMS(NAME)
+#define EIGHTPARAMS(NAME)
+#define NINEPARAMS(NAME)
+#define TENPARAMS(NAME)
 #define ONEQUOTE(NAME)
 #define TWOQUOTES(NAME)
 #define THREEQUOTES(NAME)
@@ -65,8 +78,19 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
 #define SAME2TYPES(NAME)
 #define STRING(NAME)
 #define STRING2(NAME)
+#define STRING3(NAME)
+#define STRING4(NAME)
+#define STRING5(NAME)
 #define INTEGER(NAME)
 #define INTEGER2(NAME)
+#define INTEGER3(NAME)
+#define INTEGER4(NAME)
+#define INTEGER5(NAME)
+#define INTEGER6(NAME)
+#define INTEGER7(NAME)
+#define INTEGER8(NAME)
+#define INTEGER9(NAME)
+#define INTEGER10(NAME)
 #define CHARACTER(NAME)
 #define INTEGERS2(NAME)
 #define NUMERICTYPE(NAME)
@@ -77,6 +101,7 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
 #define CHECKZERO(NAME)
 #define LIST(NAME)
 #define LIST2(NAME)
+#define LIST3(NAME)
 #define USERDEF(NAME)
 #define CHECKLIST(OPR, NAME)
 #define CHECKSETMEMBER(NODE, NAME)
@@ -109,6 +134,41 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
     if (!env->stk || !env->stk->next || !env->stk->next->next                  \
         || !env->stk->next->next->next || !env->stk->next->next->next->next)   \
     execerror("five parameters", NAME)
+#define SIXPARAMS(NAME)                                                        \
+    if (!env->stk || !env->stk->next || !env->stk->next->next                  \
+        || !env->stk->next->next->next || !env->stk->next->next->next->next    \
+        || !env->stk->next->next->next->next->next)                            \
+    execerror("six parameters", NAME)
+#define SEVENPARAMS(NAME)                                                      \
+    if (!env->stk || !env->stk->next || !env->stk->next->next                  \
+        || !env->stk->next->next->next || !env->stk->next->next->next->next    \
+        || !env->stk->next->next->next->next->next                             \
+        || !env->stk->next->next->next->next->next->next)                      \
+    execerror("seven parameters", NAME)
+#define EIGHTPARAMS(NAME)                                                      \
+    if (!env->stk || !env->stk->next || !env->stk->next->next                  \
+        || !env->stk->next->next->next || !env->stk->next->next->next->next    \
+        || !env->stk->next->next->next->next->next                             \
+        || !env->stk->next->next->next->next->next->next                       \
+        || !env->stk->next->next->next->next->next->next->next)                \
+    execerror("eight parameters", NAME)
+#define NINEPARAMS(NAME)                                                       \
+    if (!env->stk || !env->stk->next || !env->stk->next->next                  \
+        || !env->stk->next->next->next || !env->stk->next->next->next->next    \
+        || !env->stk->next->next->next->next->next                             \
+        || !env->stk->next->next->next->next->next->next                       \
+        || !env->stk->next->next->next->next->next->next->next                 \
+        || !env->stk->next->next->next->next->next->next->next->next)          \
+    execerror("nine parameters", NAME)
+#define TENPARAMS(NAME)                                                        \
+    if (!env->stk || !env->stk->next || !env->stk->next->next                  \
+        || !env->stk->next->next->next || !env->stk->next->next->next->next    \
+        || !env->stk->next->next->next->next->next                             \
+        || !env->stk->next->next->next->next->next->next                       \
+        || !env->stk->next->next->next->next->next->next->next                 \
+        || !env->stk->next->next->next->next->next->next->next->next           \
+        || !env->stk->next->next->next->next->next->next->next->next->next)    \
+    execerror("ten parameters", NAME)
 #define ONEQUOTE(NAME)                                                         \
     if (env->stk->op != LIST_)                                                 \
     execerror("quotation as top parameter", NAME)
@@ -133,12 +193,47 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
 #define STRING2(NAME)                                                          \
     if (env->stk->next->op != STRING_)                                         \
     execerror("string as second parameter", NAME)
+#define STRING3(NAME)                                                          \
+    if (env->stk->next->next->op != STRING_)                                   \
+    execerror("string as third parameter", NAME)
+#define STRING4(NAME)                                                          \
+    if (env->stk->next->next->next->op != STRING_)                             \
+    execerror("string as fourth parameter", NAME)
+#define STRING5(NAME)                                                          \
+    if (env->stk->next->next->next->next->op != STRING_)                       \
+    execerror("string as fifth parameter", NAME)
 #define INTEGER(NAME)                                                          \
     if (env->stk->op != INTEGER_)                                              \
     execerror("integer", NAME)
 #define INTEGER2(NAME)                                                         \
     if (env->stk->next->op != INTEGER_)                                        \
     execerror("integer as second parameter", NAME)
+#define INTEGER3(NAME)                                                         \
+    if (env->stk->next->next->op != INTEGER_)                                  \
+    execerror("integer as third parameter", NAME)
+#define INTEGER4(NAME)                                                         \
+    if (env->stk->next->next->next->op != INTEGER_)                            \
+    execerror("integer as fourth parameter", NAME)
+#define INTEGER5(NAME)                                                         \
+    if (env->stk->next->next->next->next->op != INTEGER_)                      \
+    execerror("integer as fifth parameter", NAME)
+#define INTEGER6(NAME)                                                         \
+    if (env->stk->next->next->next->next->next->op != INTEGER_)                \
+    execerror("integer as sixth parameter", NAME)
+#define INTEGER7(NAME)                                                         \
+    if (env->stk->next->next->next->next->next->next->op != INTEGER_)          \
+    execerror("integer as seventh parameter", NAME)
+#define INTEGER8(NAME)                                                         \
+    if (env->stk->next->next->next->next->next->next->next->op != INTEGER_)    \
+    execerror("integer as eighth parameter", NAME)
+#define INTEGER9(NAME)                                                         \
+    if (env->stk->next->next->next->next->next->next->next->next->op           \
+        != INTEGER_)                                                           \
+    execerror("integer as nineth parameter", NAME)
+#define INTEGER10(NAME)                                                        \
+    if (env->stk->next->next->next->next->next->next->next->next->next->op     \
+        != INTEGER_)                                                           \
+    execerror("integer as tenth parameter", NAME)
 #define CHARACTER(NAME)                                                        \
     if (env->stk->op != CHAR_)                                                 \
     execerror("character", NAME)
@@ -171,6 +266,9 @@ do { YYSTYPE u; u.ptr = (y); env->stk = newnode((x), u, env->stk); } while (0)
 #define LIST2(NAME)                                                            \
     if (env->stk->next->op != LIST_)                                           \
     execerror("list as second parameter", NAME)
+#define LIST3(NAME)                                                            \
+    if (env->stk->next->next->op != LIST_)                                     \
+    execerror("list as third parameter", NAME)
 #define USERDEF(NAME)                                                          \
     if (env->stk->op != USR_)                                                  \
     execerror("user defined symbol", NAME)

@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.19
-#   date    : 03/15/21
+#   version : 1.20
+#   date    : 04/28/21
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
@@ -24,7 +24,8 @@ add_definitions(-DGC_BDW)
 include_directories(bdwgc/include src .)
 add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
-	       symbol.c dict.c node.c scan.c srand.c rand.c tmpfile.c utils.c)
+	       symbol.c dict.c node.c scan.c srand.c rand.c tmpfile.c utils.c
+	       japi4c.c japilib.c imageio.c fileselect.c)
 if(WIN32)
 target_link_libraries(joy gc-lib)
 else()
@@ -36,7 +37,7 @@ include_directories(src .)
 add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
 	       symbol.c dict.c node.c scan.c srand.c rand.c tmpfile.c utils.c
-	       gc.c)
+	       gc.c japi4c.c japilib.c imageio.c fileselect.c)
 if(WIN32)
 else()
 target_link_libraries(joy m)
