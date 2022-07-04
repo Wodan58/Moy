@@ -1,12 +1,12 @@
 /*
     module  : helpdetail.c
-    version : 1.17
-    date    : 04/28/21
+    version : 1.18
+    date    : 06/20/22
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
 
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
 int search(char *name)
 {
     int i;
@@ -24,36 +24,34 @@ Gives brief help on each symbol S in the list.
 */
 PRIVATE void do_helpdetail(pEnv env)
 {
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     int i;
-    char *name;
-    Node *node;
+    Node *cur;
+    char *name = "";
 
     COMPILE;
-    ONEPARAM("HELP");
-    LIST("HELP");
-    for (printf("\n"), node = env->stk->u.lis; node; node = node->next) {
-	i = node->u.num;
-	if (node->op == USR_) {
-	    name = dict_descr(env, i);
+    ONEPARAM("helpdetail");
+    LIST("helpdetail");
+    for (printf("\n"), cur = env->stk->u.lis; cur; cur = cur->next) {
+	i = cur->u.num;
+	if (cur->op == USR_) {
+	    name = dict_descr(env, cur);
 	    if ((dict_flags(env, i) & IS_BUILTIN) == 0) {
 		printf("%s  ==\n    ", name);
-		writeterm(env, dict_body(env, i), stdout);
+		writeterm(env, dict_body(env, i));
 		printf("\n\n");
 		continue;
 	    }
-	    if ((i = search(name)) == 0)
-		continue;
-	} else if (node->op > USR_ && node->op < SYMBOL_) {
-	    if (node->op == BOOLEAN_)
+	    i = search(name);
+	} else if (cur->op > USR_ && cur->op <= FILE_) {
+	    if (cur->op == BOOLEAN_)
 		i = i ? search("true") : search("false");
-	    else if (node->op == INTEGER_ && node->u.num == MAXINT_)
+	    else if (cur->op == INTEGER_ && cur->u.num == MAXINT_)
 		i = search("maxint");
 	    else
-		i = node->op;
+		i = cur->op;
 	    name = optable[i].name;
-	} else
-	    continue;
+	}
 	printf("%s  :  %s.\n%s\n", name, optable[i].messg1, optable[i].messg2);
     }
     POP(env->stk);

@@ -1,0 +1,6 @@
+(*
+    module  : fseek.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+"fseek.joy" "r" fopen 71 0 fseek put '\n putch fgets.

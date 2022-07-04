@@ -1,7 +1,7 @@
 /*
     module  : float.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef FLOAT_C
 #define FLOAT_C
@@ -15,4 +15,5 @@ Tests whether R is a float.
 #define REL		==
 #define TYP		FLOAT_
 #include "type.h"
+/* float.c */
 #endif

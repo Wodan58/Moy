@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef NULL_C
 #define NULL_C
@@ -14,16 +14,30 @@ PRIVATE void do_null(pEnv env)
 {
     int num = 0;
 
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM("null");
     switch (env->stk->op) {
+    case ANON_FUNCT_:
+	num = !env->stk->u.proc;
+	break;
+#ifdef COMPILING
+    case USR_:
+#endif
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+	num = !env->stk->u.num;
+	break;
+    case SET_:
+	num = !env->stk->u.set;
+	break;
+#ifndef COMPILING
+    case USR_:
+#endif
     case STRING_:
 	num = !*env->stk->u.str;
+	break;
+    case LIST_:
+	num = !env->stk->u.lis;
 	break;
     case FLOAT_:
 	num = !env->stk->u.dbl;
@@ -31,22 +45,10 @@ PRIVATE void do_null(pEnv env)
     case FILE_:
 	num = !env->stk->u.fil;
 	break;
-    case LIST_:
-	num = !env->stk->u.lis;
-	break;
-    case SET_:
-	num = !env->stk->u.set;
-	break;
-    case BOOLEAN_:
-    case CHAR_:
-    case INTEGER_:
-	num = !env->stk->u.num;
-	break;
     default:
 	BADDATA("null");
 	break;
     }
-    env->stk->u.num = num;
-    env->stk->op = BOOLEAN_;
+    UNARY(BOOLEAN_NEWNODE, num);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef OPCASE_C
 #define OPCASE_C
@@ -12,28 +12,23 @@ Indexing on type of X, returns the list [Xs].
 */
 PRIVATE void do_opcase(pEnv env)
 {
-    Node *cur;
+    Node *cur, *node;
 
-#ifndef OLD_RUNTIME
-    if (compiling && LIST_1 && VALID_2)
-	;
-    else
-	COMPILE;
-#endif
-    ONEPARAM("opcase");
+    TWOPARAMS("opcase");
     LIST("opcase");
-    CHECKEMPTYLIST(env->stk->u.lis, "opcase");
-    for (cur = env->stk->u.lis; cur->next && cur->op == LIST_; cur = cur->next) {
-	if (cur->u.lis->op == env->stk->next->op)
+    cur = env->stk->u.lis;
+    CHECKEMPTYLIST(cur, "opcase");
+    node = env->stk->next;
+    for (; cur->next && cur->op == LIST_; cur = cur->next)
+	if (cur->u.lis->op == node->op) {
 	    if (cur->u.lis->op == USR_ || cur->u.lis->op == ANON_FUNCT_) {
-		if (cur->u.lis->u.ptr == env->stk->next->u.ptr)
+		if (cur->u.lis->u.ptr == node->u.ptr)
 		    break;
 	    } else
 		break;
-    }
+	}
     CHECKLIST(cur->op, "opcase");
     cur = cur->next ? cur->u.lis->next : cur->u.lis;
-    env->stk->u.lis = cur;
-    env->stk->op = LIST_;
+    UNARY(LIST_NEWNODE, cur);
 }
 #endif

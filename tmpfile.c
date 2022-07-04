@@ -1,34 +1,31 @@
 /*
     module  : tmpfile.c
-    version : 1.2
-    date    : 01/25/21
+    version : 1.4
+    date    : 06/16/22
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include "decl.h"
+#include "globals.h"
 
 static int filenum;
 
 static void my_rmtmp(void)
 {
-    int i, j = 0;
+    int i;
     char str[MAXNUM];
 
     for (i = 1; i <= filenum; i++) {
 	sprintf(str, "t%d", i);
-	if (remove(str))
-	    j++;
+	remove(str);
     }
-    if (j)
-	fprintf(stderr, "removing %d temporary files failed\n", j);
 }
 
 FILE *my_tmpfile(void)
 {
+    FILE *fp;
     char str[MAXNUM];
 
     if (!filenum)
 	atexit(my_rmtmp);
     sprintf(str, "t%d", ++filenum);
-    return fopen(str, "w+");
+    fp = fopen(str, "w+");
+    return fp;
 }

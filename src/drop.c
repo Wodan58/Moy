@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef DROP_C
 #define DROP_C
@@ -15,15 +15,10 @@ PRIVATE void do_drop(pEnv env)
     char *str;
     int i, num;
     Node *node;
-    ulong_t set;
+    long set;
 
-#ifndef OLD_RUNTIME
-    if (compiling && INTEGER_1 && AGGREGATE_2)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS("drop");
+    POSITIVEINDEX(env->stk, "drop");
     num = env->stk->u.num;
     POP(env->stk);
     switch (env->stk->op) {
@@ -31,23 +26,23 @@ PRIVATE void do_drop(pEnv env)
 	node = env->stk->u.lis;
 	while (num-- > 0 && node)
 	    node = node->next;
-	env->stk->u.lis = node;
+	UNARY(LIST_NEWNODE, node);
 	break;
     case STRING_:
 	str = env->stk->u.str;
 	while (num-- > 0 && *str)
 	    str++;
-	env->stk->u.str = GC_strdup(str);
+	UNARY(STRING_NEWNODE, GC_strdup(str));
 	break;
     case SET_:
 	for (set = i = 0; i < SETSIZE_; i++)
-	    if (env->stk->u.set & ((long_t)1 << i)) {
+	    if (env->stk->u.set & ((long)1 << i)) {
 		if (num < 1)
-		    set |= (long_t)1 << i;
+		    set |= (long)1 << i;
 		else
 		    num--;
 	    }
-	env->stk->u.set = set;
+	UNARY(SET_NEWNODE, set);
 	break;
     default:
 	BADAGGREGATE("drop");

@@ -1,7 +1,7 @@
 /*
     module  : symbol.h
-    version : 1.14
-    date    : 03/15/21
+    version : 1.16
+    date    : 06/17/22
 */
 #ifndef SYMBOL_H
 #define SYMBOL_H
@@ -23,61 +23,57 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-#include "node.h"
-#include "environ.h"
-
 /* interp.c */
-void interprete(pEnv env, Node *code);
+void exeterm(pEnv env, Node *code);
 void execute(pEnv env, Node *code);
+void execerror(pEnv env, char *message, const char *op);
 
 /* compile.c */
-void printnode(pEnv env, Node *node, FILE *fp);
-void printstack(pEnv env, FILE *fp);
+void printnode(pEnv env, Node *node);
+void printstack(pEnv env);
 void compile(pEnv env, Node *node);
+void initialise(pEnv env);
 
 /* initsym.c */
 void initsym(pEnv env, int argc, char **argv);
 
 /* print.c */
-void writefactor(pEnv env, Node *node, FILE *stm);
-void writeterm(pEnv env, Node *code, FILE *stm);
-void writestack(pEnv env, Node *code, FILE *stm);
+void writefactor(pEnv env, Node *node);
+void writeterm(pEnv env, Node *code);
+void writestack(pEnv env, Node *code);
 
 /* utils.c */
 void readfactor(pEnv env, int sym);
 void readterm(pEnv env, int sym);
 
-/* symbol.c */
-void initmod(char *str);
-void exitmod(void);
-void initpriv(void);
+/* module.c */
+void initmod(pEnv env, char *name);
+void initpriv(pEnv env, int priv);
 void stoppriv(void);
 void exitpriv(void);
-void initpub(void);
-void exitpub(void);
-char *prefix(int *hide, int *local);
-char *iterate(char *name);
+void exitmod(void);
+char *classify(pEnv env, char *name);
+pEntry qualify(pEnv env, char *name);
 
 /* dict.c */
 int symtabmax(pEnv env);
 int symtabindex(pEnv env);
-
+unsigned dict_flags(pEnv env, int index);
+void dict_setflags(pEnv env, int index, unsigned flags);
+char *dict_descr(pEnv env, Node *node);
+char *dict_name(pEnv env, int index);
+char *dict_nickname(pEnv env, int index);
+char *dict_translate(pEnv env, const char *name);
+Node *dict_body(pEnv env, int index);
+int dict_size(pEnv env);
+char *procname(proc_t proc);
+char *nickname(proc_t proc);
 void init_dict(pEnv env);
 int lookup(pEnv env, char *name);
 void enteratom(pEnv env, char *name, Node *cur);
-void dump(pEnv env);
-
-unsigned dict_flags(pEnv env, int index);
-void dict_setflags(pEnv env, int index, unsigned flags);
-char *dict_descr(pEnv env, int index);
-char *dict_name(pEnv env, int index);
-char *dict_nickname(pEnv env, int index);
-Node *dict_body(pEnv env, int index);
-int dict_size(pEnv env);
-
-int check_anything_was_printed(pEnv env);
+void dump_table(pEnv env);
 void iterate_dict_and_write_struct(pEnv env, FILE *fp);
 
-char *procname(proc_t proc);
+/* runtime.c */
 proc_t nameproc(char *name);
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : conts.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef CONTS_C
 #define CONTS_C
@@ -12,9 +12,6 @@ Pushes current continuations. Buggy, do not use.
 */
 PRIVATE void do_conts(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    COMPILE;
-#endif
     PUSH_PTR(LIST_, 0);
 }
 #endif

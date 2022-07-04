@@ -1,8 +1,8 @@
-#
-#   module  : lsplib.joy
-#   version : 1.3
-#   date    : 05/12/19
-#
+(*
+    module  : lsplib.joy
+    version : 1.5
+    date    : 06/18/22
+*)
 (* FILE:   lsplib.joy *)
 
 %INCLUDE seqlib.joy
@@ -18,14 +18,16 @@ LIBRA
 
 (* - - - - -			E V A L			      - - - - - *)
 
-eval == 					(*  env  exp		*)
+selfeval == [ numerical ] [ string ] sequor ;
+
+eval ==						(*  env  exp		*)
 (*
 	dup2
 	swap
 	"eval: env = " putchars put newline
 	"      exp = " putchars put newline
 *)
-    [ dup list ]
+    [ list ]
 
     [						(*  eval-compound!	*)
       unswons					(*  env args fun	*)
@@ -61,20 +63,20 @@ eval == 					(*  env  exp		*)
       case ]
 
     [						(* eval-atomic		*)
-      [ dup [dup numerical] [string] sequor ]
-	[ ]					(* self-evaluating	*)
+      [ selfeval ]				(* R.W. self-evaluating *)
+	[ ]
 	[					(* lookup!		*)
 	  dupd swap				(*  env  v  env		*)
 	  [					(*  member?		*)
-	    [ dup null ]
+	    [ null ]
 	    [ true ]				(*  fake		*)
-	    [ over over first first in ]	(*  really ?		*)
+	    [ first first in ]			(*  really ?		*)
 	    ifte ]
-	  [ [ dup null ]			(*  was fake ?		*)
+	  [ [ null ]				(*  was fake ?		*)
 	    [ pop ]				(*  self-evaluating	*)
 	    [					(*  search really	*)
 	      first unswons rolldown		(*  [e1..] [v1..] v	*)
-	      [ over first over = ]
+	      [ [first] dip = ]
 	      [ pop pop first ]
 	      [ [ [rest] unary2] dip ]
 	      tailrec ]
@@ -93,7 +95,7 @@ apply ==
     "apply: fun = " putchars putln
     "      args = " putchars putln
 *)
-    [ dup list ]
+    [ list ]
 
     [						(* apply-compound	*)
       unswons
@@ -109,8 +111,8 @@ apply ==
       case ]
 
     [						(* apply-atomic		*)
-     [ dup [dup numerical] [string] sequor ]	(* R.W. *)
-      [ ] [					(* R.W. self-evaluating *)
+     [ selfeval ]				(* R.W. self-evaluating *)
+      [ ] [
       [ [ CAR first first ]
 	[ CDR first rest ]
 	[ CONS uncons first cons ]
@@ -144,7 +146,7 @@ lib0 ==
 	    [ CLOSURE lib0 [l1 l2 ini tern]
 	      IF [or [NULL l1] [NULL l2]] ini
 		 [ tern [CAR l1] [CAR l2]
-		        [FOLDR2 [CDR l1] [CDR l2] ini tern] ] ] ]
+			[FOLDR2 [CDR l1] [CDR l2] ini tern] ] ] ]
 	  [ [ RECFOLDR ]
 	    [ CLOSURE lib0 [x y bin]
 	      IF [ATOM x]
@@ -175,8 +177,8 @@ lisp ==
 	joy0							(* R.W. *)
 	lib0						(* load lib0	*)
 	l-prompt putchars get
-	[ dup [ EXIT ] first equal not ]			(* R.W. *)
-	[ eval putln 
+	[ [ EXIT ] first equal not ]			(* R.W. *)
+	[ eval putln
 	  l-prompt putchars get ]
 	while
 	pop pop

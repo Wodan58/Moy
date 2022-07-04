@@ -1,7 +1,7 @@
 /*
     module  : __symtabindex.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef __SYMTABINDEX_C
 #define __SYMTABINDEX_C
@@ -12,7 +12,7 @@ Pushes current size of the symbol table.
 */
 PRIVATE void do___symtabindex(pEnv env)
 {
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     COMPILE;
     PUSH_NUM(INTEGER_, symtabindex(env));
 #endif

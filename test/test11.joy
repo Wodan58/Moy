@@ -1,4 +1,8 @@
 (*
+    module  : test11.joy
+    version : 1.2
+    date    : 06/20/22
+*)
 10 first .
 10 rest .
 10 uncons .
@@ -6,10 +10,8 @@
 10 10 drop .
 10 10 take .
 10 10 concat .
-*)
 [nothing] first null .
 [nothing] first not .
-(*
 10 size .
 'A small .
 10 [] map .
@@ -18,4 +20,3 @@
 10 [] split .
 'A [] [] primrec .
 [] unstack put .
-*)

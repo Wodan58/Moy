@@ -1,7 +1,7 @@
 /*
     module  : formatf.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef FORMATF_C
 #define FORMATF_C
@@ -18,12 +18,6 @@ PRIVATE void do_formatf(pEnv env)
     int width, prec, leng;
     char spec, format[7], *result;
 
-#ifndef OLD_RUNTIME
-    if (compiling && INTEGER_1 && INTEGER_2 && CHAR_3 && FLOAT_4)
-	;
-    else
-	COMPILE;
-#endif
     FOURPARAMS("formatf");
     INTEGER("formatf");
     INTEGER2("formatf");
@@ -34,25 +28,13 @@ PRIVATE void do_formatf(pEnv env)
     CHARACTER("formatf");
     spec = env->stk->u.num;
     POP(env->stk);
-#ifndef NCHECK
-    if (!strchr("eEfgG", spec))
-	execerror("one of: e E f g G", "formatf");
-#endif
+    CHECKFORMATF(spec, "formatf");
     strcpy(format, "%*.*g");
-    format[5] = spec;
+    format[4] = spec;
     FLOAT("formatf");
-#ifdef _MSC_VER
-    leng = INPLINEMAX;
-#else
-    leng = snprintf(0, 0, format, width, prec, (double)env->stk->u.dbl) + 1;
-#endif
+    leng = snprintf(0, 0, format, width, prec, env->stk->u.dbl) + 1;
     result = GC_malloc_atomic(leng + 1);
-#ifdef _MSC_VER
-    sprintf(result, format, width, prec, (double)env->stk->u.dbl);
-#else
-    snprintf(result, leng, format, width, prec, (double)env->stk->u.dbl);
-#endif
-    env->stk->u.str = result;
-    env->stk->op = STRING_;
+    snprintf(result, leng, format, width, prec, env->stk->u.dbl);
+    UNARY(STRING_NEWNODE, result);
 }
 #endif

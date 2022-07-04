@@ -1,26 +1,23 @@
 /*
     module  : primrec.c
-    version : 1.14
-    date    : 03/16/21
+    version : 1.15
+    date    : 06/20/22
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
 
-#ifndef OLD_RUNTIME
-int put_primrec(pEnv env)
+/**
+primrec  :  X [I] [C]  ->  R
+Executes I to obtain an initial value R0.
+For integer X uses increasing positive integers to X, combines by C for new R.
+For aggregate X uses successive members and combines by C for new R.
+*/
+#ifdef COMPILING
+void put_primrec(pEnv env, Node *prog[2])
 {
-    Node *prog, *init;
-
-    if (!(LIST_1 && LIST_2))
-	return 0;
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    init = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(outfp, "{ /* PRIMREC */");
     fprintf(outfp, "int i, num = 0; Node *cur;");
-    fprintf(outfp, "char *str, *volatile ptr; ulong_t set;");
+    fprintf(outfp, "char *str, *volatile ptr; long set;");
     fprintf(outfp, "cur = env->stk; POP(env->stk);");
     fprintf(outfp, "switch (cur->op) {");
     fprintf(outfp, "case LIST_:");
@@ -33,42 +30,33 @@ int put_primrec(pEnv env)
     fprintf(outfp, "case SET_:");
     fprintf(outfp, "set = cur->u.set;");
     fprintf(outfp, "for (num = i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long_t)1 << i)) {");
+    fprintf(outfp, "if (set & ((long)1 << i)) {");
     fprintf(outfp, "PUSH_NUM(INTEGER_, i); num++; } break;");
     fprintf(outfp, "case INTEGER_:");
     fprintf(outfp, "for (num = i = cur->u.num; i; i--)");
     fprintf(outfp, "PUSH_NUM(INTEGER_, i); break; }");
-    compile(env, init);
+    compile(env, prog[0]);
     fprintf(outfp, "while (num--) {");
-    compile(env, prog);
+    compile(env, prog[1]);
     fprintf(outfp, "} }");
-    return 1;
 }
 #endif
 
-/**
-primrec  :  X [I] [C]  ->  R
-Executes I to obtain an initial value R0.
-For integer X uses increasing positive integers to X, combines by C for new R.
-For aggregate X uses successive members and combines by C for new R.
-*/
 PRIVATE void do_primrec(pEnv env)
 {
-    long_t set;
+    long set;
     int i, num = 0;
-    Node *prog, *init, *cur;
+    Node *prog[2], *cur;
     char *str, *volatile ptr;
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_primrec(env))
-	return;
-    COMPILE;
-#endif
-    THREEPARAMS("primrec");
-    prog = env->stk->u.lis;
+    TWOPARAMS("primrec");
+    TWOQUOTES("primrec");
+    prog[1] = env->stk->u.lis;
     POP(env->stk);
-    init = env->stk->u.lis;
+    prog[0] = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(put_primrec);
+    ONEPARAM("primrec");
     cur = env->stk;
     POP(env->stk);
     switch (cur->op) {
@@ -84,7 +72,7 @@ PRIVATE void do_primrec(pEnv env)
     case SET_:
 	set = cur->u.set;
 	for (i = 0; i < SETSIZE_; i++)
-	    if (set & ((long_t)1 << i)) {
+	    if (set & ((long)1 << i)) {
 		PUSH_NUM(INTEGER_, i);
 		num++;
 	    }
@@ -97,8 +85,8 @@ PRIVATE void do_primrec(pEnv env)
 	BADDATA("primrec");
 	break;
     }
-    exeterm(env, init);
+    exeterm(env, prog[0]);
     while (num--)
-	exeterm(env, prog);
+	exeterm(env, prog[1]);
 }
 #endif

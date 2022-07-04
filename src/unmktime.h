@@ -1,27 +1,21 @@
 /*
     module  : unmktime.h
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 PRIVATE void PROCEDURE(pEnv env)
 {
+    static int daynums[] = { 7, 1, 2, 3, 4, 5, 6 };
     Node *cur;
-    long_t wday;
+    long wday;
     struct tm t;
     time_t timval;
 
-#ifndef OLD_RUNTIME
-    if (compiling && INTEGER_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM(NAME);
     INTEGER(NAME);
     timval = env->stk->u.num;
     FUNC(&timval, &t);
-    if ((wday = t.tm_wday) == 0)
-	wday = 7;
+    wday = daynums[t.tm_wday];
     cur = INTEGER_NEWNODE(wday, 0);
     cur = INTEGER_NEWNODE(t.tm_yday, cur);
     cur = BOOLEAN_NEWNODE(t.tm_isdst, cur);
@@ -31,8 +25,7 @@ PRIVATE void PROCEDURE(pEnv env)
     cur = INTEGER_NEWNODE(t.tm_mday, cur);
     cur = INTEGER_NEWNODE(t.tm_mon + 1, cur);
     cur = INTEGER_NEWNODE(t.tm_year + 1900, cur);
-    env->stk->u.lis = cur;
-    env->stk->op = LIST_;
+    UNARY(LIST_NEWNODE, cur);
 }
 
 #undef PROCEDURE

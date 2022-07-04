@@ -1,7 +1,7 @@
 /*
     module  : app11.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef APP11_C
 #define APP11_C
@@ -12,12 +12,9 @@ Executes P, pushes result R on stack.
 */
 PRIVATE void do_app11(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    COMPILE;
-#endif
-    THREEPARAMS("app11");
+    FOURPARAMS("app11");
     ONEQUOTE("app11");
     do_app1(env);
-    env->stk->next = env->stk->next->next;
+    env->stk->next = env->stk->next->next; /* delete X */
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : ifset.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef IFSET_C
 #define IFSET_C
@@ -13,6 +13,6 @@ If X is a set, executes T else executes E.
 #define PROCEDURE	do_ifset
 #define NAME		"ifset"
 #define TYP		SET_
-#include "iftype.h"
+#include "if_type.h"
 /* ifset.c */
 #endif

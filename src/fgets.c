@@ -1,7 +1,7 @@
 /*
     module  : fgets.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef FGETS_C
 #define FGETS_C
@@ -15,9 +15,7 @@ PRIVATE void do_fgets(pEnv env)
     char *buf;
     size_t leng, size = INPLINEMAX;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("fgets");
     FILE("fgets");
     buf = GC_malloc_atomic(size);

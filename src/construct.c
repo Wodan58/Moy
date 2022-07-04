@@ -1,79 +1,54 @@
 /*
     module  : construct.c
-    version : 1.16
-    date    : 03/15/21
+    version : 1.17
+    date    : 06/20/22
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
-
-#ifndef OLD_RUNTIME
-int put_construct(pEnv env)
-{
-    Node *list, *prog;
-
-    if (!(LIST_1 && LIST_2))
-	return 0;
-    list = env->stk->u.lis;
-    POP(env->stk);
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
-    fprintf(outfp, "{ /* CONSTRUCT */");
-    fprintf(outfp, "Node *root = 0, *save[2];");
-    fprintf(outfp, "save[0] = stk2lst(env);");
-    compile(env, prog);
-    for (; list; list = list->next) {
-	fprintf(outfp, "save[1] = stk2lst(env);");
-	compile(env, list->u.lis);
-	fprintf(outfp, "root = newnode(env->stk->op, env->stk->u, root);");
-	fprintf(outfp, "env->stk = 0;");
-	fprintf(outfp, "lst2stk(env, save[1]);");
-	fprintf(outfp, "if (!env->stk) break;");
-    }
-    fprintf(outfp, "env->stk = 0;");
-    fprintf(outfp, "lst2stk(env, save[0]);");
-    fprintf(outfp, "root = reverse(root);");
-    fprintf(outfp, "while (root) {");
-    fprintf(outfp, "DUPLICATE(root);");
-    fprintf(outfp, "root = root->next; } }");
-    return 1;
-}
-#endif
 
 /**
 construct  :  [P] [[P1] [P2] ..]  ->  R1 R2 ..
 Saves state of stack and then executes [P].
 Then executes each [Pi] to give Ri pushed onto saved stack.
 */
+#ifdef COMPILING
+void put_construct(pEnv env, Node *prog[2])
+{
+    Node *cur;
+
+    fprintf(outfp, "{ /* CONSTRUCT */");
+    fprintf(outfp, "Node *save[2];");
+    fprintf(outfp, "save[0] = env->stk;");
+    compile(env, prog[0]);
+    fprintf(outfp, "save[1] = env->stk;");
+    for (cur = prog[1]; cur; cur = cur->next) {
+	fprintf(outfp, "env->stk = save[1];");
+	compile(env, cur->u.lis);
+	fprintf(outfp,"save[0] = newnode(env->stk->op, env->stk->u, save[0]);");
+    }
+    fprintf(outfp, "env->stk = save[0]; }");
+}
+#endif
+
 PRIVATE void do_construct(pEnv env)
 {
-    Node *list, *prog, *root = 0, *save[2];
+    Node *prog[2], *cur, *save[2];
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_construct(env))
-	return;
-    COMPILE;
-#endif
     TWOPARAMS("construct");
     TWOQUOTES("construct");
-    list = env->stk->u.lis;
+    prog[1] = env->stk->u.lis;
     POP(env->stk);
-    prog = env->stk->u.lis;
+    prog[0] = env->stk->u.lis;
     POP(env->stk);
-    save[0] = stk2lst(env);
-    exeterm(env, prog);
-    for (; list; list = list->next) {
-	save[1] = stk2lst(env);
-	exeterm(env, list->u.lis);
-	root = newnode(env->stk->op, env->stk->u, root);
-	env->stk = 0;
-	lst2stk(env, save[1]);
-	if (!env->stk)
-	    break;
+    INSTANT(put_construct);
+    save[0] = env->stk;		/* save old stack */
+    exeterm(env, prog[0]);
+    save[1] = env->stk;		/* save new stack */
+    for (cur = prog[1]; cur; cur = cur->next) {
+	env->stk = save[1];	/* restore new stack */
+	exeterm(env, cur->u.lis);
+	save[0] = newnode(env->stk->op, env->stk->u, save[0]);	/* result */
     }
-    env->stk = 0;
-    lst2stk(env, save[0]);
-    for (list = reverse(root); list; list = list->next)
-	DUPLICATE(list);
+    env->stk = save[0];
 }
 #endif

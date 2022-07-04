@@ -1,0 +1,12 @@
+(*
+    module  : case.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+DEFINE	test == [[1 [one] first]
+		 [2 [two] first]
+		 [[other] first]] case.
+
+1 test.
+2 test.
+3 test..

@@ -1,7 +1,7 @@
 /*
     module  : echo.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef ECHO_C
 #define ECHO_C
@@ -12,9 +12,9 @@ Pushes value of echo flag, I = 0..3.
 */
 PRIVATE void do_echo(pEnv env)
 {
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     COMPILE;
-#endif
     PUSH_NUM(INTEGER_, getechoflag());
+#endif
 }
 #endif

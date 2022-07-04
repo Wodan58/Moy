@@ -1,7 +1,7 @@
 /*
     module  : __symtabmax.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef __SYMTABMAX_C
 #define __SYMTABMAX_C
@@ -12,9 +12,9 @@ Pushes value of maximum size of the symbol table.
 */
 PRIVATE void do___symtabmax(pEnv env)
 {
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     COMPILE;
-#endif
     PUSH_NUM(INTEGER_, symtabmax(env));
+#endif
 }
 #endif

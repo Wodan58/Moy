@@ -1,7 +1,7 @@
 /*
     module  : logical.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef LOGICAL_C
 #define LOGICAL_C
@@ -15,4 +15,5 @@ Tests whether X is a logical.
 #define REL		==
 #define TYP		BOOLEAN_
 #include "type.h"
+/* logical.c */
 #endif

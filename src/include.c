@@ -1,7 +1,7 @@
 /*
     module  : include.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef INCLUDE_C
 #define INCLUDE_C
@@ -15,13 +15,10 @@ PRIVATE void do_include(pEnv env)
 {
     char *str;
 
-#ifndef OLD_RUNTIME
-    COMPILE;
-#endif
     ONEPARAM("include");
     STRING("include");
     str = env->stk->u.str;
     POP(env->stk);
-    include(str);
+    include(env, str, 1);
 }
 #endif

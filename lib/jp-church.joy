@@ -1,15 +1,15 @@
-#
-#   module  : jp-church.joy
-#   version : 1.2
-#   date    : 05/12/19
-#
+(*
+    module  : jp-church.joy
+    version : 1.3
+    date    : 06/18/22
+*)
 %INCLUDE usrlib.joy
 
 0 __settracegc.							(* R.W. *)
-2 setecho.
+# 2 setecho.
 
 DEFINE
-    C0  ==  pop;
+    C0	==  pop;
     Csucc  ==  [dup [i] dip] dip i.
 
 DEFINE
@@ -21,8 +21,8 @@ Peano [[C0] Csucc] Csucc.
 Peano [[[C0] Csucc] Csucc] Csucc.
 
 DEFINE
-    C1  ==  [C0] Csucc;
-    C2  ==  [C1] Csucc;
+    C1	==  [C0] Csucc;
+    C2	==  [C1] Csucc;
     C3 ==  [C2] Csucc.
 
 Peano C0.
@@ -59,21 +59,21 @@ Doublings [C2] [C3] Cpow.
 
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd.
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd
-            3   succ    2   +      3   *     succ    2   +      = .
+	    3	succ	2   +	   3   *     succ    2	 +	= .
 
 Peano [[[[C2] [C3] Cmul] [C2] Cpow] [[C2] [[C1] Csucc] Cmul] Cadd] [C2] Cadd.
 
 DEFINE
-    Q0  ==  [pop];
-    Qsucc  ==  [ [dup [i] dip] dip i ]  cons.
+    Q0	==  [pop];
+    Qsucc  ==  [ [dup [i] dip] dip i ]	cons.
 
 Peano Q0 i.
 Peano Q0 Qsucc i.
 Peano Q0 Qsucc Qsucc i.
 
 DEFINE
-    Q1  ==  Q0 Qsucc;
-    Q2  ==  Q1 Qsucc;
+    Q1	==  Q0 Qsucc;
+    Q2	==  Q1 Qsucc;
     Q3 ==  Q2 Qsucc.
 
 Peano Q0 i.
@@ -102,24 +102,24 @@ Q2 Q3 Qadd.
 Q2 Q3 Qmul.
 Q2 Q3 Qpow.
 
-Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i.
-Peano      Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i
-            3  succ   2  +     3  *    succ  2  +      = .
+Peano	   Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i.
+Peano	   Q3 Qsucc  Q2 Qadd  Q3 Qmul Qsucc Q2 Qadd i
+	    3  succ   2	 +     3  *    succ  2	+      = .
 
 DEFINE
     Ctrue  ==  pop i;
-    Cfalse  ==  popd i.
+    Cfalse  ==	popd i.
 
 DEFINE
     Boole == ["Yes, yes"] ["No, no"];
-    Comparison  ==  2 3 [<] [>].
+    Comparison	==  2 3 [<] [>].
 
 Boole Ctrue.
 Boole Cfalse.
 Comparison Ctrue.
 Comparison Cfalse.
 
-DEFINE 
+DEFINE
 (*
     Cnot  ==  [ [Cfalse] [Ctrue] ] dip i.
 *)
@@ -131,7 +131,7 @@ Comparison [[Ctrue] Cnot] Cnot.
 Comparison [[Cfalse] Cnot] Cnot.
 
 DEFINE
-    Cor  ==  [[Ctrue]] dipd i;
+    Cor	 ==  [[Ctrue]] dipd i;
     Cand  ==  [[Cfalse]] dip i.
 
 Boole [Ctrue ] [Ctrue ] Cor.
@@ -155,10 +155,10 @@ Boole [[C0] Ceq0] [[[C2] Csucc] Ceq0] Cand.
 DEFINE
     Cifte  ==  rolldown i.
 
-Peano  [[C0] Ceq0]  [C2]  [C3]  Cifte.
-Peano  [[C1] Ceq0]  [C2]  [C3]  Cifte.
-Peano  [[[C0] Ceq0] Cnot]  [C2]  [C3]  Cifte.
-Peano  [[[C1] Ceq0] Cnot]  [C2]  [C3]  Cifte.
+Peano  [[C0] Ceq0]  [C2]  [C3]	Cifte.
+Peano  [[C1] Ceq0]  [C2]  [C3]	Cifte.
+Peano  [[[C0] Ceq0] Cnot]  [C2]	 [C3]  Cifte.
+Peano  [[[C1] Ceq0] Cnot]  [C2]	 [C3]  Cifte.
 
 Peano [Ctrue ] [[Ctrue ] [C0] [C1] Cifte] [[Ctrue ] [C2] [C3] Cifte] Cifte.
 Peano [Ctrue ] [[Cfalse] [C0] [C1] Cifte] [[Cfalse] [C2] [C3] Cifte] Cifte.
@@ -188,8 +188,8 @@ DEFINE
    Csucc ==  [dup dip] dip i;
 
 #  Cadd ==  [ [[Csucc] cons] ] dip i i;
-   Cadd ==  [sip] dip i;               # but sip needs to be defined:
-                                         sip ==  dupd dip;
+   Cadd ==  [sip] dip i;	       # but sip needs to be defined:
+					 sip ==	 dupd dip;
 
 #  Cmul ==  [ [[C0]] dip  [Cadd] cons [cons] cons ] dip i i;
    Cmul ==  [cons] dip i;
@@ -209,4 +209,4 @@ Doublings [C2] [C3] Cpow.
 
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd.
 Peano [[[[[C3] Csucc] [C2] Cadd] [C3] Cmul] Csucc] [C2] Cadd
-            3   succ    2   +      3   *     succ    2   +      = .
+	    3	succ	2   +	   3   *     succ    2	 +	= .

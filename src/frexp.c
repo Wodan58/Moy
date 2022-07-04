@@ -1,7 +1,7 @@
 /*
     module  : frexp.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FREXP_C
 #define FREXP_C
@@ -15,15 +15,9 @@ PRIVATE void do_frexp(pEnv env)
 {
     int exp;
 
-#ifndef OLD_RUNTIME
-    if (compiling && NUMERIC_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM("frexp");
     FLOAT("frexp");
-    env->stk->u.dbl = frexp(FLOATVAL, &exp);
+    UNARY(FLOAT_NEWNODE, frexp(FLOATVAL, &exp));
     PUSH_NUM(INTEGER_, exp);
 }
 #endif

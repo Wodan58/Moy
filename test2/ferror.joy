@@ -1,0 +1,6 @@
+(*
+    module  : ferror.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+"ferror.joy" "r" fopen ferror.

@@ -1,7 +1,7 @@
 /*
     module  : clock.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef CLOCK_C
 #define CLOCK_C
@@ -12,9 +12,7 @@ Pushes the integer value of current CPU usage in milliseconds.
 */
 PRIVATE void do_clock(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
-    PUSH_NUM(INTEGER_, clock() - startclock);
+    PUSH_NUM(INTEGER_, (clock() - startclock));
 }
 #endif

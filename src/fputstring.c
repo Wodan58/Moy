@@ -1,7 +1,7 @@
 /*
     module  : fputstring.c
-    version : 1.3
-    date    : 03/15/21
+    version : 1.4
+    date    : 06/20/22
 */
 #ifndef FPUTSTRING_C
 #define FPUTSTRING_C
@@ -21,5 +21,4 @@ PRIVATE void do_fputstring(pEnv env)
 {
     do_fputchars(env);
 }
-/* fputchars.c */
 #endif

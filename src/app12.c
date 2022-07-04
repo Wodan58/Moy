@@ -1,7 +1,7 @@
 /*
     module  : app12.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef APP12_C
 #define APP12_C
@@ -12,11 +12,8 @@ Executes P twice, with Y1 and Y2, returns R1 and R2.
 */
 PRIVATE void do_app12(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    COMPILE;
-#endif
-    THREEPARAMS("app12");
+    FOURPARAMS("app12");
     do_unary2(env);
-    env->stk->next->next = env->stk->next->next->next;
+    env->stk->next->next = env->stk->next->next->next; /* delete X */
 }
 #endif

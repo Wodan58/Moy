@@ -1,7 +1,7 @@
 /*
     module  : frename.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FRENAME_C
 #define FRENAME_C
@@ -13,14 +13,10 @@ B is a boolean indicating success or failure.
 */
 PRIVATE void do_frename(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("frename");
     STRING("frename");
     STRING2("frename");
-    env->stk->next->u.num = !rename(env->stk->next->u.str, env->stk->u.str);
-    env->stk->next->op = BOOLEAN_;
-    POP(env->stk);
+    BINARY(BOOLEAN_NEWNODE, !rename(env->stk->next->u.str, env->stk->u.str));
 }
 #endif

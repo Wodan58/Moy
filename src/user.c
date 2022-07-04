@@ -1,7 +1,7 @@
 /*
     module  : user.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef USER_C
 #define USER_C
@@ -13,6 +13,7 @@ Tests whether X is a user-defined symbol.
 #define PROCEDURE	do_user
 #define NAME		"user"
 #define REL		==
-#define TYP		USR_
+#define TYP		USR_ && env->stk->u.num >= env->firstlibra
 #include "type.h"
+/* user.c */
 #endif

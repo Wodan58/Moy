@@ -1,23 +1,16 @@
 /*
     module  : someall.h
-    version : 1.19
-    date    : 03/15/21
+    version : 1.20
+    date    : 06/20/22
 */
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
 #define CAT(a, b)	a ## b
 #define PUT_PROC(a)	CAT(put_, a)
 
-int PUT_PROC(PROCEDURE)(pEnv env)
+void PUT_PROC(PROCEDURE)(pEnv env, Node *prog)
 {
-    Node *prog;
-
-    if (!LIST_1)
-	return 0;
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(outfp, "{ /* SOMEALL */");
-    fprintf(outfp, "ulong_t set;");
+    fprintf(outfp, "long set;");
     fprintf(outfp, "char *str, *volatile ptr;");
     fprintf(outfp, "unsigned i, num = %d;", INITIAL);
     fprintf(outfp, "Node *list, *save;");
@@ -41,33 +34,29 @@ int PUT_PROC(PROCEDURE)(pEnv env)
     fprintf(outfp, "case SET_:");
     fprintf(outfp, "set = env->stk->u.set; POP(env->stk);");
     fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long_t)1 << i)) {");
+    fprintf(outfp, "if (set & ((long)1 << i)) {");
     fprintf(outfp, "save = env->stk;");
     fprintf(outfp, "PUSH_NUM(INTEGER_, i);");
     compile(env, prog);
     fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
     fprintf(outfp, "if (num != %d) break; } break; }", INITIAL);
     fprintf(outfp, "PUSH_NUM(BOOLEAN_, num); }");
-    return 1;
 }
 #endif
 
 PRIVATE void PROCEDURE(pEnv env)
 {
-    ulong_t set;
+    long set;
     int i, num = INITIAL;
     char *str, *volatile ptr;
     Node *prog, *list, *save;
 
-#ifndef OLD_RUNTIME
-    if (compiling && PUT_PROC(PROCEDURE)(env))
-	return;
-    COMPILE;
-#endif
-    TWOPARAMS(NAME);
+    ONEPARAM(NAME);
     ONEQUOTE(NAME);
     prog = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(PUT_PROC(PROCEDURE));
+    ONEPARAM(NAME);
     switch (env->stk->op) {
     case LIST_:
 	list = env->stk->u.lis;
@@ -99,7 +88,7 @@ PRIVATE void PROCEDURE(pEnv env)
 	set = env->stk->u.set;
 	POP(env->stk);
 	for (i = 0; i < SETSIZE_; i++)
-	    if (set & ((long_t)1 << i)) {
+	    if (set & ((long)1 << i)) {
 		save = env->stk;
 		PUSH_NUM(INTEGER_, i);
 		exeterm(env, prog);

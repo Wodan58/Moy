@@ -1,19 +1,12 @@
 /*
     module  : strftime.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
 
-PRIVATE void decode_time(pEnv env, struct tm *t);
-
-#ifdef MKTIME_X
-#undef MKTIME_X
-#undef MKTIME_C
-#endif
-
-#include "mktime.c"
+#include "decode.h"
 
 /**
 strftime  :  T S1  ->  S2
@@ -26,12 +19,6 @@ PRIVATE void do_strftime(pEnv env)
     size_t length;
     char *fmt, *result;
 
-#ifndef OLD_RUNTIME
-    if (compiling && STRING_1 && LIST_2)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS("strftime");
     STRING("strftime");
     fmt = env->stk->u.str;

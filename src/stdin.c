@@ -1,7 +1,7 @@
 /*
     module  : stdin.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef STDIN_C
 #define STDIN_C
@@ -12,9 +12,7 @@ Pushes the standard input stream.
 */
 PRIVATE void do_stdin(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     PUSH_PTR(FILE_, stdin);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : ternary.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef TERNARY_C
 #define TERNARY_C
@@ -14,9 +14,8 @@ exactly three are removed from the stack.
 */
 #define PROCEDURE	do_ternary
 #define NAME		"ternary"
-#define PARAMCOUNT	FOURPARAMS
 #define TOP		env->stk->next->next->next
 #define TOPSTR		"env->stk->next->next->next"
-#define ARITY		3
-#include "nary.h"
+#include "n_ary.h"
+/* ternary.c */
 #endif

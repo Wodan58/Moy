@@ -1,18 +1,19 @@
-#
-#   module  : symtst.joy
-#   version : 1.4
-#   date    : 05/12/19
-#
+(*
+    module  : symtst.joy
+    version : 1.5
+    date    : 06/18/22
+*)
 (* FILE:  symtst.joy *)
 
 %PUT .
-%PUT Testing the 12 translators in the library  symlib.joy
+%PUT testing the 12 translators in the library	symlib.joy
+%PUT .
 
 %INCLUDE usrlib.joy
 %INCLUDE symlib.joy
 
 0 __settracegc.							(* R.W. *)
-1 setecho.
+# 1 setecho.
 
 (* The translations will use the following unary and binary operators:	*)
 
@@ -24,7 +25,7 @@ DEFINE
 
 (* to Cambridge (= Lisp without lambda *)
 
-[2  3  *  4  5  +  -]					Rev2Cam.
+[2  3  *  4  5	+  -]					Rev2Cam.
 
 [4 6 pred * 5 succ 7 + - fact]				Rev2Cam.
 
@@ -40,7 +41,7 @@ DEFINE
 
 (* to Tree, = Cam but bracketed atoms *)
 
-[2  3  *  4  5  +  -]					Rev2Tre.
+[2  3  *  4  5	+  -]					Rev2Tre.
 
 [4 6 pred * 5 succ 7 + - fact]				Rev2Tre.
 
@@ -56,7 +57,7 @@ DEFINE
 
 (* to Infix, bracketed infix binaries *)
 
-[2  3  *  4  5  +  -]					Rev2Inf.
+[2  3  *  4  5	+  -]					Rev2Inf.
 
 [4 6 pred * 5 succ 7 + - fact]				Rev2Inf.
 
@@ -72,7 +73,7 @@ DEFINE
 
 (* to Polish, prefix for all operators *)
 
-[2  3  *  4  5  +  -]					Rev2Pol.
+[2  3  *  4  5	+  -]					Rev2Pol.
 
 [4 6 pred * 5 succ 7 + - fact]				Rev2Pol.
 
@@ -193,17 +194,17 @@ DEFINE
   bin2ops == [ + - or concat ];
   bin3ops == [ * / and cons ].
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Inf.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Inf.
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Pol.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Pol.
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Cam.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Cam.
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Tre.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Tre.
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Rev.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Rev.
 
-[ 1 * 2 + 3 * 4 + 5 * 6  <  100 ]			Min2Rev i.
+[ 1 * 2 + 3 * 4 + 5 * 6	 <  100 ]			Min2Rev i.
 
 (* for some final light relief:						*)
 

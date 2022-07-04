@@ -1,7 +1,7 @@
 /*
     module  : putchars.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef PUTCHARS_C
 #define PUTCHARS_C
@@ -12,9 +12,7 @@ Writes abc.. (without quotes)
 */
 PRIVATE void do_putchars(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("putchars");
     STRING("putchars");
     printf("%s", env->stk->u.str);

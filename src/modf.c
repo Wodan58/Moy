@@ -1,7 +1,7 @@
 /*
     module  : modf.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef MODF_C
 #define MODF_C
@@ -15,15 +15,9 @@ PRIVATE void do_modf(pEnv env)
 {
     double exp;
 
-#ifndef OLD_RUNTIME
-    if (compiling && NUMERIC_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM("modf");
     FLOAT("modf");
-    env->stk->u.dbl = modf(FLOATVAL, &exp);
+    NULLARY(FLOAT_NEWNODE, modf(FLOATVAL, &exp));
     PUSH_DBL(exp);
 }
 #endif

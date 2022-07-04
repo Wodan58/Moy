@@ -1,7 +1,7 @@
 /*
     module  : swapd.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef SWAPD_C
 #define SWAPD_C
@@ -22,4 +22,5 @@ As if defined by:   swapd  ==  [swap] dip
 #define PARAMCOUNT	THREEPARAMS
 #define ARGUMENT	do_swap
 #include "dipped.h"
+/* swapd.c */
 #endif

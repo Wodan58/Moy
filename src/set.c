@@ -1,7 +1,7 @@
 /*
     module  : set.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef SET_C
 #define SET_C
@@ -15,4 +15,5 @@ Tests whether X is a set.
 #define REL		==
 #define TYP		SET_
 #include "type.h"
+/* set.c */
 #endif

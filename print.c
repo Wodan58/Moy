@@ -1,135 +1,103 @@
 /*
     module  : print.c
-    version : 1.26
-    date    : 03/15/21
+    version : 1.29
+    date    : 06/19/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
+#include "globals.h"
 
-void writefactor(pEnv env, Node *node, FILE *stm)
+void writefactor(pEnv env, Node *node)
 {
+    int i;
     char *ptr;
-    long_t set;
-    unsigned i, j;
+    long j, set;
 
     switch (node->op) {
     case USR_:
-	fprintf(stm, "%s", dict_descr(env, node->u.num));
+	printf("%s", dict_descr(env, node));
 	break;
     case ANON_FUNCT_:
-	if ((ptr = procname(node->u.proc)) != 0)
-	    fprintf(stm, "%s", ptr);
-	else
-	    fprintf(stm, "%p", node->u.proc);
+	printf("%s", procname(node->u.proc));
 	break;
     case BOOLEAN_:
-	fprintf(stm, "%s", node->u.num ? "true" : "false");
+	printf("%s", node->u.num ? "true" : "false");
 	break;
     case CHAR_:
 	if (node->u.num == '\n')
-	    fprintf(stm, "'\\n");
+	    printf("'\\n");
 	else
-	    fprintf(stm, "'%c", (int)node->u.num);
+	    printf("'%c", (int)node->u.num);
 	break;
     case INTEGER_:
-	fprintf(stm, "%ld", (long)node->u.num);
+	printf("%ld", (long)node->u.num);
 	break;
     case SET_:
-	fprintf(stm, "{");
+	putchar('{');
 	for (set = node->u.set, i = 0, j = 1; i < SETSIZE_; i++, j <<= 1)
 	    if (set & j) {
-		fprintf(stm, "%d", i);
+		printf("%d", i);
 		if ((set &= ~j) == 0)
 		    break;
-		fprintf(stm, " ");
+		putchar(' ');
 	    }
-	fprintf(stm, "}");
+	putchar('}');
 	break;
     case STRING_:
-	fputc('"', stm);
+	putchar('"');
 	for (ptr = node->u.str; *ptr; ptr++) {
 	    if (*ptr == '"' || *ptr == '\\' || *ptr == '\n')
-		fputc('\\', stm);
-	    fputc(*ptr == '\n' ? 'n' : *ptr, stm);
+		putchar('\\');
+	    if (*ptr == '\n')
+		putchar('n');
+	    else
+		putchar(*ptr);
 	}
-	fputc('"', stm);
+	putchar('"');
 	break;
     case LIST_:
-	fprintf(stm, "%s", "[");
-	writeterm(env, node->u.lis, stm);
-	fprintf(stm, "%s", "]");
+	putchar('[');
+	writeterm(env, node->u.lis);
+	putchar(']');
 	break;
     case FLOAT_:
-	fprintf(stm, "%g", node->u.dbl);
+	printf("%g", node->u.dbl);
 	break;
     case FILE_:
 	if (!node->u.fil)
-	    fprintf(stm, "file:NULL");
+	    printf("file:NULL");
 	else if (node->u.fil == stdin)
-	    fprintf(stm, "file:stdin");
+	    printf("file:stdin");
 	else if (node->u.fil == stdout)
-	    fprintf(stm, "file:stdout");
+	    printf("file:stdout");
 	else if (node->u.fil == stderr)
-	    fprintf(stm, "file:stderr");
+	    printf("file:stderr");
 	else
-	    fprintf(stm, "file:%p", node->u.fil);
-	break;
-    case SYMBOL_:
-	fprintf(stm, "%s", node->u.str);
-	break;
-    case '(':
-    case ')':
-    case '[':
-    case ']':
-    case '{':
-    case '}':
-    case ';':
-	fprintf(stm, "%c", node->op);
-	break;
-    case JPUBLIC:
-	fprintf(stm, "JPUBLIC");
-	break;
-    case JPRIVATE:
-	fprintf(stm, "JPRIVATE");
-	break;
-    case END:
-	fprintf(stm, "END");
-	break;
-    case MODULE:
-	fprintf(stm, "MODULE");
-	break;
-    case JEQUAL:
-	fprintf(stm, "==");
+	    printf("file:%p", node->u.fil);
 	break;
     default:
-	execerror("valid datatype", "writefactor");
+	execerror(env, "valid datatype", "writefactor");
 	break;
     }
 }
 
-void writeterm(pEnv env, Node *code, FILE *stm)
+void writeterm(pEnv env, Node *code)
 {
     while (code) {
-	writefactor(env, code, stm);
+	writefactor(env, code);
 	if (code->next)
-	    putc(' ', stm);
+	    putchar(' ');
 	code = code->next;
     }
 }
 
-void writestack(pEnv env, Node *code, FILE *stm)
+void writestack(pEnv env, Node *code)
 {
     if (code) {
-	if (code == code->next)
-	    execerror("non-circular stack", "writestack");
-	else {
-	    writestack(env, code->next, stm);
-	    putc(' ', stm);
+	if (code->next && code != code->next) {
+	    writestack(env, code->next);
+	    putchar(' ');
 	}
-	writefactor(env, code, stm);
+	writefactor(env, code);
+	if (code == code->next)
+	    printf("?\n");
     }
 }

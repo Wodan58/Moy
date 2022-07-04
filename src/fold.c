@@ -1,7 +1,7 @@
 /*
     module  : fold.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FOLD_C
 #define FOLD_C
@@ -26,12 +26,6 @@ and combines with binary operator P to produce value V.
 */
 PRIVATE void do_fold(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && LIST_1 && VALID_2 && VALID_3)
-	;
-    else
-	COMPILE;
-#endif
     THREEPARAMS("fold");
     do_swapd(env);
     do_step(env);

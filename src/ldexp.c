@@ -1,7 +1,7 @@
 /*
     module  : ldexp.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef LDEXP_C
 #define LDEXP_C
@@ -14,17 +14,11 @@ PRIVATE void do_ldexp(pEnv env)
 {
     int exp;
 
-#ifndef OLD_RUNTIME
-    if (compiling && INTEGER_1 && NUMERIC_2)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS("ldexp");
     INTEGER("ldexp");
     exp = env->stk->u.num;
     POP(env->stk);
     FLOAT("ldexp");
-    env->stk->u.dbl = ldexp(FLOATVAL, exp);
+    UNARY(FLOAT_NEWNODE, ldexp(FLOATVAL, exp));
 }
 #endif

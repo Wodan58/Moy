@@ -1,23 +1,17 @@
 /*
     module  : dipped.h
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 PRIVATE void PROCEDURE(pEnv env)
 {
-    Node temp;
+    Node *save;
 
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1 && VALID_2)
-	;
-    else
-	COMPILE;
-#endif
     PARAMCOUNT(NAME);
-    temp = *env->stk;
+    save = env->stk;
     POP(env->stk);
     ARGUMENT(env);
-    DUPLICATE(&temp);
+    DUPLICATE(save);
 }
 
 #undef PROCEDURE

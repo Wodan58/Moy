@@ -1,7 +1,7 @@
 /*
     module  : unary.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef UNARY_C
 #define UNARY_C
@@ -14,9 +14,8 @@ exactly one is removed from the stack.
 */
 #define PROCEDURE	do_unary
 #define NAME		"unary"
-#define PARAMCOUNT	TWOPARAMS
 #define TOP		env->stk->next
 #define TOPSTR		"env->stk->next"
-#define ARITY		1
-#include "nary.h"
+#include "n_ary.h"
+/* unary.c */
 #endif

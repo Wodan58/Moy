@@ -1,37 +1,38 @@
 /*
     module  : utils.c
-    version : 1.2
-    date    : 03/15/21
+    version : 1.4
+    date    : 06/17/22
 */
 #include "runtime.h"
 
 void readfactor(pEnv env, int sym)
 {
     Node temp;
-    ulong_t set = 0;
+    long set = 0;
 
     switch (sym) {
     case '{':
-	while ((sym = yylex()) != '}')
-	    if (sym == CHAR_ || sym == INTEGER_)
-		set |= (ulong_t)1 << yylval.num;
+	while ((sym = yylex(env)) != '}')
+	    if ((sym != CHAR_ && sym != INTEGER_) ||
+			yylval.num < 0 || yylval.num >= SETSIZE_)
+		execerror(env, "small numeric", "set");
 	    else
-		execerror("numeric", "set");
+		set |= (long)1 << yylval.num;
 	temp.op = SET_;
 	temp.u.set = set;
 	DUPLICATE(&temp);
 	break;
     case '[':
-	readterm(env, yylex());
+	readterm(env, yylex(env));
 	break;
-    case SYMBOL_:
+    case USR_:
 	if (interpreter) {
 	    temp.op = USR_;
 	    temp.u.num = lookup(env, yylval.str);
 	} else if ((temp.u.proc = nameproc(yylval.str)) != 0)
 	    temp.op = ANON_FUNCT_;
 	else {
-	    temp.op = SYMBOL_;
+	    temp.op = USR_;
 	    temp.u.str = yylval.str;
 	}
 	DUPLICATE(&temp);
@@ -58,5 +59,5 @@ void readterm(pEnv env, int sym)
 	 cur = &env->stk->next;
 	 env->stk = *cur;
 	*cur = 0;
-    } while ((sym = yylex()) != ']');
+    } while ((sym = yylex(env)) != ']');
 }

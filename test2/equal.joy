@@ -1,0 +1,46 @@
+(*
+    module  : equal.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+DEFINE	last == dup rest null [first] [rest last] branch.
+
+"*" intern [*] first equal.
+[*] first "*" intern equal.
+"+" intern [+] first equal.
+[+] first "+" intern equal.
+[last] first [last] first equal.
+[last] first [pop] first equal.
+[last] first "last" equal.
+[pop] first [last] first equal.
+[pop] first [pop] first equal.
+[pop] first "pop" equal.
+0 true equal.
+66 'A equal.
+'A 10 equal.
+123456789 {} equal.
+[last] first "" equal.
+0 [] equal.
+[1 2 3] [4 5 6] equal.
+[1 2 3] [1 2 3 4] equal.
+[1 2 3 4] [1 2 3] equal.
+[1 2 [3 4] 5 6] [1 2 [3 4] 5 6] equal.
+[1 2 [3 4] 5] [1 2 [3 4] 5 6] equal.
+[1 2 [3 4] 5 6] [1 2 [3 4] 5] equal.
+[1 2 [] 5 6] [1 2 [] 5] equal.
+[1 2 [] 5 6] [1 2 3 [] 5] equal.
+[] [] equal.
+[] [1 2 3] equal.
+[1 2 3] [] equal.
+[] 0 equal.
+0 0 equal.
+0 1 equal.
+1 0 equal.
+1 1.1 equal.
+1 1.0 equal.
+1 0.9 equal.
+1.1 1 equal.
+1.0 1 equal.
+0.9 1 equal.
+argv stdin equal.
+stdin argv equal.

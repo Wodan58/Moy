@@ -1,0 +1,6 @@
+(*
+    module  : binrec2.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+argv 1 at 10 strtol [dup small] [] [pred dup pred] [+] binrec.

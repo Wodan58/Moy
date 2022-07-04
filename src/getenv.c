@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef GETENV_C
 #define GETENV_C
@@ -14,13 +14,11 @@ PRIVATE void do_getenv(pEnv env)
 {
     char *str;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("getenv");
     STRING("getenv");
     if ((str = getenv(env->stk->u.str)) == 0)
 	str = "";
-    env->stk->u.str = str;
+    UNARY(STRING_NEWNODE, str);
 }
 #endif

@@ -1,53 +1,72 @@
 /*
     module  : yylex.c
-    version : 1.13
-    date    : 04/28/21
+    version : 1.18
+    date    : 07/04/22
 */
 #include "runtime.h"
 
-YYSTYPE yylval;		/* copy */
+extern YYSTYPE yylval;		/* runtime.c */
 
-static FILE *yyin;
-static char line[INPLINEMAX], unget[2];
-static int moy_echo, ilevel, linenum, linepos;
+FILE *yyin;			/* initsym.c */
+
+static char line[INPLINEMAX + 1], unget[2];
+static int echoflag, ilevel, linenum, linepos;
 
 static struct {
     FILE *fp;
+#if 0
     char name[ALEN];
+#endif
     int linenum;
 } infile[INPSTACKMAX];
 
-void inilinebuffer(FILE *fp, char *str)
+/*
+    inilinebuffer - initialise the stack of input files. Filename is not used.
+		    Also initializes yyin. Multiple calls to inilinebuffer are
+		    allowed.
+*/
+void inilinebuffer(void)
 {
-    infile[0].fp = yyin = fp;
-    strncpy(infile[0].name, str, ALEN);
+    infile[0].fp = yyin = stdin;
+#if 0
+    strncpy(infile[0].name, name, ALEN);
     infile[0].name[ALEN - 1] = 0;
+#endif
     infile[0].linenum = 0;
 }
 
-void redirect(FILE *fp)
+/*
+    redirect - change input to a new file.
+*/
+static void redirect(pEnv env, FILE *fp)
 {
-    if (infile[ilevel].fp == fp)
-	return;
     infile[ilevel].linenum = linenum;
     if (ilevel + 1 == INPSTACKMAX)
-	execerror("fewer include files", "redirect");
+	execerror(env, "fewer include files", "redirect");
     infile[++ilevel].fp = yyin = fp;
-    infile[ilevel].name[0] = 0;
+#if 0
+    strncpy(infile[ilevel].name, name, ALEN);
+    infile[ilevel].name[ALEN - 1] = 0;
+#endif
     infile[ilevel].linenum = linenum = 0;
 }
 
-void include(char *filnam)
+/*
+    include - insert the contents of a file in the input.
+*/
+void include(pEnv env, char *name, int error)
 {
     FILE *fp;
 
-    if ((fp = fopen(filnam, "r")) == 0)
-	execerror("valid file name", "include");
-    redirect(fp);
-    strncpy(infile[ilevel].name, filnam, ALEN);
-    infile[ilevel].name[ALEN - 1] = 0;
+    if ((fp = fopen(name, "r")) != 0)
+        redirect(env, fp);
+    else if (error)
+        execerror(env, "valid file name", "include");
 }
 
+/*
+    yywrap - end of file processing, returning to a previous input.
+*/
 int yywrap(void)
 {
     if (yyin != stdin)
@@ -59,32 +78,34 @@ int yywrap(void)
     return 0;
 }
 
+/*
+    putline - echo an input line.
+*/
 static void putline(void)
 {
-    if (moy_echo > 2)
-	fprintf(stderr, "%4d", linenum);
-    if (moy_echo > 1)
-	fputc('\t', stderr);
-    fprintf(stderr, "%s", line);
+    if (echoflag > 2)
+	printf("%4d", linenum);
+    if (echoflag > 1)
+	putchar('\t');
+    printf("%s", line);
 }
 
-static int restofline(void)
+/*
+    restofline - handle %PUT and %INCLUDE.
+*/
+static int restofline(pEnv env)
 {
-    int i;
-
     if (!strncmp(line, "%PUT", 4))
 	fprintf(stderr, "%s", &line[4]);
-    else {
-	for (i = strlen(line) - 1; isspace((int)line[i]); i--)
-	    line[i] = '\0';
-	for (i = 8; isspace((int)line[i]); i++)
-	    ;
-	include(&line[i]);
-    }
-    memset(line, 0, INPLINEMAX);
+    else
+	include(env, DelSpace(line + 8), 1);
+    memset(line, 0, sizeof(line));
     return 0;
 }
 
+/*
+    getch - return one character.
+*/
 static int getch(void)
 {
     int ch;
@@ -100,8 +121,6 @@ static int getch(void)
 	unget[0] = 0;
 	return ch;
     }
-    if (!yyin)
-	yyin = stdin;
     if (!line[linepos]) {
 again:
 	if (fgets(line, INPLINEMAX, yyin))
@@ -111,12 +130,16 @@ again:
 	    goto again;
 	}
 	linepos = 0;
-	if (moy_echo)
+	if (echoflag)
 	    putline();
     }
     return line[linepos++];
 }
 
+/*
+    ungetch - stack an unwanted character. A maximum of 2 characters need to
+	      be remembered here.
+*/
 static void ungetch(int ch)
 {
     if (unget[0])
@@ -124,7 +147,10 @@ static void ungetch(int ch)
     unget[0] = ch;
 }
 
-static int specialchar(void)
+/*
+    specialchar - handle character escape sequences.
+*/
+static int specialchar(pEnv env)
 {
     int ch, num;
 
@@ -150,35 +176,41 @@ static int specialchar(void)
     num = 10 * (ch - '0');
     ch = getch();
     if (!isdigit(ch))
-	yyerror("digit expected");
+	yyerror(env, "digit expected");
     num += ch - '0';
     num *= 10;
     ch = getch();
     if (!isdigit(ch))
-	yyerror("digit expected");
+	yyerror(env, "digit expected");
     num += ch - '0';
     return num;
 }
 
+/*
+    read_char - read one character and return type and value.
+*/
 static int read_char(pEnv env)
 {
     int ch;
 
     if ((ch = getch()) == '\\')
-	ch = specialchar();
+	ch = specialchar(env);
     env->yylval.num = ch;
     return CHAR_;
 }
 
+/*
+    read_string - read a string and return type and value.
+*/
 static int read_string(pEnv env)
 {
     int ch, i = 0;
-    char string[INPLINEMAX];
+    char string[INPLINEMAX + 1];
 
     while ((ch = getch()) != '"') {
 	if (ch == '\\')
-	    ch = specialchar();
-	if (i < INPLINEMAX - 1)
+	    ch = specialchar(env);
+	if (i < INPLINEMAX)
 	    string[i++] = ch;
     }
     string[i] = '\0';
@@ -186,13 +218,16 @@ static int read_string(pEnv env)
     return STRING_;
 }
 
+/*
+    read_number - read a number and return type and value.
+*/
 static int read_number(pEnv env, int ch)
 {
     int i = 0, dot = 0;
-    char string[INPLINEMAX];
+    char string[INPLINEMAX + 1];
 
     do {
-	if (i < INPLINEMAX - 1)
+	if (i < INPLINEMAX)
 	    string[i++] = ch;
 	ch = getch();
     } while (isdigit(ch));
@@ -201,23 +236,23 @@ static int read_number(pEnv env, int ch)
 	dot = 1;
     }
     if (isdigit(ch)) {
-	if (i < INPLINEMAX - 1)
+	if (i < INPLINEMAX)
 	    string[i++] = '.';
 	do {
-	    if (i < INPLINEMAX - 1)
+	    if (i < INPLINEMAX)
 		string[i++] = ch;
 	    ch = getch();
 	} while (isdigit(ch));
 	if (ch == 'e' || ch == 'E') {
-	    if (i < INPLINEMAX - 1)
+	    if (i < INPLINEMAX)
 		string[i++] = ch;
 	    if ((ch = getch()) == '-' || ch == '+') {
-		if (i < INPLINEMAX - 1)
+		if (i < INPLINEMAX)
 		    string[i++] = ch;
 		ch = getch();
 	    }
 	    while (isdigit(ch)) {
-		if (i < INPLINEMAX - 1)
+		if (i < INPLINEMAX)
 		    string[i++] = ch;
 		ch = getch();
 	    }
@@ -235,23 +270,25 @@ static int read_number(pEnv env, int ch)
     return INTEGER_;
 }
 
+/*
+    read_symbol - read a symbol and return type and value.
+*/
 static int read_symbol(pEnv env, int ch)
 {
     int i = 0;
-    char string[INPLINEMAX];
+    char string[INPLINEMAX + 1];
 
     do {
-	if (i < INPLINEMAX - 1)
+	if (i < INPLINEMAX)
 	    string[i++] = ch;
 	ch = getch();
-    } while (isalnum(ch) || strchr("-=_", ch) ||
-	    (i == 1 && strchr("*+/<>", ch)));
+    } while (isalnum(ch) || strchr("-=_", ch));
     if (ch == '.') {
 	if (strchr("-=_", ch = getch()) || isalnum(ch)) {
-	    if (i < INPLINEMAX - 1)
+	    if (i < INPLINEMAX)
 		string[i++] = '.';
 	    do {
-		if (i < INPLINEMAX - 1)
+		if (i < INPLINEMAX)
 		    string[i++] = ch;
 		ch = getch();
 	    } while (isalnum(ch) || strchr("-=_", ch));
@@ -264,7 +301,7 @@ static int read_symbol(pEnv env, int ch)
     string[i] = '\0';
     if (isupper((int)string[1])) {
 	if (!strcmp(string, "%PUT") || !strcmp(string, "%INCLUDE"))
-	    return restofline();
+	    return restofline(env);
 	if (!strcmp(string, "END"))
 	    return END;
 	if (!strcmp(string, "LIBRA") || !strcmp(string, "DEFINE") ||
@@ -290,19 +327,25 @@ static int read_symbol(pEnv env, int ch)
 	return INTEGER_;
     }
     env->yylval.str = GC_strdup(string);
-    return SYMBOL_;
+    return USR_;
 }
 
+/*
+    read_end - read and return the end symbol.
+*/
 static int read_end(pEnv env)
 {
     int ch;
 
     ungetch(ch = getch());
-    if (isalnum(ch) || strchr("-*+/<=>_", ch))
+    if (isalnum(ch) || ch == '_')
 	return read_symbol(env, '.');
     return END;
 }
 
+/*
+    read_minus - read either a number or a symbol.
+*/
 static int read_minus(pEnv env)
 {
     int ch;
@@ -313,21 +356,24 @@ static int read_minus(pEnv env)
     return read_symbol(env, '-');
 }
 
+/*
+    read_octal - read and return an octal or hexadecimal number.
+*/
 static int read_octal(pEnv env)
 {
     int ch, i = 0;
-    char string[INPLINEMAX];
+    char string[INPLINEMAX + 1];
 
     string[i++] = '0';
     if ((ch = getch()) == 'x' || ch == 'X') {
 	do {
-	    if (i < INPLINEMAX - 1)
+	    if (i < INPLINEMAX)
 		string[i++] = ch;
 	    ch = getch();
 	} while (isxdigit(ch));
     } else if (isdigit(ch)) {
 	while (ch >= '0' && ch <= '7') {
-	    if (i < INPLINEMAX - 1)
+	    if (i < INPLINEMAX)
 		string[i++] = ch;
 	    ch = getch();
 	}
@@ -340,6 +386,9 @@ static int read_octal(pEnv env)
     return INTEGER_;
 }
 
+/*
+    getsym - lexical analyzer, filling yylval and returning the token type.
+*/
 static int getsym(pEnv env)
 {
     int ch;
@@ -398,37 +447,48 @@ start:
     }
 }
 
-int yylex(void)
+/*
+    yylex - lexical analyzer, filling yylval and returning the token type.
+*/
+int yylex(pEnv env)
 {
     int rv;
-    pEnv env = environment;
 
     rv = getsym(env);
     yylval = env->yylval;
     return rv;
 }
 
+/*
+    getechoflag - function that accesses the echo flag.
+*/
 int getechoflag(void)
 {
-    return moy_echo;
+    return echoflag;
 }
 
+/*
+    setechoflag - function that sets the echo flag.
+*/
 void setechoflag(int flag)
 {
-    moy_echo = flag;
+    echoflag = flag;
 }
 
-int yyerror(char *str)
+/*
+    yyerror - error processing during source file reads.
+*/
+int yyerror(pEnv env, char *str)
 {
     int i, pos;
 
-    fprintf(stderr, "\nIn file %s line %d:\n", infile[ilevel].name, linenum);
-    putline();
-    if (moy_echo > 1)
+    if (!echoflag)
+        putline();
+    if (echoflag > 1)
 	fputc('\t', stderr);
-    for (i = 0, pos = linepos - 1; i < pos; i++)
+    for (i = 0, pos = linepos - 2; i < pos; i++)
 	fputc(' ', stderr);
     fprintf(stderr, "^\n\t%s\n\n", str);
-    execerror(0, 0);
+    abortexecution();
     return 0;
 }

@@ -1,13 +1,9 @@
 /*
     module  : joy.c
-    version : 1.7
-    date    : 03/15/21
+    version : 1.8
+    date    : 06/16/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include "joy.h"
-#include "symbol.h"
+#include "globals.h"
 
 static int EscVal(char *str)
 {
@@ -66,12 +62,14 @@ char *DelSpace(char *str)
 {
     int i;
 
-    for (i = strlen(str) - 1; i >= 0; i--)
+    for (i = 0; str[i]; i++)		/* find end of line */
+	;
+    while (--i > 0)			/* remove trailing spaces */
 	if (isspace((int)str[i]))
 	    str[i] = 0;
 	else
 	    break;
-    while (isspace((int)*str))
+    while (isspace((int)*str))		/* skip leading spaces */
 	str++;
     return str;
 }

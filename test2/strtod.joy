@@ -1,0 +1,6 @@
+(*
+    module  : strtod.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+"3.14" strtod.

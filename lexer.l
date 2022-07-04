@@ -1,30 +1,25 @@
 %{
 /*
     module  : lexer.l
-    version : 1.24
-    date    : 04/28/21
+    version : 1.31
+    date    : 06/22/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
-#include "decl.h"
+#include "globals.h"
+
+#define YY_DECL		int yylex(pEnv env)
 
 #define OUT_OF_COM	0
 #define WITHIN_COM	1
 #define LEAVE_COMM	2
 
 char line[INPLINEMAX + 1];
-static int moy_echo, comment, linenum = 1;
+static int moy_echo, comment, linenum;
 
-#ifdef FLEX_SCANNER
-int include_stack_ptr;
-YY_BUFFER_STATE include_stack[INPSTACKMAX];
+static int include_stack_ptr;
+static YY_BUFFER_STATE include_stack[INPSTACKMAX];
 
+/* requires -std=c99 */
 static int input(void);
-#endif
 
 static void SkipComment(void)
 {
@@ -34,11 +29,19 @@ static void SkipComment(void)
     do {
 	while (ch != '*' && ch != EOF)
 	    ch = input();
-#if 0
 	if (ch == EOF)
-	    execerror("no EOF", "SkipComment");
-#endif
-    } while ((ch = input()) != ')');
+	    break;
+    } while ((ch = input()) != ')' && ch != EOF);
+}
+
+int getnextchar(void)
+{
+    int ch;
+
+    while ((ch = input()) <= ' ')
+	if (ch == EOF)
+	    break;
+    return ch;
 }
 
 int getechoflag(void)
@@ -80,13 +83,13 @@ static void putline(char *str, int leng, int status)
 	if (start) {
 	    addline('(');
 	    addline('*');
-	    return; /* add start of comment */
+	    return;			/* add start of comment */
 	}
     } else if (!first) {
 	first = 1;
 	if (strstr(line, "(*"))
 	    goto skip;
-	addline('('); /* add start of comment */
+	addline('(');			/* add start of comment */
 	addline('*');
     }
 skip:
@@ -94,69 +97,55 @@ skip:
 	addline(str[i]);
     if (!moy_echo)
 	return;
-    if (moy_echo > 2) {
-	i = linenum;
-	if (status == LEAVE_COMM)
-	    linenum = yylineno;	/* yylineno should not be corrected */
-	else
-	    linenum = yylineno - 1;
-	for (; i < linenum; i++)
-	    fprintf(stderr, "%4d\n", i);
-	fprintf(stderr, "%4d", linenum++);
-    }
+    i = linenum;
+    if (status == LEAVE_COMM)
+	linenum = yylineno;		/* yylineno should not be corrected */
+    else
+	linenum = yylineno - 1;
+    fflush(stdout);			/* synchronise stdout and stderr */
+    if (i)
+	for (; i < linenum; i++) {
+	    if (moy_echo > 2)
+		fprintf(stderr, "%4d", i);
+	    fprintf(stderr, "\n");	/* fill in missing lines */
+	}
+    if (moy_echo > 2)
+	fprintf(stderr, "%4d", linenum);
     if (moy_echo > 1)
 	fprintf(stderr, "\t");
-    fprintf(stderr, "%s\n", line); /* include newline */
+    fprintf(stderr, "%s\n", line);	/* include newline */
+    line[0] = 0;			/* invalidate line */
+    linenum++;
 }
 
-void new_buffer(void)
+void new_buffer(pEnv env)
 {
-#ifdef FLEX_SCANNER
     if (include_stack_ptr >= INPSTACKMAX)
-	execerror("fewer include files", "redirect");
+	execerror(env, "fewer include files", "redirect");
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
-#endif
 }
 
 int old_buffer(void)
 {
-   linenum = yylineno + 1;
-#ifdef FLEX_SCANNER
+    linenum = yylineno + 1;
     if (--include_stack_ptr >= 0)
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
-#endif
     return 0;
 }
-
-#ifdef LEXDEBUG
-static void allprint(int ch)
-{
-    if (isprint(ch))
-	fputc(ch, yyout);
-    else
-	fprintf(yyout, "\\%03d", ch);
-}
-
-static void sprint(char *str)
-{
-    fprintf(yyout, "%s", str);
-}
-#endif
 %}
 
 %option		yylineno
 %x		COMMENT
 
-firstchar	[!$%&*+,./:<=>?@A-Z\\^_`a-z|~]
-secondchar	[*+/<>]
+firstchar	[!$%&*+,/:<=>?@A-Z\\^_`a-z|~]
 nextchar	[-0-9=A-Z_a-z]
-restchar	({firstchar}{secondchar}?{nextchar}*|[-]([-*+/<=>A-Z_a-z]{nextchar}*)?)
+restchar	({firstchar}{nextchar}*|[-]([-=A-Z_a-z]{nextchar}*)?)
 symbol		{restchar}(\.{restchar})*
 escape		\\(["'\\btnvfr]|[01][0-9][0-9]|2[0-5][0-5])
 character	'([^\\]|{escape})
 string		\"([^"\\\n]|{escape})*\"
-integer		(0|-?[1-9][0-9]*)
+integer		-?(0|[1-9][0-9]*)
 octal		0[1-7][0-7]*
 hexal		0[Xx][0-9A-Fa-f]+
 float		{integer}\.[0-9]+([Ee][-+]?[1-9][0-9]*)?
@@ -164,6 +153,8 @@ comment		"(*"
 linecom		#.*
 
 %%
+
+<<EOF>>		{ do_quit(env); }
 
 <COMMENT>"*)"	{ putline("*)", 2, LEAVE_COMM); BEGIN INITIAL; }
 <COMMENT>.	addline(yytext[0]);
@@ -192,13 +183,13 @@ maxint		{ yylval.num = MAXINT_; return INTEGER_; }
 {hexal}		{ yylval.num = strtol(yytext, 0, 0); return INTEGER_; }
 {float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
 {string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
+{symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ if (comment) SkipComment(); else BEGIN COMMENT; }
-[ \t\n]+	|
-{linecom}	;
+{linecom}	{ /* default to ECHO */ }
 ^\$.*		system(yytext + 1);
-^\%INCLUDE.*	include(DelSpace(yytext + 8));
+^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 ^\%LISTING.*	moy_echo = atoi(yytext + 8);
-{symbol}	{ yylval.str = GC_strdup(yytext); return SYMBOL_; }
+[ \t\n]+	;
 [;[\]{}]	|
 .		return yytext[0];

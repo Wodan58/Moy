@@ -1,7 +1,7 @@
 /*
     module  : dupd.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef DUPD_C
 #define DUPD_C
@@ -22,4 +22,5 @@ As if defined by:   dupd  ==  [dup] dip
 #define PARAMCOUNT	TWOPARAMS
 #define ARGUMENT	do_dup
 #include "dipped.h"
+/* dupd.c */
 #endif

@@ -1,0 +1,31 @@
+(*
+    module  : test22.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+MODULE m1
+  MODULE m2
+    MODULE m3
+      MODULE m4
+        MODULE m5
+          MODULE m6
+            MODULE m7
+              MODULE m8
+                MODULE m9
+                  MODULE m10
+                    MODULE m11
+                      MODULE m12
+                        MODULE m13
+                        END;
+                      END;
+                    END;
+                  END;
+                END;
+              END;
+            END;
+          END;
+        END;
+      END;
+    END;
+  END;
+END.

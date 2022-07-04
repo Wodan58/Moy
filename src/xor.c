@@ -1,7 +1,7 @@
 /*
     module  : xor.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef XOR_C
 #define XOR_C
@@ -16,4 +16,5 @@ logical exclusive disjunction for truth values.
 #define OPER1		^
 #define OPER2		!=
 #include "andorxor.h"
+/* xor.c */
 #endif

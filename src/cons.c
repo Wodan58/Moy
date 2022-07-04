@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef CONS_C
 #define CONS_C
@@ -14,5 +14,6 @@ Aggregate B is A with a new member X (first member for sequences).
 #define NAME		"cons"
 #define AGGR		env->stk
 #define ELEM		env->stk->next
-#include "consswons.h"
+#include "cons_swons.h"
+/* cons.c */
 #endif

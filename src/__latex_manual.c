@@ -1,19 +1,12 @@
 /*
     module  : 
-    version : 1.6
-    date    : 03/15/21
+    version : 1.7
+    date    : 06/20/22
 */
 #ifndef __LATEX_MANUAL_C
 #define __LATEX_MANUAL_C
 
-PRIVATE void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
-
-#ifdef MANUAL_X
-#undef MANUAL_X
-#undef MANUAL_C
-#endif
-
-#include "manual.c"
+#include "manual.h"
 
 /**
 __latex_manual  :  ->
@@ -22,9 +15,8 @@ but without the head and tail.
 */
 PRIVATE void do___latex_manual(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     make_manual(2);
 }
+/* __latex_manual.c */
 #endif

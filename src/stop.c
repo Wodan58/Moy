@@ -1,7 +1,7 @@
 /*
     module  : stop.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef STOP_C
 #define STOP_C
@@ -15,9 +15,7 @@
 
 PRIVATE void do_stop(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     if (env->stk) {
 	switch (autoput) {
 	case 0:
@@ -26,7 +24,7 @@ PRIVATE void do_stop(pEnv env)
 	    do_put(env);
 	    break;
 	case 2:
-	    writeterm(env, env->stk, stdout);
+	    writeterm(env, env->stk);
 	    break;
 	}
 	if (autoput)

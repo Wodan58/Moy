@@ -1,7 +1,7 @@
 /*
     module  : fput.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FPUT_C
 #define FPUT_C
@@ -13,20 +13,23 @@ Writes X to stream S, pops X off stack.
 PRIVATE void do_fput(pEnv env)
 {
     FILE *fp;
-    Node temp;
+    Node *node;
+    int stdout_dup;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("fput");
-#ifndef NCHECK
-    if (env->stk->next->op != FILE_ || !env->stk->next->u.fil)
-	execerror("file", "fput");
-#endif
-    temp = *env->stk;
+    node = env->stk;
     POP(env->stk);
+    FILE("fput");
     fp = env->stk->u.fil;
-    writefactor(env, &temp, fp);
-    putc(' ', fp);
+    if ((stdout_dup = dup(1)) != -1)
+	dup2(fileno(fp), 1);
+    writefactor(env, node);
+    putchar(' ');
+    fflush(stdout);
+    if (stdout_dup != -1) {
+	dup2(stdout_dup, 1);
+	close(stdout_dup);
+    }
 }
 #endif

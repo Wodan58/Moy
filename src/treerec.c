@@ -1,7 +1,7 @@
 /*
     module  : treerec.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef TREEREC_C
 #define TREEREC_C
@@ -13,18 +13,16 @@
 
 #include "cons.c"
 
-#ifndef OLD_RUNTIME
-int put_treerec(pEnv env)
+/**
+treerec  :  T [O] [C]  ->  ...
+T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
+*/
+#ifdef COMPILING
+void put_treerec(pEnv env, Node *prog)
 {
     static int ident;
     FILE *oldfp;
-    Node *prog[2];
 
-    if (!(LIST_1 && LIST_2))
-	return 0;
-    prog[1] = env->stk->u.lis;
-    prog[0] = env->stk->next->u.lis;
-    printstack(env, outfp);
     fprintf(outfp, "do_cons(env);");
     fprintf(declfp, "void treerec_%d(pEnv env);", ++ident);
     fprintf(outfp, "treerec_%d(env);", ident);
@@ -34,45 +32,42 @@ int put_treerec(pEnv env)
     fprintf(outfp, "if (env->stk->next->op == LIST_) { NULLARY(LIST_NEWNODE,");
     fprintf(outfp, "ANON_FUNCT_NEWNODE(treerec_%d, 0));", ident);
     fprintf(outfp, "do_cons(env);");
-    compile(env, prog[1]);
+    compile(env, prog->u.lis->u.lis->next);
     fprintf(outfp, "} else { POP(env->stk);");
-    compile(env, prog[0]);
+    compile(env, prog->u.lis->u.lis);
     fprintf(outfp, "} }");
     closefile(outfp);
     outfp = oldfp;
-    return 1;
 }
 #endif
 
-/**
-treerec  :  T [O] [C]  ->  ...
-T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
-*/
 void treerec(pEnv env)
 {
-    Node *save;
+    Node *prog;
 
     if (env->stk->next->op == LIST_) {
 	NULLARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(treerec, 0));
 	do_cons(env);
 	exeterm(env, env->stk->u.lis->u.lis->next);
     } else {
-	save = env->stk;
+	prog = env->stk;
 	POP(env->stk);
-	exeterm(env, save->u.lis->u.lis);
+	exeterm(env, prog->u.lis->u.lis);
     }
 }
 
 PRIVATE void do_treerec(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && put_treerec(env))
-	return;
-    COMPILE;
-#endif
-    THREEPARAMS("treerec");
+    Node *prog;
+
+    TWOPARAMS("treerec");
     TWOQUOTES("treerec");
     do_cons(env);
+    prog = env->stk;
+    POP(env->stk);
+    INSTANT(put_treerec);
+    ONEPARAM("treerec");
+    DUPLICATE(prog); 
     treerec(env);
 }
 #endif

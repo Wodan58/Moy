@@ -1,0 +1,7 @@
+(*
+    module  : intern.joy
+    version : 1.1
+    date    : 06/20/22
+*)
+1 "succ" intern [] cons i.
+"1 2 3" intern [] cons i.

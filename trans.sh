@@ -1,20 +1,20 @@
 #
 #   module  : trans.sh
-#   version : 1.3
-#   date    : 04/28/21
+#   version : 1.4
+#   date    : 06/16/22
 #
 #   Generate trans.c
 #
 echo checking trans.c
 todo=0
-if [ ! -f trans.c ]
+if [ ! -f $1/trans.c ]
 then
   echo creating trans.c
   todo=1
 else
-  for i in src/*.c gui/*.c
+  for i in $1/src/*.c
   do
-    if [ $i -nt trans.c ]
+    if [ $i -nt $1/trans.c ]
     then
       echo updating trans.c
       todo=1
@@ -27,8 +27,8 @@ then
   echo trans.c is up-to-date
   exit
 fi
-rm -f trans.c
-for i in src/*.c gui/*.c
+rm -f $1/trans.c
+for i in $1/src/*.c
 do
   file=`basename $i`
   name=`expr $file : '\(.*\)\.c'`
@@ -37,4 +37,5 @@ do
 	s/.*\n\(^[^ ]*\).*/{ "\1", "'$name'", do_'$name' },/
 	P
   }' <$i
-done | sort >trans.c
+done | sort >$1/trans.c
+touch $1/dict.c

@@ -1,11 +1,11 @@
-#
-#   module  : jp-nestrec.joy
-#   version : 1.4
-#   date    : 05/12/19
-#
+(*
+    module  : jp-nestrec.joy
+    version : 1.5
+    date    : 06/18/22
+*)
 %INCLUDE usrlib.joy
 
-2 setecho.
+# 2 setecho.
 0 __settracegc.
 
 (* R E C U R S I V E   D E F I N I T I O N  *)
@@ -18,7 +18,7 @@
 *)
 DEFINE
     r-fact ==
-	[ dup null ]
+	[ null ]
 	[ pop 1]
 	[ dup pred r-fact *]
 	ifte.
@@ -33,12 +33,12 @@ DEFINE
 *)
 DEFINE
     r-mcc91 ==
-	[ dup 100 > ]
+	[ 100 > ]
 	[ 10 - ]
 	[ 11 + r-mcc91 r-mcc91 ]
 	ifte.
 
-[ -7 42 99 100 101 102 345 ]  [r-mcc91]  map.
+[ -7 42 99 100 101 102 345 ]  [r-mcc91]	 map.
 
 (*
     ack(m, n) =
@@ -49,16 +49,16 @@ DEFINE
 DEFINE
     r-ack ==
 #	stack putln
-	[ [ [over null]  popd succ ]
-	  [ [dup null]  pop pred 1 r-ack ]
+	[ [ [pop null]	popd succ ]
+	  [ [null]  pop pred 1 r-ack ]
 	  [ [dup pred swap] dip pred r-ack r-ack ] ]
 	cond.
 
-[ [0 0] [0 1] [0 2] [0 3] [0 4] [0 5] ]   [i r-ack]  map  putln
-[ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]   [i r-ack]  map  putln
-[ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]   [i r-ack]  map  putln
-[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i r-ack]  map  putln
-[ [4 0]                               ]   [i r-ack]  map  putln.
+[ [0 0] [0 1] [0 2] [0 3] [0 4] [0 5] ]	  [i r-ack]  map  putln
+[ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]	  [i r-ack]  map  putln
+[ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]	  [i r-ack]  map  putln
+[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]	  [i r-ack]  map  putln
+[ [4 0]				      ]	  [i r-ack]  map  putln.
 
 # In the Towers of Hanoi puzzle the disks have to be moved
 # in a particular order. Ignoring what the target peg is,
@@ -70,10 +70,10 @@ DEFINE
 
 DEFINE
     r-hamilhyp ==   #  [] n  =>  [...]
-	[ dup null ]
+	[ null ]
 	[ pop ]
-	[ dup rollup pred       r-hamilhyp
-	  dupd cons swap pred   r-hamilhyp ]
+	[ dup rollup pred	r-hamilhyp
+	  dupd cons swap pred	r-hamilhyp ]
 	ifte.
 
 []  3  r-hamilhyp.
@@ -84,7 +84,7 @@ DEFINE
 
 DEFINE
     x-fact ==
-	[ [ over null ]
+	[ [ pop null ]
 	  [ pop pop 1]
 	  [ [dup pred] dip x *]
 	  ifte ]
@@ -97,13 +97,13 @@ DEFINE
 	dup [x] dip x.
 DEFINE
     x-mcc91 ==
-	[ [ over 100 > ]
+	[ [ pop 100 > ]
 	  [ pop 10 - ]
 	  [ [11 +] dip twice-x ]
 	  ifte ]
 	x.
 
-[ -7 42 99 100 101 102 345 ]  [x-mcc91]  map.
+[ -7 42 99 100 101 102 345 ]  [x-mcc91]	 map.
 
 (*
     r-ack ==
@@ -115,13 +115,13 @@ DEFINE
 *)
 DEFINE
     x-ack ==
-	[ [ [ [2 pick null]  pop popd succ ]
-	    [ [over null]  [pop pred 1] dip x ]
+	[ [ [ [pop pop null]  pop popd succ ]
+	    [ [pop null]  [pop pred 1] dip x ]
 	    [ [[dup pred swap] dip pred] dip twice-x ] ]
 	cond ]
 	x.
 
-[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i x-ack]  map.
+[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]	  [i x-ack]  map.
 
 (* the following is for a non-recursive definition using the y-combinator *)
 DEFINE
@@ -131,13 +131,13 @@ DEFINE
 	dup [i] dip i.
 DEFINE
     y-ack ==
-	[ [ [ [2 pick null]  pop popd succ ]
-	    [ [over null]  [pop pred 1] dip i ]
+	[ [ [ [pop pop null]  pop popd succ ]
+	    [ [pop null]  [pop pred 1] dip i ]
 	    [ [[dup pred swap] dip pred] dip twice-i ] ]
 	cond ]
 	y.
 
-[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i y-ack]  map.
+[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]	  [i y-ack]  map.
 
 (*
 DEFINE
@@ -150,9 +150,9 @@ DEFINE
 *)
 DEFINE
     x-hamilhyp ==
-	[ [ over null ]
+	[ [ pop null ]
 	  [ pop pop ]
-	  [ dup [ [dup rollup pred] dip  x ] dip
+	  [ dup [ [dup rollup pred] dip	 x ] dip
 	    [dupd cons] dip
 	    [swap pred] dip  x ]
 	  ifte ]
@@ -169,16 +169,16 @@ DEFINE
 # definition:
 
 DEFINE ack == (* I:n I:m -> I:a *)
-    [ [ [dup 0 =] [pop 1 +] ]
-      [ [over 0 =] [popd 1 - 1 swap] [] ]
+    [ [ [0 =] [pop 1 +] ]
+      [ [swap 0 =] [popd 1 - 1 swap] [] ]
       [ [dup rollup [1 -] dip] [swap 1 - ack] ] ]
     condlinrec.
 
-[ [0 0] [0 1] [0 2] [0 3] [0 4] [0 5] ]   [i swap ack]  map  putln.
-[ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]   [i swap ack]  map  putln.
-[ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]   [i swap ack]  map  putln.
-[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i swap ack]  map  putln.
-[ [4 0]                               ]   [i swap ack]  map  putln.
+[ [0 0] [0 1] [0 2] [0 3] [0 4] [0 5] ]	  [i swap ack]	map  putln.
+[ [1 0] [1 1] [1 2] [1 3] [1 4] [1 5] ]	  [i swap ack]	map  putln.
+[ [2 0] [2 1] [2 2] [2 3] [2 4] [2 5] ]	  [i swap ack]	map  putln.
+[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]	  [i swap ack]	map  putln.
+[ [4 0]				      ]	  [i swap ack]	map  putln.
 
 (*
 DEFINE
@@ -190,13 +190,13 @@ DEFINE
 *)
 DEFINE
     l-mcc91 ==
-	[ dup 100 > ]
+	[ 100 > ]
 	[ 10 - ]
 	[ 11 + ]
 	[ l-mcc91 ]
 	linrec.
 
-[ -7 42 99 100 101 102 345 ]  [l-mcc91]  map.	(* R.W. *)
+[ -7 42 99 100 101 102 345 ]  [l-mcc91]	 map.	(* R.W. *)
 
 (*
     r-ack ==
@@ -208,12 +208,12 @@ DEFINE
 *)
 DEFINE
     clr-ack ==
-	[ [ [over null]  [popd succ] ]
-	  [ [dup null]  [pop pred 1]  [] ]
-	  [ [[dup pred swap] dip pred]  [clr-ack] ] ]
+	[ [ [pop null]	[popd succ] ]
+	  [ [null]  [pop pred 1]  [] ]
+	  [ [[dup pred swap] dip pred]	[clr-ack] ] ]
 	condlinrec.
 
-[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]   [i clr-ack]  map.
+[ [3 0] [3 1] [3 2] [3 3] [3 4] [3 5] ]	  [i clr-ack]  map.
 
 (*
 DEFINE
@@ -226,7 +226,7 @@ DEFINE
 *)
 DEFINE
     lr-hamilhyp ==
-	[ dup null ]
+	[ null ]
 	[ pop ]
 	[ dup rollup pred ]
 	[ dupd cons swap pred lr-hamilhyp ]
@@ -235,15 +235,15 @@ DEFINE
 []  5  lr-hamilhyp.
 
 DEFINE
-    toggle ==   #   {..} i  ->  {..}
-	[over over has]  [[not] dip swons not]  [swons]  ifte.
+    toggle ==	#   {..} i  ->  {..}
+	[has]  [[not] dip swons not]  [swons]  ifte.
 
 {}  4  toggle.
-{1 2 7}  2 toggle.
+{1 2 7}	 2 toggle.
 
 DEFINE
     lr-grayseq ==
-	[ dup null ]
+	[ null ]
 	[ pop ]
 	[ dup rollup pred ]
 	[ dupd
@@ -251,7 +251,7 @@ DEFINE
 	  cons swap pred lr-grayseq ]
 	linrec.
 
-[{}]  3  lr-grayseq.
+[{}]  3	 lr-grayseq.
 [{3}]  3  lr-grayseq.
 [{1 2 3}]  3 lr-grayseq.
 
@@ -269,16 +269,16 @@ DEFINE
 
 DEFINE
     cnr-ack ==
-	[ [ [over null]  [popd succ] ]
-	  [ [dup null]  [pop pred 1]  [] ]
-	  [ [[dup pred swap] dip pred]  []  [] ] ]
+	[ [ [pop null]	[popd succ] ]
+	  [ [null]  [pop pred 1]  [] ]
+	  [ [[dup pred swap] dip pred]	[]  [] ] ]
 	condnestrec.
 
 3 4 cnr-ack.
 
 DEFINE
     cnr-grayseq ==
-	[ [ [dup null]  [pop] ]
+	[ [ [null]  [pop] ]
 	  [ [dup rollup pred]
 	    [dupd
 	     dup [first swap toggle] dip # inserted
@@ -291,7 +291,7 @@ DEFINE
 DEFINE
     cnr-hanoi ==
 	[[rolldown] infra] dip
-	[ [ [dup null] [pop pop] ]
+	[ [ [null] [pop pop] ]
 	  [ [dup2 [[rotate] infra] dip pred]
 	    [ [dup rest put] dip
 	      [[swap] infra] dip pred ]
@@ -299,15 +299,15 @@ DEFINE
 	condnestrec.
 
 [source destination temp]  2  cnr-hanoi newline.		(* R.W. *)
-[S D T]  5  cnr-hanoi newline.					(* R.W. *)
+[S D T]	 5  cnr-hanoi newline.					(* R.W. *)
 
 DEFINE
     cnr-fact ==
-	[ [ [dup null] [pop 1] ]
+	[ [ [null] [pop 1] ]
 	  [ [dup pred] [*] ] ]
 	condnestrec;
     cnr-mcc91 ==
-	[ [ [dup 100 >] [10 -] ]
+	[ [ [100 >] [10 -] ]
 	  [ [11 +] [] [] ] ]
 	condnestrec.
 
@@ -318,11 +318,11 @@ DEFINE
 
 DEFINE
     cnr-even ==
-	[ [ [dup 2 rem null] [pop true] ]
+	[ [ [2 rem null] [pop true] ]
 	  [ [pop false] ] ]
 	condnestrec;
     cnr-abs ==
-	[ [ [dup 0 <] [0 swap -] ]
+	[ [ [0 <] [0 swap -] ]
 	  [ [] ] ]
 	condnestrec.
 

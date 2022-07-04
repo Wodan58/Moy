@@ -1,8 +1,8 @@
-#
-#   module  : seqlib.joy
-#   version : 1.2
-#   date    : 05/12/19
-#
+(*
+    module  : seqlib.joy
+    version : 1.4
+    date    : 06/18/22
+*)
 (* FILE:   seqlib.joy *)
 
 LIBRA
@@ -11,7 +11,7 @@ LIBRA
 
     putlist ==
 	"[ " putchars
-	[ dup null ]
+	[ null ]
 	[ pop ]
 	[ unswons
 	  put
@@ -48,11 +48,11 @@ LIBRA
 	[ [cons] map popd dup first rest swons ]
 	linrec;
     subseqlist == (* Thompson p 247 *)
-	[null] 
+	[null]
 	[[] cons]
 	[ uncons dup
 	  [frontlist [cons] map popd] dip ]
-        [concat]
+	[concat]
 	linrec;
     powerlist1 ==
 	[null] [[] cons] [uncons]
@@ -123,7 +123,7 @@ LIBRA
 	  [ [unconsd] [cons] ] ]
 	condlinrec;
     transpose == (* READE p 133 *)
-	[ dup [dup null] [true] [[dup null] some] ifte ]
+	[ [null] [true] [[null] some] ifte ]
 	[ pop [] ]
 	[ [[first] map] [[rest] map] cleave ]
 	[ cons ]

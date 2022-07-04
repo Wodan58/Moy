@@ -1,17 +1,9 @@
 /*
     module  : dict.c
-    version : 1.14
-    date    : 03/22/21
+    version : 1.22
+    date    : 06/21/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <limits.h>
-#include "joy.h"
-#include "symbol.h"
-#include "builtin.h"
-#include "decl.h"
+#include "globals.h"
 
 typedef struct entry_t {
     char *name, *print;
@@ -19,24 +11,19 @@ typedef struct entry_t {
 } entry_t;
 
 static entry_t table[] = {
+    { "", "", 0 },
 #include "trans.c"
-    { 0, 0 }
+    { 0, 0, 0 }
 };
 
 int symtabmax(pEnv env)
 {
     return vec_max(env->dict);
-#if 0
-    return kh_n_buckets(env->hash);
-#endif
 }
 
 int symtabindex(pEnv env)
 {
     return vec_size(env->dict);
-#if 0
-    return kh_size(env->hash);
-#endif
 }
 
 unsigned dict_flags(pEnv env, int index)
@@ -55,11 +42,11 @@ void dict_setflags(pEnv env, int index, unsigned flags)
     pdic->flags = flags;
 }
 
-char *dict_descr(pEnv env, int index)
+char *dict_descr(pEnv env, Node *node)
 {
     dict_t *pdic;
 
-    pdic = &vec_at(env->dict, index);
+    pdic = &vec_at(env->dict, node->u.num);
     return pdic->name;
 }
 
@@ -83,6 +70,23 @@ char *dict_nickname(pEnv env, int index)
     return name;
 }
 
+/*
+    Translate name to nickname.
+*/
+char *dict_translate(pEnv env, const char *name)
+{
+    int index;
+    dict_t *pdic;
+    khiter_t key;
+
+    if ((key = kh_get(Symtab, env->hash, name)) != kh_end(env->hash)) {
+	index = kh_value(env->hash, key);
+	pdic = &vec_at(env->dict, index);
+	return pdic->print;
+    }
+    return "not_found";
+}
+
 Node *dict_body(pEnv env, int index)
 {
     dict_t *pdic;
@@ -91,27 +95,17 @@ Node *dict_body(pEnv env, int index)
     return pdic->body;
 }
 
+/*
+    dict_size - return the current size of the dictionary.
+*/
 int dict_size(pEnv env)
 {
     return vec_size(env->dict);
 }
 
 /*
- * translate function address to symbol name
- */
-char *procname(proc_t proc)
-{
-    int i;
-
-    for (i = 0; table[i].proc; i++)
-	if (proc == table[i].proc)
-	    break;
-    return table[i].name;
-}
-
-/*
- * translate symbol name to function address
- */
+    nameproc - translate name to function address.
+*/
 proc_t nameproc(char *name)
 {
     int i;
@@ -120,6 +114,32 @@ proc_t nameproc(char *name)
 	if (!strcmp(name, table[i].name))
 	    break;
     return table[i].proc;
+}
+
+/*
+ * procname - translate function address to symbol name.
+ */
+char *procname(proc_t proc)
+{
+    int i;
+
+    for (i = 0; table[i].proc; i++)
+	if (proc == table[i].proc)
+	    return table[i].name;
+    return "not_found";
+}
+
+/*
+ * translate function address to symbol name.
+ */
+char *nickname(proc_t proc)
+{
+    int i;
+
+    for (i = 0; table[i].proc; i++)
+	if (proc == table[i].proc)
+	    return table[i].print;
+    return "not_found";
 }
 
 /*
@@ -132,24 +152,31 @@ void init_dict(pEnv env)
     khiter_t key;
 
     env->dict = 0;
-    env->hash = kh_init(symtab);
+    env->hash = kh_init(Symtab);
     for (i = 0; table[i].name; i++) {
 	dic.name = table[i].name;
 	dic.print = table[i].print;
 	dic.flags = IS_ORIGINAL | IS_BUILTIN;
 	dic.proc = table[i].proc;
-	key = kh_put(symtab, env->hash, dic.name, &rv);
+	key = kh_put(Symtab, env->hash, dic.name, &rv);
 	kh_value(env->hash, key) = i;
 	vec_push(env->dict, dic);
     }
+    env->firstlibra = i;
 }
 
+/*
+    initialise_entry - start a dictionary entry as an undefined name.
+*/
 static void initialise_entry(dict_t *pdic)
 {
     memset(pdic, 0, sizeof(dict_t));
     pdic->flags = IS_UNDEFINED;
 }
 
+/*
+    is_c_identifier - check whether a name can be a C identifir.
+*/
 static int is_c_identifier(char *str)
 {
     if (!isalpha(*str) && *str != '_')
@@ -160,6 +187,9 @@ static int is_c_identifier(char *str)
     return 1;
 }
 
+/*
+    add_word_to_dictionary - add a word to the dictionary.
+*/
 static int add_word_to_dictionary(pEnv env, char *ptr)
 {
     static int seq;
@@ -176,35 +206,9 @@ static int add_word_to_dictionary(pEnv env, char *ptr)
     }
     vec_push(env->dict, dic);
     i = vec_size(env->dict) - 1;
-    key = kh_put(symtab, env->hash, dic.name, &rv);
+    key = kh_put(Symtab, env->hash, dic.name, &rv);
     kh_value(env->hash, key) = i;
     return i;
-}
-
-/*
- * qualify adds the module to the name, when needed.
- */
-static char *qualify(char *name)
-{
-    int hide, local, leng;
-    char buf[MAXNUM], *module, *str;
-
-    if (strchr(name, '.'))
-	return name;
-    module = prefix(&hide, &local);
-    if (hide && local) {
-	sprintf(buf, "%d", hide);
-	leng = strlen(buf) + strlen(name) + 2;
-	str = GC_malloc_atomic(leng);
-	sprintf(str, "%s.%s", buf, name);
-	name = str;
-    } else if (*module) {
-	leng = strlen(module) + strlen(name) + 2;
-	str = GC_malloc_atomic(leng);
-	sprintf(str, "%s.%s", module, name);
-	name = str;
-    }
-    return name;
 }
 
 /*
@@ -213,25 +217,24 @@ static char *qualify(char *name)
  */
 static int find(pEnv env, char *name)
 {
-    khiter_t key;
-    char *str = name;
+    pEntry location;
 
-    while ((str = iterate(str)) != 0)
-	if ((key = kh_get(symtab, env->hash, str)) != kh_end(env->hash))
-	    return kh_value(env->hash, key);
-    if ((key = kh_get(symtab, env->hash, name)) != kh_end(env->hash))
-	return kh_value(env->hash, key);
-    return -1;
+    if ((location = qualify(env, name)) == 0)
+	return -1;
+    return location;
 }
 
+/*
+    replace - rename a symbol table entry.
+*/
 static void replace(pEnv env, char *old_name, char *new_name, int index)
 {
     int rv;
     khiter_t key;
 
-    key = kh_get(symtab, env->hash, old_name);
-    kh_del(symtab, env->hash, key);
-    key = kh_put(symtab, env->hash, new_name, &rv);
+    key = kh_get(Symtab, env->hash, old_name);
+    kh_del(Symtab, env->hash, key);
+    key = kh_put(Symtab, env->hash, new_name, &rv);
     kh_value(env->hash, key) = index;
 }
 
@@ -261,7 +264,7 @@ void enteratom(pEnv env, char *name, Node *cur)
     int index;
     dict_t *pdic;
 
-    str = qualify(name);
+    str = classify(env, name);
     if ((index = find(env, name)) == -1)
 	index = lookup(env, str);
     pdic = &vec_at(env->dict, index);
@@ -277,50 +280,49 @@ void enteratom(pEnv env, char *name, Node *cur)
     pdic->body = cur;
 }
 
-void dump(pEnv env)
+/*
+    dump_table - dump the symbol table to stdout.
+*/
+void dump_table(pEnv env)
 {
-    FILE *fp;
     int i, leng;
     dict_t *pdic;
 
-    if ((fp = fopen("dict.txt", "w")) == 0) {
-	fprintf(stderr, "Failed to write %s\n", "dict.txt");
-	exit(1);
-    }
     leng = vec_size(env->dict);
-    for (i = 0; i < leng; i++) {
+    for (i = env->firstlibra; i < leng; i++) {
 	pdic = &vec_at(env->dict, i);
 	if (pdic->flags & IS_BUILTIN)
-	    fprintf(fp, "%s\t%p\t%d\n", pdic->name, pdic->proc,
-		    (pdic->flags & IS_USED) ? 1 : 0);
+	    printf("%s\t%p\t%d\n", pdic->name, pdic->proc,
+		   (pdic->flags & IS_USED) ? 1 : 0);
 	else if (pdic->body) {
-	    fprintf(fp, "%s == ", pdic->name);
-	    writeterm(env, pdic->body, fp);
-	    putc('\n', fp);
+	    printf("%s == ", pdic->name);
+	    writeterm(env, pdic->body);
+	    putchar('\n');
 	} else
-	    fprintf(fp, "%s ==\n", pdic->name);
+	    printf("%s ==\n", pdic->name);
     }
-    fclose(fp);
+    fflush(stdout);
 }
 
-int check_anything_was_printed(pEnv env)
-{
-    int i, leng;
-
-    leng = vec_size(env->dict);
-    for (i = 0; i < leng; i++)
-	if (dict_flags(env, i) & IS_PRINTED)
-	    return 1;
-    return 0;
-}
-
+/*
+    iterate_dict_and_write_struct - add user defined functions to the symbol
+				    table.
+*/
 void iterate_dict_and_write_struct(pEnv env, FILE *fp)
 {
+    Node node;
     int i, leng;
+    char *name, *nick;
 
     leng = vec_size(env->dict);
     for (i = 0; i < leng; i++)
-	if ((dict_flags(env, i) & IS_USED) && dict_body(env, i))
-	    fprintf(fp, "{ do_%s, \"%s\" },\n", dict_nickname(env, i),
-		    dict_descr(env, i));
+	if ((dict_flags(env, i) & IS_USED) && dict_body(env, i)) {
+	    nick = dict_nickname(env, i);
+	    node.u.num = i;
+	    name = dict_descr(env, &node);
+	    if (strcmp(nick, name))
+	        fprintf(fp, "{ do_%s, \"%s\\000%s\" },\n", nick, name, nick);
+	    else
+	        fprintf(fp, "{ do_%s, \"%s\" },\n", nick, name);
+	}
 }

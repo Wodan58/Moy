@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.14
-    date    : 03/15/21
+    version : 1.15
+    date    : 06/20/22
 */
 #ifndef FREAD_C
 #define FREAD_C
@@ -15,11 +15,9 @@ PRIVATE void do_fread(pEnv env)
 {
     int i, count;
     Node *cur = 0;
-    unsigned char *buf;
+    unsigned char *volatile buf;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("fread");
     INTEGER("fread");
     count = env->stk->u.num;

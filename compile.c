@@ -1,17 +1,13 @@
 /*
     module  : compile.c
-    version : 1.46
-    date    : 03/16/21
+    version : 1.50
+    date    : 06/20/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <time.h>
-#include "joy.h"
-#include "symbol.h"
-#include "decl.h"
+#include "globals.h"
 
+/*
+    ListLeng - return the length of a list, including lengths of sublists.
+*/
 static int ListLeng(Node *cur)
 {
     int leng;
@@ -24,6 +20,11 @@ static int ListLeng(Node *cur)
     return leng;
 }
 
+/*
+    StringLeng - determine the length of a string after processing escape
+		 sequences. An extra character is needed for character
+		 escapes and 3 extra characters are needed for a numeric escape.
+*/
 static int StringLeng(char *str)
 {
     int i;
@@ -31,11 +32,19 @@ static int StringLeng(char *str)
     for (i = 2; *str; i++, str++)
 	if (strchr("\"'\\", *str) || (*str >= 8 && *str <= 13))
 	    i++;
-	else if (iscntrl((int) *str))
+	else if (iscntrl((int)*str))
 	    i += 3;
     return i;
 }
 
+/*
+    StringPrint - convert escape sequences in str and store the result in ptr.
+		  ", ', \, are preceded by \, as well as characters in the
+		  range 8-13. All other characters are copied from str to ptr.
+		  The string in ptr starts and ends with ".
+		  Escapes other than the ones mentioned are prohibited by the
+		  lexical analyzer.
+*/
 static void StringPrint(char *ptr, char *str)
 {
     for (*ptr++ = '"'; *str; str++)
@@ -66,7 +75,7 @@ static void StringPrint(char *ptr, char *str)
 		*ptr++ = 'r';
 		break;
 	    }
-	} else if (iscntrl((int) *str)) {
+	} else if (iscntrl((int)*str)) {
 	    sprintf(ptr, "\\%03o", *str);
 	    ptr += 4;
 	} else
@@ -75,6 +84,10 @@ static void StringPrint(char *ptr, char *str)
     *ptr = 0;
 }
 
+/*
+    PrintString - return a copy of a string, surrounded by " and with
+		  escape characters processed.
+*/
 static char *PrintString(char *str)
 {
     int leng;
@@ -86,20 +99,9 @@ static char *PrintString(char *str)
     return ptr;
 }
 
-static Node *copy(Node *node)
-{
-    Node *my_root = 0, **cur;
-
-    for (cur = &my_root; node; node = node->next) {
-	if ((*cur = GC_malloc(sizeof(Node))) == 0)
-	    return 0;
-	**cur = *node;
-	cur = &(*cur)->next;
-	*cur = 0;
-    }
-    return my_root;
-}
-
+/*
+    PrintMember - print a line in a list data structure.
+*/
 static void PrintMember(pEnv env, Node *cur, int list, int *pindex, FILE *fp)
 {
     char *name;
@@ -113,16 +115,15 @@ static void PrintMember(pEnv env, Node *cur, int list, int *pindex, FILE *fp)
 	offset = cur->u.num;
 	if (dict_body(env, offset) == 0) {
 	    fprintf(fp, ".u.str=\"%s\",", dict_name(env, offset));
-	    fprintf(fp, ".op=SYMBOL_");
+	    fprintf(fp, ".op=USR_");
 	} else {
 	    flags = dict_flags(env, offset);
 	    name = dict_nickname(env, offset);
-	    if ((flags & IS_BUILTIN) == 0)
-		if ((flags & IS_DECLARED) == 0) {
-		    flags |= IS_DECLARED;
-		    fprintf(declfp, "void do_%s(pEnv env);", name);
-		}
-	    dict_setflags(env, offset, flags |= IS_USED);
+	    if ((flags & (IS_BUILTIN | IS_DECLARED)) == 0) {
+		flags |= IS_DECLARED;
+		fprintf(declfp, "void do_%s(pEnv env);", name);
+	    }
+	    dict_setflags(env, offset, flags | IS_USED);
 	    fprintf(fp, ".u.proc=do_%s,", name);
 	    fprintf(fp, ".op=ANON_FUNCT_");
 	}
@@ -166,6 +167,9 @@ static void PrintMember(pEnv env, Node *cur, int list, int *pindex, FILE *fp)
 	fprintf(fp, ".u.dbl=%g,", cur->u.dbl);
 	fprintf(fp, ".op=FLOAT_");
 	break;
+    default:
+	execerror(env, "valid datatype", "PrintMember");
+	break;
     }
     if (cur->next)
 	fprintf(fp, ",.next=L%d+%d", list, index + 1);
@@ -173,6 +177,9 @@ static void PrintMember(pEnv env, Node *cur, int list, int *pindex, FILE *fp)
     *pindex = index + 1;
 }
 
+/*
+    PrintList - print a list data structure.
+*/
 static int PrintList(pEnv env, Node *cur, FILE *fp)
 {
     static int list;
@@ -186,7 +193,10 @@ static int PrintList(pEnv env, Node *cur, FILE *fp)
     return list;
 }
 
-void printnode(pEnv env, Node *node, FILE *fp)
+/*
+    printnode - print the instruction that pushes an item on the stack.
+*/
+void printnode(pEnv env, Node *node)
 {
     Node *cur;
     char *name;
@@ -197,97 +207,76 @@ void printnode(pEnv env, Node *node, FILE *fp)
 	index = node->u.num;
 	if ((cur = dict_body(env, index)) == 0) {
 	    name = dict_name(env, index);
-	    fprintf(fp, "PUSH_PTR(SYMBOL_, \"%s\");", name);
+	    fprintf(outfp, "PUSH_PTR(USR_, \"%s\");", name);
 	} else {
 	    flags = dict_flags(env, index);
 	    name = dict_nickname(env, index);
-	    if ((flags & IS_BUILTIN) == 0) {
-		if ((flags & IS_ACTIVE) == 0 && (flags & IS_USED) == 0) {
-		    dict_setflags(env, index, flags | IS_ACTIVE);
-		    compile(env, cur);
-		    flags = dict_flags(env, index);
-		    dict_setflags(env, index, flags & ~IS_ACTIVE);
-		    break;
-		}
-		if ((flags & IS_DECLARED) == 0) {
-		    flags |= IS_DECLARED;
-		    fprintf(declfp, "void do_%s(pEnv env);", name);
-		}
+	    if ((flags & (IS_BUILTIN | IS_DECLARED)) == 0) {
+		flags |= IS_DECLARED;
+		fprintf(declfp, "void do_%s(pEnv env);", name);
 	    }
 	    dict_setflags(env, index, flags | IS_USED);
-	    fprintf(outfp, "do_%s(env);", name);
+	    fprintf(outfp, "PUSH_PTR(ANON_FUNCT_, do_%s);", name);
 	}
 	break;
+    case ANON_FUNCT_ :
+	fprintf(outfp, "PUSH_PTR(ANON_FUNCT_, do_%s,", procname(node->u.proc));
+	break;
     case BOOLEAN_:
-	fprintf(fp, "PUSH_NUM(BOOLEAN_, %d);", node->u.num != 0);
+	fprintf(outfp, "PUSH_NUM(BOOLEAN_, %d);", node->u.num != 0);
 	break;
     case CHAR_:
-	fprintf(fp, "PUSH_NUM(CHAR_, %d);", (int)node->u.num);
+	fprintf(outfp, "PUSH_NUM(CHAR_, %d);", (int)node->u.num);
 	break;
     case INTEGER_:
-	fprintf(fp, "PUSH_NUM(INTEGER_, %ld);", (long)node->u.num);
+	fprintf(outfp, "PUSH_NUM(INTEGER_, %ld);", (long)node->u.num);
 	break;
     case SET_:
-	fprintf(fp, "PUSH_NUM(SET_, %lu);", (unsigned long)node->u.set);
+	fprintf(outfp, "PUSH_NUM(SET_, %lu);", (unsigned long)node->u.set);
 	break;
     case STRING_:
 	name = PrintString(node->u.str);
-	fprintf(fp, "PUSH_PTR(STRING_, %s);", name);
+	fprintf(outfp, "PUSH_PTR(STRING_, %s);", name);
 	break;
     case LIST_:
 	if (!node->u.lis)
-	    fprintf(fp, "PUSH_PTR(LIST_, 0);");
+	    fprintf(outfp, "PUSH_PTR(LIST_, 0);");
 	else
-	    fprintf(fp, "PUSH_PTR(LIST_, L%d);",
-		    PrintList(env, node->u.lis, fp));
+	    fprintf(outfp, "PUSH_PTR(LIST_, L%d);",
+		    PrintList(env, node->u.lis, outfp));
 	break;
     case FLOAT_:
-	fprintf(fp, "PUSH_DBL(%g);", node->u.dbl);
-	break;
-    case SYMBOL_:
-	fprintf(fp, "PUSH_PTR(SYMBOL_, \"%s\");", node->u.str);
+	fprintf(outfp, "PUSH_DBL(%g);", node->u.dbl);
 	break;
     default:
-	execerror("valid datatype", "printnode");
+	execerror(env, "valid datatype", "printnode");
 	break;
     }
 }
 
-void printstack(pEnv env, FILE *fp)
+/*
+    printstack - print instructions that recreate the stack at runtime.
+*/
+void printstack(pEnv env)
 {
     for (env->stk = reverse(env->stk); env->stk; env->stk = env->stk->next)
-	printnode(env, env->stk, fp);
+	printnode(env, env->stk);
 }
 
+/*
+    compile - print and clear the stack, execute a sequence of instructions
+	      and print and clear the stack again.
+*/
 void compile(pEnv env, Node *node)
 {
-    for (printstack(env, outfp); node; node = node->next)
-	printnode(env, node, outfp);
+    printstack(env);
+    exeterm(env, node);
+    printstack(env);
 }
 
-static void finalise(pEnv env);
-
-static void my_finalise(void)
-{
-    finalise(environment);
-}
-
-void initialise(void)
-{
-    time_t t = time(0);
-
-    atexit(my_finalise);
-    fprintf(declfp = stdout, "/*\n * generated %s */\n", ctime(&t));
-    fprintf(declfp, "#define OLD_RUNTIME\n");
-    fprintf(declfp, "#include \"runtime.h\"\n");
-    initout();
-    if ((outfp = nextfile()) == 0) {
-	fprintf(stderr, "Failed to open outfile\n");
-	exit(1);
-    }
-    fprintf(outfp, "int yyparse() { pEnv env = environment;");
-}
-
+/*
+    declare - ensure that builtins become part of the compiled program.
+*/
 static void declare(pEnv env, FILE *fp)
 {
     char *name;
@@ -296,10 +285,13 @@ static void declare(pEnv env, FILE *fp)
     leng = dict_size(env);
     for (i = 0; i < leng; i++) {
 	flags = dict_flags(env, i);
-	if (((flags & IS_ORIGINAL) && !(flags & IS_BUILTIN)) ||
-	    ((flags & IS_ORIGINAL) && !(flags & IS_USED))) {
-	    fprintf(fp, "#define ");
+	if ((flags & IS_ORIGINAL) == 0)
+	    continue;
+	if ((flags & IS_BUILTIN) == 0 || (flags & IS_USED) == 0) {
 	    name = dict_nickname(env, i);
+	    if (!strcmp(name, "quit"))
+		continue;
+	    fprintf(fp, "#define ");
 	    for (j = 0; name[j]; j++)
 		fputc(toupper(name[j]), fp);
 	    fprintf(fp, "_X\n");
@@ -311,21 +303,25 @@ static void declare(pEnv env, FILE *fp)
     }
 }
 
+/*
+    finalise - output the final part of the compiled program.
+*/
 static void finalise(pEnv env)
 {
     Node *body;
     char *name;
     int i, leng, flags, changed;
 
-    fprintf(outfp, "return 0; }");
+    fprintf(outfp, "\n/* finish */\nreturn 0; }");
     do {
 	changed = 0;
 	for (leng = dict_size(env), i = 0; i < leng; i++) {
-	    if ((flags = dict_flags(env, i)) & IS_BUILTIN)
+	    flags = dict_flags(env, i);
+	    if ((flags & IS_BUILTIN) || (flags & IS_USED) == 0)
 		continue;
 	    if ((body = dict_body(env, i)) == 0)
 		continue;
-	    if ((flags & IS_USED) && (flags & IS_PRINTED) == 0) {
+	    if ((flags & IS_PRINTED) == 0) {
 		dict_setflags(env, i, flags | IS_PRINTED);
 		name = dict_nickname(env, i);
 		if (body->op == USR_)
@@ -340,9 +336,34 @@ static void finalise(pEnv env)
     } while (changed);
     printout(declfp);
     closeout();
-    fprintf(declfp, "table_t table[] = {");
+    fprintf(declfp, "\ntable_t table[] = {");
     iterate_dict_and_write_struct(env, declfp);
-    fprintf(declfp, "{ 0, 0 }, };");
+    fprintf(declfp, "{ 0, \"\" } };\n");
     declare(env, declfp);
     fprintf(declfp, "#include \"interp.c\"\n");
+}
+
+/*
+    initialise - initialise the output of the compiled program; also inialise
+		 everything that is not available in compiled programs.
+*/
+void initialise(pEnv env)
+{
+    static int init;
+    time_t t;
+
+    if (init)
+	return;
+    init = 1;
+    init_dict(env);
+    if (!compiling)
+	return;
+    my_atexit(finalise);
+    t = time(0);
+    fprintf(declfp = stdout, "/*\n * generated %s */\n", ctime(&t));
+    fprintf(declfp, "#define RUNTIME\n");
+    fprintf(declfp, "#include \"runtime.h\"\n");
+    initout();
+    outfp = nextfile();
+    fprintf(outfp, "int yyparse(pEnv env) {");
 }

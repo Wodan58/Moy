@@ -1,8 +1,8 @@
-#
-#   module  : grmlib.joy
-#   version : 1.2
-#   date    : 05/12/19
-#
+(*
+    module  : grmlib.joy
+    version : 1.3
+    date    : 06/18/22
+*)
 (* FILE:   grmlib.joy *)
 
 (* uses the Min2Tre translator of the symbolic library to transform
@@ -46,14 +46,14 @@ HIDE
 
 IN
 
-    generate ==	(* length-limit  accumulator  continuation  expression	*)
-      [ 3 pick 3 pick size <= ]
+    generate == (* length-limit  accumulator  continuation  expression	*)
+      [ pop pop size <= ]
       [ pop pop pop pop ] (* got enough *)
       [
 	"generate B" gen-trace
 	unswons
 						# binary operators
-	[ [ [dup [ | ] in1]
+	[ [ [ [ | ] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -61,25 +61,25 @@ IN
 	      [[i] dip generate] dip ]
 	    dip
 	    [i] dip generate ]
-	  [ [dup [ _ ] in1]
+	  [ [ [ _ ] in]
 	    pop uncons first
 	    [ [generate] cons swons ]
 	    dip generate ]
 						# unary operators
-	  [ [dup [ ? ] in1]
+	  [ [ [ ? ] in]
 	    pop
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first generate ]
-	  [ [dup [ + ] in1]
+	  [ [ [ + ] in]
 	    swons
 	    [] cons cons cons cons dup
 	    [ i second generate ] dip
 	    i dup
 	    [ [generate] cons swons ] dip
 	    second generate ]
-	  [ [dup [ * ] in1]
+	  [ [ [ * ] in]
 	    swons
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
@@ -87,15 +87,15 @@ IN
 	    dup
 	    [ [i] dip [generate] cons swons ] dip
 	    second generate ]
-	  [ [dup [ $ ] in1]
+	  [ [ [ $ ] in]
 	    pop first i
 	    Min2Tre generate ]
-	  [ [dup [QUOTE] in1]
+	  [ [ [QUOTE] in]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [dup [epsilon] in1]
+	  [ [ [epsilon] in]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom
@@ -114,16 +114,16 @@ IN
 (*   the four basic wrappers						*)
 
     gen-put ==					(* count  Min-exp	*)
-	Min2Tre  [ [] [[show-put]] ] dip generate;
+	Min2Tre	 [ [] [[show-put]] ] dip generate;
     gen-put-step ==
-	Min2Tre  [ [] [[show-put-step]] ] dip generate;
+	Min2Tre	 [ [] [[show-put-step]] ] dip generate;
     gen-putchars-step ==
-	Min2Tre  [ [] [[show-putchars-step]] ] dip generate;
+	Min2Tre	 [ [] [[show-putchars-step]] ] dip generate;
     gen-putchars-sp-step ==
-	Min2Tre  [ [] [[show-putchars-sp-step]] ] dip generate;
+	Min2Tre	 [ [] [[show-putchars-sp-step]] ] dip generate;
 
     gen-accumulate ==
-	Min2Tre  [ [[]] dip [] [[accumulate]] ] dip generate
+	Min2Tre	 [ [[]] dip [] [[accumulate]] ] dip generate
 
 END; (* HIDE, generator *)
 
@@ -148,7 +148,7 @@ IN
 	"parse B" prs-trace
 	unswons
 						# binary operators
-	[ [ [dup [ | ] in1]
+	[ [ [ [ | ] in]
 	    pop
 	    [ [] cons cons dup ] dip
 	    uncons first
@@ -156,25 +156,25 @@ IN
 	      [[i] dip parse] dip ]
 	    dip
 	    [i] dip parse ]
-	  [ [dup [ _ ] in1]
+	  [ [ [ _ ] in]
 	    pop uncons first swap # in generate there is no swap
 	    [ [parse] cons swons ]
 	    dip parse ]
 						# unary operators
-	  [ [dup [ ? ] in1]
+	  [ [ [ ? ] in]
 	    pop
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first parse ]
-	  [ [dup [ + ] in1]
+	  [ [ [ + ] in]
 	    swons
 	    [] cons cons cons dup
 	    [ i second parse ] dip
 	    i dup
 	    [ [parse] cons swons ] dip
 	    second parse ]
-	  [ [dup [ * ] in1]
+	  [ [ [ * ] in]
 	    swons
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
@@ -182,22 +182,22 @@ IN
 	    dup
 	    [ [i] dip [parse] cons swons ] dip
 	    second parse ]
-	  [ [dup [ $ ] in1]
+	  [ [ [ $ ] in]
 	    pop first i
 	    Min2Tre parse ]
-	  [ [dup [QUOTE] in1]
+	  [ [ [QUOTE] in]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [dup [epsilon] in1]
+	  [ [ [epsilon] in]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom
 	    # here I need a test that the list is not empty
 	    # otherwise the "first" below will crash
 	    popd
-	    [ dup 3 pick first = ]
+	    [ [pop first] dip = ]
 	    [ pop [rest] dip unswons i ]
 	    [ pop pop pop ]
 	    ifte ] ]

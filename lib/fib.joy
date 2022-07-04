@@ -1,4 +1,6 @@
 (*
-    Multiline comment
+    module  : fib.joy
+    version : 1.1
+    date    : 06/18/22
 *)
-10 [dup small] [] [pred dup pred] [+] binrec.
+10 [small] [] [pred dup pred] [+] binrec.

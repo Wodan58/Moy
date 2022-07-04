@@ -1,7 +1,7 @@
 /*
     module  : iffloat.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef IFFLOAT_C
 #define IFFLOAT_C
@@ -13,6 +13,6 @@ If X is a float, executes T else executes E.
 #define PROCEDURE	do_iffloat
 #define NAME		"iffloat"
 #define TYP		FLOAT_
-#include "iftype.h"
+#include "if_type.h"
 /* iffloat.c */
 #endif

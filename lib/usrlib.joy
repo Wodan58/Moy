@@ -1,8 +1,8 @@
-#
-#   module  : usrlib.joy
-#   version : 1.1
-#   date    : 04/25/16
-#
+(*
+    module  : usrlib.joy
+    version : 1.1
+    date    : 06/18/22
+*)
 (* FILE:  usrlib.joy  -  if it exists, then it is loaded by default *)
 
 LIBRA
@@ -55,7 +55,7 @@ IN
 	  [ [ [vms] first body null not ]
 	    swap " " swap concat concat "SEARCH " swap concat system ]
 	  [ "unknown operating system for  find-in\n" putchars ] ]
- 	cond
+	cond
 	returned;
     standard-setting == 1 setautoput 1 setundeferror;
     USRLIB == "usrlib.joy - (personal) user library\n"

@@ -1,3 +1,8 @@
+(*
+    module  : tutorial.joy
+    version : 1.5
+    date    : 06/18/22
+*)
 111 222 + .
 1 2 + 3 4 + * .
 2 2 + 2 2 * = .
@@ -10,9 +15,8 @@ DEFINE	reverse == [] swap shunt ;
 DEFINE	concat1 == [reverse] c shunt ;
 	c == [swap] dip i .
 [peter paul] [mary jane] concat1 .
-DEFINE	last == dup rest1 null1 [first1] [rest1 last] branch1 ;
+DEFINE	last == dup rest1 null [first1] [rest1 last] branch1 ;
 	rest1 == uncons swap pop ;
-	null1 == 0 = ;	(* car nothing sametype *)
 	car == uncons pop ;
 	first1 == uncons pop ;
 	branch1 == swap pair index i ;
@@ -37,8 +41,8 @@ uncons uncons 'c swap cons cons cons dup .
 DEFINE	length == 0 [pop 1 +] fold1 .
 dup length .
 reverse length .
-#get get + .
-#123 456
+get get + .
+123 456
 111 222 [+ putln] i .
 111 [putln +] reverse 222 swap i .
 3 7 100 [*] dip + .
@@ -79,17 +83,17 @@ DEFINE	unpair == uncons uncons pop .
 'g .
 [Smith Jones Robinson] last .
 DEFINE	definition == first1 body .
-#[last] definition .
-#[Smith Jones Robinson] [last] definition i .
+[last] definition .
+[Smith Jones Robinson] [last] definition i .
 DEFINE	cdr == uncons swap pop ;
 	x1 == dup i .
 [Smith Jones Robinson]
-[swap dup rest1 null1 [car swap pop] [cdr swap x1] branch1] x1 . 
+[swap dup rest1 null [car swap pop] [cdr swap x1] branch1] x1 .
 DEFINE	y1 == fix i ;
 	fix == [duco] first1 swap cons duco ;
 	duco == dup cons .
 [Smith Jones Robinson]
-[swap dup rest1 null1 [car swap pop] [cdr swap i] branch1] y1 .
+[swap dup rest1 null [car swap pop] [cdr swap i] branch1] y1 .
 DEFINE	factorial_rec == dup 1 <= [pop 1] [dup pred factorial_rec *] branch1 .
 6 factorial_rec .
 DEFINE	rolldown1 == [swap] dip swap .
@@ -103,7 +107,7 @@ DEFINE	quicksort == dup small [] [partition quicksort [quicksort] dip concat1]
 [5 6 4 7 3 8 2 9 1] quicksort .
 [1 2 3 4 5 6 7 8 9] quicksort .
 [9 8 7 6 5 4 3 2 1] quicksort .
-#[quicksort] definition .
+[quicksort] definition .
 DEFINE	quicksort1 == dup small [] [partition1 quicksort1 [quicksort1] dip
 		      concat1] branch1 ;
 	partition1 == [[] []] dip dup first1 [first1 > [cnos] [swap [cnos] dip]

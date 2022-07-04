@@ -1,12 +1,12 @@
 /*
     module  : interp.c
-    version : 1.17
-    date    : 03/15/21
+    version : 1.20
+    date    : 06/19/22
 */
 #include "runtime.h"
 #include "builtin.c"
 
-#define DEBUG
+#define TRACING
 
 #ifdef REPORT
 double count_execute;
@@ -17,11 +17,12 @@ static void report_execute(void)
 }
 #endif
 
-void interprete(pEnv env, Node *node)
+void exeterm(pEnv env, Node *node)
 {
     Node *cur;
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     int index;
+    char *name;
     Node *code;
     unsigned flags;
 #endif
@@ -35,39 +36,58 @@ void interprete(pEnv env, Node *node)
     count_execute++;
 #endif
 
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
 start:
 #endif
     for (cur = node; cur; cur = cur->next) {
-#ifdef DEBUG
+#ifdef TRACING
 	if (debugging) {
-	    writestack(env, env->stk, stderr);
-	    fprintf(stderr, " : ");
-	    writeterm(env, cur, stderr);
-	    fprintf(stderr, "\n");
+	    writestack(env, env->stk);
+	    printf(" : ");
+	    writeterm(env, cur);
+	    putchar('\n');
 	}
 #endif
 	switch (cur->op) {
-#ifndef OLD_RUNTIME
-	case USR_:
-	    index = cur->u.num;
-	    if ((code = dict_body(env, index)) != 0) {
-		if ((flags = dict_flags(env, index)) & IS_BUILTIN) {
-		    dict_setflags(env, index, flags | IS_USED);
-		    (*(proc_t)code)(env);
-		} else {
-		    if (!cur->next) {
-			node = code;
-			goto start;
-		    }
-		    interprete(env, code);
-		}
-	    } else if (undeferror)
-		execerror("definition", dict_descr(env, index));
-	    break;
-#endif
 	case ANON_FUNCT_:
 	    (*cur->u.proc)(env);
+	    break;
+	case USR_:
+#ifdef COMPILING
+	    index = cur->u.num;
+	    code = dict_body(env, index);
+	    if (code) {
+		flags = dict_flags(env, index);
+		if (flags & IS_BUILTIN)
+		    (*(proc_t)code)(env);
+		else {
+		    if (!compiling) {
+			if (!cur->next) {
+			    node = code;
+			    goto start;
+			}
+			exeterm(env, code);
+		    } else {
+			if ((flags & (IS_ACTIVE | IS_USED)) == 0) {
+			    dict_setflags(env, index, flags | IS_ACTIVE);
+			    exeterm(env, code);
+		    	    flags = dict_flags(env, index);
+		    	    dict_setflags(env, index, flags & ~IS_ACTIVE);
+			    break;
+			}
+			name = dict_nickname(env, index);
+			if ((flags & IS_DECLARED) == 0) {
+			    flags |= IS_DECLARED;
+			    fprintf(declfp, "void do_%s(pEnv env);", name);
+			}
+			printstack(env);
+			fprintf(outfp, "do_%s(env);", name);
+		    }
+		}
+		dict_setflags(env, index, flags | IS_USED);
+	    } else if (undeferror)
+		execerror(env, "definition", dict_descr(env, cur));
+#endif
 	    break;
 	case BOOLEAN_:
 	case CHAR_:
@@ -77,11 +97,10 @@ start:
 	case LIST_:
 	case FLOAT_:
 	case FILE_:
-	case SYMBOL_:
 	    DUPLICATE(cur);
 	    break;
 	default:
-	    execerror("valid datatype", "interpreter");
+	    execerror(env, "valid datatype", "exeterm");
 	    break;
 	}
     }
@@ -89,6 +108,25 @@ start:
 
 void execute(pEnv env, Node *node)
 {
-    interprete(env, node);
+    exeterm(env, node);
     do_stop(env);
+}
+
+/*
+    execerror - print a runtime error to stderr. When compiling print the
+		function instead of generating an error.
+*/
+void execerror(pEnv env, char *message, const char *op)
+{
+    if (!compiling) {
+	fflush(stdout);
+	fprintf(stderr, "run time error: %s needed for %s\n", message, op);
+	abortexecution();
+    }
+#ifdef COMPILING
+    if (strncmp(message, "definition", 10)) {
+	printstack(env);
+	fprintf(outfp, "do_%s(env);", dict_translate(env, op));
+    }
+#endif
 }

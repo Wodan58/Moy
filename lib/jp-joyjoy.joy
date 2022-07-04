@@ -1,8 +1,8 @@
-#
-#   module  : jp-joyjoy.joy
-#   version : 1.3
-#   date    : 05/12/19
-#
+(*
+    module  : jp-joyjoy.joy
+    version : 1.4
+    date    : 06/18/22
+*)
 (* File:  jp-joyjoy.joy
    Joy interpreters written in Joy
 *)
@@ -12,13 +12,13 @@ LIBRA
 putchars2 == [putch] step;
 
 HIDE
-  cr1  ==  pop  [joy] cons;
+  cr1  ==  pop	[joy] cons;
   cr2  ==  pop [[joy] cons] app2;
   cr3  ==  pop [[joy] cons] app3;
   cr4  ==  pop [[joy] cons] app4
 IN
   joy  ==
-    [ [ [ joy		body	joy	]
+    [ [ [ joy		pop	joy	]	# body
 	[ true				]
 	[ 'A				]
 	[ []				]
@@ -38,10 +38,10 @@ IN
 	[ map		cr1	map	]
 	[ filter	cr1	filter	]
 	[ times		cr1	times	]
-        [ app1          cr1     app1    ]
-        [ app2          cr1     app2    ]
-        [ app3          cr1     app3    ]
-        [ app4          cr1     app4    ]
+	[ app1		cr1	app1	]
+	[ app2		cr1	app2	]
+	[ app3		cr1	app3	]
+	[ app4		cr1	app4	]
 	[ ifte		cr3	ifte	]
 	[ linrec	cr4	linrec	]
 	[ binrec	cr4	binrec	]
@@ -52,14 +52,14 @@ IN
 END;
 
 joy0  ==
-    [ [ [ joy0		body		joy0	 ]
-	[ []				 	 ]
+    [ [ [ joy0		pop		joy0	 ]	# body
+	[ []					 ]
 	[ pop		pop		pop	 ]
 	[ cons		pop		cons	 ]
 	[ opcase	pop		opcase	 ]
 	[ body		pop		body	 ]
-	[ i		pop		joy0 	 ]
-	[ step		pop [joy0] cons	step 	 ]
+	[ i		pop		joy0	 ]
+	[ step		pop [joy0] cons step	 ]
 	[		       [] cons	i	 ] ]
       opcase
       i ]
@@ -67,18 +67,18 @@ joy0  ==
 
 (* some additional versions of joy0 with tracing *)
 
-LIBRA 
+LIBRA
 
 joy0s  ==  (* joy0 with short trace *)
     newline "joy0s :" putchars newline
-    [ [ [ joy0s		body		joy0s	 ]
-	[ []				 	 ]
+    [ [ [ joy0s		pop		joy0s	 ]	# body
+	[ []					 ]
 	[ pop		pop		pop	 ]
 	[ cons		pop		cons	 ]
 	[ opcase	pop		opcase	 ]
 	[ body		pop		body	 ]
-	[ i		pop		joy0s 	 ]
-	[ step		pop [joy0] cons	step 	 ]
+	[ i		pop		joy0s	 ]
+	[ step		pop [joy0] cons step	 ]
 	[		       [] cons	i	 ] ]
       opcase
       i ]
@@ -87,14 +87,14 @@ joy0s  ==  (* joy0 with short trace *)
 joy0l  == (* joy0 with long trace *)
     newline "joy0l :" putchars newline
     [ dup put (* long trace *)
-      [ [ joy0l		body		joy0l	 ]
-	[ []				 	 ]
+      [ [ joy0l		pop		joy0l	 ]	# body
+	[ []					 ]
 	[ pop		pop		pop	 ]
 	[ cons		pop		cons	 ]
 	[ opcase	pop		opcase	 ]
 	[ body		pop		body	 ]
-	[ i		pop		joy0l 	 ]
-	[ step		pop [joy0] cons	step 	 ]
+	[ i		pop		joy0l	 ]
+	[ step		pop [joy0] cons step	 ]
 	[		       [] cons	i	 ] ]
       opcase
       i ]

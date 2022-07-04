@@ -1,29 +1,22 @@
 /*
     module  : linrec.c
-    version : 1.17
-    date    : 03/15/21
+    version : 1.18
+    date    : 06/20/22
 */
 #ifndef LINREC_C
 #define LINREC_C
 
-#ifndef OLD_RUNTIME
-int put_linrec(pEnv env)
+/**
+linrec  :  [P] [T] [R1] [R2]  ->  ...
+Executes P. If that yields true, executes T.
+Else executes R1, recurses, executes R2.
+*/
+#ifdef COMPILING
+void put_linrec(pEnv env, Node *prog[4])
 {
     static int ident;
     FILE *oldfp;
-    Node *prog[4];
 
-    if (!(LIST_1 && LIST_2 && LIST_3 && LIST_4))
-	return 0;
-    prog[3] = env->stk->u.lis;
-    POP(env->stk);
-    prog[2] = env->stk->u.lis;
-    POP(env->stk);
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(declfp, "void linrec_%d(pEnv env);", ++ident);
     fprintf(outfp, "linrec_%d(env);", ident);
     oldfp = outfp;
@@ -40,15 +33,9 @@ int put_linrec(pEnv env)
     fprintf(outfp, "} }\n");
     closefile(outfp);
     outfp = oldfp;
-    return 1;
 }
 #endif
 
-/**
-linrec  :  [P] [T] [R1] [R2]  ->  ...
-Executes P. If that yields true, executes T.
-Else executes R1, recurses, executes R2.
-*/
 void linrec(pEnv env, Node *prog[])
 {
     int num;
@@ -71,11 +58,6 @@ PRIVATE void do_linrec(pEnv env)
 {
     Node *prog[4];
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_linrec(env))
-	return;
-    COMPILE;
-#endif
     FOURPARAMS("linrec");
     FOURQUOTES("linrec");
     prog[3] = env->stk->u.lis;
@@ -86,6 +68,7 @@ PRIVATE void do_linrec(pEnv env)
     POP(env->stk);
     prog[0] = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(put_linrec);
     linrec(env, prog);
 }
 #endif

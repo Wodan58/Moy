@@ -1,7 +1,7 @@
 /*
     module  : ifinteger.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef IFINTEGER_C
 #define IFINTEGER_C
@@ -13,6 +13,6 @@ If X is an integer, executes T else executes E.
 #define PROCEDURE	do_ifinteger
 #define NAME		"ifinteger"
 #define TYP		INTEGER_
-#include "iftype.h"
+#include "if_type.h"
 /* ifinteger.c */
 #endif

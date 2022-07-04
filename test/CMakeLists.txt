@@ -1,42 +1,104 @@
-add_custom_target(test01.txt ALL
+#
+#   module  : CMakeLists.txt
+#   version : 1.4
+#   date    : 06/29/22
+#
+macro(exe9 src)
+add_custom_target(${src}.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/${src}.joy
+		  COMMAND joy ${CMAKE_SOURCE_DIR}/test/${src}.joy >${src}.out 2>&1)
+endmacro(exe9)
+
+exe9(test01)
+exe9(test02)
+exe9(test03)
+exe9(test06)
+exe9(test07)
+exe9(test08)
+exe9(test09)
+exe9(test10)
+exe9(test11)
+exe9(test12)
+exe9(test13)
+exe9(test14)
+exe9(test15)
+exe9(test16)
+exe9(test19)
+exe9(test20)
+exe9(test21)
+exe9(test22)
+exe9(test25)
+exe9(m0)
+exe9(m1)
+exe9(m2)
+exe9(m3)
+exe9(m4)
+exe9(m5)
+exe9(m6)
+exe9(m7)
+exe9(m8)
+exe9(m9)
+exe9(m10)
+exe9(m11)
+exe9(m12)
+exe9(m13)
+exe9(m14)
+exe9(m15)
+exe9(m16)
+exe9(m17)
+exe9(m18)
+exe9(m19)
+exe9(m20)
+exe9(m21)
+exe9(_help)
+exe9(help)
+exe9(__html_manual)
+exe9(__latex_manual)
+exe9(manual)
+exe9(__manual_list)
+
+#
+#   Taking options, parameter 10 and redirecting
+#
+add_custom_target(test04.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test04.joy
+		  COMMAND joy 10 -vds <${CMAKE_SOURCE_DIR}/test/test04.joy >test04.out 2>&1)
+
+#
+#   Taking filename parameter test05.joy
+#
+add_custom_target(test05.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test05.joy
+		  COMMAND joy -v ${CMAKE_SOURCE_DIR}/test/test05.joy ${CMAKE_SOURCE_DIR}/test/test05.joy >test05.out 2>&1)
+
+#
+#   Debugging ILLEGAL
+#
+add_custom_target(test17.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test17.joy
+		  COMMAND joy ${CMAKE_SOURCE_DIR}/test/test17.joy >test17.out 2>&1)
+
+#
+#   Test help
+#
+add_custom_target(test23.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test23.joy
+		  COMMAND joy -h ${CMAKE_SOURCE_DIR}/test/test23.joy >test23.out 2>&1)
+
+#
+#   Test rest of options
+#
+add_custom_target(test26.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test26.joy
+		  COMMAND joy -sd <${CMAKE_SOURCE_DIR}/test/test26.joy >test26.out 2>&1)
+
+add_custom_target(test27.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test27.joy
+		  COMMAND joy -hs ${CMAKE_SOURCE_DIR}/test/test27.joy >test27.out 2>&1)
+
+#
+#   Test not open file
+#
+add_custom_target(test24.out ALL
 		  DEPENDS joy
-		  COMMAND joy test01.joy >test01.txt)
-add_custom_target(test02.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test02.joy >test02.txt)
-add_custom_target(test03.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test03.joy >test03.txt)
-add_custom_target(test04.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test04.joy >test04.txt)
-add_custom_target(test05.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test05.joy test05.joy >test05.txt)
-add_custom_target(test06.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test06.joy >test06.txt)
-add_custom_target(test07.txt ALL
-		  DEPENDS joy
-		  COMMAND joy <test07.joy >test07.txt)
-add_custom_target(test08.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test08.joy >test08.txt)
-add_custom_target(test09.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test09.joy >test09.txt)
-add_custom_target(test10.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test10.joy >test10.txt)
-add_custom_target(test11.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test11.joy >test11.txt)
-add_custom_target(test12.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test12.joy >test12.txt)
-add_custom_target(test13.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test13.joy >test13.txt)
-add_custom_target(test14.txt ALL
-		  DEPENDS joy
-		  COMMAND joy test14.joy >test14.txt)
+		  COMMAND joy nonexist >test24.out 2>&1)

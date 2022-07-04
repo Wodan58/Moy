@@ -1,7 +1,7 @@
 /*
     module  : or.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef OR_C
 #define OR_C
@@ -15,4 +15,5 @@ Z is the union of sets X and Y, logical disjunction for truth values.
 #define OPER1		|
 #define OPER2		||
 #include "andorxor.h"
+/* or.c */
 #endif

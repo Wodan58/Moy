@@ -1,8 +1,8 @@
-#
-#   module  : tutlib.joy
-#   version : 1.4
-#   date    : 05/12/19
-#
+(*
+    module  : tutlib.joy
+    version : 1.6
+    date    : 06/18/22
+*)
 (* FILE: tutlib.joy *)
 
 LIBRA
@@ -17,28 +17,28 @@ LIBRA
 	(* rand 5 rem *) 0 at putchars newline;			(* R.W. *)
     get-integer ==
 	get
-	[ dup integer not ]
+	[ integer not ]
 	[ pop "An integer is expected:\n" putchars get ]
 	while;
     get-list ==
 	get
-	[ dup list not ]
+	[ list not ]
 	[ pop "A list is expected:\n" putchars get ]
 	while;
     get-quote ==
 	get
-	[ dup list not ]
+	[ list not ]
 	[ pop "A quotation is expected:\n" putchars get ]
 	while;
     expecting ==
-	[ over over equal ]
+	[ equal ]
 	[ pop pop praise [succ] dip ]
 	[ "No, the right answer is:  " putchars put
 	  "   Your answer:  " putchars put newline ]
 	ifte
 	succ;
     expecting-from ==
-	[ [ [over over equal] some ] nullary ]
+	[ [equal] some ]
 	[ pop pop praise [succ] dip ]
 	[ "No, the right answer must be one of the following:\n\t" putchars
 	  [put "  " putchars] step
@@ -78,7 +78,7 @@ where each Qi is a quote, each Hi is a section heading. *)
 	  "type  0  to do all sections, or\n"
 	  "type any other number (even negative) to quit.\n" ]
 	putstrings
-	get-integer 
+	get-integer
 	[dup toc-of-tutorial size >=] [0 swap -] [] ifte;
     toc-do-section ==
 	toc-of-tutorial of first i;

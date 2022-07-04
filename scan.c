@@ -1,79 +1,100 @@
 /*
     module  : scan.c
-    version : 1.7
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/23/22
 */
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include "joy.h"
-#include "symbol.h"
-#include "decl.h"
+#include "globals.h"
 
 extern FILE *yyin;
-extern char line[];
-extern int yylineno;
+extern char line[], *yytext;
+extern int yylineno, yyleng;
 
 static int ilevel;
 
 static struct {
     FILE *fp;
+#if 0
     char name[ALEN];
+#endif
     int linenum;
 } infile[INPSTACKMAX];
 
-void inilinebuffer(FILE *fp, char *str)
+void inilinebuffer(void)
 {
-    infile[0].fp = yyin = fp;
-    strncpy(infile[0].name, str, ALEN);
+    infile[0].fp = yyin = stdin;
+#if 0
+    strncpy(infile[0].name, name, ALEN);
     infile[0].name[ALEN - 1] = 0;
+#endif
     infile[0].linenum = 0;
 }
 
-void redirect(FILE *fp)
+static void redirect(pEnv env, FILE *fp)
 {
-    if (infile[ilevel].fp == fp)
-	return;
     infile[ilevel].linenum = yylineno;
     if (ilevel + 1 == INPSTACKMAX)
-	execerror("fewer include files", "redirect");
+        execerror(env, "fewer include files", "redirect");
     infile[++ilevel].fp = yyin = fp;
-    infile[ilevel].name[0] = 0;
+#if 0
+    strncpy(infile[ilevel].name, name, ALEN);
+    infile[ilevel].name[ALEN - 1] = 0;
+#endif
     infile[ilevel].linenum = yylineno = 0;
-    new_buffer();
+    new_buffer(env);
 }
 
-void include(char *filnam)
+/*
+    include - insert the contents of a file in the input. If the file cannot be
+              found in the current directory, it is searched in the same
+              directory as the executable.
+*/
+void include(pEnv env, char *name, int error)
 {
     FILE *fp;
+    int leng;
+    char *path, *str;
 
-    while (isspace((int)*filnam))
-	filnam++;
-    if ((fp = fopen(filnam, "r")) == 0)
-	execerror("valid file name", "include");
-    redirect(fp);
-    strncpy(infile[ilevel].name, filnam, ALEN);
-    infile[ilevel].name[ALEN - 1] = 0;
+    if ((fp = fopen(name, "r")) != 0)
+        ;
+    else if ((path = strrchr(g_argv[0], '/')) != 0) {
+        leng = path - g_argv[0];
+        str = GC_malloc_atomic(leng + strlen(name) + 2);
+        sprintf(str, "%.*s/%s", leng, g_argv[0], name);
+        fp = fopen(str, "r");
+    }
+    if (fp)
+        redirect(env, fp);
+    else if (error)
+        execerror(env, "valid file name", "include");
 }
 
 int yywrap(void)
 {
     if (yyin != stdin)
-	fclose(yyin);
+        fclose(yyin);
     if (!ilevel)
-	exit(0);
+        return 1;
     yyin = infile[--ilevel].fp;
     yylineno = infile[ilevel].linenum;
     old_buffer();
     return 0;
 }
 
-int yyerror(char *str)
+int yyerror(pEnv env, char *str)
 {
-    fprintf(stderr, "%s in file %s line %d : ", str,
-	    infile[ilevel].name, yylineno);
-    fprintf(stderr, "%s\n", line);
-    execerror(0, 0);
+    int i, j;
+
+    if (line[0]) {
+        fprintf(stderr, "%s\n", line);
+        for (i = strlen(line) - yyleng; i >= 0; i--)
+            if (!strncmp(&line[i], yytext, yyleng)) {
+                for (j = 0; j < i; j++)
+                    fputc(' ', stderr);
+                break;
+            }
+        fprintf(stderr, "^\n\t%s\n", str);
+        line[0] = 0;
+    }
+    abortexecution();
     return 0;
 }

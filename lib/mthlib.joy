@@ -1,8 +1,8 @@
-#
-#   module  : mthlib.joy
-#   version : 1.1
-#   date    : 04/25/16
-#
+(*
+    module  : mthlib.joy
+    version : 1.1
+    date    : 06/18/22
+*)
 (* FILE:   mthlib.joy *)
 
 %INCLUDE agglib.joy
@@ -30,7 +30,7 @@ LIBRA
 
 (*	e.g.   [* 10 [+ 2.2 3.3]]  calc.   *)
 
-    calc == 
+    calc ==
 	[ numerical ]
 	[ ]
 	[ unswons
@@ -81,9 +81,9 @@ IN
 
 (*  [var]  exp  diff  =>   the derivative of exp w.r.t. var		*)
     diff ==					(*  [v]  e		*)
-	[ [ [numerical]			
+	[ [ [numerical]
 	    pop pop 0 ]				(*  => 0		*)
-	  [ [leaf] 
+	  [ [leaf]
 	    [[first] dip = ]			(*   v  e  = ?		*)
 	    [pop pop 1]				(*  => 1		*)
 	    [pop pop 0]				(*  => 0		*)
@@ -99,7 +99,7 @@ IN
 		dup2				(*  [v]  e1 e2  e1 e2	*)
 		[[diff] unary2] dip2		(*  [v]  d1 d2  e1 e2	*)
 		rollup				(*  [v]  d1 e2  d2 e1	*)
-		_makeproduct [_makeproduct] dip	(*  [v]    p1     p2	*)
+		_makeproduct [_makeproduct] dip (*  [v]    p1     p2	*)
 		_makesum popd ]			(*  =>         s	*)
 	      [] ]
 	    opcase i ]

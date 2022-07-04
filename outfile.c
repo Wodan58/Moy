@@ -1,11 +1,9 @@
 /*
     module  : outfile.c
-    version : 1.5
-    date    : 01/24/21
+    version : 1.6
+    date    : 06/16/22
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include "decl.h"
+#include "globals.h"
 
 FILE *my_tmpfile();
 
@@ -17,10 +15,7 @@ void initout(void)
     int i;
 
     for (i = 0; i < MAXOUT; i++) {
-	if ((tmpfp[i] = my_tmpfile()) == 0) {
-	    fprintf(stderr, "error creating outfile\n");
-	    exit(1);
-	}
+	tmpfp[i] = my_tmpfile();
 	avail[i] = 1;
     }
 }
@@ -62,10 +57,7 @@ void printout(FILE *fp)
 	}
 	if (found) {
 	    fclose(tmpfp[i]);
-	    if ((tmpfp[i] = my_tmpfile()) == 0) {
-		fprintf(stderr, "error creating tmpfile\n");
-		exit(1);
-	    }
+	    tmpfp[i] = my_tmpfile();
 	}
 	avail[i] = 1;
     }

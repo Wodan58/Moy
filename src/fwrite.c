@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef FWRITE_C
 #define FWRITE_C
@@ -16,17 +16,11 @@ PRIVATE void do_fwrite(pEnv env)
     int i, leng;
     unsigned char *buf;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("fwrite");
     LIST("fwrite");
-    for (node = env->stk->u.lis, leng = 0; node; node = node->next, leng++) {
-#ifndef NCHECK
-	if (node->op != INTEGER_)
-	    execerror("numeric list", "fwrite");
-#endif
-    }
+    for (node = env->stk->u.lis, leng = 0; node; node = node->next, leng++)
+	CHECKNUMERIC(node, "fwrite");
     buf = GC_malloc_atomic(leng);
     for (node = env->stk->u.lis, i = 0; node; node = node->next, i++)
 	buf[i] = node->u.num;

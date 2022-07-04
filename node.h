@@ -1,10 +1,10 @@
 /*
     module  : node.h
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/16/22
 */
 Node *newnode(Operator op, YYSTYPE u, Node *next);
-Node *dblnode(double dbl, Node *next);
 Node *reverse(Node *cur);
-Node *stk2lst(pEnv env);
-void lst2stk(pEnv env, Node *cur);
+
+/* src/compare.h */
+int Compare(pEnv env, Node *first, Node *second);

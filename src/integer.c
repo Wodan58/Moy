@@ -1,7 +1,7 @@
 /*
     module  : integer.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef INTEGER_C
 #define INTEGER_C
@@ -15,4 +15,5 @@ Tests whether X is an integer.
 #define REL		==
 #define TYP		INTEGER_
 #include "type.h"
+/* integer.c */
 #endif

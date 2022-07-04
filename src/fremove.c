@@ -1,7 +1,7 @@
 /*
     module  : fremove.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FREMOVE_C
 #define FREMOVE_C
@@ -13,13 +13,9 @@ B is a boolean indicating success or failure.
 */
 PRIVATE void do_fremove(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("fremove");
     STRING("fremove");
-    env->stk->next->u.num = !remove(env->stk->u.str);
-    env->stk->next->op = BOOLEAN_;
-    POP(env->stk);
+    UNARY(BOOLEAN_NEWNODE, !remove(env->stk->u.str));
 }
 #endif

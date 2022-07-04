@@ -1,7 +1,7 @@
 /*
     module  : choice.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef CHOICE_C
 #define CHOICE_C
@@ -12,21 +12,10 @@ If B is true, then X = T else X = F.
 */
 PRIVATE void do_choice(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1 && VALID_2 && VALID_3)
-	;
-    else
-	COMPILE;
-#endif
     THREEPARAMS("choice");
-    if (env->stk->next->next->u.num) {
-	env->stk->next->next->u = env->stk->next->u;
-	env->stk->next->next->op = env->stk->next->op;
-    } else {
-	env->stk->next->next->u = env->stk->u;
-	env->stk->next->next->op = env->stk->op;
-    }
-    POP(env->stk);
-    POP(env->stk);
+    if (env->stk->next->next->u.num)
+	GTERNARY(env->stk->next->op, env->stk->next->u);
+    else
+	GTERNARY(env->stk->op, env->stk->u);
 }
 #endif

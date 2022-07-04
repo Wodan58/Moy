@@ -1,21 +1,13 @@
 /*
     module  : bfloat.h
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 PRIVATE void PROCEDURE(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && NUMERIC_1 && NUMERIC_2)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS(NAME);
     FLOAT2(NAME);
-    env->stk->next->u.dbl = FUNC(FLOATVAL2, FLOATVAL);
-    env->stk->next->op = FLOAT_;
-    POP(env->stk);
+    BINARY(FLOAT_NEWNODE, FUNC(FLOATVAL2, FLOATVAL));
 }
 
 #undef PROCEDURE

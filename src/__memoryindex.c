@@ -1,7 +1,7 @@
 /*
     module  : __memoryindex.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/29/22
 */
 #ifndef __MEMORYINDEX_C
 #define __MEMORYINDEX_C
@@ -12,9 +12,7 @@ Pushes current value of memory.
 */
 PRIVATE void do___memoryindex(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
-    PUSH_NUM(INTEGER_, 0);
+    PUSH_NUM(INTEGER_, GC_get_heap_size());
 }
 #endif

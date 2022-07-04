@@ -1,7 +1,7 @@
 /*
     module  : fputch.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FPUTCH_C
 #define FPUTCH_C
@@ -14,14 +14,12 @@ PRIVATE void do_fputch(pEnv env)
 {
     int ch;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("fputch");
     INTEGER("fputch");
     ch = env->stk->u.num;
     POP(env->stk);
     FILE("fputch");
-    putc(ch, env->stk->u.fil);
+    fputc(ch, env->stk->u.fil);
 }
 #endif

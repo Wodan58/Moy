@@ -1,7 +1,7 @@
 /*
     module  : fseek.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FSEEK_C
 #define FSEEK_C
@@ -13,12 +13,10 @@ where W = 0, 1, 2 for beginning, current position, end respectively.
 */
 PRIVATE void do_fseek(pEnv env)
 {
-    long_t pos;
+    long pos;
     int whence;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     THREEPARAMS("fseek");
     INTEGER("fseek");
     INTEGER2("fseek");

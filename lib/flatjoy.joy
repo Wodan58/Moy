@@ -1,27 +1,27 @@
-#
-#   module  : flatjoy.joy
-#   version : 1.2
-#   date    : 05/12/19
-#
+(*
+    module  : flatjoy.joy
+    version : 1.3
+    date    : 06/18/22
+*)
 0 __settracegc.
 
 %INCLUDE usrlib.joy
 
-2 setecho.
+# 2 setecho.
 
 DEFINE
-P0 == [];                                       # empty code
-P1 == [2 3 + dup *];                            # non-empty code
-P2 == [[1 2 3] [dup *] map];                    # nest data & code
+P0 == [];					# empty code
+P1 == [2 3 + dup *];				# non-empty code
+P2 == [[1 2 3] [dup *] map];			# nest data & code
 P3 == [ [[1 2][3 4][5] []] [[dup *] map] map ]. # double nesting
 
 DEFINE
     c  ==  concat;
     j2f-f ==
-        [ dup list ]
-        [ [[[]] concat] dip [j2f-f] step [[] cons c] concat ]
-        [ [] cons [c] cons concat ]
-        ifte;
+	[ list ]
+	[ [[[]] concat] dip [j2f-f] step [[] cons c] concat ]
+	[ [] cons [c] cons concat ]
+	ifte;
     j2f-forwards == [[]] swap [j2f-f] step.
 
 P0.
@@ -46,10 +46,10 @@ P3 j2f-forwards i i.
 DEFINE
     s  ==  swoncat;
     j2f-r ==
-        [ dup list ]
-        [ [[swons] swoncat] dip [j2f-r] step [] swons ]
-        [ [] cons [s] cons swoncat ]
-        ifte;
+	[ list ]
+	[ [[swons] swoncat] dip [j2f-r] step [] swons ]
+	[ [] cons [s] cons swoncat ]
+	ifte;
     j2f-reverse == [] swap [j2f-r] step [] swons.
 
 P0.
@@ -70,11 +70,11 @@ P3.
 P3 j2f-reverse.
 P3 j2f-reverse i.
 P3 j2f-reverse i i.
-                # Double flattening - an exercise in Joy obfuscation:
+		# Double flattening - an exercise in Joy obfuscation:
 P3 j2f-forwards j2f-reverse.
-                # partial de-obfuscation  -  by Joy itself:
+		# partial de-obfuscation  -  by Joy itself:
 P3 j2f-forwards j2f-reverse i.
-                # full de-obfuscation  -  again by Joy:
+		# full de-obfuscation  -  again by Joy:
 P3 j2f-forwards j2f-reverse i i.
-                # final run of de-obfuscated original:
+		# final run of de-obfuscated original:
 P3 j2f-forwards j2f-reverse i i i.

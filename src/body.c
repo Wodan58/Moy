@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.13
-    date    : 03/15/21
+    version : 1.14
+    date    : 06/20/22
 */
 #ifndef BODY_C
 #define BODY_C
@@ -13,12 +13,11 @@ Quotation [P] is the body of user-defined symbol U.
 PRIVATE void do_body(pEnv env)
 {
     ONEPARAM("body");
-#ifndef OLD_RUNTIME
+#ifdef COMPILING
     USERDEF("body");
-    env->stk->u.lis = dict_body(env, env->stk->u.num);
-    env->stk->op = LIST_;
+    UNARY(LIST_NEWNODE, dict_body(env, env->stk->u.num));
 #else
-    POP(env->stk);
+    UNARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(env->stk->u.proc, 0));
 #endif
 }
 #endif

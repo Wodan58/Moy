@@ -1,7 +1,7 @@
 /*
     module  : enconcat.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef ENCONCAT_C
 #define ENCONCAT_C
@@ -32,13 +32,6 @@ with X inserted between S and T (== swapd cons concat).
 */
 PRIVATE void do_enconcat(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_3 && AGGREGATE_1 && AGGREGATE_2 &&
-	env->stk->op == env->stk->next->op)
-	;
-    else
-	COMPILE;
-#endif
     THREEPARAMS("enconcat");
     SAME2TYPES("enconcat");
     do_swapd(env);

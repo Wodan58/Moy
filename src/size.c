@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -16,12 +16,6 @@ PRIVATE void do_size(pEnv env)
     Node *cur;
     size_t size = 0;
 
-#ifndef OLD_RUNTIME
-    if (compiling && AGGREGATE_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM("size");
     switch (env->stk->op) {
     case LIST_:
@@ -33,14 +27,13 @@ PRIVATE void do_size(pEnv env)
 	break;
     case SET_:
 	for (i = 0; i < SETSIZE_; i++)
-	    if (env->stk->u.set & ((long_t)1 << i))
+	    if (env->stk->u.set & ((long)1 << i))
 		size++;
 	break;
     default:
 	BADAGGREGATE("size");
 	break;
     }
-    env->stk->u.num = size;
-    env->stk->op = INTEGER_;
+    UNARY(INTEGER_NEWNODE, size);
 }
 #endif

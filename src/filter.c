@@ -1,24 +1,21 @@
 /*
     module  : filter.c
-    version : 1.23
-    date    : 03/15/21
+    version : 1.24
+    date    : 06/20/22
 */
 #ifndef FILTER_C
 #define FILTER_C
 
-#ifndef OLD_RUNTIME
-int put_filter(pEnv env)
+/**
+filter  :  A [B]  ->  A1
+Uses test B to filter aggregate A producing sametype aggregate A1.
+*/
+#ifdef COMPILING
+void put_filter(pEnv env, Node *prog)
 {
-    Node *prog;
-
-    if (!LIST_1)
-	return 0;
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(outfp, "{ /* FILTER */");
     fprintf(outfp, "int i = 0;");
-    fprintf(outfp, "ulong_t set, zet = 0;");
+    fprintf(outfp, "long set, zet = 0;");
     fprintf(outfp, "char *str, *result, *volatile ptr;");
     fprintf(outfp, "Node *save, *list, *root = 0, *cur;");
     fprintf(outfp, "switch (env->stk->op) {");
@@ -44,37 +41,29 @@ int put_filter(pEnv env)
     fprintf(outfp, "case SET_:");
     fprintf(outfp, "set = env->stk->u.set; POP(env->stk);");
     fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long_t)1 << i)) {");
+    fprintf(outfp, "if (set & ((long)1 << i)) {");
     fprintf(outfp, "save = env->stk; PUSH_NUM(INTEGER_, i);");
     compile(env, prog);
     fprintf(outfp, "if (env->stk->u.num)");
-    fprintf(outfp, "zet |= (long_t)1 << i;");
+    fprintf(outfp, "zet |= (long)1 << i;");
     fprintf(outfp, "env->stk = save; }");
-    fprintf(outfp, "PUSH_NUM(SET_, yes_set); break; } }");
-    return 1;
+    fprintf(outfp, "PUSH_NUM(SET_, zet); break; } }");
 }
 #endif
 
-/**
-filter  :  A [B]  ->  A1
-Uses test B to filter aggregate A producing sametype aggregate A1.
-*/
 PRIVATE void do_filter(pEnv env)
 {
     int i = 0;
-    ulong_t set, zet = 0;
+    long set, zet = 0;
     char *str, *result, *volatile ptr;
     Node *prog, *save, *list, *root = 0, *cur;
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_filter(env))
-	return;
-    COMPILE;
-#endif
-    TWOPARAMS("filter");
+    ONEPARAM("filter");
     ONEQUOTE("filter");
     prog = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(put_filter);
+    ONEPARAM("filter");
     switch (env->stk->op) {
     case LIST_:
 	list = env->stk->u.lis;
@@ -111,12 +100,12 @@ PRIVATE void do_filter(pEnv env)
 	set = env->stk->u.set;
 	POP(env->stk);
 	for (i = 0; i < SETSIZE_; i++)
-	    if (set & ((long_t)1 << i)) {
+	    if (set & ((long)1 << i)) {
 		save = env->stk;
 		PUSH_NUM(INTEGER_, i);
 		exeterm(env, prog);
 		if (env->stk->u.num)
-		    zet |= (long_t)1 << i;
+		    zet |= (long)1 << i;
 		env->stk = save;
 	    }
 	PUSH_NUM(SET_, zet);

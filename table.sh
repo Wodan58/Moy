@@ -1,20 +1,20 @@
 #
 #   module  : table.sh
-#   version : 1.3
-#   date    : 04/28/21
+#   version : 1.4
+#   date    : 06/16/22
 #
 #   Generate table.c
 #
 echo checking table.c
 todo=0
-if [ ! -f table.c ]
+if [ ! -f $1/table.c ]
 then
   echo creating table.c
   todo=1
 else
-  for i in src/*.c gui/*.c
+  for i in $1/src/*.c
   do
-    if [ $i -nt table.c ]
+    if [ $i -nt $1/table.c ]
     then
       echo updating table.c
       todo=1
@@ -27,8 +27,8 @@ then
   echo table.c is up-to-date
   exit
 fi
-rm -f table.c
-for i in src/*.c gui/*.c
+rm -f $1/table.c
+for i in $1/src/*.c
 do
   sed -n '/\/\*\*/ {
 	N
@@ -45,4 +45,5 @@ do
 	s/@/"/g
 	P
   }' <$i
-done | sort >table.c
+done | sort >$1/table.c
+touch $1/optable.c

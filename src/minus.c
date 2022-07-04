@@ -1,7 +1,7 @@
 /*
     module  : minus.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef MINUS_C
 #define MINUS_C

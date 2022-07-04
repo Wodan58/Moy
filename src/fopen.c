@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef FOPEN_C
 #define FOPEN_C
@@ -13,14 +13,10 @@ and stream object S is pushed; if the open fails, file:NULL is pushed.
 */
 PRIVATE void do_fopen(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     TWOPARAMS("fopen");
     STRING("fopen");
     STRING2("fopen");
-    env->stk->next->u.fil = fopen(env->stk->next->u.str, env->stk->u.str);
-    env->stk->next->op = FILE_;
-    POP(env->stk);
+    BINARY(FILE_NEWNODE, fopen(env->stk->next->u.str, env->stk->u.str));
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : getch.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef GETCH_C
 #define GETCH_C
@@ -12,9 +12,7 @@ Reads a character from input and puts it onto stack.
 */
 PRIVATE void do_getch(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
-    PUSH_NUM(CHAR_, getchar());
+    PUSH_NUM(CHAR_, getnextchar());
 }
 #endif

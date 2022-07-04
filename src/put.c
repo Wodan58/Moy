@@ -1,7 +1,7 @@
 /*
     module  : put.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef PUT_C
 #define PUT_C
@@ -12,11 +12,9 @@ Writes X to output, pops X off stack.
 */
 PRIVATE void do_put(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("put");
-    writefactor(env, env->stk, stdout);
+    writefactor(env, env->stk);
     putchar(' ');
     POP(env->stk);
 }

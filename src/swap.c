@@ -1,7 +1,7 @@
 /*
     module  : swap.c
-    version : 1.11
-    date    : 03/15/21
+    version : 1.12
+    date    : 06/20/22
 */
 #ifndef SWAP_C
 #define SWAP_C
@@ -12,20 +12,13 @@ Interchanges X and Y on top of the stack.
 */
 PRIVATE void do_swap(pEnv env)
 {
-    Node temp, *node;
+    Node *first, *second;
 
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1 && VALID_2)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS("swap");
-    temp = *env->stk;
-    node = env->stk->next;
-    env->stk->u = node->u;
-    env->stk->op = node->op;
-    node->u = temp.u;
-    node->op = temp.op;
+    first = env->stk;
+    POP(env->stk);
+    second = env->stk;
+    GUNARY(first->op, first->u);
+    DUPLICATE(second);
 }
 #endif

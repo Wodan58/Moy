@@ -1,7 +1,7 @@
 /*
     module  : name.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef NAME_C
 #define NAME_C
@@ -13,18 +13,15 @@ for literals sym the result string is its type.
 */
 PRIVATE void do_name(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    char *str;
+#ifdef COMPILING
+    char *str = "";
 
-    if (compiling && VALID_1)
-	;
-    else
-	COMPILE;
     ONEPARAM("name");
     switch (env->stk->op) {
     case USR_:
-	str = dict_descr(env, env->stk->u.num);
+	str = dict_descr(env, env->stk);
 	break;
+    case ANON_FUNCT_:
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
@@ -35,15 +32,8 @@ PRIVATE void do_name(pEnv env)
     case FILE_:
 	str = optable[env->stk->op].name;
 	break;
-    case SYMBOL_:
-	str = env->stk->u.str;
-	break;
-    default:
-	BADDATA("name");
-	break;
     }
-    env->stk->u.str = str;
-    env->stk->op = STRING_;
+    UNARY(STRING_NEWNODE, str);
 #endif
 }
 #endif

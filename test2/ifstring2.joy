@@ -1,0 +1,7 @@
+(*
+    module  : ifstring2.joy
+    version : 1.2
+    date    : 06/21/22
+*)
+"\b\t\n\v\f\r".
+argv 1 at [[string] first] [[nostring] first] ifstring.

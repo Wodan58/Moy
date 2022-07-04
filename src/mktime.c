@@ -1,55 +1,12 @@
 /*
     module  : mktime.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef MKTIME_C
 #define MKTIME_C
 
-PRIVATE void decode_time(pEnv env, struct tm *t)
-{
-    Node *p;
-
-    memset(t, 0, sizeof(struct tm));
-    p = env->stk->u.lis;
-    POP(env->stk);
-    if (p && p->op == INTEGER_) {
-	t->tm_year = p->u.num - 1900;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_mon = p->u.num - 1;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_mday = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_hour = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_min = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_sec = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == BOOLEAN_) {
-	t->tm_isdst = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_yday = p->u.num;
-	POP(p);
-    }
-    if (p && p->op == INTEGER_) {
-	t->tm_wday = p->u.num;
-	POP(p);
-    }
-}
+#include "decode.h"
 
 /**
 mktime  :  T  ->  I
@@ -60,12 +17,7 @@ PRIVATE void do_mktime(pEnv env)
 {
     struct tm t;
 
-#ifndef OLD_RUNTIME
-    if (compiling && LIST_1)
-	;
-    else
-	COMPILE;
-#endif
+    COMPILE;
     ONEPARAM("mktime");
     LIST("mktime");
     decode_time(env, &t);

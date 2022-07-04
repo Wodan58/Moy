@@ -1,7 +1,7 @@
 /*
     module  : system.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef SYSTEM_C
 #define SYSTEM_C
@@ -16,9 +16,7 @@ PRIVATE void do_system(pEnv env)
 {
     char *str;
 
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("system");
     STRING("system");
     str = env->stk->u.str;

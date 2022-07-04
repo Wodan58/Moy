@@ -1,7 +1,7 @@
 /*
     module  : iffile.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef IFFILE_C
 #define IFFILE_C
@@ -13,6 +13,6 @@ If X is a file, executes T else executes E.
 #define PROCEDURE	do_iffile
 #define NAME		"iffile"
 #define TYP		FILE_
-#include "iftype.h"
+#include "if_type.h"
 /* iffile.c */
 #endif

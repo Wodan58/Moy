@@ -1,7 +1,7 @@
 /*
     module  : setautoput.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef SETAUTOPUT_C
 #define SETAUTOPUT_C
@@ -13,9 +13,7 @@ if I = 1, put; if I = 2, stack).
 */
 PRIVATE void do_setautoput(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     ONEPARAM("setautoput");
     NUMERICTYPE("setautoput");
     autoput = env->stk->u.num;

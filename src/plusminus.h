@@ -1,33 +1,20 @@
 /*
     module  : plusminus.h
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 PRIVATE void PROCEDURE(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && ((NUMERIC_1 && NUMERIC_2) || (INTEGER_1 && CHAR_2)))
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS(NAME);
-#ifndef NCHECK
-    if (((env->stk->op == FLOAT_ || env->stk->op == INTEGER_) &&
-	 (env->stk->next->op == FLOAT_ || env->stk->next->op == INTEGER_)) ||
-	 (env->stk->op == INTEGER_ && (env->stk->next->op == CHAR_
-			       || env->stk->next->op == INTEGER_)));
-    else
-	execerror("two floats or numerics", NAME);
-#endif
+    TWONUMBERS(NAME);
     if (env->stk->next->op == FLOAT_)
-	env->stk->next->u.dbl = env->stk->next->u.dbl OPER FLOATVAL;
-    else if (env->stk->op == FLOAT_) {
-	env->stk->next->u.dbl = env->stk->next->u.num OPER env->stk->u.dbl;
-	env->stk->next->op = FLOAT_;
-    } else
-	env->stk->next->u.num = env->stk->next->u.num OPER env->stk->u.num;
-    POP(env->stk);
+	BINARY(FLOAT_NEWNODE, env->stk->next->u.dbl OPER FLOATVAL);
+    else if (env->stk->op == FLOAT_)
+	BINARY(FLOAT_NEWNODE, env->stk->next->u.num OPER env->stk->u.dbl);
+    else if (env->stk->next->op == CHAR_)
+	BINARY(CHAR_NEWNODE, env->stk->next->u.num OPER env->stk->u.num);
+    else
+	BINARY(INTEGER_NEWNODE, env->stk->next->u.num OPER env->stk->u.num);
 }
 
 #undef PROCEDURE

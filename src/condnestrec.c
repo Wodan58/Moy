@@ -1,7 +1,7 @@
 /*
     module  : condnestrec.c
-    version : 1.14
-    date    : 03/15/21
+    version : 1.15
+    date    : 06/20/22
 */
 #ifndef CONDNESTREC_C
 #define CONDNESTREC_C
@@ -12,10 +12,6 @@
 #endif
 
 #include "condlinrec.c"
-
-#ifndef OLD_RUNTIME
-int put_condnestrec(pEnv env);
-#endif
 
 /**
 condnestrec  :  [ [C1] [C2] .. [D] ]  ->  ...
@@ -29,16 +25,12 @@ PRIVATE void do_condnestrec(pEnv env)
 {
     Node *prog;
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_condnestrec(env))
-	return;
-    COMPILE;
-#endif
     ONEPARAM("condnestrec");
     LIST("condnestrec");
-    CHECKEMPTYLIST(env->stk->u.lis, "condnestrec");
     prog = env->stk->u.lis;
+    CHECKEMPTYLIST(prog, "condnestrec");
     POP(env->stk);
+    INSTANT(put_condnestrec);
     condnestrec(env, prog);
 }
 #endif

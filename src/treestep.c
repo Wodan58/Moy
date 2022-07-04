@@ -1,23 +1,21 @@
 /*
     module  : treestep.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef TREESTEP_C
 #define TREESTEP_C
 
-#ifndef OLD_RUNTIME
-int put_treestep(pEnv env)
+/**
+treestep  :  T [P]  ->  ...
+Recursively traverses leaves of tree T, executes P for each leaf.
+*/
+#ifdef COMPILING
+void put_treestep(pEnv env, Node *prog)
 {
     static int ident;
-    Node *prog;
     FILE *oldfp;
 
-    if (!LIST_1)
-	return 0;
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(outfp, "void treestep_%d(pEnv env, Node *item);", ++ident);
     fprintf(outfp, "{ Node *item = env->stk; POP(env->stk);");
     fprintf(outfp, "treestep_%d(env, item); }", ident);
@@ -31,14 +29,9 @@ int put_treestep(pEnv env)
     fprintf(outfp, "treestep_%d(env, item); }", ident);
     closefile(outfp);
     outfp = oldfp;
-    return 1;
 }
 #endif
 
-/**
-treestep  :  T [P]  ->  ...
-Recursively traverses leaves of tree T, executes P for each leaf.
-*/
 void treestep(pEnv env, Node *item, Node *prog)
 {
     if (item->op != LIST_) {
@@ -52,15 +45,12 @@ PRIVATE void do_treestep(pEnv env)
 {
     Node *item, *prog;
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_treestep(env))
-	return;
-    COMPILE;
-#endif
-    TWOPARAMS("treestep");
+    ONEPARAM("treestep");
     ONEQUOTE("treestep");
     prog = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(put_treestep);
+    ONEPARAM("treestep");
     item = env->stk;
     POP(env->stk);
     treestep(env, item, prog);

@@ -1,7 +1,7 @@
 /*
     module  : char.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef CHAR_C
 #define CHAR_C
@@ -15,4 +15,5 @@ Tests whether X is a character.
 #define REL		==
 #define TYP		CHAR_
 #include "type.h"
+/* char.c */
 #endif

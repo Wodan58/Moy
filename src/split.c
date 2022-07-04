@@ -1,24 +1,21 @@
 /*
     module  : split.c
-    version : 1.23
-    date    : 03/15/21
+    version : 1.24
+    date    : 06/20/22
 */
 #ifndef SPLIT_C
 #define SPLIT_C
 
-#ifndef OLD_RUNTIME
-int put_split(pEnv env)
+/**
+split  :  A [B]  ->  A1 A2
+Uses test B to split aggregate A into sametype aggregates A1 and A2.
+*/
+#ifdef COMPILING
+void put_split(pEnv env, Node *prog)
 {
-    Node *prog;
-
-    if (!LIST_1)
-	return 0;
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    printstack(env, outfp);
     fprintf(outfp, "{ /* SPLIT */");
     fprintf(outfp, "unsigned i, yes = 0, no = 0;");
-    fprintf(outfp, "ulong_t set, yes_set = 0, no_set = 0;");
+    fprintf(outfp, "long set, yes_set = 0, no_set = 0;");
     fprintf(outfp, "char *str, *yes_str, *no_str, *volatile ptr;");
     fprintf(outfp, "Node *save, *list, *root = 0, *cur, *head = 0, *tail;");
     fprintf(outfp, "switch (env->stk->op) {");
@@ -54,40 +51,32 @@ int put_split(pEnv env)
     fprintf(outfp, "case SET_:");
     fprintf(outfp, "set = env->stk->u.set; POP(env->stk);");
     fprintf(outfp, "for (i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long_t)1 << i)) {");
+    fprintf(outfp, "if (set & ((long)1 << i)) {");
     fprintf(outfp, "save = env->stk;");
     fprintf(outfp, "PUSH_NUM(INTEGER_, i);");
     compile(env, prog);
     fprintf(outfp, "if (env->stk->u.num)");
-    fprintf(outfp, "yes_set |= (long_t)1 << i;");
-    fprintf(outfp, "else no_set |= (long_t)1 << i;");
+    fprintf(outfp, "yes_set |= (long)1 << i;");
+    fprintf(outfp, "else no_set |= (long)1 << i;");
     fprintf(outfp, "env->stk = save; }");
     fprintf(outfp, "PUSH_NUM(SET_, yes_set);");
     fprintf(outfp, "PUSH_NUM(SET_, no_set); break; } }");
-    return 1;
 }
 #endif
 
-/**
-split  :  A [B]  ->  A1 A2
-Uses test B to split aggregate A into sametype aggregates A1 and A2.
-*/
 PRIVATE void do_split(pEnv env)
 {
     int i, yesptr = 0, noptr = 0;
-    ulong_t set, yes_set = 0, no_set = 0;
+    long set, yes_set = 0, no_set = 0;
     char *str, *yesstring, *nostring, *volatile ptr;
     Node *prog, *save, *list, *root = 0, *cur, *head = 0, *tail;
 
-#ifndef OLD_RUNTIME
-    if (compiling && put_split(env))
-	return;
-    COMPILE;
-#endif
-    TWOPARAMS("split");
+    ONEPARAM("split");
     ONEQUOTE("split");
     prog = env->stk->u.lis;
     POP(env->stk);
+    INSTANT(put_split);
+    ONEPARAM("split");
     switch (env->stk->op) {
     case LIST_:
 	list = env->stk->u.lis;
@@ -134,14 +123,14 @@ PRIVATE void do_split(pEnv env)
 	set = env->stk->u.set;
 	POP(env->stk);
 	for (i = 0; i < SETSIZE_; i++) {
-	    if (set & ((long_t)1 << i)) {
+	    if (set & ((long)1 << i)) {
 		save = env->stk;
 		PUSH_NUM(INTEGER_, i);
 		exeterm(env, prog);
 		if (env->stk->u.num)
-		    yes_set |= (long_t)1 << i;
+		    yes_set |= (long)1 << i;
 		else
-		    no_set |= (long_t)1 << i;
+		    no_set |= (long)1 << i;
 		env->stk = save;
 	    }
 	}

@@ -1,7 +1,7 @@
 /*
     module  : nullary.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef NULLARY_C
 #define NULLARY_C
@@ -13,9 +13,8 @@ No matter how many parameters this consumes, none are removed from the stack.
 */
 #define PROCEDURE	do_nullary
 #define NAME		"nullary"
-#define PARAMCOUNT	ONEPARAM
 #define TOP		env->stk
 #define TOPSTR		"env->stk"
-#define ARITY		0
-#include "nary.h"
+#include "n_ary.h"
+/* nullary.c */
 #endif

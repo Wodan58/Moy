@@ -1,7 +1,7 @@
 /*
     module  : undeferror.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef UNDEFERROR_C
 #define UNDEFERROR_C
@@ -12,9 +12,7 @@ Pushes current value of undefined-is-error flag.
 */
 PRIVATE void do_undeferror(pEnv env)
 {
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
     PUSH_NUM(INTEGER_, undeferror);
 }
 #endif

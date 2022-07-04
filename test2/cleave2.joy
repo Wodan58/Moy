@@ -1,0 +1,10 @@
+(*
+    module  : cleave2.joy
+    version : 1.2
+    date    : 06/21/22
+*)
+DEFINE 	sum == 0.0 [+] fold;
+	average == [sum] [size] cleave /.
+
+argv 1 at strtod argv 2 at strtod argv 3 at strtod
+[] cons cons cons average.

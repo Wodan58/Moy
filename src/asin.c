@@ -1,7 +1,7 @@
 /*
     module  : asin.c
-    version : 1.8
-    date    : 03/15/21
+    version : 1.9
+    date    : 06/20/22
 */
 #ifndef ASIN_C
 #define ASIN_C

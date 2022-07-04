@@ -1,7 +1,7 @@
 /*
     module  : swons.c
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 #ifndef SWONS_C
 #define SWONS_C
@@ -14,5 +14,6 @@ Aggregate B is A with a new member X (first member for sequences).
 #define NAME		"swons"
 #define AGGR		env->stk->next
 #define ELEM		env->stk
-#include "consswons.h"
+#include "cons_swons.h"
+/* swons.c */
 #endif

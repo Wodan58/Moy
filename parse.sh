@@ -1,17 +1,17 @@
 #
 #   module  : parse.sh
-#   version : 1.3
-#   date    : 04/28/21
+#   version : 1.4
+#   date    : 06/16/22
 #
 #   Generate parse.h
 #
 echo checking parse.h
 todo=0
-if [ ! -f parse.h ]
+if [ ! -f $1/parse.h ]
 then
   echo creating parse.h
   todo=1
-elif [ parse.y -nt parse.h ]
+elif [ $1/parse.y -nt $1/parse.h ]
 then
   echo updating parse.h
   todo=1
@@ -20,6 +20,6 @@ else
 fi
 if [ $todo -eq 1 ]
 then
-rm -f parse.c parse.h
+rm -f $1/parse.c $1/parse.h
 $*
 fi

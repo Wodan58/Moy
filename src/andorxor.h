@@ -1,30 +1,20 @@
 /*
     module  : andorxor.h
-    version : 1.9
-    date    : 03/15/21
+    version : 1.10
+    date    : 06/20/22
 */
 PRIVATE void PROCEDURE(pEnv env)
 {
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1 && VALID_2 && env->stk->op == env->stk->next->op &&
-	env->stk->op >= BOOLEAN_ && env->stk->op <= SET_)
-	;
-    else
-	COMPILE;
-#endif
     TWOPARAMS(NAME);
     SAME2TYPES(NAME);
-    switch (env->stk->next->op) {
+    switch (env->stk->op) {
     case SET_:
-	env->stk->next->u.set = env->stk->next->u.set OPER1 env->stk->u.set;
-	POP(env->stk);
+        BINARY(SET_NEWNODE, env->stk->next->u.set OPER1 env->stk->u.set);
 	break;
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
-	env->stk->next->u.num = env->stk->next->u.num OPER2 env->stk->u.num;
-	env->stk->next->op = BOOLEAN_;
-	POP(env->stk);
+        BINARY(BOOLEAN_NEWNODE, env->stk->next->u.num OPER2 env->stk->u.num);
 	break;
     default:
 	BADDATA(NAME);

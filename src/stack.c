@@ -1,7 +1,7 @@
 /*
     module  : stack.c
-    version : 1.13
-    date    : 03/15/21
+    version : 1.14
+    date    : 06/20/22
 */
 #ifndef STACK_C
 #define STACK_C
@@ -12,13 +12,7 @@ Pushes the stack as a list.
 */
 PRIVATE void do_stack(pEnv env)
 {
-    Node *cur, *node = 0;
-
-#ifndef OLD_RUNTIME
     COMPILE;
-#endif
-    for (cur = env->stk; cur; cur = cur->next)
-	node = newnode(cur->op, cur->u, node);
-    PUSH_PTR(LIST_, reverse(node));
+    PUSH_PTR(LIST_, env->stk);
 }
 #endif

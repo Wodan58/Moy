@@ -1,15 +1,15 @@
-#
-#   module  : reptst.joy
-#   version : 1.3
-#   date    : 05/12/19
-#
+(*
+    module  : reptst.joy
+    version : 1.5
+    date    : 06/18/22
+*)
 (* FILE:   reptst.joy *)
 
 %INCLUDE usrlib.joy
 %INCLUDE numlib.joy
 %INCLUDE replib.joy
 
-2 setecho.
+# 2 setecho.
 
 (* -FOUR BASIC *)
 
@@ -60,7 +60,7 @@ ones i i i i i.
 ones i i i i i state.
 
 DEFINE
-    halving == 1.0 [2 /] rep.n-stream.
+    halving == 1.0 [2.0 /] rep.n-stream.
 
 halving.
 
@@ -83,18 +83,18 @@ ones-d.
 ones-d i i i pop.  .  .
 
 DEFINE
-    halving-d == 1.0 [2 /] rep.n-stream-d.
+    halving-d == 1.0 [2.0 /] rep.n-stream-d.
 
 halving-d.
 
-halving-d i i i i i pop.  .  .  .  .
+halving-d i i i i i pop.  .  .	.  .
 
 DEFINE
-    primes-d == 2 [succ [dup prime not] [succ] while] rep.n-stream-d.
+    primes-d == 2 [succ [prime not] [succ] while] rep.n-stream-d.
 
 primes-d.
 
-primes-d i i i i i pop.  .  .  .  .
+primes-d i i i i i pop.	 .  .  .  .
 
 DEFINE
     even-squares == 0 [2 +] [dup *] rep.f-stream.
@@ -113,11 +113,11 @@ even-squares i i i i state.
 
 DEFINE
     ten-powers-log10 ==
-	 1.0 [10 *] [[] cons [dup log10] infra] rep.f-stream-d.  (* R.W. *)
+	 1.0 [10.0 *] [[] cons [dup log10] infra] rep.f-stream-d.  (* R.W. *)
 
 ten-powers-log10.
 
-ten-powers-log10 i i i i i i pop.  .  .  .  .  .
+ten-powers-log10 i i i i i i pop.  .  .	 .  .  .
 
 (* -INTERACTION *)
 
@@ -157,14 +157,14 @@ max-3-adds.
 (* -RECURSIVE *)
 
 DEFINE
-    fact0 == [[over null] [pop pop 1  ] [[dup pred] dip i  *     ] ifte];
-    fact  == [[over null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte].
+    fact0 == [[pop null] [pop pop 1  ] [[dup pred] dip i  *	] ifte];
+    fact  == [[pop null] [[pop 1] dip] [[dup pred] dip i [*] dip] ifte].
 
 6 fact0 rep.fix i.
 
-6 fact  rep.fix i.  .
+6 fact	rep.fix i.  .
 
-3 fact  rep.fix i i.  .
+3 fact	rep.fix i i.  .
 
 DEFINE
     fact-fix   == fact rep.fix;
@@ -173,7 +173,7 @@ DEFINE
     steps == "steps: " putchars state putln;
     trace == "trace: " putchars state putln.
 
-3 4 5  fact-fix   i swap put i swap put i swap putln pop.
+3 4 5  fact-fix	  i swap put i swap put i swap putln pop.
 
 3 4 5  fact-fix-c i swap put i swap put i swap putln steps.
 
@@ -181,7 +181,7 @@ DEFINE
 
 DEFINE
     nfib ==
-	[ [ over small ]
+	[ [ pop small ]
 	  [ [pop 1] dip ]
 	  [ [pred dup pred] dip
 	    dip swap i
@@ -204,9 +204,9 @@ nfib-fix.
 (* -CONVENIENCE *)
 
 DEFINE
-    fact-lin == [over null] [pop 1] [dup pred] [*] rep.linear;
-    length-lin == [over null] [pop 0] [rest] [succ] rep.linear;
-    nfib-bin == [over small] [pop 1] [pred dup pred] [+] rep.binary2;
+    fact-lin == [null] [pop 1] [dup pred] [*] rep.linear;
+    length-lin == [null] [pop 0] [rest] [succ] rep.linear;
+    nfib-bin == [small] [pop 1] [pred dup pred] [+] rep._binary;
     fact-fix == fact-lin rep.fix;
     length-fix-a == length-lin rep.fix-a;
     nfib-fix == nfib-bin rep.fix.
@@ -217,10 +217,10 @@ DEFINE
 
 6 nfib-fix i pop.
 
-6 nfib-bin [] [[dup put] dip] rep.fix-i i pop newline. newline.
+6 nfib-bin [] [[dup put] dip] rep.fix-i i newline pop.
 
 DEFINE
-    qsort-bin == [over small] [] [uncons [over over >] split] [enconcat] rep.binary2;
+    qsort-bin == [small] [] [uncons [>] split] [enconcat] rep._binary;
     qsort-fix-c == qsort-bin rep.fix-c;
     qtest == qsort-fix-c i state.
 

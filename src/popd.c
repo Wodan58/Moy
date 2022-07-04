@@ -1,7 +1,7 @@
 /*
     module  : popd.c
-    version : 1.10
-    date    : 03/15/21
+    version : 1.11
+    date    : 06/20/22
 */
 #ifndef POPD_C
 #define POPD_C
@@ -22,4 +22,5 @@ As if defined by:   popd  ==  [pop] dip
 #define PARAMCOUNT	TWOPARAMS
 #define ARGUMENT	do_pop
 #include "dipped.h"
+/* popd.c */
 #endif

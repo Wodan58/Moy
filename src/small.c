@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.12
-    date    : 03/15/21
+    version : 1.13
+    date    : 06/20/22
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -12,14 +12,8 @@ Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
 */
 PRIVATE void do_small(pEnv env)
 {
-    int small = 0;
+    int i = 0, small = 0;
 
-#ifndef OLD_RUNTIME
-    if (compiling && VALID_1)
-	;
-    else
-	COMPILE;
-#endif
     ONEPARAM("small");
     switch (env->stk->op) {
     case BOOLEAN_:
@@ -30,10 +24,9 @@ PRIVATE void do_small(pEnv env)
 	if (!env->stk->u.set)
 	    small = 1;
 	else {
-	    int i = 0;
-	    while (!(env->stk->u.set & ((long_t)1 << i)))
+	    while (!(env->stk->u.set & ((long)1 << i)))
 		i++;
-	    small = (env->stk->u.set & ~((long_t)1 << i)) == 0;
+	    small = (env->stk->u.set & ~((long)1 << i)) == 0;
 	}
 	break;
     case STRING_:
@@ -46,7 +39,6 @@ PRIVATE void do_small(pEnv env)
 	BADDATA("small");
 	break;
     }
-    env->stk->u.num = small;
-    env->stk->op = BOOLEAN_;
+    UNARY(BOOLEAN_NEWNODE, small);
 }
 #endif

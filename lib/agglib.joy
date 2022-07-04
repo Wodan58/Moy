@@ -1,8 +1,8 @@
-#
-#   module  : agglib.joy
-#   version : 1.2
-#   date    : 05/12/19
-#
+(*
+    module  : agglib.joy
+    version : 1.3
+    date    : 06/18/22
+*)
 (* FILE:   agglib.joy *)
 
 LIBRA
@@ -53,7 +53,7 @@ LIBRA
     zip == [null2] [pop2 []] [uncons2] [[pairlist] dip cons] linrec;
 
     from-to ==		(*  lo  hi  agg		*)
-	[] cons  [pop pop] swoncat
+	[] cons	 [pop pop] swoncat
 	[>] swap
 	[ [dup succ] dip ]
 	[cons]
@@ -86,12 +86,12 @@ LIBRA
 
     stepr2 ==
 	[ [null2]  [pop pop] ] dip		(* P1 P2 *)
-	[dip] cons [dip] cons [uncons2] swoncat	(* P3 *)
+	[dip] cons [dip] cons [uncons2] swoncat (* P3 *)
 	tailrec;
     fold2 == rollupd stepr2;
 
     mapr2 ==	(* == zipwith  B&W p 57 *)
-	[ [over over null2] [pop2 []] [uncons2] ] dip	(* P1 P2 P3 *)
+	[ [null2] [pop2 []] [uncons2] ] dip	(* P1 P2 P3 *)
 	[dip cons] cons				(* P4 *)
 	linrec;
     foldr2 ==
@@ -106,7 +106,7 @@ LIBRA
     average == [sum] [size] cleave / ;
     variance ==			(* [..] variance		*)
 	0.0 swap dup		(* 0.0 [..] [..]		*)
-	[sum] [size] cleave dup	(* 0.0 [..] su n n		*)
+	[sum] [size] cleave dup (* 0.0 [..] su n n		*)
 	[ /			(* 0.0 [..] av n		*)
 	  [ - dup * + ] cons	(* 0.0 [..] [av - dup * +] n	*)
 	  step ]		(* sumsq n			*)

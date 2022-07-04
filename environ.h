@@ -1,26 +1,30 @@
 /*
     module  : environ.h
-    version : 1.3
-    date    : 03/16/21
+    version : 1.5
+    date    : 06/19/22
 */
-#include "joy.h"
-#include "kvec.h"
-#include "khash.h"
-
 typedef struct dict_t {
     char *name, *print;
     unsigned flags;
     union {
 	proc_t proc;
-	Node *body;
+	struct Node *body;
     };
 } dict_t;
 
-KHASH_MAP_INIT_STR(symtab, int)
+typedef int pEntry;
+
+KHASH_MAP_INIT_STR(Symtab, pEntry)
 
 typedef struct Env {
-    vector(dict_t) *dict;
-    khash_t(symtab) *hash;
-    Node *stk;
-    YYSTYPE yylval;
+    vector(dict_t) *dict; /* symbol table */
+    khash_t(Symtab) *hash;
+    struct Node *stk;
+    YYSTYPE yylval, bucket; /* used by NEWNODE defines */
+    char *hide_stack[DISPLAYMAX];
+    struct module {
+        char *name;
+        int hide;
+    } module_stack[DISPLAYMAX];
+    int firstlibra;
 } Env;
