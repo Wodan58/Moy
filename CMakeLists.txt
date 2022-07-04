@@ -1,6 +1,6 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.25
+#   version : 1.26
 #   date    : 07/04/22
 #
 cmake_minimum_required(VERSION 3.4)
@@ -65,9 +65,9 @@ else()
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/prims.sh ${CMAKE_SOURCE_DIR}
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/trans.sh ${CMAKE_SOURCE_DIR}
 		   )
-endif()
-if(RUN_TESTS)
-#add_subdirectory(lib)
-add_subdirectory(test)
-add_subdirectory(test2)
+  if(RUN_TESTS)
+#   add_subdirectory(lib)
+    add_subdirectory(test)
+    add_subdirectory(test2)
+  endif()
 endif()
