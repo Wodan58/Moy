@@ -10,7 +10,7 @@
 
 #define USE_GC_GET_HEAP_SIZE
 #ifdef __linux__
-#define SIGNAL_HANDLING
+/* #define SIGNAL_HANDLING */
 #endif
 /* #define FREE_ON_EXIT */
 /* #define SCAN_BSS_MEMORY */
