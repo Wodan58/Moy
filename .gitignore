@@ -16,3 +16,6 @@ lib/*.c
 lib/*1
 lib/test*.txt
 test/test*.txt
+vergelijk.sh
+files
+t

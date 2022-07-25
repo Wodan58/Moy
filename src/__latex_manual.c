@@ -1,5 +1,5 @@
 /*
-    module  : 
+    module  : __latex_manual.c
     version : 1.7
     date    : 06/20/22
 */

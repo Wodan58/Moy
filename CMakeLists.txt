@@ -1,12 +1,15 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.26
-#   date    : 07/04/22
+#   version : 1.27
+#   date    : 07/25/22
 #
 cmake_minimum_required(VERSION 3.4)
 project(Moy VERSION 1.0)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE "Debug")
+endif()
+if(WIN32)
+option(WINDOWS "Use _MSC_VER compiler" ON)
 endif()
 option(REAL_BDW "Use BDW garbage collector" OFF)
 option(RUN_TESTS "Run standard tests" ON)
@@ -14,7 +17,7 @@ find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser ${CMAKE_SOURCE_DIR}/parse.y ${CMAKE_SOURCE_DIR}/parse.c
 	     DEFINES_FILE ${CMAKE_SOURCE_DIR}/parse.h)
-if(WIN32)
+if(WINDOWS)
   FLEX_TARGET(MyScanner ${CMAKE_SOURCE_DIR}/lexer.l ${CMAKE_SOURCE_DIR}/lexer.c
 	      COMPILE_FLAGS "--wincompat")
   add_definitions(-DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS)
@@ -33,7 +36,7 @@ if(REAL_BDW)
   add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 		 joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
 		 module.c dict.c node.c scan.c tmpfile.c utils.c)
-  if(WIN32)
+  if(WINDOWS)
     target_link_libraries(joy gc-lib ws2_32)
   else()
     target_link_libraries(joy gc-lib m)
@@ -45,14 +48,14 @@ else()
   add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 		 joy.c compile.c initsym.c interp.c optable.c outfile.c print.c
 		 module.c dict.c node.c scan.c tmpfile.c utils.c gc.c)
-  if(WIN32)
+  if(WINDOWS)
     target_link_libraries(joy ws2_32)
   else()
     target_link_libraries(joy m)
   endif()
 endif()
 add_dependencies(joy always)
-if(WIN32)
+if(WINDOWS)
   add_custom_target(always
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/table.sh ${CMAKE_SOURCE_DIR}
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/prims.sh ${CMAKE_SOURCE_DIR}

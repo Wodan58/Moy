@@ -21,7 +21,7 @@ Changes
 Some builtins have been added: `casting`, `filetime`, `index`, `round`, and
 `typeof`.
 Directives borrowed from [42minjoy](https://github.com/Wodan58/42minjoy) are:
-%INCLUDE, %PUT, and %LISTING.
+`%INCLUDE`, `%PUT`, and `%LISTING`.
 The build system requires new builtins in only one location: as a .c file in
 the src-directory.
 

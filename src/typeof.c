@@ -1,7 +1,7 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : typeof.c
+    version : 1.1
+    date    : 07/13/22
 */
 #ifndef TYPEOF_C
 #define TYPEOF_C
