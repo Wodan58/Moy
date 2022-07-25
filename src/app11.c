@@ -15,6 +15,7 @@ PRIVATE void do_app11(pEnv env)
     THREEPARAMS("app11");
     ONEQUOTE("app11");
     do_app1(env);
-    env->stk->next = env->stk->next->next; /* delete X */
+    if (env->stk->next)
+	env->stk->next = env->stk->next->next; /* delete X */
 }
 #endif
