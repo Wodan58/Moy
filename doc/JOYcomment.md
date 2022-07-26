@@ -131,35 +131,5 @@ compile time, leaving only the output of the sum till runtime.
 Rewriting
 =========
 
-Joy can be implemented with a rewriting engine. Here it is explained
-how that can be done.
-
-There is only one object, the program, and it is implemented as a doubly
-linked list. The stack pointer, stk, serves double purpose as stack
-pointer and as instruction pointer. Stk points to the stack, as usual,
-and stk-&gt;prev points to the next instruction. Because there is only
-one object, whenever a subroutine must be carried out, its body must
-replace the call to the subroutine in the doubly linked list. And that
-means copying the body of that subroutine into the program. An example
-shows the execution trace of a program:
-
-    ; . 1 popd dupd
-    ; 1 . popd dupd
-    ; 1 popd ; . dupd
-    ; 1 popd ; dupd ; .
-
-This example causes a runtime error when executed in Joy. The rewriting
-proceeds as if nothing happened. The dot is the stk pointer and the
-semicolon is a special node, with the next-pointer pointing to itself,
-thus marking the end of the stack. Instead of generating a runtime
-error, the rewriting engine simply pushes an end of stack node. What
-rests is a program that, when executed by Joy, exhibits the same
-behavior as when Joy was used in the first place.
-
-As explained, the rewriting engine will be slower when interpreted,
-compared to Joy. This engine profits the compiler. The compiler uses it
-to evaluate as much as possible before writing the resulting program to
-disk. The compiler can also use the stack, like the interpreter. The
-results are the same, except that a separate stack is faster and the
-compiled program will have to use that separate stack anyway, because
-the program then will be x86 or some other bytecode.
+Joy can be implemented with a rewriting engine. I leave the explanation and
+implementation to someone else.
