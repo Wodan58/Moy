@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.27
-#   date    : 07/25/22
+#   version : 1.28
+#   date    : 05/31/23
 #
 cmake_minimum_required(VERSION 3.4)
 project(Moy VERSION 1.0)
@@ -12,7 +12,7 @@ if(WIN32)
 option(WINDOWS "Use _MSC_VER compiler" ON)
 endif()
 option(REAL_BDW "Use BDW garbage collector" OFF)
-option(RUN_TESTS "Run standard tests" ON)
+option(RUN_TESTS "Run standard tests" OFF)
 find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser ${CMAKE_SOURCE_DIR}/parse.y ${CMAKE_SOURCE_DIR}/parse.c
@@ -63,7 +63,6 @@ if(WINDOWS)
 		   )
 else()
   add_custom_target(always
-		    COMMAND sh ${CMAKE_SOURCE_DIR}/banner.sh ${PROJECT_NAME} ${PROJECT_VERSION}
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/table.sh ${CMAKE_SOURCE_DIR}
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/prims.sh ${CMAKE_SOURCE_DIR}
 		    COMMAND sh ${CMAKE_SOURCE_DIR}/trans.sh ${CMAKE_SOURCE_DIR}

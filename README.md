@@ -1,9 +1,9 @@
 Moy
 ---
 
-Build|Linux|Windows|Coverity|Coverage|Codecov|Quality|Alerts
----|---|---|---|---|---|---|---
-status|[![Travis CI build status](https://app.travis-ci.com/Wodan58/Moy.svg?branch=master)](https://app.travis-ci.com/Wodan58/Moy)|[![AppVeyor CI build status](https://ci.appveyor.com/api/projects/status/github/Wodan58/Moy?branch=master&svg=true)](https://ci.appveyor.com/project/Wodan58/Moy)|[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/14635.svg)](https://scan.coverity.com/projects/wodan58-moy)|[![Coverage Status](https://coveralls.io/repos/github/Wodan58/Moy/badge.svg?branch=master)](https://coveralls.io/github/Wodan58/Moy?branch=master)|[![Codecov](https://codecov.io/gh/Wodan58/Moy/branch/master/graph/badge.svg)](https://codecov.io/gh/Wodan58/Moy)|[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Wodan58/Moy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Wodan58/Moy/context:cpp)|[![Alerts](https://img.shields.io/lgtm/alerts/g/Wodan58/Moy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Wodan58/Moy/alerts)
+Build|Linux|Windows|Coverity
+---|---|---|---
+status|[![GitHub CI build status](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml/badge.svg)](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml)|[![AppVeyor CI build status](https://ci.appveyor.com/api/projects/status/github/Wodan58/Moy?branch=master&svg=true)](https://ci.appveyor.com/project/Wodan58/Moy)|[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/14635.svg)](https://scan.coverity.com/projects/wodan58-moy)
 
 This project implements [joy1](https://github.com/Wodan58/joy1) with Lex and
 Yacc; use of the [BDW garbage collector](https://github.com/ivmai/bdwgc) is
