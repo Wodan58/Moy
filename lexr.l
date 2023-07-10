@@ -1,14 +1,10 @@
 %{
 /*
     module  : lexr.l
-    version : 1.1
+    version : 1.2
     date    : 07/10/23
 */
 #include "globals.h"
-
-#define yyalloc		GC_malloc_atomic
-#define yyrealloc	GC_realloc
-#define yyfree		GC_free
 
 #define YY_DECL		int yylex(pEnv env)
 #define YY_NO_UNPUT
