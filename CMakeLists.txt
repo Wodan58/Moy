@@ -1,18 +1,17 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.1
+#   version : 1.2
 #   date    : 07/10/23
 #
 cmake_minimum_required(VERSION 3.4)
 project(Moy VERSION 1.0)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Release")
 endif()
 if(WIN32)
 option(WINDOWS "Use _MSC_VER compiler" ON)
 endif()
-option(REAL_BDW "Use BDW garbage collector" ON)
-option(RUN_TESTS "Run standard tests" ON)
+option(RUN_TESTS "Run standard tests" OFF)
 find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser ${CMAKE_SOURCE_DIR}/pars.y ${CMAKE_SOURCE_DIR}/pars.c
