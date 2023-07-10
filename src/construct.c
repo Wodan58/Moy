@@ -1,54 +1,82 @@
 /*
     module  : construct.c
-    version : 1.17
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
 
 /**
-construct  :  [P] [[P1] [P2] ..]  ->  R1 R2 ..
+OK 2490  construct  :  DDU 	[P] [[P1] [P2] ..]  ->  R1 R2 ..
 Saves state of stack and then executes [P].
 Then executes each [Pi] to give Ri pushed onto saved stack.
 */
-#ifdef COMPILING
-void put_construct(pEnv env, Node *prog[2])
-{
-    Node *cur;
+PRIVATE void construct_(pEnv env)
+{ /* [P] [[P1] [P2] ..] -> X1 X2 ..        */
+    int i, j;
+    unsigned size1, size2;
+    Node first, second, node;
 
-    fprintf(outfp, "{ /* CONSTRUCT */");
-    fprintf(outfp, "Node *save[2];");
-    fprintf(outfp, "save[0] = env->stk;");
-    compile(env, prog[0]);
-    fprintf(outfp, "save[1] = env->stk;");
-    for (cur = prog[1]; cur; cur = cur->next) {
-	fprintf(outfp, "env->stk = save[1];");
-	compile(env, cur->u.lis);
-	fprintf(outfp,"save[0] = newnode(env->stk->op, env->stk->u, save[0]);");
+    PARM(2, WHILE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    code(env, unstack_);
+    size2 = vec_size(env->prog);
+    /*
+        save the old stack; this will become the new stack
+    */
+    vec_init(node.u.lis);
+    vec_copy(node.u.lis, env->stck);
+    node.op = LIST_;
+    vec_push(env->prog, node);
+
+    size1 = vec_size(env->prog);
+    /*
+        the new stack after the first program needs to be saved
+    */
+    code(env, id_);
+    /*
+        each of the programs in the construct need to be executed
+    */
+    for (i = 0, j = vec_size(second.u.lis); i < j; i++) {
+        /*
+            the new stack is restored
+        */
+        code(env, unstack_);
+        /*
+            the location where the new stack was saved needs to be pushed
+        */
+        push(env, size1);
+        /*
+            the new stack is pushed on the data stack as a list
+        */
+        code(env, spush_);
+        /*
+            the location where the old stack was saved needs to be pushed
+        */
+        push(env, size2);
+        /*
+            the result on top of the stack is added to the old stack
+        */
+        code(env, push_);
+        node = vec_at(second.u.lis, i);
+        prog(env, node.u.lis);
     }
-    fprintf(outfp, "env->stk = save[0]; }");
-}
-#endif
-
-PRIVATE void do_construct(pEnv env)
-{
-    Node *prog[2], *cur, *save[2];
-
-    TWOPARAMS("construct");
-    TWOQUOTES("construct");
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_construct);
-    save[0] = env->stk;		/* save old stack */
-    exeterm(env, prog[0]);
-    save[1] = env->stk;		/* save new stack */
-    for (cur = prog[1]; cur; cur = cur->next) {
-	env->stk = save[1];	/* restore new stack */
-	exeterm(env, cur->u.lis);
-	save[0] = newnode(env->stk->op, env->stk->u, save[0]);	/* result */
-    }
-    env->stk = save[0];
+    /*
+        the location where the new stack is saved needs to be pushed
+    */
+    push(env, size1);
+    /*
+        the new stack is then saved at a location in the code stack
+    */
+    code(env, cpush_);
+    /*
+        this new stack first needs to be pushed as a list
+    */
+    code(env, stack_);
+    /*
+        the first program is executed
+    */
+    prog(env, first.u.lis);
 }
 #endif

@@ -1,41 +1,24 @@
 /*
     module  : times.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TIMES_C
 #define TIMES_C
 
 /**
-times  :  N [P]  ->  ...
+OK 2820  times  :  DDU	N [P]  ->  ...
 N times executes P.
 */
-#ifdef COMPILING
-void put_times(pEnv env, Node *prog)
+void times_(pEnv env)
 {
-    fprintf(outfp, "{ /* TIMES */");
-    fprintf(outfp, "int num = env->stk->u.num; POP(env->stk);");
-    fprintf(outfp, "while (num--) {");
-    compile(env, prog);
-    fprintf(outfp, "} }");
-}
-#endif
+    int i;
+    Node node, list;
 
-PRIVATE void do_times(pEnv env)
-{
-    int num;
-    Node *prog;
-
-    ONEPARAM("times");
-    ONEQUOTE("times");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_times);
-    ONEPARAM("times");
-    INTEGER("times");
-    num = env->stk->u.num;
-    POP(env->stk);
-    while (num--)
-	exeterm(env, prog);
+    PARM(2, TIMES);
+    list = vec_pop(env->stck);
+    node = vec_pop(env->stck);
+    for (i = node.u.num; i; i--)
+        prog(env, list.u.lis);
 }
 #endif

@@ -1,18 +1,23 @@
 /*
     module  : atan.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ATAN_C
 #define ATAN_C
 
 /**
-atan  :  F  ->  G
+OK 1510  atan  :  DA	F  ->  G
 G is the arc tangent of F.
 */
-#define PROCEDURE	do_atan
-#define NAME		"atan"
-#define FUNC		atan
-#include "ufloat.h"
-/* atan.c */
+void atan_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = atan(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

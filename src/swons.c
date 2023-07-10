@@ -1,19 +1,42 @@
 /*
     module  : swons.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SWONS_C
 #define SWONS_C
 
 /**
-swons  :  A X  ->  B
+OK 2030  swons  :  DDA	A X  ->  B
 Aggregate B is A with a new member X (first member for sequences).
 */
-#define PROCEDURE	do_swons
-#define NAME		"swons"
-#define AGGR		env->stk->next
-#define ELEM		env->stk
-#include "cons_swons.h"
-/* swons.c */
+void swons_(pEnv env)
+{
+    Node elem, aggr, node;
+
+    PARM(2, HAS);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    switch (aggr.op) {
+    case LIST_:
+        vec_init(node.u.lis);
+        if (vec_size(aggr.u.lis))
+            vec_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
+        vec_push(node.u.lis, elem);
+        break;
+
+    case STRING_:
+        node.u.str = GC_malloc_atomic(strlen(aggr.u.str) + 2);
+        node.u.str[0] = elem.u.num;
+        strcpy(&node.u.str[1], aggr.u.str);
+        break;
+
+    case SET_:
+        node.u.set = aggr.u.set | ((long)1 << elem.u.num);
+    default:
+        break;
+    }
+    node.op = aggr.op;
+    vec_push(env->stck, node);
+}
 #endif

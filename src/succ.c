@@ -1,18 +1,22 @@
 /*
     module  : succ.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SUCC_C
 #define SUCC_C
 
 /**
-succ  :  M  ->  N
+OK 1800  succ  :  DA	M  ->  N
 Numeric N is the successor of numeric M.
 */
-#define PROCEDURE	do_succ
-#define NAME		"succ"
-#define OPER		+
-#include "predsucc.h"
-/* succ.c */
+void succ_(pEnv env)
+{
+    Node node;
+
+    PARM(1, PREDSUCC);
+    node = vec_pop(env->stck);
+    node.u.num++;
+    vec_push(env->stck, node);
+}
 #endif

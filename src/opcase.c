@@ -1,34 +1,42 @@
 /*
     module  : opcase.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef OPCASE_C
 #define OPCASE_C
 
 /**
-opcase  :  X [..[X Xs]..]  ->  X [Xs]
+OK 2100  opcase  :  DA	X [..[X Xs]..]  ->  X [Xs]
 Indexing on type of X, returns the list [Xs].
 */
-PRIVATE void do_opcase(pEnv env)
+void opcase_(pEnv env)
 {
-    Node *cur, *node;
+    int i;
+    Node node, aggr, elem, temp;
 
-    TWOPARAMS("opcase");
-    LIST("opcase");
-    cur = env->stk->u.lis;
-    CHECKEMPTYLIST(cur, "opcase");
-    node = env->stk->next;
-    for (; cur->next && cur->op == LIST_; cur = cur->next)
-	if (cur->u.lis->op == node->op) {
-	    if (cur->u.lis->op == USR_ || cur->u.lis->op == ANON_FUNCT_) {
-		if (cur->u.lis->u.ptr == node->u.ptr)
-		    break;
-	    } else
-		break;
-	}
-    CHECKLIST(cur->op, "opcase");
-    cur = cur->next ? cur->u.lis->next : cur->u.lis;
-    UNARY(LIST_NEWNODE, cur);
+    PARM(2, CASE);
+    aggr = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+        elem = vec_at(aggr.u.lis, i);
+        if (!i) {
+            node = elem;
+            break;
+        }
+        temp = vec_back(elem.u.lis);
+        if (node.op == temp.op) {
+            if (node.op == ANON_FUNCT_ && node.u.proc != temp.u.proc)
+                ;
+            else {
+                vec_init(node.u.lis);
+                vec_shallow_copy(node.u.lis, elem.u.lis);
+                (void)vec_pop(node.u.lis);
+                node.op = LIST_;
+                break;
+            }
+        }
+    }
+    vec_push(env->stck, node);
 }
 #endif

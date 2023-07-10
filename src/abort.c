@@ -1,18 +1,18 @@
 /*
     module  : abort.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ABORT_C
 #define ABORT_C
 
 /**
-abort  :  ->
+OK 3150  abort  :  N	->
 Aborts execution of current Joy program, returns to Joy main cycle.
 */
-PRIVATE void do_abort(pEnv env)
+void abort_(pEnv env)
 {
-    COMPILE;
-    abortexecution();
+    env->nothing++;
+    abortexecution_();
 }
 #endif

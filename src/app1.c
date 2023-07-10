@@ -1,23 +1,21 @@
 /*
     module  : app1.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef APP1_C
 #define APP1_C
 
 /**
-app1  :  X [P]  ->  R
+OK 2460  app1  :  DDA	X [P]  ->  R
 Executes P, pushes result R on stack.
 */
-PRIVATE void do_app1(pEnv env)
+void app1_(pEnv env)
 {
-    Node *prog;
+    Node node;
 
-    TWOPARAMS("app1"); /* i takes only 1 parameter */
-    ONEQUOTE("app1");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    exeterm(env, prog);
+    PARM(2, DIP);
+    node = vec_pop(env->stck);
+    prog(env, node.u.lis);
 }
 #endif

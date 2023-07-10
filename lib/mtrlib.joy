@@ -1,33 +1,27 @@
-(*
-    module  : mtrlib.joy
-    version : 1.4
-    date    : 06/18/22
-*)
 (* FILE:   mtrlib.joy *)
 
-%INCLUDE seqlib.joy
-%INCLUDE numlib.joy
+"seqlib" libload  "numlib" libload.
 
 LIBRA
 
     _mtrlib == true;
 
-					   (* VECTORS              *)
+                                           (* VECTORS              *)
 (* predicate *)
 vv-samesize == [size] dip size =;
 (* operators *)
 n-e-vector == [] cons [times] cons cons
-		[] swap infra;
-v-negate-v == 0.0 swap [-]sv-bin-v;
+                [] swap infra;
+v-negate-v == 0 swap [-]sv-bin-v;
 v-invert-v == 1.0 swap [/]sv-bin-v;
 
-					   (* vectors and scalars  *)
+                                           (* vectors and scalars  *)
 (* combinators *)
 sv-bin-v == map popd;
 vs-bin-v == cons map;
 vs-cbin-v == swapd map popd; (* efficiency *)
-
-					   (* two vectors          *)
+   
+                                           (* two vectors          *)
 (* predicate *)
 vv-comformable ==  [size] dip size =;
 
@@ -35,16 +29,16 @@ vv-comformable ==  [size] dip size =;
 vv-bin-v == mapr2;
 vv-2bin-s == [mapr2 uncons] dip step;
 
-					   (* vector to matrix     *)
+                                           (* vector to matrix     *)
 (* unary operators *)
 v-1row-m == [] cons;
-v-1col-m == [] swap [dupd swons] sv-bin-v;
+v-1col-m == [] swap [swons] sv-bin-v;
 v-zdiag-m ==
     [ small ]
     [ [null]  []  [[] cons]  ifte ]
     [ uncons ]
     [ dup  [first rest 0 swons cons]  dip
-      [0 swons]	 map
+      [0 swons]  map
       cons ]
     linrec;
 v-e-diag-m ==
@@ -60,12 +54,12 @@ v-e-diag-m ==
 (* combinator *)
 vv-bin-m == [map popd] cons cons map;
 
-					   (* MATRICES             *)
+                                           (* MATRICES             *)
 
 m-dimensions == dup [size] dip first size;
 mm-conformable == [size] dip first size =;
 mm-samedimensions == [m-dimensions] dip m-dimensions
-		      swapd  =	[=] dip and;
+                      swapd  =  [=] dip and;
 (* operators *)
 mm-vercat-m == concat;
 mm-horcat-m == [concat] mapr2;
@@ -76,24 +70,24 @@ m-transpose-m == (* READE p 133 *)
 	[ cons ]
 	linrec;
 
-					   (* matrices and scalars *)
-sm-bin-m == [(* sv-bin-v *) map ] cons map popd;
+                                           (* matrices and scalars *)
+sm-bin-m == [sv-bin-v] cons map popd;
 ms-bin-m == cons [map] cons map;
 ms-cbin-m == swapd sm-bin-m; (* efficiency *)
 
-					   (* matrices and vectors *)
+                                           (* matrices and vectors *)
 
-					   (* two matrices         *)
+                                           (* two matrices         *)
 mm-bin-m == [mapr2] cons mapr2;
 
 mm-add-m == [+] mm-bin-m;
-mm-mul-m ==
+mm-mul-m == 
 	transpose
-	[ [[[*] mapr2] unary 0.0 [+] fold] map popd ] cons
+	[ [[*] mapr2 0 [+] fold] map popd ] cons
 	map;
 
 mm-2bin-m ==
-	[fold] cons [[[mapr2] cons unary unswons] cons] dip concat
+	[fold] cons [[mapr2 unswons] cons] dip concat
 	[ transpose ] dip
 	[ map popd ] cons cons
 	map;
@@ -115,6 +109,6 @@ m-print == putlist;
 						(* end LIBRA *)
 
 
-%PUT mtrlib  is loaded
+"mtrlib  is loaded\n" putchars.
 
 (* END   mtrlib.joy *)

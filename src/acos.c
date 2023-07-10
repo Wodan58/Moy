@@ -1,18 +1,23 @@
 /*
     module  : acos.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ACOS_C
 #define ACOS_C
 
 /**
-acos  :  F  ->  G
+OK 1490  acos  :  DA	F  ->  G
 G is the arc cosine of F.
 */
-#define PROCEDURE	do_acos
-#define NAME		"acos"
-#define FUNC		acos
-#include "ufloat.h"
-/* acos.c */
+void acos_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = acos(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

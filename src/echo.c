@@ -1,20 +1,21 @@
 /*
     module  : echo.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ECHO_C
 #define ECHO_C
 
 /**
-echo  :  ->  I
+OK 1120  echo  :  A	->  I
 Pushes value of echo flag, I = 0..3.
 */
-PRIVATE void do_echo(pEnv env)
+void echo_(pEnv env)
 {
-#ifdef COMPILING
-    COMPILE;
-    PUSH_NUM(INTEGER_, getechoflag());
-#endif
+    Node node;
+
+    node.u.num = env->echoflag;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

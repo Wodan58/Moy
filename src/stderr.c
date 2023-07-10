@@ -1,18 +1,21 @@
 /*
     module  : stderr.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef STDERR_C
 #define STDERR_C
 
 /**
-stderr  :  ->  S
+OK 1190  stderr  :  A	->  S
 Pushes the standard error stream.
 */
-PRIVATE void do_stderr(pEnv env)
+void stderr_(pEnv env)
 {
-    COMPILE;
-    PUSH_PTR(FILE_, stderr);
+    Node node;
+
+    node.u.fil = stderr;
+    node.op = FILE_;
+    vec_push(env->stck, node);
 }
 #endif

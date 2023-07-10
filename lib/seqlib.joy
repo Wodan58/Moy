@@ -1,9 +1,6 @@
-(*
-    module  : seqlib.joy
-    version : 1.4
-    date    : 06/18/22
-*)
 (* FILE:   seqlib.joy *)
+
+"agglib" libload.
 
 LIBRA
 
@@ -48,11 +45,11 @@ LIBRA
 	[ [cons] map popd dup first rest swons ]
 	linrec;
     subseqlist == (* Thompson p 247 *)
-	[null]
+	[null] 
 	[[] cons]
 	[ uncons dup
 	  [frontlist [cons] map popd] dip ]
-	[concat]
+        [concat]
 	linrec;
     powerlist1 ==
 	[null] [[] cons] [uncons]
@@ -85,7 +82,8 @@ LIBRA
 	[swapd cons concat]
 	binrec;
     qsort1 ==
-	[small] [] [uncons [[first] unary2 >] split] [swapd cons concat] binrec;
+	[small] [] [uncons [[first] unary2 >] split] [swapd cons concat]
+        binrec;
     mk_qsort ==
 	[ [small] [] ] dip
 	[ unary2 >] cons [split] cons [uncons] swoncat
@@ -143,8 +141,8 @@ LIBRA
     treesample == [ [1 2 [3 4] 5 [[[6]]] 7 ] 8 ];
 
     SEQLIB == "seqlib.joy - sequence library, assumes agglib.joy\n".
-							(* end LIBRA *)
+							 (* end LIBRA *)
 
-%PUT seqlib  is loaded
+"seqlib  is loaded\n" putchars.
 
 (* END   seqlib.joy *)

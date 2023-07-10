@@ -1,33 +1,20 @@
 /*
     module  : fold.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FOLD_C
 #define FOLD_C
 
-#ifdef SWAPD_X
-#undef SWAPD_X
-#undef SWAPD_C
-#endif
-
-#ifdef STEP_X
-#undef STEP_X
-#undef STEP_C
-#endif
-
-#include "swapd.c"
-#include "step.c"
-
 /**
-fold  :  A V0 [P]  ->  V
+OK 2800  fold  :  DDDA	A V0 [P]  ->  V
 Starting with value V0, sequentially pushes members of aggregate A
 and combines with binary operator P to produce value V.
 */
-PRIVATE void do_fold(pEnv env)
+void fold_(pEnv env)
 {
-    THREEPARAMS("fold");
-    do_swapd(env);
-    do_step(env);
+    PARM(3, DIP);
+    swapd_(env);
+    step_(env);
 }
 #endif

@@ -1,21 +1,21 @@
 /*
     module  : srand.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SRAND_C
 #define SRAND_C
 
 /**
-srand  :  I  ->
+OK 1780  srand  :  D	I  ->
 Sets the random integer seed to integer I.
 */
-PRIVATE void do_srand(pEnv env)
+void srand_(pEnv env)
 {
-    COMPILE;
-    ONEPARAM("srand");
-    INTEGER("srand");
-    srand(env->stk->u.num);
-    POP(env->stk);
+    Node node;
+
+    PARM(1, UNMKTIME);
+    node = vec_pop(env->stck);
+    srand(node.u.num);
 }
 #endif

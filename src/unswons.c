@@ -1,47 +1,50 @@
 /*
     module  : unswons.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
 
 /**
-unswons  :  A  ->  R F
+OK 2130  unswons  :  DAA	A  ->  R F
 R and F are the rest and the first of non-empty aggregate A.
 */
-PRIVATE void do_unswons(pEnv env)
+void unswons_(pEnv env)
 {
-    char *str;
     int i = 0;
-    Node *save;
-    long set;
+    Node node, temp;
 
-    ONEPARAM("unswons");
-    switch (env->stk->op) {
+    PARM(1, FIRST);
+    node = vec_pop(env->stck);
+    switch (node.op) {
     case LIST_:
-	save = env->stk->u.lis;
-	CHECKEMPTYLIST(save, "unswons");
-	UNARY(LIST_NEWNODE, save->next);
-	DUPLICATE(save);
-	break;
+        vec_init(temp.u.lis);
+        vec_shallow_copy(temp.u.lis, node.u.lis);
+        node = vec_pop(temp.u.lis);
+        temp.op = LIST_;
+        vec_push(env->stck, temp);
+        vec_push(env->stck, node);
+        break;
+
     case STRING_:
-	str = env->stk->u.str;
-	CHECKEMPTYSTRING(str, "unswons");
-	UNARY(STRING_NEWNODE, GC_strdup(str + 1));
-	PUSH_NUM(CHAR_, *str);
-	break;
+        temp.u.num = *node.u.str++;
+        node.u.str = GC_strdup(node.u.str);  
+        vec_push(env->stck, node);
+        temp.op = CHAR_;
+        vec_push(env->stck, temp);
+        break;
+
     case SET_:
-	set = env->stk->u.set;
-	CHECKEMPTYSET(set, "unswons");
-	while (!(set & ((long)1 << i)))
-	    i++;
-	UNARY(SET_NEWNODE, set & ~((long)1 << i));
-	PUSH_NUM(INTEGER_, i);
-	break;
+        while (!(node.u.set & ((long)1 << i)))
+            i++;
+        temp.u.num = i;
+        node.u.set &= ~((long)1 << i);
+        vec_push(env->stck, node);
+        temp.op = INTEGER_;
+        vec_push(env->stck, temp);
     default:
-	BADAGGREGATE("unswons");
-	break;
+        break;
     }
 }
 #endif

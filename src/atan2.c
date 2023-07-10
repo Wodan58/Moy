@@ -1,18 +1,25 @@
 /*
     module  : atan2.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ATAN2_C
 #define ATAN2_C
 
 /**
-atan2  :  F G  ->  H
+OK 1520  atan2  :  DDA	F G  ->  H
 H is the arc tangent of F / G.
 */
-#define PROCEDURE	do_atan2
-#define NAME		"atan2"
-#define FUNC		atan2
-#include "bfloat.h"
-/* atan2.c */
+void atan2_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, BFLOAT);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first.u.dbl = atan2(first.op == FLOAT_ ? first.u.dbl : (double)first.u.num,
+                    second.op == FLOAT_ ? second.u.dbl : (double)second.u.num);
+    first.op = FLOAT_;
+    vec_push(env->stck, first);
+}
 #endif

@@ -1,19 +1,48 @@
 /*
     module  : of.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef OF_C
 #define OF_C
 
 /**
-of  :  I A  ->  X
+OK 2080  of  :  DDA	I A  ->  X
 X (= A[I]) is the I-th member of aggregate A.
 */
-#define PROCEDURE	do_of
-#define NAME		"of"
-#define AGGR		env->stk
-#define	INDEX		env->stk->next
-#include "of_at.h"
-/* of.c */
+void of_(pEnv env)
+{
+    int i, j;
+    Node elem, aggr, node;
+
+    PARM(2, OF);
+    aggr = vec_pop(env->stck);
+    elem = vec_pop(env->stck);
+    switch (aggr.op) {
+    case LIST_:
+        node = vec_at(aggr.u.lis, vec_size(aggr.u.lis) - elem.u.num - 1);
+        vec_push(env->stck, node);
+        break;
+
+    case STRING_:
+        node.u.num = aggr.u.str[elem.u.num];
+        node.op = CHAR_;
+        vec_push(env->stck, node);
+        break;
+
+    case SET_:
+        for (j = elem.u.num, i = 0; i < SETSIZE; i++)
+            if (aggr.u.set & ((long)1 << i)) {
+                if (!j) {
+                    node.u.num = i;
+                    node.op = INTEGER_;
+                    vec_push(env->stck, node);
+                    break;
+                }
+                j--;
+            }
+    default:
+        break;
+    }
+}
 #endif

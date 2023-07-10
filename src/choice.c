@@ -1,21 +1,24 @@
 /*
     module  : choice.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef CHOICE_C
 #define CHOICE_C
 
 /**
-choice  :  B T F  ->  X
+OK 1330  choice  :  DDDA	B T F  ->  X
 If B is true, then X = T else X = F.
 */
-PRIVATE void do_choice(pEnv env)
+void choice_(pEnv env)
 {
-    THREEPARAMS("choice");
-    if (env->stk->next->next->u.num)
-	GTERNARY(env->stk->next->op, env->stk->next->u);
-    else
-	GTERNARY(env->stk->op, env->stk->u);
+    Node first, second, third;
+
+    PARM(3, ANYTYPE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first = first.u.num ? second : third;
+    vec_push(env->stck, first);
 }
 #endif

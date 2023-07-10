@@ -1,39 +1,37 @@
 /*
     module  : size.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SIZE_C
 #define SIZE_C
 
 /**
-size  :  A  ->  I
+OK 2090  size  :  DA	A  ->  I
 Integer I is the number of elements of aggregate A.
 */
-PRIVATE void do_size(pEnv env)
+void size_(pEnv env)
 {
     int i;
-    Node *cur;
-    size_t size = 0;
+    Node node, temp;
 
-    ONEPARAM("size");
-    switch (env->stk->op) {
+    PARM(1, SIZE);
+    node = vec_pop(env->stck);
+    switch (node.op) {
     case LIST_:
-	for (cur = env->stk->u.lis; cur; cur = cur->next)
-	    size++;
-	break;
+        temp.u.num = vec_size(node.u.lis);
+        break;
     case STRING_:
-	size = strlen(env->stk->u.str);
-	break;
+        temp.u.num = strlen(node.u.str);
+        break;
     case SET_:
-	for (i = 0; i < SETSIZE_; i++)
-	    if (env->stk->u.set & ((long)1 << i))
-		size++;
-	break;
+        for (i = 0, temp.u.num = 0; i < SETSIZE; i++)
+            if (node.u.set & ((long)1 << i))
+                temp.u.num++;
     default:
-	BADAGGREGATE("size");
-	break;
+        break;
     }
-    UNARY(INTEGER_NEWNODE, size);
+    temp.op = INTEGER_;
+    vec_push(env->stck, temp);
 }
 #endif

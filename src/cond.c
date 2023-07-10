@@ -1,57 +1,72 @@
 /*
     module  : cond.c
-    version : 1.20
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef COND_C
 #define COND_C
 
 /**
-cond  :  [..[[Bi] Ti]..[D]]  ->  ...
+OK 2710  cond  :  DU	[..[[Bi] Ti]..[D]]  ->  ...
 Tries each Bi. If that yields true, then executes Ti and exits.
 If no Bi yields true, executes default D.
 */
-#ifdef COMPILING
-void put_cond(pEnv env, Node *prog)
+void cond_(pEnv env)
 {
-    fprintf(outfp, "{ /* COND */");
-    fprintf(outfp, "int num = 0; Node *save; do {");
-    for (; prog->next; prog = prog->next) {
-	fprintf(outfp, "save = env->stk;");
-	compile(env, prog->u.lis->u.lis);
-	fprintf(outfp, "num = env->stk->u.num; env->stk = save;");
-	fprintf(outfp, "if (num) {");
-	compile(env, prog->u.lis->next);
-	fprintf(outfp, "break; }");
-    }
-    fprintf(outfp, "break; } while (0); if (!num) { env->stk = save;");
-    compile(env, prog->u.lis);
-    fprintf(outfp, "} }");
-}
-#endif
+    int i, j;
+    unsigned size1, size2;
+    Node aggr, elem, node;
 
-PRIVATE void do_cond(pEnv env)
-{
-    int num = 0;
-    Node *prog, *save;
-
-    ONEPARAM("cond");
-    LIST("cond");
-    prog = env->stk->u.lis;
-    CHECKEMPTYLIST(prog, "cond");
-/* must check for QUOTES in list */
-    for (save = prog; save->next; save = save->next)
-	CHECKLIST(save->u.lis->op, "cond");
-    POP(env->stk);
-    INSTANT(put_cond);
-    for (; prog->next; prog = prog->next) {
-	save = env->stk;
-	exeterm(env, prog->u.lis->u.lis);
-	num = env->stk->u.num;
-	env->stk = save;
-	if (num)
-	    break;
+    PARM(1, CASE);
+    aggr = vec_pop(env->stck);
+    /*
+        jump address past last cond line
+    */
+    size2 = vec_size(env->prog);
+    /*
+        the last cond line comes without test and no jump is needed
+    */
+    elem = vec_at(aggr.u.lis, 0);
+    prog(env, elem.u.lis);
+    for (i = 1, j = vec_size(aggr.u.lis); i < j; i++) {
+        /*
+            jump address to the next cond line
+        */
+        size1 = vec_size(env->prog);
+        /*
+            read a cond line
+        */
+        elem = vec_at(aggr.u.lis, i);
+        /*
+            push the jump address onto the program stack
+        */
+        push(env, size2);
+        /*
+            jump after executing the rest of the cond line
+        */
+        code(env, jump_);
+        /*
+            push the rest of the cond line
+        */
+        prog(env, elem.u.lis);
+        node = pop(env);
+        /*
+            push the jump address onto the program stack
+        */
+        push(env, size1);
+        /*
+            jump on false to the next cond line; remove condition code
+        */
+        code(env, pfalse_);
+        /*
+            save the stack before the condition and restore it afterwards with
+            the condition code included.
+        */
+        save(env, node.u.lis, 0);
+        /*
+            push the test of the cond line
+        */
+        prog(env, node.u.lis);
     }
-    exeterm(env, num ? prog->u.lis->next : prog->u.lis);
 }
 #endif

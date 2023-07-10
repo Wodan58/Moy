@@ -1,18 +1,23 @@
 /*
     module  : typeof.c
     version : 1.1
-    date    : 07/13/22
+    date    : 07/10/23
 */
 #ifndef TYPEOF_C
 #define TYPEOF_C
 
 /**
-typeof  :  X  ->  I
+OK 3250  typeof  :  DA	X  ->  I
 Replace X by its type.
 */
-void do_typeof(pEnv env)
+void typeof_(pEnv env)
 {
-    ONEPARAM("typeof");
-    UNARY(INTEGER_NEWNODE, env->stk->op);
+    Node node;
+
+    PARM(1, ANYTYPE);
+    node = vec_pop(env->stck);
+    node.u.num = node.op;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);    
 }
 #endif

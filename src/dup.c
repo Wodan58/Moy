@@ -1,18 +1,21 @@
 /*
     module  : dup.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef DUP_C
 #define DUP_C
 
 /**
-dup  :  X  ->  X X
+OK 1210  dup  :  A 	X  ->  X X
 Pushes an extra copy of X onto stack.
 */
-PRIVATE void do_dup(pEnv env)
+void dup_(pEnv env)
 {
-    ONEPARAM("dup");
-    DUPLICATE(env->stk);
+    Node node;
+
+    PARM(1, ANYTYPE);
+    node = vec_back(env->stck);
+    vec_push(env->stck, node);
 }
 #endif

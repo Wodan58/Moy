@@ -1,18 +1,21 @@
 /*
     module  : argc.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ARGC_C
 #define ARGC_C
 
 /**
-argc  :  ->  I
+OK 3070  argc  :  A	->  I
 Pushes the number of command line arguments. This is quivalent to 'argv size'.
 */
-PRIVATE void do_argc(pEnv env)
+void argc_(pEnv env)
 {
-    COMPILE;
-    PUSH_NUM(INTEGER_, g_argc);
+    Node node;
+
+    node.u.num = env->g_argc;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

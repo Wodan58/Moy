@@ -1,22 +1,25 @@
 /*
     module  : neg.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef NEG_C
 #define NEG_C
 
 /**
-neg  :  I  ->  J
+OK 1450  neg  :  DA	I  ->  J
 Integer J is the negative of integer I.  Also supports float.
 */
-PRIVATE void do_neg(pEnv env)
+void neg_(pEnv env)
 {
-    ONEPARAM("neg");
-    FLOAT("neg");
-    if (env->stk->op == FLOAT_)
-	UNARY(FLOAT_NEWNODE, -env->stk->u.dbl);
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    if (node.op == FLOAT_)
+        node.u.dbl = -node.u.dbl;
     else
-	UNARY(INTEGER_NEWNODE, -env->stk->u.num);
+        node.u.num = -node.u.num;
+    vec_push(env->stck, node);
 }
 #endif

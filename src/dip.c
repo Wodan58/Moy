@@ -1,38 +1,23 @@
 /*
     module  : dip.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef DIP_C
 #define DIP_C
 
 /**
-dip  :  X [P]  ->  ...  X
+OK 2450  dip  :  DDAU	X [P]  ->  ...  X
 Saves X, executes P, pushes X back.
 */
-#ifdef COMPILING
-void put_dip(pEnv env, Node *prog)
+PRIVATE void dip_(pEnv env)
 {
-    fprintf(outfp, "{ /* DIP */");
-    fprintf(outfp, "Node *save = env->stk; POP(env->stk);");
-    compile(env, prog);
-    fprintf(outfp, "DUPLICATE(save); }");
-}
-#endif
+    Node list, node;
 
-PRIVATE void do_dip(pEnv env)
-{
-    Node *prog, *save;
-
-    ONEPARAM("dip");
-    ONEQUOTE("dip");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_dip);
-    ONEPARAM("dip");
-    save = env->stk;
-    POP(env->stk);
-    exeterm(env, prog);
-    DUPLICATE(save);
+    PARM(2, DIP);
+    list = vec_pop(env->stck);
+    node = vec_pop(env->stck);
+    prime(env, node);
+    prog(env, list.u.lis);
 }
 #endif

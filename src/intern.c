@@ -1,39 +1,31 @@
 /*
     module  : intern.c
-    version : 1.16
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef INTERN_C
 #define INTERN_C
 
 /**
-intern  :  "sym"  ->  sym
+OK 2190  intern  :  DA	"sym"  ->  sym
 Pushes the item whose name is "sym".
 */
-PRIVATE void do_intern(pEnv env)
+PRIVATE void intern_(pEnv env)
 {
-#ifdef COMPILING
-    int i;
-    char id[ALEN], *ptr = 0;
+    Node node;
+    Entry ent;
 
-    ONEPARAM("intern");
-    STRING("intern");
-    strncpy(id, env->stk->u.str, ALEN);
-    id[ALEN - 1] = 0;
-    if (!strchr("\"#'().0123456789;[]{}", id[0])) {
-        if (id[0] == '-' && isdigit((int)id[1]))
-            ;
-        else
-	    for (ptr = id + 1; *ptr; ptr++)
-	        if (!isalnum((int) *ptr) && !strchr("=_-", *ptr))
-		    break;
+    PARM(1, INTERN);
+    node = vec_pop(env->stck);
+    lookup(env, node.u.str);
+    ent = sym_at(env->symtab, env->location);
+    if (ent.is_user) {
+        node.op = USR_;
+        node.u.ent = env->location;
+    } else {
+        node.op = ANON_FUNCT_;
+        node.u.proc = ent.u.proc;
     }
-    CHECKNAME(ptr, "intern");
-    i = lookup(env, id);
-    if (dict_flags(env, i) & IS_BUILTIN)
-	UNARY(ANON_FUNCT_NEWNODE, (proc_t)dict_body(env, i));
-    else
-	UNARY(USR_NEWNODE, i);
-#endif
+    vec_push(env->stck, node);
 }
 #endif

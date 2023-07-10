@@ -1,58 +1,59 @@
 /*
     module  : take.c
-    version : 1.15
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TAKE_C
 #define TAKE_C
 
 /**
-take  :  A N  ->  B
+OK 2150  take  :  DDA	A N  ->  B
 Aggregate B is the result of retaining just the first N elements of A.
 */
-PRIVATE void do_take(pEnv env)
+void take_(pEnv env)
 {
-    int i, num;
-    long set;
-    char *str = "";
-    Node *root = 0, *cur, *last;
+    int i, j;
+    Node elem, aggr, node;
 
-    TWOPARAMS("take");
-    POSITIVEINDEX(env->stk, "take");
-    num = env->stk->u.num;
-    POP(env->stk);
-    switch (env->stk->op) {
+    PARM(2, TAKE);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    switch (aggr.op) {
     case LIST_:
-	if (num >= 1) {
-	    for (cur = env->stk->u.lis; cur && num-- > 0; cur = cur->next)
-		if (!root)
-		    last = root = newnode(cur->op, cur->u, 0);
-		else
-		    last = last->next = newnode(cur->op, cur->u, 0);
-	}
-	UNARY(LIST_NEWNODE, root);
-	break;
+        j = vec_size(aggr.u.lis);
+        if (elem.u.num >= j)
+            node = aggr;
+        else {
+            vec_init(node.u.lis);
+            for (i = j - elem.u.num; i < j; i++)
+                vec_push(node.u.lis, vec_at(aggr.u.lis, i));
+            node.op = LIST_;
+        }
+        break;
+
     case STRING_:
-	if (num >= 1) {
-	    str = GC_malloc_atomic(num + 1);
-	    strncpy(str, env->stk->u.str, num);
-	    str[num] = 0;
-	}
-	UNARY(STRING_NEWNODE, str);
-	break;
+        j = strlen(aggr.u.str);
+        if (elem.u.num >= j)
+            node = aggr;
+        else {
+            node.u.str = GC_malloc_atomic(elem.u.num + 1);
+            strncpy(node.u.str, aggr.u.str, elem.u.num);
+            node.u.str[elem.u.num] = 0;
+            node.op = STRING_;
+        }
+        break;
+
     case SET_:
-	for (set = i = 0; i < SETSIZE_; i++)
-	    if (env->stk->u.set & ((long)1 << i)) {
-		if (num-- > 0)
-		    set |= (long)1 << i;
-		else
-		    break;
-	    }
-	UNARY(SET_NEWNODE, set);
-	break;
+        node.u.set = 0;
+        for (i = 0, j = 1; i < SETSIZE && elem.u.num; i++, j <<= 1)
+            if (aggr.u.set & j) {
+                node.u.set |= j;
+                elem.u.num--;
+            }
+        node.op = SET_;
     default:
-	BADAGGREGATE("take");
-	break;
+        break;
     }
+    vec_push(env->stck, node);
 }
 #endif

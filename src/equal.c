@@ -1,37 +1,107 @@
 /*
     module  : equal.c
-    version : 1.15
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef EQUAL_C
 #define EQUAL_C
 
-#include "compare.h"
-
 /**
-equal  :  T U  ->  B
+OK 2290  equal  :  DDA	T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
-PRIVATE int equal(pEnv env, Node *first, Node *second);
-
-PRIVATE int equal_list(pEnv env, Node *first, Node *second)
+PRIVATE int compatible(int first, int second)
 {
-    for (; first && second; first = first->next, second = second->next)
-	if (!equal(env, first, second))
-	    return 0;
-    return !first && !second;
+    switch (first) {
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+    case FLOAT_:
+    case SET_:
+        switch (second) {
+        case BOOLEAN_:
+        case CHAR_:
+        case INTEGER_:
+        case FLOAT_:
+        case SET_:
+            return 1;
+
+        default:
+            return 0;
+        }
+        break;
+
+    case USR_:
+    case ANON_FUNCT_:
+    case STRING_:
+        switch (second) {
+        case USR_:
+        case ANON_FUNCT_:
+        case STRING_:
+            return 1;
+
+        default:
+            return 0;
+        }
+    default:
+        break;
+    }
+    return first == second;
 }
 
-PRIVATE int equal(pEnv env, Node *first, Node *second)
+PRIVATE int is_equal(pEnv env, Node first, Node second)
 {
-    if (first->op == LIST_ && second->op == LIST_)
-	return equal_list(env, first->u.lis, second->u.lis);
-    return !Compare(env, first, second);
+    int i, j;
+    Node temp;
+    NodeList *stackf = 0, *stacks = 0;
+
+    if (!compatible(first.op, second.op))
+        return 0; /* unequal */
+    if (first.op != LIST_)
+        return Compare(env, first, second) == 0;
+    if ((j = vec_size(first.u.lis)) != vec_size(second.u.lis))
+        return 0; /* unequal */
+    if (j) {
+        vec_init(stackf);
+        vec_init(stacks);
+    }
+    for (i = 0; i < j; i++) {
+        temp = vec_at(first.u.lis, i);
+        vec_push(stackf, temp);
+        temp = vec_at(second.u.lis, i);
+        vec_push(stacks, temp);
+    }
+    while (vec_size(stackf)) {
+        first = vec_pop(stackf);
+        second = vec_pop(stacks);
+        if (!compatible(first.op, second.op))
+            return 0; /* unequal */
+        if (first.op != LIST_) {
+            if (Compare(env, first, second))
+                return 0; /* unequal */
+        } else {
+            if ((j = vec_size(first.u.lis)) != vec_size(second.u.lis))
+                return 0; /* unequal */
+            for (i = 0; i < j; i++) {
+                temp = vec_at(first.u.lis, i);
+                vec_push(stackf, temp);
+                temp = vec_at(second.u.lis, i);
+                vec_push(stacks, temp);
+            }            
+        }
+    }
+    return 1; /* equal */
 }
 
-PRIVATE void do_equal(pEnv env)
+void equal_(pEnv env)
 {
-    TWOPARAMS("equal");
-    BINARY(BOOLEAN_NEWNODE, equal(env, env->stk, env->stk->next));
+    Node first, second;
+
+    PARM(2, ANYTYPE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first.u.num = is_equal(env, first, second);
+    first.op = BOOLEAN_;
+    vec_push(env->stck, first);
 }
 #endif

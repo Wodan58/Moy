@@ -1,8 +1,3 @@
-(*
-    module  : usrlib.joy
-    version : 1.1
-    date    : 06/18/22
-*)
 (* FILE:  usrlib.joy  -  if it exists, then it is loaded by default *)
 
 LIBRA
@@ -18,8 +13,8 @@ LIBRA
 HIDE
     returned == "\007\nReturned to Joy\n" putchars
 IN
+						(* unix: *)
     unix == true;
-						(* unix:
     control-eof == 'D;
     terminal == "/dev/tty";
     ls == "ls -la" system;
@@ -28,7 +23,7 @@ IN
 	"\nTo return to Joy, type:   exit\n" putchars
 	"csh" system
 	returned;
-    						etc *)
+    						(* etc *)
 
 						(* vms:
     vms == true;
@@ -55,7 +50,7 @@ IN
 	  [ [ [vms] first body null not ]
 	    swap " " swap concat concat "SEARCH " swap concat system ]
 	  [ "unknown operating system for  find-in\n" putchars ] ]
-	cond
+ 	cond
 	returned;
     standard-setting == 1 setautoput 1 setundeferror;
     USRLIB == "usrlib.joy - (personal) user library\n"
@@ -63,16 +58,16 @@ IN
 END.						(* end HIDE and LIBRA *)
 
 						(* demo:
-# "library"   "*.joy"  find-in.
+"library"   "*.joy"  find-in.
 						etc *)
 
-%PUT usrlib  is loaded
+"usrlib  is loaded\n"  putchars.
 
 standard-setting.
 
-%INCLUDE inilib.joy
+"inilib.joy" include.
 				(* assuming inilib.joy was included:  *)
-%INCLUDE agglib.joy
+"agglib" libload.
 
 DEFINE verbose == true. (* Example of over-riding  inilib.joy *)
 

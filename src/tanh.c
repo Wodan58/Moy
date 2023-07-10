@@ -1,18 +1,23 @@
 /*
     module  : tanh.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TANH_C
 #define TANH_C
 
 /**
-tanh  :  F  ->  G
+OK 1680  tanh  :  DA	F  ->  G
 G is the hyperbolic tangent of F.
 */
-#define PROCEDURE	do_tanh
-#define NAME		"tanh"
-#define FUNC		tanh
-#include "ufloat.h"
-/* tanh.c */
+void tanh_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = tanh(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

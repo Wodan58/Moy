@@ -1,30 +1,29 @@
 /*
     module  : fget.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FGET_C
 #define FGET_C
 
 /**
-fget  :  S  ->  S F
+OK 1870  fget  :  DAA	S  ->  S F
 Reads a factor from stream S and pushes it onto stack.
 */
-PRIVATE void do_fget(pEnv env)
+void fget_(pEnv env)
 {
-    FILE *fp;
+    Node node;
     int stdin_dup;
 
-    COMPILE;
-    ONEPARAM("fget");
-    FILE("fget");
-    fp = env->stk->u.fil;
+    PARM(1, FGET);
+    node = vec_back(env->stck);
     if ((stdin_dup = dup(0)) != -1)
-	dup2(fileno(fp), 0);
-    readfactor(env, yylex(env));
+        dup2(fileno(node.u.fil), 0);
+    env->token = yylex(env);
+    readfactor(env);
     if (stdin_dup != -1) {
-	dup2(stdin_dup, 0);
-	close(stdin_dup);
+        dup2(stdin_dup, 0);
+        close(stdin_dup);
     }
 }
 #endif

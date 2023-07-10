@@ -1,18 +1,21 @@
 /*
     module  : false.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FALSE_C
 #define FALSE_C
 
 /**
-false  :  ->  false
+IMMEDIATE 1000  false  :  A	->  false
 Pushes the value false.
 */
-PRIVATE void do_false(pEnv env)
+void false_(pEnv env)
 {
-    PUSH_NUM(BOOLEAN_, 0);
+    Node node;
+
+    node.u.num = 0;
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
 }
-/* false.c */
 #endif

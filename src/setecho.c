@@ -1,23 +1,22 @@
 /*
     module  : setecho.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SETECHO_C
 #define SETECHO_C
 
 /**
-setecho  :  I  ->
+OK 3020  setecho  :  D	I  ->
 Sets value of echo flag for listing.
 I = 0: no echo, 1: echo, 2: with tab, 3: and linenumber.
 */
-PRIVATE void do_setecho(pEnv env)
+void setecho_(pEnv env)
 {
-#ifdef COMPILING
-    ONEPARAM("setecho");
-    NUMERICTYPE("setecho");
-    setechoflag(env->stk->u.num);
-    POP(env->stk);
-#endif
+    Node node;
+
+    PARM(1, PREDSUCC);
+    node = vec_pop(env->stck);
+    env->echoflag = node.u.num;
 }
 #endif

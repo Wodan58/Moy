@@ -1,26 +1,18 @@
-(*
-    module  : lsplib.joy
-    version : 1.5
-    date    : 06/18/22
-*)
 (* FILE:   lsplib.joy *)
 
-%INCLUDE seqlib.joy
-%INCLUDE numlib.joy
+    basic-libload.
 
 LIBRA
 
     _lsplib == true;
 
-(*   - - -            L I S P   I N T E R P R E T E R             - - - *)
+(*   - - -            L I S P   I N T E R P R E T E R           - - - *)
 
 (* REFS: SICP p ???, Henderson p 39, p 101 *)
 
-(* - - - - -			E V A L			      - - - - - *)
+(* - - - - -			E V A L			    - - - - - *)
 
-selfeval == [ numerical ] [ string ] sequor ;
-
-eval ==						(*  env  exp		*)
+eval == 					(*  env  exp  *)
 (*
 	dup2
 	swap
@@ -29,65 +21,65 @@ eval ==						(*  env  exp		*)
 *)
     [ list ]
 
-    [						(*  eval-compound!	*)
-      unswons					(*  env args fun	*)
+    [						(*  eval-compound!    *)
+      unswons					(*  env args fun      *)
       [ [ QUOTE
 	  first ]
 	[ LAMBDA
 	  dupd cons [CLOSURE] swoncat ]
-	[ IF					(*  env  [[i] [t] [e]]	*)
-	  uncons [eval] dip			(*  env  e-i [[t] [e]]	*)
-	  swap					(*  env  [[t] [e]] e-i	*)
-	  [ dup null ]
-	  [ pop second]				(*  env  [e]		*)
-	  [ pop first ]				(*  env  [t]		*)
+	[ IF					(* env  [[i] [t] [e]] *)
+	  uncons [eval] dip			(* env  e-i [[t] [e]] *)
+	  swap					(* env  [[t] [e]] e-i *)
+	  [ null ]
+	  [ pop second]				(* env  [e]	      *)
+	  [ pop first ]				(* env  [t]	      *)
 	  ifte eval ]
-	[ DEF					(* env      [name body]	*)
-	  uncons first swap			(* env      body   name	*)
-	  [ eval ]				(* env    e-b		*)
-	  dip					(* env    e-b	name	*)
-	  dup					(* env    e-b   n    n	*)
-	  [ [[] cons] unary2			(* env   [e-b] [n]	*)
-	    swons				(* env   [[n] e-b]	*)
-	    swons ]				(* [[[n] e-b] env]	*)
-	  dip ]					(* new-env            n	*)
-	[ DEFUN					(* e  [name vars body]	*)
-	  uncons				(* e      n   [vs b]	*)
-	  [LAMBDA] swoncat			(* e      n [L vs b]	*)
-	  [] cons cons				(* e     [n [L vs b]]	*)
-	  [DEF] swoncat				(* e   [D n [L vs b]]	*)
+	[ DEF					(* env    [name body] *)
+	  uncons first swap			(* env    body   name *)
+	  [ eval ]				(* env  e-b	      *)
+	  dip					(* env  e-b	name  *)
+	  dup					(* env  e-b   n    n  *)
+	  [ [[] cons] unary2			(* env [e-b] [n]      *)
+	    swons				(* env [[n] e-b]      *)
+	    swons ]				(* [[[n] e-b] env]    *)
+	  dip ]					(* new-env          n *)
+	[ DEFUN					(* e [name vars body] *)
+	  uncons				(* e     n   [vs b]   *)
+	  [LAMBDA] swoncat			(* e     n [L vs b]   *)
+	  [] cons cons				(* e    [n [L vs b]]  *)
+	  [DEF] swoncat				(* e  [D n [L vs b]]  *)
 	  eval ]
 	[ (* DEFAULT *)
-	  swons [eval] map unswons		(*  env  ev-args ev-fun	*)
+	  swons [eval] map unswons		(* env ev-args ev-fun *)
 	  apply ] ]
       case ]
 
-    [						(* eval-atomic		*)
-      [ selfeval ]				(* R.W. self-evaluating *)
-	[ ]
-	[					(* lookup!		*)
-	  dupd swap				(*  env  v  env		*)
-	  [					(*  member?		*)
+    [						(* eval-atomic	      *)
+      [ [numerical] [string] sequor ]
+	[ ]					(* self-evaluating    *)
+	[					(* lookup!	      *)
+	  dupd swap				(*  env  v  env	      *)
+	  [					(*  member?	      *)
 	    [ null ]
-	    [ true ]				(*  fake		*)
-	    [ first first in ]			(*  really ?		*)
+	    [ true ]				(*  fake	      *)
+	    [ first first in ]			(*  really ?	      *)
 	    ifte ]
-	  [ [ null ]				(*  was fake ?		*)
-	    [ pop ]				(*  self-evaluating	*)
-	    [					(*  search really	*)
-	      first unswons rolldown		(*  [e1..] [v1..] v	*)
+	  [ [ null ]				(*  was fake ?	      *)
+	    [ pop ]				(*  self-evaluating   *)
+	    [					(*  search really     *)
+	      first unswons rolldown		(*  [e1..] [v1..] v   *)
 	      [ [first] dip = ]
 	      [ pop pop first ]
 	      [ [ [rest] unary2] dip ]
 	      tailrec ]
 	    ifte ]
 	  [ rest ]
-	  tailrec ]				(* end lookup!		*)
-	ifte ]					(* end eval-atomic	*)
+	  tailrec ]				(* end lookup!	      *)
+	ifte ]					(* end eval-atomic    *)
 
-    ifte;					(* end eval		*)
+    ifte;					(* end eval	      *)
 
-(* - - - - -			A P P L Y		      - - - - - *)
+(* - - - - -			A P P L Y		    - - - - - *)
 
 apply ==
 (*
@@ -97,22 +89,22 @@ apply ==
 *)
     [ list ]
 
-    [						(* apply-compound	*)
+    [						(* apply-compound     *)
       unswons
-      [ [ CLOSURE				(* args [e v body]	*)
+      [ [ CLOSURE				(* args [e v body]    *)
 	  unswons call swons
-	  uncons swapd uncons			(* dissect the closure	*)
-	  [ swap cons				(* build new frame	*)
-	    swons ]				(* install new frame	*)
-	  dip eval				(* new-env body		*)
-	  popd ]				(* restore old env	*)
+	  uncons swapd uncons			(* dissect the closure*)
+	  [ swap cons				(* build new frame    *)
+	    swons ]				(* install new frame  *)
+	  dip eval				(* new-env body	      *)
+	  popd ]				(* restore old env    *)
 	[ "apply: unknown procedure type -\n"
 	  putchars abort ] ]
       case ]
 
-    [						(* apply-atomic		*)
-     [ selfeval ]				(* R.W. self-evaluating *)
-      [ ] [
+    [						(* apply-atomic	      *)
+     [ [numerical] [string] sequor ]		(* R.W. *)
+      [ ] [					(* self-evaluating    *)
       [ [ CAR first first ]
 	[ CDR first rest ]
 	[ CONS uncons first cons ]
@@ -124,10 +116,10 @@ apply ==
 	  [i] dip call ] ]
       case ]
      ifte ]					(* R.W. *)
-    ifte;					(* end apply		*)
+    ifte;					(* end apply	      *)
 
 
-(* - - - - -			  L I B			      - - - - - *)
+(* - - - - -			  L I B			    - - - - - *)
 
 lib0 ==
 	[
@@ -146,7 +138,7 @@ lib0 ==
 	    [ CLOSURE lib0 [l1 l2 ini tern]
 	      IF [or [NULL l1] [NULL l2]] ini
 		 [ tern [CAR l1] [CAR l2]
-			[FOLDR2 [CDR l1] [CDR l2] ini tern] ] ] ]
+		        [FOLDR2 [CDR l1] [CDR l2] ini tern] ] ] ]
 	  [ [ RECFOLDR ]
 	    [ CLOSURE lib0 [x y bin]
 	      IF [ATOM x]
@@ -159,14 +151,12 @@ lib0 ==
 					 bin]
 			       bin] ] ] ]
 	  (* other definitions could go here, candidates are:
-		 LINREC  BINREC  Y					*)
+		 LINREC  BINREC  Y				      *)
 	    ];
 
-(* - - - - -		  L I S P  (read-eval-print)	      - - - - - *)
+(* - - - - -		  L I S P  (read-eval-print)	    - - - - - *)
 
 l-prompt == "L: ";
-
-joy0 == [/ - * + and or > map prime filter include pred];	(* R.W. *)
 
 lisp ==
 	[ "\nLisp interpreter\n"
@@ -174,8 +164,7 @@ lisp ==
 	  "\t\t\t[ include  \"OK\"  \"lsplib.lsp\" ]\n"
 	  "GO\n\n" ]
 	putstrings
-	joy0							(* R.W. *)
-	lib0						(* load lib0	*)
+	lib0						(* load lib0  *)
 	l-prompt putchars get
 	[ [ EXIT ] first equal not ]			(* R.W. *)
 	[ eval putln
@@ -186,8 +175,8 @@ lisp ==
 
     LSPLIB == "lsplib.joy - (eval-apply) Lisp interpreter\n".
 
-							(* end LIBRA	*)
+							(* end LIBRA *)
 
-%PUT lsplib  is loaded
+"lsplib  is loaded\n" putchars.
 
 (* END   lsplib.joy *)

@@ -1,18 +1,23 @@
 /*
     module  : log.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef LOG_C
 #define LOG_C
 
 /**
-log  :  F  ->  G
+OK 1600  log  :  DA	F  ->  G
 G is the natural logarithm of F.
 */
-#define PROCEDURE	do_log
-#define NAME		"log"
-#define FUNC		log
-#include "ufloat.h"
-/* log.c */
+void log_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = log(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

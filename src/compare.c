@@ -1,21 +1,25 @@
 /*
     module  : compare.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef COMPARE_C
 #define COMPARE_C
 
 /**
-compare  :  A B  ->  I
+OK 2060  compare  :  DDA	A B  ->  I
 I (=-1,0,+1) is the comparison of aggregates A and B.
-The values correspond to the predicates <, =, >.
+The values correspond to the predicates <=, =, >=.
 */
-#define PROCEDURE	do_compare
-#define NAME		"compare"
-#define CONSTRUCTOR	INTEGER_NEWNODE
-#define OPR		+
-#define SETCMP		i-j<0?-1:i-j>0
-#include "comprel.h"
-/* compare.c */
+void compare_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, ANYTYPE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first.u.num = Compare(env, first, second);
+    first.op = INTEGER_;
+    vec_push(env->stck, first);
+}
 #endif

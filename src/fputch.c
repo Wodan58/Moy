@@ -1,25 +1,22 @@
 /*
     module  : fputch.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FPUTCH_C
 #define FPUTCH_C
 
 /**
-fputch  :  S C  ->  S
+OK 1960  fputch  :  DDA	S C  ->  S
 The character C is written to the current position of stream S.
 */
-PRIVATE void do_fputch(pEnv env)
+void fputch_(pEnv env)
 {
-    int ch;
+    Node node, elem;
 
-    COMPILE;
-    TWOPARAMS("fputch");
-    INTEGER("fputch");
-    ch = env->stk->u.num;
-    POP(env->stk);
-    FILE("fputch");
-    fputc(ch, env->stk->u.fil);
+    PARM(2, FREAD);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    putc(elem.u.num, node.u.fil);
 }
 #endif

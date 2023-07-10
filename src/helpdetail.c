@@ -1,60 +1,43 @@
 /*
     module  : helpdetail.c
-    version : 1.18
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
 
-#ifdef COMPILING
-int search(char *name)
-{
-    int i;
-
-    for (i = 0; optable[i].name; i++)
-	if (!strcmp(name, optable[i].name))
-	    return i;
-    return 0;
-}
-#endif
-
 /**
-helpdetail  :  [ S1 S2 .. ]  ->
+OK 2940  helpdetail  :  D	[ S1 S2 .. ]  ->
 Gives brief help on each symbol S in the list.
 */
-PRIVATE void do_helpdetail(pEnv env)
+void helpdetail_(pEnv env)
 {
-#ifdef COMPILING
-    int i;
-    Node *cur;
-    char *name = "";
+    Entry ent;
+    int i, opcode;
+    Node node, temp;
 
-    COMPILE;
-    ONEPARAM("helpdetail");
-    LIST("helpdetail");
-    for (printf("\n"), cur = env->stk->u.lis; cur; cur = cur->next) {
-	i = cur->u.num;
-	if (cur->op == USR_) {
-	    name = dict_descr(env, cur);
-	    if ((dict_flags(env, i) & IS_BUILTIN) == 0) {
-		printf("%s  ==\n    ", name);
-		writeterm(env, dict_body(env, i));
-		printf("\n\n");
-		continue;
-	    }
-	    i = search(name);
-	} else if (cur->op > USR_ && cur->op <= FILE_) {
-	    if (cur->op == BOOLEAN_)
-		i = i ? search("true") : search("false");
-	    else if (cur->op == INTEGER_ && cur->u.num == MAXINT_)
-		i = search("maxint");
-	    else
-		i = cur->op;
-	    name = optable[i].name;
-	}
-	printf("%s  :  %s.\n%s\n", name, optable[i].messg1, optable[i].messg2);
+    PARM(1, HELP);
+    node = vec_pop(env->stck);
+    for (printf("\n"), i = vec_size(node.u.lis) - 1; i >= 0; i--) {
+        temp = vec_at(node.u.lis, i);
+        opcode = temp.op;
+        if (opcode == USR_) {
+            ent = sym_at(env->symtab, temp.u.ent);
+            printf("%s  ==\n    ", ent.name);
+            writeterm(env, ent.u.body);
+	    printf("\n\n");
+        } else {
+            if (opcode == ANON_FUNCT_)
+                opcode = operindex(temp.u.proc);
+            if (opcode == BOOLEAN_)
+                opcode = operindex(temp.u.num ? true_ : false_);
+            if (opcode == INTEGER_ && temp.u.num == MAXINT)
+                opcode = operindex(maxint_);
+            printf("%s\t:  %s.\n%s\n", optable[opcode].name,
+                optable[opcode].messg1, optable[opcode].messg2);
+	    if (opcode <= FILE_)
+		printf("\n");
+        }
     }
-    POP(env->stk);
-#endif
 }
 #endif

@@ -1,18 +1,23 @@
 /*
     module  : cosh.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef COSH_C
 #define COSH_C
 
 /**
-cosh  :  F  ->  G
+OK 1550  cosh  :  DA	F  ->  G
 G is the hyperbolic cosine of F.
 */
-#define PROCEDURE	do_cosh
-#define NAME		"cosh"
-#define FUNC		cosh
-#include "ufloat.h"
-/* cosh.c */
+void cosh_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = cosh(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

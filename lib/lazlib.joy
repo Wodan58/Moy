@@ -1,8 +1,4 @@
-(*
-    module  : lazlib.joy
-    version : 1.3
-    date    : 06/18/22
-*)
+
 (* FILE:   lazlib.joy *)
 
 LIBRA
@@ -30,7 +26,7 @@ LIBRA
     Take ==
 	[ Null ]
 	[ pop pop [] ]
-	[ [Uncons] dip	pred ]	(* note: lazy Uncons	*)
+	[ [Uncons] dip  pred ]	(* note: lazy Uncons	*)
 	[ cons ]		(* note: ordinary cons	*)
 	linrec;
 
@@ -44,7 +40,7 @@ LIBRA
     From-to ==			(*  f   t		*)
 	[ > ]
 	[ pop pop [] ]
-	[ [dup succ] dip	(*  f   f' t		*)
+	[ [dup succ] dip 	(*  f   f' t		*)
 	  [From-to] cons cons	(*  f  [f' t From-to]	*)
 	  Cons ]		(* [f  [f' t From-to]]	*)
 	ifte;
@@ -53,7 +49,7 @@ LIBRA
 
     From-to-by ==		(*  f  t  [B]			*)
 	(* else-part: *)
-	[ dup [From-to-by] cons (*  f  t  [B] [[B] From-to-by]	*)
+	[ dup [From-to-by] cons	(*  f  t  [B] [[B] From-to-by]	*)
 	  swapd cons		(*  f [B]  [t  [B] From-to-by]	*)
 	  [dupd i] dip cons	(*  f [B(f) t  [B] From-to-by]	*)
 	  Cons ]		(* [f  B(f) t  [B] From-to-by]]	*)
@@ -82,7 +78,7 @@ LIBRA
 	[pop Null]
 	[[]]			(* []				*)
 	[ dup			(*   s   [P]   [P]		*)
-	  [ [i not] cons [dup first] swoncat
+	  [ [i not] cons [first] swoncat
 	    [Rest]
 	    while
 	    Uncons ]
@@ -93,18 +89,18 @@ LIBRA
 
 (* examples *)
 
-    Naturals	== 0 From;
+    Naturals    == 0 From;
     Positives	== 1 From;
-    Evens	== 0 [2 +] From-by;
-    Odds	== 1 [2 +] From-by;
+    Evens       == 0 [2 +] From-by;
+    Odds        == 1 [2 +] From-by;
     Powers-of-2 == 1 [2 *] From-by;
-    Ones	== 1 []	   From-by;
-    Squares	== Naturals [dup *] Map;
+    Ones        == 1 []    From-by;
+    Squares     == Naturals [dup *] Map;
 
     LAZLIB == "lazlib.joy - lazy list library\n".
 
 						(* end LIBRA *)
 
-%PUT lazlib  is loaded
+"lazlib  is loaded\n" putchars.
 
 (* END   lazlib.joy *)

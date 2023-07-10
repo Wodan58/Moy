@@ -1,21 +1,24 @@
 /*
     module  : fremove.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FREMOVE_C
 #define FREMOVE_C
 
 /**
-fremove  :  P  ->  B
+OK 1930  fremove  :  DA	P  ->  B
 The file system object with pathname P is removed from the file system.
 B is a boolean indicating success or failure.
 */
-PRIVATE void do_fremove(pEnv env)
+void fremove_(pEnv env)
 {
-    COMPILE;
-    ONEPARAM("fremove");
-    STRING("fremove");
-    UNARY(BOOLEAN_NEWNODE, !remove(env->stk->u.str));
+    Node node;
+
+    PARM(1, STRTOD);
+    node = vec_pop(env->stck);
+    node.u.num = !remove(node.u.str);
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
 }
 #endif

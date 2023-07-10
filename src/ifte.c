@@ -1,46 +1,64 @@
 /*
     module  : ifte.c
-    version : 1.20
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef IFTE_C
 #define IFTE_C
 
 /**
-ifte  :  [B] [T] [F]  ->  ...
+OK 2620  ifte  :  DDDU	[B] [T] [F]  ->  ...
 Executes B. If that yields true, then executes T else executes F.
 */
-#ifdef COMPILING
-void put_ifte(pEnv env, Node *prog[3])
+void ifte_(pEnv env)
 {
-    fprintf(outfp, "{ /* IFTE */");
-    fprintf(outfp, "int num; Node *save = env->stk;");
-    compile(env, prog[0]);
-    fprintf(outfp, "num = env->stk->u.num; env->stk = save; if (num) {");
-    compile(env, prog[1]);
-    fprintf(outfp, "} else {");
-    compile(env, prog[2]);
-    fprintf(outfp, "} }");
-}
-#endif
+    unsigned size1, size2;
+    Node first, second, third;
 
-PRIVATE void do_ifte(pEnv env)
-{
-    Node *prog[3], *save;
-
-    THREEPARAMS("ifte");
-    THREEQUOTES("ifte");
-    prog[2] = env->stk->u.lis;
-    POP(env->stk);
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_ifte);
-    save = env->stk;
-    exeterm(env, prog[0]);
-    prog[0] = env->stk->u.num ? prog[1] : prog[2];
-    env->stk = save;
-    exeterm(env, prog[0]);
+    PARM(3, IFTE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    /*
+        record the jump location after the false branch
+    */
+    size2 = vec_size(env->prog);
+    /*
+        push the false branch of the ifte
+    */
+    prog(env, third.u.lis);
+    /*
+        record the jump location before the false branch
+    */
+    size1 = vec_size(env->prog);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size2);
+    /*
+        jump past the false branch of ifte
+    */
+    code(env, jump_);
+    /*
+        push the true branch of the ifte
+    */
+    prog(env, second.u.lis);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size1);
+    /*
+        jump on false past the true branch of ifte
+    */
+    code(env, fjump_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    save(env, first.u.lis, 0);
+    /*
+        push the test of the ifte
+    */
+    prog(env, first.u.lis);
 }
 #endif

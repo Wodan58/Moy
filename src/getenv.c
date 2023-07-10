@@ -1,24 +1,23 @@
 /*
     module  : getenv.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef GETENV_C
 #define GETENV_C
 
 /**
-getenv  :  "variable"  ->  "value"
+OK 3050  getenv  :  DA	"variable"  ->  "value"
 Retrieves the value of the environment variable "variable".
 */
-PRIVATE void do_getenv(pEnv env)
+void getenv_(pEnv env)
 {
-    char *str;
+    Node node;
 
-    COMPILE;
-    ONEPARAM("getenv");
-    STRING("getenv");
-    if ((str = getenv(env->stk->u.str)) == 0)
-	str = "";
-    UNARY(STRING_NEWNODE, str);
+    PARM(1, STRTOD);
+    node = vec_pop(env->stck);
+    if ((node.u.str = getenv(node.u.str)) == 0)
+        node.u.str = "";
+    vec_push(env->stck, node);
 }
 #endif

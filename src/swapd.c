@@ -1,26 +1,25 @@
 /*
     module  : swapd.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SWAPD_C
 #define SWAPD_C
 
-#ifdef SWAP_X
-#undef SWAP_X
-#undef SWAP_C
-#endif
-
-#include "swap.c"
-
 /**
-swapd  :  X Y Z  ->  Y X Z
+OK 1280  swapd  :  DDDAAA	X Y Z  ->  Y X Z
 As if defined by:   swapd  ==  [swap] dip
 */
-#define PROCEDURE	do_swapd
-#define NAME		"swapd"
-#define PARAMCOUNT	THREEPARAMS
-#define ARGUMENT	do_swap
-#include "dipped.h"
-/* swapd.c */
+void swapd_(pEnv env)
+{
+    Node first, second, third;
+
+    PARM(3, ANYTYPE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    vec_push(env->stck, second);
+    vec_push(env->stck, first);
+    vec_push(env->stck, third);
+}
 #endif

@@ -1,19 +1,23 @@
 /*
     module  : trunc.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TRUNC_C
 #define TRUNC_C
 
 /**
-trunc  :  F  ->  I
+OK 1690  trunc  :  DA	F  ->  I
 I is an integer equal to the float F truncated toward zero.
 */
-PRIVATE void do_trunc(pEnv env)
+void trunc_(pEnv env)
 {
-    ONEPARAM("trunc");
-    FLOAT("trunc");
-    UNARY(INTEGER_NEWNODE, (long)FLOATVAL);
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.num = node.u.dbl;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

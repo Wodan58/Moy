@@ -1,54 +1,37 @@
 /*
     module  : case.c
-    version : 1.17
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef CASE_C
 #define CASE_C
 
-#include "compare.h"
-
 /**
-case  :  X [..[X Y]..]  ->  [Y] i
+OK 2110  case  :  DDU	X [..[X Y]..]  ->  Y i
 Indexing on the value of X, execute the matching Y.
 */
-#ifdef COMPILING
-void put_case(pEnv env, Node *prog)
+void case_(pEnv env)
 {
-    fprintf(outfp, "{ /* CASE */");
-    fprintf(outfp, "int num = 0; for (;;) {");
-    for (; prog->next; prog = prog->next) {
-	printnode(env, prog);
-	fprintf(outfp, "if (!Compare(env, env->stk->u.lis, env->stk->next)) {");
-	fprintf(outfp, "POP(env->stk); POP(env->stk);");
-	compile(env, prog->u.lis->next);
-	fprintf(outfp, "num = 1; break; }");
+    int i;
+    Node node, aggr, elem;
+
+    PARM(2, CASE);
+    aggr = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+        elem = vec_at(aggr.u.lis, i);
+        if (!i) {
+            node = elem;
+            break;
+        }
+        if (!Compare(env, node, vec_back(elem.u.lis))) {
+            vec_init(node.u.lis);
+            vec_shallow_copy(node.u.lis, elem.u.lis);
+            (void)vec_pop(node.u.lis);
+            (void)vec_pop(env->stck);
+            break;
+        }
     }
-    fprintf(outfp, "break; } if (!num) {");
-    fprintf(outfp, "POP(env->stk);");
-    compile(env, prog->u.lis);
-    fprintf(outfp, "} }");
-}
-#endif
-
-PRIVATE void do_case(pEnv env)
-{
-    Node *prog;
-
-    ONEPARAM("case");
-    LIST("case");
-    prog = env->stk->u.lis;
-    CHECKEMPTYLIST(prog, "case");
-    POP(env->stk);
-    INSTANT(put_case);
-    ONEPARAM("case");
-    for (; prog->next; prog = prog->next)
-	if (!Compare(env, prog->u.lis, env->stk))
-	    break;
-    if (prog->next) {
-	POP(env->stk);
-	exeterm(env, prog->u.lis->next);
-    } else
-	exeterm(env, prog->u.lis);
+    prog(env, node.u.lis);
 }
 #endif

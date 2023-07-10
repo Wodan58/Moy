@@ -1,19 +1,49 @@
 /*
     module  : minus.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef MINUS_C
 #define MINUS_C
 
 /**
--  :  M I  ->  N
+OK 1390  -\0minus  :  DDA	M I  ->  N
 Numeric N is the result of subtracting integer I from numeric M.
 Also supports float.
 */
-#define PROCEDURE	do_minus
-#define NAME		"-"
-#define OPER		-
-#include "plusminus.h"
-/* minus.c */
+void minus_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, PLUSMINUS);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    switch (first.op) {
+    case FLOAT_:
+	switch (second.op) {
+	case FLOAT_:
+	    first.u.dbl -= second.u.dbl;
+	    break;
+
+	default:
+	    first.u.dbl -= second.u.num;
+	    break;
+	}
+	break;
+
+    default:
+	switch (second.op) {
+	case FLOAT_:
+            second.u.dbl = first.u.num - second.u.dbl;
+            vec_push(env->stck, second);
+	    return;
+
+	default:
+            first.u.num -= second.u.num;
+	    break;
+	}
+	break;
+    }
+    vec_push(env->stck, first);
+}
 #endif

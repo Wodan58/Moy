@@ -1,53 +1,52 @@
 /*
     module  : unary2.c
-    version : 1.19
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNARY2_C
 #define UNARY2_C
 
 /**
-unary2  :  X1 X2 [P]  ->  R1 R2
+OK 2520  unary2  :  DDDAA	X1 X2 [P]  ->  R1 R2
 Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.
 */
-#ifdef COMPILING
-void put_unary2(pEnv env, Node *prog)
-{
-    fprintf(outfp, "{ /* UNARY2 */");
-    fprintf(outfp, "Node *save, *top, *result[2];");
-    fprintf(outfp, "save = env->stk; POP(env->stk); top = env->stk->next;");
-    compile(env, prog);
-    fprintf(outfp, "result[0] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(save);");
-    compile(env, prog);
-    fprintf(outfp, "result[1] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(result[0]);");
-    fprintf(outfp, "DUPLICATE(result[1]); }");
-}
-#endif
+void unary2_(pEnv env)
+{ /*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
+    unsigned size;
+    Node node, temp;
 
-PRIVATE void do_unary2(pEnv env)
-{
-    Node *prog, *save, *top, *result[2];
-
-    ONEPARAM("unary2");
-    ONEQUOTE("unary2");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_unary2);
-    TWOPARAMS("unary2");
-    save = env->stk;
-    POP(env->stk);
-    top = env->stk->next;
-    exeterm(env, prog);
-    result[0] = env->stk;
-    env->stk = top;
-    DUPLICATE(save);
-    exeterm(env, prog);
-    result[1] = env->stk;
-    env->stk = top;
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
+    PARM(3, DIP);
+    node = vec_pop(env->stck);
+    temp = vec_pop(env->stck);  /* Z */
+    code(env, swap_);
+    size = vec_size(env->prog); /* location of first Z, then Y' */
+    vec_push(env->prog, temp);  /* first Z, then Y' */
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Z' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of Z
+    */
+    push(env, size);
+    /*
+        Swap Z and Y'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Y' on top of the stack
+    */
+    prog(env, node.u.lis);
 }
 #endif

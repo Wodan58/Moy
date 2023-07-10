@@ -1,26 +1,22 @@
 /*
     module  : popd.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef POPD_C
 #define POPD_C
 
-#ifdef POP_X
-#undef POP_X
-#undef POP_C
-#endif
-
-#include "pop.c"
-
 /**
-popd  :  Y Z  ->  Z
+OK 1260  popd  :  DDA	Y Z  ->  Z
 As if defined by:   popd  ==  [pop] dip
 */
-#define PROCEDURE	do_popd
-#define NAME		"popd"
-#define PARAMCOUNT	TWOPARAMS
-#define ARGUMENT	do_pop
-#include "dipped.h"
-/* popd.c */
+void popd_(pEnv env)
+{
+    Node node;
+
+    PARM(2, ANYTYPE);
+    node = vec_pop(env->stck);
+    (void)vec_pop(env->stck);
+    vec_push(env->stck, node);
+}
 #endif

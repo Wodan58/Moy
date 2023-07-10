@@ -1,40 +1,43 @@
 /*
     module  : format.c
-    version : 1.14
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FORMAT_C
 #define FORMAT_C
 
 /**
-format  :  N C I J  ->  S
+OK 1760  format  :  DDDDA	N C I J  ->  S
 S is the formatted version of N in mode C
 ('d or 'i = decimal, 'o = octal, 'x or
 'X = hex with lower or upper case letters)
 with maximum width I and minimum width J.
 */
-PRIVATE void do_format(pEnv env)
+PRIVATE void format_(pEnv env)
 {
-    int width, prec, leng;
-    char spec, format[8], *result;
+    Node first, second, third, fourth;
+    char format[7], *result;
+#ifdef USE_SNPRINTF
+    int leng;
+#endif
 
-    FOURPARAMS("format");
-    INTEGER("format");
-    INTEGER2("format");
-    prec = env->stk->u.num;
-    POP(env->stk);
-    width = env->stk->u.num;
-    POP(env->stk);
-    CHARACTER("format");
-    spec = env->stk->u.num;
-    POP(env->stk);
-    CHECKFORMAT(spec, "format");
+    PARM(4, FORMAT);
+    fourth = vec_pop(env->stck); /* min width */
+    third = vec_pop(env->stck);  /* max width */
+    second = vec_pop(env->stck); /* mode */
+    first = vec_pop(env->stck);  /* number */
     strcpy(format, "%*.*ld");
-    format[5] = spec;
-    NUMERICTYPE("format");
-    leng = snprintf(0, 0, format, width, prec, (long)env->stk->u.num) + 1;
+    format[5] = second.u.num;
+#ifdef USE_SNPRINTF
+    leng = snprintf(0, 0, format, third.u.num, fourth.u.num, first.u.num) + 1;
     result = GC_malloc_atomic(leng + 1);
-    snprintf(result, leng, format, width, prec, (long)env->stk->u.num);
-    UNARY(STRING_NEWNODE, result);
+    snprintf(result, leng, format, third.u.num, fourth.u.num, first.u.num);
+#else
+    result = GC_malloc_atomic(INPLINEMAX); /* should be sufficient */
+    sprintf(result, format, third.u.num, fourth.u.num, first.u.num);
+#endif
+    first.u.str = result;
+    first.op = STRING_;
+    vec_push(env->stck, first);
 }
 #endif

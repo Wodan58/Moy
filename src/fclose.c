@@ -1,21 +1,21 @@
 /*
     module  : fclose.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FCLOSE_C
 #define FCLOSE_C
 
 /**
-fclose  :  S  ->
+OK 1830  fclose  :  D	S  ->
 Stream S is closed and removed from the stack.
 */
-PRIVATE void do_fclose(pEnv env)
+void fclose_(pEnv env)
 {
-    COMPILE;
-    ONEPARAM("fclose");
-    FILE("fclose");
-    fclose(env->stk->u.fil);
-    POP(env->stk);
+    Node node;
+
+    PARM(1, FGET);
+    node = vec_pop(env->stck);
+    fclose(node.u.fil);
 }
 #endif

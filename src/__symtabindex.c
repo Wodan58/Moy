@@ -1,20 +1,21 @@
 /*
     module  : __symtabindex.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef __SYMTABINDEX_C
 #define __SYMTABINDEX_C
 
 /**
-__symtabindex  :  ->  I
+OK 1060  __symtabindex  :  A	->  I
 Pushes current size of the symbol table.
 */
-PRIVATE void do___symtabindex(pEnv env)
+void __symtabindex_(pEnv env)
 {
-#ifdef COMPILING
-    COMPILE;
-    PUSH_NUM(INTEGER_, symtabindex(env));
-#endif
+    Node node;
+
+    node.u.num = sym_size(env->symtab);
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

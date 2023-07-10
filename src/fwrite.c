@@ -1,31 +1,29 @@
 /*
     module  : fwrite.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FWRITE_C
 #define FWRITE_C
 
 /**
-fwrite  :  S L  ->  S
+OK 1920  fwrite  :  DDA	S L  ->  S
 A list of integers are written as bytes to the current position of stream S.
 */
-PRIVATE void do_fwrite(pEnv env)
+void fwrite_(pEnv env)
 {
-    Node *node;
-    int i, leng;
+    int i, j;
     unsigned char *buf;
+    Node node, elem, temp;
 
-    COMPILE;
-    TWOPARAMS("fwrite");
-    LIST("fwrite");
-    for (node = env->stk->u.lis, leng = 0; node; node = node->next, leng++)
-	CHECKNUMERIC(node, "fwrite");
-    buf = GC_malloc_atomic(leng);
-    for (node = env->stk->u.lis, i = 0; node; node = node->next, i++)
-	buf[i] = node->u.num;
-    POP(env->stk);
-    FILE("fwrite");
-    fwrite(buf, leng, 1, env->stk->u.fil);
+    PARM(2, FWRITE);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    buf = GC_malloc_atomic(vec_size(elem.u.lis));
+    for (i = 0, j = vec_size(elem.u.lis); i < j; i++) {
+        temp = vec_at(elem.u.lis, j - i - 1);
+        buf[i] = temp.u.num;
+    }
+    fwrite(buf, 1, vec_size(elem.u.lis), node.u.fil);
 }
 #endif

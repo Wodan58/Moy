@@ -1,113 +1,122 @@
 /*
     module  : map.c
-    version : 1.25
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef MAP_C
 #define MAP_C
 
 /**
-map  :  A [P]  ->  B
+OK 2810  map  :  DDA	A [P]  ->  B
 Executes P on each member of aggregate A,
 collects results in sametype aggregate B.
 */
-#ifdef COMPILING
-void put_map(pEnv env, Node *prog)
+void map_(pEnv env)
 {
-    fprintf(outfp, "{ /* MAP */");
-    fprintf(outfp, "long set, zet; int i = 0;");
-    fprintf(outfp, "char *str, *result, *volatile ptr;");
-    fprintf(outfp, "Node *cur, *save, *root = 0, *last = 0;");
-    fprintf(outfp, "cur = env->stk; POP(env->stk); switch (cur->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
-    fprintf(outfp, "save = env->stk;");
-    fprintf(outfp, "DUPLICATE(cur);");
-    compile(env, prog);
-    fprintf(outfp, "if (!root)");
-    fprintf(outfp, "last = root = newnode(env->stk->op, env->stk->u,0); else ");
-    fprintf(outfp, "last = last->next = newnode(env->stk->op, env->stk->u,0);");
-    fprintf(outfp, "env->stk = save;");
-    fprintf(outfp, "} PUSH_PTR(LIST_, root); break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "ptr = str = GC_strdup(cur->u.str);");
-    fprintf(outfp, "for (result = GC_strdup(str); *str; str++) {");
-    fprintf(outfp, "save = env->stk;");
-    fprintf(outfp, "PUSH_NUM(CHAR_, *str);");
-    compile(env, prog);
-    fprintf(outfp, "result[i++] = env->stk->u.num;");
-    fprintf(outfp, "env->stk = save;");
-    fprintf(outfp, "} result[i] = 0; PUSH_PTR(STRING_, result); break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "set = cur->u.set;");
-    fprintf(outfp, "for (zet = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long)1 << i)) {");
-    fprintf(outfp, "save = env->stk;");
-    fprintf(outfp, "PUSH_NUM(INTEGER_, i);");
-    compile(env, prog);
-    fprintf(outfp, "zet |= (long)1 << env->stk->u.num;");
-    fprintf(outfp, "env->stk = save;");
-    fprintf(outfp, "} PUSH_NUM(SET_, zet); break; } }");
-}
-#endif
+    int i;
+    unsigned size;
+    Node aggr, list, node, temp;
 
-PRIVATE void do_map(pEnv env)
-{
-    int i = 0;
-    long set, zet;
-    char *str, *result, *volatile ptr;
-    Node *prog, *cur, *root = 0, *last = 0, *save;
-
-    ONEPARAM("map");
-    ONEQUOTE("map");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_map);
-    ONEPARAM("map");
-    cur = env->stk;
-    POP(env->stk);
-    switch (cur->op) {
+    PARM(2, STEP);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    /*
+        register the location of the result aggregate
+    */
+    size = vec_size(env->prog);
+    /*
+        build a result aggregate of the correct type
+    */
+    temp.op = aggr.op;
+    switch (aggr.op) {
     case LIST_:
-	for (cur = cur->u.lis; cur; cur = cur->next) {
-	    save = env->stk;
-	    DUPLICATE(cur);
-	    exeterm(env, prog);
-	    CHECKSTACK("map");
-	    if (!root)
-		last = root = newnode(env->stk->op, env->stk->u, 0);
-	    else
-		last = last->next = newnode(env->stk->op, env->stk->u, 0);
-	    env->stk = save;
-	}
-	PUSH_PTR(LIST_, root);
-	break;
+        vec_init(temp.u.lis);
+        vec_push(env->prog, temp);
+        for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+            /*
+                push the location of the result type
+            */
+            push(env, size);
+            /*
+                add an instruction that builds the result type
+            */
+            code(env, push_);
+            /*
+                save and restore the stack, if needed
+            */
+            save(env, list.u.lis, 1);
+            /*
+                push the program to be executed for each element
+            */
+            prog(env, list.u.lis);
+            /*
+                push the element to be mapped
+            */
+            node = vec_at(aggr.u.lis, i);
+            prime(env, node);
+        }
+        break;
+
     case STRING_:
-	ptr = str = GC_strdup(cur->u.str);
-	for (result = GC_strdup(str); *str; str++) {
-	    save = env->stk;
-	    PUSH_NUM(CHAR_, *str);
-	    exeterm(env, prog);
-	    result[i++] = env->stk->u.num;
-	    env->stk = save;
-	}
-	result[i] = 0;
-	PUSH_PTR(STRING_, result);
-	break;
+        temp.u.str = GC_strdup(aggr.u.str);
+        temp.u.str[0] = 0;
+        vec_push(env->prog, temp);
+        node.op = CHAR_;
+        for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
+            /*
+                push the location of the result type
+            */
+            push(env, size);
+            /*
+                add an instruction that builds the result type
+            */
+            code(env, push_);
+            /*
+                save and restore the stack, if needed
+            */
+            save(env, list.u.lis, 1);
+            /*
+                push the program to be executed for each element
+            */
+            prog(env, list.u.lis);
+            /*
+                push the element to be mapped
+            */
+            node.u.num = aggr.u.str[i];
+            vec_push(env->prog, node);
+        }
+        break;
+
     case SET_:
-	set = cur->u.set;
-	for (zet = 0; i < SETSIZE_; i++)
-	    if (set & ((long)1 << i)) {
-		save = env->stk;
-		PUSH_NUM(INTEGER_, i);
-		exeterm(env, prog);
-		zet |= (long)1 << env->stk->u.num;
-		env->stk = save;
-	    }
-	PUSH_NUM(SET_, zet);
-	break;
+        temp.u.set = 0;
+        vec_push(env->prog, temp);
+        node.op = INTEGER_;
+        for (i = 0; i < SETSIZE; i++)
+            if (aggr.u.set & ((long)1 << i)) {
+                /*
+                    push the location of the result type
+                */
+                push(env, size);
+                /*
+                    add an instruction that builds the result type
+                */
+                code(env, push_);
+                /*
+                    save and restore the stack, if needed
+                */
+                save(env, list.u.lis, 1);
+                /*
+                    push the program to be executed for each element
+                */
+                prog(env, list.u.lis);
+                /*
+                    push the element to be mapped
+                */
+                node.u.num = i;
+                vec_push(env->prog, node);
+            }
     default:
-	BADAGGREGATE("map");
-	break;
+        break;
     }
 }
 #endif

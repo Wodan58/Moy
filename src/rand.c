@@ -1,18 +1,21 @@
 /*
     module  : rand.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef RAND_C
 #define RAND_C
 
 /**
-rand  :  ->  I
+OK 1150  rand  :  A	->  I
 I is a random integer.
 */
-PRIVATE void do_rand(pEnv env)
+void rand_(pEnv env)
 {
-    COMPILE;
-    PUSH_NUM(INTEGER_, rand());
+    Node node;
+
+    node.u.num = rand();
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

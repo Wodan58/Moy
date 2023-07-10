@@ -1,30 +1,25 @@
-(*
-    module  : plglib.joy
-    version : 1.3
-    date    : 06/18/22
-*)
 (* FILE:   plglib.joy *)
 
-%INCLUDE symlib.joy
+    "symlib" libload.
 
 LIBRA
 
     _plglib == true;
 
     unops == [ not - N ];
-    binops == [ imp > C	 iff = E  or v A  and & K ];
+    binops == [ imp > C  iff = E  or v A  and & K ];
     bin1ops == [ imp > C   iff = E ];
     bin2ops == [ or v A ];
     bin3ops == [ and & K ];
 
 
-(* - - - - -         S E M A N T I C   T A B L E A U X        - - - - - *)
+(* - - - - -        S E M A N T I C   T A B L E A U X       - - - - - *)
 
-(*	 	also known as truth trees or Wang's algorithm		*)
+(*	 	also known as truth trees or Wang's algorithm	      *)
 
 HIDE
 
-(* the various initial continuations:					*)
+(* the various initial continuations:				      *)
 
 (*
     show-old ==
@@ -121,10 +116,10 @@ IN
 	"fal-old E" t-trace;
 *)
 
-    ver-all ==					(* t f c F		*)
+    ver-all ==					(* t f c F	      *)
 	"ver-all B" t-trace
 	unswons
-	[ [ [ [or v A] in]
+	[ [ [[or v A] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -132,7 +127,7 @@ IN
 	      [[i] dip ver-all] dip ]
 	    dip
 	    [i] dip ver-all ]
-	  [ [ [imp > C] in]
+	  [ [[imp > C] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -140,20 +135,20 @@ IN
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip ver-all ]
-	  [ [ [iff = E] in]
+	  [ [[iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
-	    [[and] swoncat] dip	  [or] swoncat
+	    [[and] swoncat] dip   [or] swoncat
 	    [ swap
 	      [[i] dip ver-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [ [and & K] in]
+	  [ [[and & K] in]
 	    pop uncons first swap
 	    [ [ver-all] cons swons ]
 	    dip ver-all ]
-	  [ [ [not - N] in]
+	  [ [[not - N] in]
 	    pop first fal-all ]
 	  [ popd
 	    [ popd has ]
@@ -168,10 +163,10 @@ IN
 	cond
 	"ver-all E" t-trace;
 
-    fal-all ==					(* t f c F		*)
+    fal-all ==					(* t f c F	      *)
 	"fal-all B" t-trace
 	unswons
-	[ [ [ [and & K] in]
+	[ [ [[and & K] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -179,24 +174,24 @@ IN
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [ [or v A] in]
+	  [ [[or v A] in]
 	    pop uncons first swap
 	    [ [fal-all] cons swons ]
 	    dip fal-all ]
-	  [ [ [imp > C] in]
+	  [ [[imp > C] in]
 	    pop uncons first swap
 	    [ [fal-all] cons swons ]
 	    dip ver-all ]
-	  [ [ [iff = E] in]
+	  [ [[iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
-	    [[imp] swoncat] dip	  [swap] infra [imp] swoncat
+	    [[imp] swoncat] dip   [swap] infra [imp] swoncat
 	    [ swap
 	      [[i] dip fal-all] dip ]
 	    dip
 	    [i] dip fal-all ]
-	  [ [ [not - N] in]
+	  [ [[not - N] in]
 	    pop first ver-all ]
 	  [ popd
 	    [ popd popd has ]
@@ -209,12 +204,12 @@ IN
 	cond
 	"fal-all E" t-trace;
 
-    ver-first ==				(* t f c F		*)
+    ver-first ==				(* t f c F	      *)
       [ pop pop pop pop null ]
       [
 	"ver-first B" t-trace
 	unswons
-	[ [ [ [or v A] in]
+	[ [ [[or v A] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -222,7 +217,7 @@ IN
 	      [[i] dip ver-first] dip ]
 	    dip
 	    [i] dip ver-first ]
-	  [ [ [imp > C] in]
+	  [ [[imp > C] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -230,20 +225,20 @@ IN
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip ver-first ]
-	  [ [ [iff = E] in]
+	  [ [[iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
-	    [[and] swoncat] dip	  [or] swoncat
+	    [[and] swoncat] dip   [or] swoncat
 	    [ swap
 	      [[i] dip ver-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [ [and & K] in]
+	  [ [[and & K] in]
 	    pop uncons first swap
 	    [ [ver-first] cons swons ]
 	    dip ver-first ]
-	  [ [ [not - N] in]
+	  [ [[not - N] in]
 	    pop first fal-first ]
 	  [ popd
 	    [ popd has ]
@@ -261,12 +256,12 @@ IN
       [ pop pop pop pop ]
       ifte;
 
-    fal-first ==				(* t f c F		*)
+    fal-first ==				(* t f c F	      *)
       [ pop pop pop pop null ]
       [
 	"fal-first B" t-trace
 	unswons
-	[ [ [ [and & K] in]
+	[ [ [[and & K] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -274,24 +269,24 @@ IN
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [ [iff = E] in]
+	  [ [[iff = E] in]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    dup
-	    [[imp] swoncat] dip	  [swap] infra [imp] swoncat
+	    [[imp] swoncat] dip   [swap] infra [imp] swoncat
 	    [ swap
 	      [[i] dip fal-first] dip ]
 	    dip
 	    [i] dip fal-first ]
-	  [ [ [or v A] in]
+	  [ [[or v A] in]
 	    pop uncons first swap
 	    [ [fal-first] cons swons ]
 	    dip fal-first ]
-	  [ [ [imp > C] in]
+	  [ [[imp > C] in]
 	    pop uncons first swap
 	    [ [fal-first] cons swons ]
 	    dip ver-first ]
-	  [ [ [not - N] in]
+	  [ [[not - N] in]
 	    pop first ver-first ]
 	  [ popd
 	    [ popd popd has ]
@@ -349,7 +344,7 @@ END; (* HIDE, end of SEMANTIC TABLEAUX *)
 
     PLGLIB == "plglib.joy - propositional logic library\n".
 
-							(*  end LIBRA	*)
-%PUT plglib  is loaded
+							 (* end LIBRA *)
+"plglib  is loaded\n" putchars.
 
 (* END  plglib.joy *)

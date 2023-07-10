@@ -1,35 +1,37 @@
 /*
     module  : fput.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FPUT_C
 #define FPUT_C
 
 /**
-fput  :  S X  ->  S
+OK 1950  fput  :  DDA	S X  ->  S
 Writes X to stream S, pops X off stack.
 */
-PRIVATE void do_fput(pEnv env)
+void fput_(pEnv env)
 {
-    FILE *fp;
-    Node *node;
     int stdout_dup;
+    Node node, elem;
 
-    COMPILE;
-    TWOPARAMS("fput");
-    node = env->stk;
-    POP(env->stk);
-    FILE("fput");
-    fp = env->stk->u.fil;
+    PARM(2, FPUT);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    fflush(stdout);
     if ((stdout_dup = dup(1)) != -1)
-	dup2(fileno(fp), 1);
-    writefactor(env, node);
+        dup2(fileno(node.u.fil), 1);
+    if (elem.op == LIST_) {
+        putchar('[');
+        writeterm(env, elem.u.lis);
+        putchar(']');
+    } else
+        writefactor(env, elem);
     putchar(' ');
     fflush(stdout);
     if (stdout_dup != -1) {
-	dup2(stdout_dup, 1);
-	close(stdout_dup);
+        dup2(stdout_dup, 1);
+        close(stdout_dup);
     }
 }
 #endif

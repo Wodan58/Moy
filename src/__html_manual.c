@@ -1,21 +1,18 @@
 /*
     module  : __html_manual.c
-    version : 1.7
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef __HTML_MANUAL_C
 #define __HTML_MANUAL_C
 
-#include "manual.h"
-
 /**
-__html_manual  :  ->
+OK 2960  __html_manual  :  N	->
 Writes this manual of all Joy primitives to output file in HTML style.
 */
-PRIVATE void do___html_manual(pEnv env)
+void __html_manual_(pEnv env)
 {
-    COMPILE;
     make_manual(1);
+    env->nothing++;
 }
-/* __html_manual.c */
 #endif

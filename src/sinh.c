@@ -1,18 +1,23 @@
 /*
     module  : sinh.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SINH_C
 #define SINH_C
 
 /**
-sinh  :  F  ->  G
+OK 1650  sinh  :  DA	F  ->  G
 G is the hyperbolic sine of F.
 */
-#define PROCEDURE	do_sinh
-#define NAME		"sinh"
-#define FUNC		sinh
-#include "ufloat.h"
-/* sinh.c */
+void sinh_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = sinh(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

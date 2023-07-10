@@ -1,13 +1,9 @@
-(*
-    module  : alljoy.joy
-    version : 1.1
-    date    : 06/18/22
-*)
-%INCLUDE usrlib.joy
-%INCLUDE grmlib.joy
-%INCLUDE lsplib.joy
-%INCLUDE lazlib.joy
-%INCLUDE tutlib.joy
-%INCLUDE mtrlib.joy
-%INCLUDE typlib.joy
+"numlib.joy" include.
+"seqlib.joy" include.
+"symlib.joy" include.
+"lsplib.joy" include.
+"lazlib.joy" include.
+"tutlib.joy" include.
+"mtrlib.joy" include.
+"seqlib.joy" include.
 help.

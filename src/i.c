@@ -1,23 +1,21 @@
 /*
     module  : i.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef I_C
 #define I_C
 
 /**
-i  :  [P]  ->  ...
+OK 2430  i  :  DU	[P]  ->  ...
 Executes P. So, [P] i  ==  P.
 */
-PRIVATE void do_i(pEnv env)
+PRIVATE void i_(pEnv env)
 {
-    Node *prog;
+    Node node;
 
-    ONEPARAM("i");
-    ONEQUOTE("i");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    exeterm(env, prog);
+    PARM(1, DIP);
+    node = vec_pop(env->stck);
+    prog(env, node.u.lis);
 }
 #endif

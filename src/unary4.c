@@ -1,74 +1,97 @@
 /*
     module  : unary4.c
-    version : 1.16
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNARY4_C
 #define UNARY4_C
 
 /**
-unary4  :  X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
+OK 2540  unary4  :  DDDDDAAAA	X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
 Executes P four times, with Xi, returns Ri (i = 1..4).
 */
-#ifdef COMPILING
-void put_unary4(pEnv env, Node *prog)
-{
-    fprintf(outfp, "{ /* UNARY4 */");
-    fprintf(outfp, "Node *first, *second, *third, *top, *result[4];");
-    fprintf(outfp, "third = env->stk; POP(env->stk);");
-    fprintf(outfp, "second = env->stk; POP(env->stk);");
-    fprintf(outfp, "first = env->stk; POP(env->stk); top = env->stk->next;");
-    compile(env, prog);
-    fprintf(outfp, "result[0] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(first);");
-    compile(env, prog);
-    fprintf(outfp, "result[1] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(second);");
-    compile(env, prog);
-    fprintf(outfp, "result[2] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(third);");
-    compile(env, prog);
-    fprintf(outfp, "result[3] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(result[0]); DUPLICATE(result[1]);");
-    fprintf(outfp, "DUPLICATE(result[2]); DUPLICATE(result[3]); }");
-}
-#endif
+PRIVATE void unary4_(pEnv env)
+{ /*  X Y Z W [P]  unary4    ==>  X' Y' Z' W'        */
+    unsigned size1, size2, size3;
+    Node param1, param2, param3, node;
 
-PRIVATE void do_unary4(pEnv env)
-{
-    Node *prog, *first, *second, *third, *top, *result[4];
+    PARM(5, DIP);
+    node = vec_pop(env->stck);
+    param3 = vec_pop(env->stck);
+    param2 = vec_pop(env->stck);
+    param1 = vec_pop(env->stck);
 
-    ONEPARAM("unary4");
-    ONEQUOTE("unary4");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_unary4);
-    FOURPARAMS("unary4");
-    third = env->stk;
-    POP(env->stk);
-    second = env->stk;
-    POP(env->stk);
-    first = env->stk;
-    POP(env->stk);
-    top = env->stk->next;
-    exeterm(env, prog);
-    result[0] = env->stk;
-    env->stk = top;
-    DUPLICATE(first);
-    exeterm(env, prog);
-    result[1] = env->stk;
-    env->stk = top;
-    DUPLICATE(second);
-    exeterm(env, prog);
-    result[2] = env->stk;
-    env->stk = top;
-    DUPLICATE(third);
-    exeterm(env, prog);
-    result[3] = env->stk;
-    env->stk = top;
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
-    DUPLICATE(result[2]);
-    DUPLICATE(result[3]);
+    code(env, swap_);
+    code(env, rolldownd_);
+
+    size3 = vec_size(env->prog); /* location of first W, then Z' */
+    vec_push(env->prog, param3); /* first W, then Z' */
+
+    size2 = vec_size(env->prog); /* location of first Z, then Y' */
+    vec_push(env->prog, param2); /* first Z, then Y' */
+
+    size1 = vec_size(env->prog); /* location of first Y, then X' */
+    vec_push(env->prog, param1); /* first Y, then X' */
+
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate W' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of W
+    */
+    push(env, size3);
+    /*
+        Swap W and Z'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Z' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of Z
+    */
+    push(env, size2);
+    /*
+        Swap Z and Y'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Y' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of Y
+    */
+    push(env, size1);
+    /*
+        Swap Y and X'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate X' on top of the stack
+    */
+    prog(env, node.u.lis);
 }
 #endif

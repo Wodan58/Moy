@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -11,17 +11,21 @@
 #endif
 
 /**
-filetime  :  F  ->  T
+OK 3210  filetime  :  DA 	F  ->  T
 T is the modification time of file F.
 */
-PRIVATE void do_filetime(pEnv env)
+void filetime_(pEnv env)
 {
+    Node node;
     struct stat buf;
 
-    COMPILE;
-    ONEPARAM("filetime");
-    if (stat(env->stk->u.str, &buf) == -1)
-	buf.st_mtime = 0;
-    UNARY(INTEGER_NEWNODE, buf.st_mtime);
+    PARM(1, STRTOD);
+    node = vec_pop(env->stck);
+    if (stat(node.u.str, &buf) == -1)
+        node.u.num = 0;
+    else
+        node.u.num = buf.st_mtime;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

@@ -1,18 +1,23 @@
 /*
     module  : tan.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TAN_C
 #define TAN_C
 
 /**
-tan  :  F  ->  G
+OK 1670  tan  :  DA	F  ->  G
 G is the tangent of F.
 */
-#define PROCEDURE	do_tan
-#define NAME		"tan"
-#define FUNC		tan
-#include "ufloat.h"
-/* tan.c */
+void tan_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = tan(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

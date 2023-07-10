@@ -1,18 +1,21 @@
 /*
     module  : undeferror.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNDEFERROR_C
 #define UNDEFERROR_C
 
 /**
-undeferror  :  ->  I
+OK 1100  undeferror  :  A	->  I
 Pushes current value of undefined-is-error flag.
 */
-PRIVATE void do_undeferror(pEnv env)
+void undeferror_(pEnv env)
 {
-    COMPILE;
-    PUSH_NUM(INTEGER_, undeferror);
+    Node node;
+
+    node.u.num = env->undeferror;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

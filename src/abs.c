@@ -1,23 +1,26 @@
 /*
     module  : abs.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ABS_C
 #define ABS_C
 
 /**
-abs  :  N1  ->  N2
+OK 1480  abs  :  DA	N1  ->  N2
 Integer N2 is the absolute value (0,1,2..) of integer N1,
 or float N2 is the absolute value (0.0 ..) of float N1.
 */
-PRIVATE void do_abs(pEnv env)
+void abs_(pEnv env)
 {
-    ONEPARAM("abs");
-    FLOAT("abs");
-    if (env->stk->op == FLOAT_)
-	UNARY(FLOAT_NEWNODE, fabs(env->stk->u.dbl));
-    else if (env->stk->u.num < 0)
-	UNARY(INTEGER_NEWNODE, -env->stk->u.num);
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    if (node.op == FLOAT_)
+        node.u.dbl = fabs(node.u.dbl);
+    else
+        node.u.num = labs(node.u.num);
+    vec_push(env->stck, node);
 }
 #endif

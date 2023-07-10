@@ -1,74 +1,78 @@
 /*
     module  : linrec.c
-    version : 1.18
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef LINREC_C
 #define LINREC_C
 
 /**
-linrec  :  [P] [T] [R1] [R2]  ->  ...
+OK 2730  linrec  :  DDDDU	[P] [T] [R1] [R2]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses, executes R2.
 */
-#ifdef COMPILING
-void put_linrec(pEnv env, Node *prog[4])
+void linrec_(pEnv env)
 {
-    static int ident;
-    FILE *oldfp;
+    unsigned size1, size2;
+    Node first, second, third, fourth;
 
-    fprintf(declfp, "void linrec_%d(pEnv env);", ++ident);
-    fprintf(outfp, "linrec_%d(env);", ident);
-    oldfp = outfp;
-    outfp = nextfile();
-    fprintf(outfp, "void linrec_%d(pEnv env) {", ident);
-    fprintf(outfp, "int num; Node *save; save = env->stk;");
-    compile(env, prog[0]);
-    fprintf(outfp, "num = env->stk->u.num; env->stk = save; if (num) {");
-    compile(env, prog[1]);
-    fprintf(outfp, "} else {");
-    compile(env, prog[2]);
-    fprintf(outfp, "linrec_%d(env);", ident);
-    compile(env, prog[3]);
-    fprintf(outfp, "} }\n");
-    closefile(outfp);
-    outfp = oldfp;
-}
-#endif
-
-void linrec(pEnv env, Node *prog[])
-{
-    int num;
-    Node *save;
-
-    save = env->stk;
-    exeterm(env, prog[0]);
-    num = env->stk->u.num;
-    env->stk = save;
-    if (num)
-	exeterm(env, prog[1]);
-    else {
-	exeterm(env, prog[2]);
-	linrec(env, prog);
-	exeterm(env, prog[3]);
-    }
-}
-
-PRIVATE void do_linrec(pEnv env)
-{
-    Node *prog[4];
-
-    FOURPARAMS("linrec");
-    FOURQUOTES("linrec");
-    prog[3] = env->stk->u.lis;
-    POP(env->stk);
-    prog[2] = env->stk->u.lis;
-    POP(env->stk);
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_linrec);
-    linrec(env, prog);
+    PARM(4, LINREC);
+    fourth = vec_pop(env->stck);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    /*
+        register the return address
+    */
+    size2 = vec_size(env->prog);
+    /*
+        execute R2 after returning from the recursion
+    */
+    prog(env, fourth.u.lis);
+    /*
+        setup the continuation
+    */
+    code(env, linrec_);
+    vec_push(env->prog, fourth);
+    vec_push(env->prog, third);
+    vec_push(env->prog, second);
+    vec_push(env->prog, first);
+    /*
+        push the R1 branch of linrec
+    */
+    prog(env, third.u.lis);
+    /*
+        register the target location for the false branch
+    */
+    size1 = vec_size(env->prog);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size2);
+    /*
+        skip the false branch of linrec
+    */
+    code(env, jump_);
+    /*
+        push the true branch of linrec
+    */
+    prog(env, second.u.lis);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size1);
+    /*
+        jump on false past the true branch of linrec
+    */
+    code(env, fjump_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    save(env, first.u.lis, 0);
+    /*
+        push the test of linrec
+    */
+    prog(env, first.u.lis);
 }
 #endif

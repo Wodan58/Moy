@@ -1,18 +1,22 @@
 /*
     module  : ord.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ORD_C
 #define ORD_C
 
 /**
-ord  :  C  ->  I
+OK 1460  ord  :  DA	C  ->  I
 Integer I is the Ascii value of character C (or logical or integer).
 */
-#define PROCEDURE	do_ord
-#define NAME		"ord"
-#define RESULTTYP	INTEGER_NEWNODE
-#include "ordchr.h"
-/* ord.c */
+void ord_(pEnv env)
+{
+    Node node;
+
+    PARM(1, PREDSUCC);
+    node = vec_pop(env->stck);
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
+}
 #endif

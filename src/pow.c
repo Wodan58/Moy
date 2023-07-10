@@ -1,18 +1,25 @@
 /*
     module  : pow.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef POW_C
 #define POW_C
 
 /**
-pow  :  F G  ->  H
+OK 1630  pow  :  DDA	F G  ->  H
 H is F raised to the Gth power.
 */
-#define PROCEDURE	do_pow
-#define NAME		"pow"
-#define FUNC		pow
-#include "bfloat.h"
-/* pow.c */
+void pow_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, BFLOAT);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first.u.dbl = pow(first.op == FLOAT_ ? first.u.dbl : (double)first.u.num,
+                    second.op == FLOAT_ ? second.u.dbl : (double)second.u.num);
+    first.op = FLOAT_;
+    vec_push(env->stck, first);
+}
 #endif

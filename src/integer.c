@@ -1,19 +1,23 @@
 /*
     module  : integer.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef INTEGER_C
 #define INTEGER_C
 
 /**
-integer  :  X  ->  B
+OK 2330  integer  :  DA	X  ->  B
 Tests whether X is an integer.
 */
-#define PROCEDURE	do_integer
-#define NAME		"integer"
-#define REL		==
-#define TYP		INTEGER_
-#include "type.h"
-/* integer.c */
+void integer_(pEnv env)
+{
+    Node node;
+
+    PARM(1, ANYTYPE);
+    node = vec_pop(env->stck);
+    node.u.num = node.op == INTEGER_;
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
+}
 #endif

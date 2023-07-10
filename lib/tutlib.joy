@@ -1,20 +1,15 @@
-(*
-    module  : tutlib.joy
-    version : 1.6
-    date    : 06/18/22
-*)
 (* FILE: tutlib.joy *)
 
 LIBRA
 
     _tutlib == true;
     pause ==
-	bell "\nTo return, hit  Control-" putchars control-eof putch newline
-	terminal include;
+	bell "\nTo return, hit  Control-" putchars control-eof putch
+        newline terminal include;
     pausing == putchars pause;
     praise ==
 	[ "Good." "Splendid." "Excellent." "Great." "Terrific." ]
-	(* rand 5 rem *) 0 at putchars newline;			(* R.W. *)
+	(* rand 5 rem *) 0 at putchars newline;		      (* R.W. *)
     get-integer ==
 	get
 	[ integer not ]
@@ -32,25 +27,23 @@ LIBRA
 	while;
     expecting ==
 	[ equal ]
-	[ pop pop praise [succ] dip ]
-	[ "No, the right answer is:  " putchars put
-	  "   Your answer:  " putchars put newline ]
+	[ pop pop praise [succ] dip]
+	[ "No, the right answer is:  " putchars put pop newline ]
 	ifte
 	succ;
     expecting-from ==
 	[ [equal] some ]
-	[ pop pop praise [succ] dip ]
-	[ "No, the right answer must be one of the following:\n\t" putchars
-	  [put "  " putchars] step
-	   "   Your answer:  " putchars put newline ]
+	[ pop pop praise [succ] dip]
+	[ "No, the right answer must be one of the following:\n\t"
+          putchars [put "  " putchars] step pop newline ]
 	ifte
 	succ;
     ini-stats ==
 	0 0 ;
     put-stats ==
 	"You answered " putchars [put] dip
-	" of the " putchars put
-	" questions correctly.\n\n" putchars;
+	"of the " putchars put
+	"questions correctly.\n\n" putchars;
 
 (* the following assume a "Table Of Contents" definition of the form
 	toc-of-tutorial == [ [ [Q0] "Title" ]
@@ -65,7 +58,7 @@ where each Qi is a quote, each Hi is a section heading. *)
     toc-one-heading ==
 	toc-of-tutorial of second putchars newline newline;
     toc-do-section0 ==
-#	terminal include					(* R.W. *)
+#	terminal include				      (* R.W. *)
 	newline
 	0 toc-one-heading
 	"Contents:\n" putchars toc-all-headings newline
@@ -79,12 +72,12 @@ where each Qi is a quote, each Hi is a section heading. *)
 	  "type any other number (even negative) to quit.\n" ]
 	putstrings
 	get-integer
-	[dup toc-of-tutorial size >=] [0 swap -] [] ifte;
+	[toc-of-tutorial size >=] [0 swap -] [] ifte;
     toc-do-section ==
 	toc-of-tutorial of first i;
     toc-repeat-sections ==
 	toc-ask-for-section
-	[ dup 0 >= ]
+	[ 0 >= ]
 	[ toc-do-section
 	  toc-ask-for-section ]
 	while;

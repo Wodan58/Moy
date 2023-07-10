@@ -1,24 +1,22 @@
 /*
     module  : include.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef INCLUDE_C
 #define INCLUDE_C
 
 /**
-include  :  "filnam.ext"  ->
+OK 3140  include  :  D	"filnam.ext"  ->
 Transfers input to file whose name is "filnam.ext".
 On end-of-file returns to previous input file.
 */
-PRIVATE void do_include(pEnv env)
+void include_(pEnv env)
 {
-    char *str;
+    Node node;
 
-    ONEPARAM("include");
-    STRING("include");
-    str = env->stk->u.str;
-    POP(env->stk);
-    include(env, str, 1);
+    PARM(1, STRTOD);
+    node = vec_pop(env->stck);
+    include(env, node.u.str, 1);
 }
 #endif

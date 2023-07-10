@@ -1,18 +1,18 @@
 /*
     module  : gc.c
-    version : 1.8
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef GC_C
 #define GC_C
 
 /**
-gc  :  ->
+OK 3030  gc  :  N	->
 Initiates garbage collection.
 */
-PRIVATE void do_gc(pEnv env)
+void gc_(pEnv env)
 {
-    COMPILE;
     GC_gcollect();
+    env->nothing++;
 }
 #endif

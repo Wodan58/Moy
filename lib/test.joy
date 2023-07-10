@@ -1,12 +1,6 @@
-(*
-    module  : test.joy
-    version : 1.1
-    date    : 06/18/22
-*)
-%INCLUDE usrlib.joy
-%INCLUDE numlib.joy
+"numlib.joy" include.
 
-1001.1	cube-root.
+1001.1  cube-root.
 
 argc.
 

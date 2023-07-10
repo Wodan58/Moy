@@ -1,19 +1,23 @@
 /*
     module  : file.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FILE_C
 #define FILE_C
 
 /**
-file  :  F  ->  B
+OK 2420  file  :  DA	F  ->  B
 Tests whether F is a file.
 */
-#define PROCEDURE	do_file
-#define NAME		"file"
-#define REL		==
-#define TYP		FILE_
-#include "type.h"
-/* file.c */
+void file_(pEnv env)
+{
+    Node node;
+
+    PARM(1, ANYTYPE);
+    node = vec_pop(env->stck);
+    node.u.num = node.op == FILE_;
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
+}
 #endif

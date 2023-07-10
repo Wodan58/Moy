@@ -1,18 +1,22 @@
 /*
     module  : chr.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef CHR_C
 #define CHR_C
 
 /**
-chr  :  I  ->  C
+OK 1470  chr  :  DA	I  ->  C
 C is the character whose Ascii value is integer I (or logical or character).
 */
-#define PROCEDURE	do_chr
-#define NAME		"chr"
-#define RESULTTYP	CHAR_NEWNODE
-#include "ordchr.h"
-/* chr.c */
+void chr_(pEnv env)
+{
+    Node node;
+
+    PARM(1, PREDSUCC);
+    node = vec_pop(env->stck);
+    node.op = CHAR_;
+    vec_push(env->stck, node);
+}
 #endif

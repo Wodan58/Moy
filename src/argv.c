@@ -1,23 +1,27 @@
 /*
     module  : argv.c
-    version : 1.14
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ARGV_C
 #define ARGV_C
 
 /**
-argv  :  ->  A
+OK 3060  argv  :  A	->  A
 Creates an aggregate A containing the interpreter's command line arguments.
 */
-PRIVATE void do_argv(pEnv env)
+PRIVATE void argv_(pEnv env)
 {
     int i;
-    Node *cur = 0;
+    Node node, elem;
 
-    COMPILE;
-    for (i = g_argc - 1; i >= 0; i--)
-	cur = STRING_NEWNODE(g_argv[i], cur);
-    PUSH_PTR(LIST_, cur);
+    vec_init(node.u.lis);
+    elem.op = STRING_;
+    for (i = env->g_argc - 1; i >= 0; i--) {
+        elem.u.str = env->g_argv[i];
+        vec_push(node.u.lis, elem);
+    }
+    node.op = LIST_;
+    vec_push(env->stck, node);
 }
 #endif

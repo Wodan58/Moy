@@ -1,21 +1,28 @@
 /*
     module  : leql.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef LEQL_C
 #define LEQL_C
 
 /**
-<=  :  X Y  ->  B
+OK 2250  <=\0leql  :  DDA	X Y  ->  B
 Either both X and Y are numeric or both are strings or symbols.
-Tests whether X is less than or equal to Y.  Also supports float.
+Tests whether X less than or equal to Y.  Also supports float.
 */
-#define PROCEDURE	do_leql
-#define NAME		"<="
-#define CONSTRUCTOR	BOOLEAN_NEWNODE
-#define OPR		<=
-#define SETCMP		!(i&~j)
-#include "comprel.h"
-/* leql.c */
+void leql_(pEnv env)
+{
+    Node first, second, node;
+
+    PARM(2, ANYTYPE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    if (first.op == SET_ || second.op == SET_)
+        node.u.num = !(first.u.set & ~second.u.set);
+    else
+        node.u.num = Compare(env, first, second) <= 0;
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
+}
 #endif

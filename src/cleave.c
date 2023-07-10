@@ -1,48 +1,55 @@
 /*
     module  : cleave.c
-    version : 1.17
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef CLEAVE_C
 #define CLEAVE_C
 
 /**
-cleave  :  X [P1] [P2]  ->  R1 R2
+OK 2600  cleave  :  DDDAA	X [P1] [P2]  ->  R1 R2
 Executes P1 and P2, each with X on top, producing two results.
 */
-#ifdef COMPILING
-void put_cleave(pEnv env, Node *prog[2])
-{
-    fprintf(outfp, "{ /* CLEAVE */");
-    fprintf(outfp, "Node *result[2], *save = env->stk;");
-    compile(env, prog[0]);
-    fprintf(outfp, "result[0] = env->stk; env->stk = save;");
-    compile(env, prog[1]);
-    fprintf(outfp, "result[1] = env->stk; env->stk = save->next;");
-    fprintf(outfp, "DUPLICATE(result[0]);");
-    fprintf(outfp, "DUPLICATE(result[1]); }");
-}
-#endif
+PRIVATE void cleave_(pEnv env)
+{ /*  X [P1] [P2] cleave ==>  X1 X2        */
+    unsigned size;
+    Node first, second;
 
-PRIVATE void do_cleave(pEnv env)
-{
-    Node *prog[2], *result[2], *save;
-
-    TWOPARAMS("cleave");
-    TWOQUOTES("cleave");
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_cleave);
-    save = env->stk;		// save X
-    exeterm(env, prog[0]);
-    result[0] = env->stk;
-    env->stk = save;		// restore X
-    exeterm(env, prog[1]);
-    result[1] = env->stk;
-    env->stk = save->next;
-    DUPLICATE(result[0]);	// push results
-    DUPLICATE(result[1]);
+    PARM(3, WHILE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    /*
+        swap X1 and X2
+    */
+    code(env, swap_);
+    /*
+        push the location of X1 onto the code stack
+    */
+    size = vec_size(env->prog);
+    /*
+        push X1 that was saved at this location in the code
+    */
+    code(env, id_);
+    /*
+        push the second program, producing X2
+    */
+    prog(env, second.u.lis);
+    /*
+        Push the address of X1
+    */
+    push(env, size);
+    /*
+        Pop X1 and write it at the given address
+    */
+    code(env, cpush_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    save(env, first.u.lis, 0);
+    /*
+        push the first program, producing X1
+    */
+    prog(env, first.u.lis);
 }
 #endif

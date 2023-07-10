@@ -1,82 +1,52 @@
 /*
     module  : step.c
-    version : 1.15
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef STEP_C
 #define STEP_C
 
 /**
-step  :  A [P]  ->  ...
+OK 2790  step  :  DDU	A [P]  ->  ...
 Sequentially putting members of aggregate A onto stack,
 executes P for each member of A.
 */
-#ifdef COMPILING
-void put_step(pEnv env, Node *prog)
+void step_(pEnv env)
 {
-    fprintf(outfp, "{ /* STEP */");
-    fprintf(outfp, "char *str, *volatile ptr; long set; int i;");
-    fprintf(outfp, "Node *cur = env->stk; POP(env->stk);");
-    fprintf(outfp, "switch (cur->op) {");
-    fprintf(outfp, "case LIST_:");
-    fprintf(outfp, "for (cur = cur->u.lis; cur; cur = cur->next) {");
-    fprintf(outfp, "DUPLICATE(cur);");
-    compile(env, prog);
-    fprintf(outfp, "} break;");
-    fprintf(outfp, "case STRING_:");
-    fprintf(outfp, "for (ptr = cur->u.str, str = ptr; *str; str++) {");
-    fprintf(outfp, "PUSH_NUM(CHAR_, *str);");
-    compile(env, prog);
-    fprintf(outfp, "} break;");
-    fprintf(outfp, "case SET_:");
-    fprintf(outfp, "for (set = cur->u.set, i = 0; i < SETSIZE_; i++)");
-    fprintf(outfp, "if (set & ((long)1 << i)) {");
-    fprintf(outfp, "PUSH_NUM(INTEGER_, i);");
-    compile(env, prog);
-    fprintf(outfp, "} break; } }");
-}
-#endif
+    int i, j;
+    Node aggr, list, node;
 
-PRIVATE void do_step(pEnv env)
-{
-    int i;
-    long set;
-    Node *prog, *cur;
-    char *str, *volatile ptr;
-
-    ONEPARAM("step");
-    ONEQUOTE("step");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_step);
-    ONEPARAM("step");
-    cur = env->stk;
-    POP(env->stk);
-    switch (cur->op) {
+    PARM(2, STEP);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    switch (aggr.op) {
     case LIST_:
-	for (cur = cur->u.lis; cur; cur = cur->next) {
-	    DUPLICATE(cur);
-	    exeterm(env, prog);
-	}
-	break;
+        for (i = 0, j = vec_size(aggr.u.lis); i < j; i++) {
+            prog(env, list.u.lis);
+            node = vec_at(aggr.u.lis, i);
+            prime(env, node);
+        }
+        break;
+
     case STRING_:
-	ptr = cur->u.str;
-	for (str = ptr; *str; str++) {
-	    PUSH_NUM(CHAR_, *str);
-	    exeterm(env, prog);
-	}
-	break;
+        node.op = CHAR_;
+        for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
+            prog(env, list.u.lis);
+            node.u.num = aggr.u.str[i];
+            vec_push(env->prog, node);
+        }
+        break;
+
     case SET_:
-	set = cur->u.set;
-	for (i = 0; i < SETSIZE_; i++)
-	    if (set & ((long)1 << i)) {
-		PUSH_NUM(INTEGER_, i);
-		exeterm(env, prog);
-	    }
-	break;
+        node.op = INTEGER_;
+        for (i = SETSIZE - 1; i >= 0; i--)
+            if (aggr.u.set & ((long)1 << i)) {
+                prog(env, list.u.lis);
+                node.u.num = i;
+                vec_push(env->prog, node);
+            }
     default:
-	BADAGGREGATE("step");
-	break;
+        break;
     }
 }
 #endif

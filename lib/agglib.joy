@@ -1,8 +1,3 @@
-(*
-    module  : agglib.joy
-    version : 1.3
-    date    : 06/18/22
-*)
 (* FILE:   agglib.joy *)
 
 LIBRA
@@ -25,7 +20,7 @@ LIBRA
     string2set == {} swap shunt;
     elements == {} swap [swons] step;
 (*
-    set2string == "" swap [chr swons] step;
+    set2string == "" swap [chr swons] step;
 *)
     set2string == "" [[chr] dip cons] foldr;
     shunt == [swons] step;
@@ -39,7 +34,7 @@ LIBRA
     unswonsd == [unswons] dip;
     firstd == [first] dip;
     restd == [rest] dip;
-    secondd == [second] dip;					(* R.W. *)
+    secondd == [second] dip;				(* R.W. *)
     thirdd == [third] dip;
 
 (* on two operands *)
@@ -52,8 +47,8 @@ LIBRA
 
     zip == [null2] [pop2 []] [uncons2] [[pairlist] dip cons] linrec;
 
-    from-to ==		(*  lo  hi  agg		*)
-	[] cons	 [pop pop] swoncat
+    from-to ==		(*  lo  hi  agg  *)
+	[] cons  [pop pop] swoncat
 	[>] swap
 	[ [dup succ] dip ]
 	[cons]
@@ -86,7 +81,7 @@ LIBRA
 
     stepr2 ==
 	[ [null2]  [pop pop] ] dip		(* P1 P2 *)
-	[dip] cons [dip] cons [uncons2] swoncat (* P3 *)
+	[dip] cons [dip] cons [uncons2] swoncat	(* P3 *)
 	tailrec;
     fold2 == rollupd stepr2;
 
@@ -106,7 +101,7 @@ LIBRA
     average == [sum] [size] cleave / ;
     variance ==			(* [..] variance		*)
 	0.0 swap dup		(* 0.0 [..] [..]		*)
-	[sum] [size] cleave dup (* 0.0 [..] su n n		*)
+	[sum] [size] cleave dup	(* 0.0 [..] su n n		*)
 	[ /			(* 0.0 [..] av n		*)
 	  [ - dup * + ] cons	(* 0.0 [..] [av - dup * +] n	*)
 	  step ]		(* sumsq n			*)
@@ -116,6 +111,6 @@ LIBRA
     AGGLIB == "agglib.joy - aggregate library\n".
 						(* end LIBRA *)
 
-%PUT agglib  is loaded
+"agglib  is loaded\n" putchars.
 
 (* END   agglib.joy *)

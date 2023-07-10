@@ -1,21 +1,22 @@
 /*
     module  : setundeferror.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SETUNDEFERROR_C
 #define SETUNDEFERROR_C
 
 /**
-setundeferror  :  I  ->
+OK 3010  setundeferror  :  D	I  ->
 Sets flag that controls behavior of undefined functions
 (0 = no error, 1 = error).
 */
-PRIVATE void do_setundeferror(pEnv env)
+void setundeferror_(pEnv env)
 {
-    ONEPARAM("undeferror");
-    NUMERICTYPE("undeferror");
-    undeferror = env->stk->u.num;
-    POP(env->stk);
+    Node node;
+
+    PARM(1, PREDSUCC);
+    node = vec_pop(env->stck);
+    env->undeferror = node.u.num;
 }
 #endif

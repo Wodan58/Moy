@@ -1,18 +1,22 @@
 /*
     module  : setsize.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef SETSIZE_C
 #define SETSIZE_C
 
 /**
-setsize  :  ->  setsize
+OK 1030  setsize  :  A	->  setsize
 Pushes the maximum number of elements in a set (platform dependent).
 Typically it is 32, and set members are in the range 0..31.
 */
-PRIVATE void do_setsize(pEnv env)
+void setsize_(pEnv env)
 {
-    PUSH_NUM(INTEGER_, SETSIZE_);
+    Node node;
+
+    node.u.num = SETSIZE;
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

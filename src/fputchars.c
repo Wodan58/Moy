@@ -1,24 +1,22 @@
 /*
     module  : fputchars.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FPUTCHARS_C
 #define FPUTCHARS_C
 
 /**
-fputchars  :  S "abc.."  ->  S
+OK 1970  fputchars  :  DDA 	S "abc.."  ->  S
 The string abc.. (no quotes) is written to the current position of stream S.
 */
-PRIVATE void do_fputchars(pEnv env)
+void fputchars_(pEnv env) /* suggested by Heiko Kuhrt, as "fputstring_" */
 {
-    char *str;
+    Node node, elem;
 
-    COMPILE;
-    TWOPARAMS("fputchars");
-    str = env->stk->u.str;
-    POP(env->stk);
-    FILE("fputchars");
-    fprintf(env->stk->u.fil, "%s", str);
+    PARM(2, FPUTCHARS);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    fprintf(node.u.fil, "%s", elem.u.str);
 }
 #endif

@@ -1,26 +1,48 @@
 /*
     module  : rem.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef REM_C
 #define REM_C
 
 /**
-rem  :  I J  ->  K
+OK 1420  rem  :  DDA	I J  ->  K
 Integer K is the remainder of dividing I by J.  Also supports float.
 */
-PRIVATE void do_rem(pEnv env)
+void rem_(pEnv env)
 {
-    TWOPARAMS("rem");
-    FLOAT2("rem");
-    CHECKZERO("rem");
-    if (env->stk->next->op == FLOAT_)
-	BINARY(FLOAT_NEWNODE, fmod(env->stk->next->u.dbl, FLOATVAL));
-    else if (env->stk->op == FLOAT_)
-	BINARY(FLOAT_NEWNODE, fmod((double)env->stk->next->u.num,
-				   env->stk->u.dbl));
-    else
-	BINARY(INTEGER_NEWNODE, env->stk->next->u.num % env->stk->u.num);
+    Node first, second;
+
+    PARM(2, REM);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    switch (first.op) {
+    case FLOAT_:
+	switch (second.op) {
+	case FLOAT_:
+	    first.u.dbl = fmod(first.u.dbl, second.u.dbl);
+	    break;
+
+	default:
+	    first.u.dbl = fmod(first.u.dbl, second.u.num);
+	    break;
+	}
+	break;
+
+    default:
+	switch (second.op) {
+	case FLOAT_:
+	    second.u.dbl = fmod(first.u.num, second.u.dbl);
+            vec_push(env->stck, second);
+	    return;
+
+	default:
+            first.u.num %= second.u.num;
+	    break;
+	}
+	break;
+    }
+    vec_push(env->stck, first);
 }
 #endif

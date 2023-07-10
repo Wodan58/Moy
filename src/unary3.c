@@ -1,63 +1,75 @@
 /*
     module  : unary3.c
-    version : 1.16
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNARY3_C
 #define UNARY3_C
 
 /**
-unary3  :  X1 X2 X3 [P]  ->  R1 R2 R3
+OK 2530  unary3  :  DDDDAAA	X1 X2 X3 [P]  ->  R1 R2 R3
 Executes P three times, with Xi, returns Ri (i = 1..3).
 */
-#ifdef COMPILING
-void put_unary3(pEnv env, Node *prog)
-{
-    fprintf(outfp, "{ /* UNARY3 */");
-    fprintf(outfp, "Node *first, *second, *top, *result[3];");
-    fprintf(outfp, "second = env->stk; POP(env->stk); first = env->stk;");
-    fprintf(outfp, "POP(env->stk); top = env->stk->next;");
-    compile(env, prog);
-    fprintf(outfp, "result[0] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(first);");
-    compile(env, prog);
-    fprintf(outfp, "result[1] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(second);");
-    compile(env, prog);
-    fprintf(outfp, "result[2] = env->stk; env->stk = top;");
-    fprintf(outfp, "DUPLICATE(result[0]); DUPLICATE(result[1]);");
-    fprintf(outfp, "DUPLICATE(result[2]); }");
-}
-#endif
+PRIVATE void unary3_(pEnv env)
+{ /*  X Y Z [P]  unary3    ==>  X' Y' Z'        */
+    unsigned size1, size2;
+    Node param1, param2, node;
 
-PRIVATE void do_unary3(pEnv env)
-{
-    Node *prog, *first, *second, *top, *result[3];
+    PARM(4, DIP);
+    node = vec_pop(env->stck);
+    param2 = vec_pop(env->stck);
+    param1 = vec_pop(env->stck);
 
-    ONEPARAM("unary3");
-    ONEQUOTE("unary3");
-    prog = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_unary3);
-    THREEPARAMS("unary3");
-    second = env->stk;
-    POP(env->stk);
-    first = env->stk;
-    POP(env->stk);
-    top = env->stk->next;
-    exeterm(env, prog);
-    result[0] = env->stk;
-    env->stk = top;
-    DUPLICATE(first);
-    exeterm(env, prog);
-    result[1] = env->stk;
-    env->stk = top;
-    DUPLICATE(second);
-    exeterm(env, prog);
-    result[2] = env->stk;
-    env->stk = top;
-    DUPLICATE(result[0]);
-    DUPLICATE(result[1]);
-    DUPLICATE(result[2]);
+    code(env, rolldown_);
+
+    size2 = vec_size(env->prog); /* location of first Z, then Y' */
+    vec_push(env->prog, param2); /* first Z, then Y' */
+
+    size1 = vec_size(env->prog); /* location of first Y, then X' */
+    vec_push(env->prog, param1); /* first Y, then X' */
+
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Z' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of Z
+    */
+    push(env, size2);
+    /*
+        Swap Z and Y'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate Y' on top of the stack
+    */
+    prog(env, node.u.lis);
+    /*
+        Push the address of Y
+    */
+    push(env, size1);
+    /*
+        Swap Y and X'
+    */
+    code(env, cswap_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    undo(env, node.u.lis, 1);
+    /*
+        Calculate X' on top of the stack
+    */
+    prog(env, node.u.lis);
 }
 #endif

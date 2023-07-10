@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.11
-    date    : 06/23/22
+    version : 1.1
+    date    : 07/10/23
 */
 #include "globals.h"
 
@@ -13,65 +13,106 @@ static int ilevel;
 
 static struct {
     FILE *fp;
-#if 0
-    char name[ALEN];
+#ifdef REMEMBER_FILENAME
+    char *name;
 #endif
     int linenum;
 } infile[INPSTACKMAX];
 
-void inilinebuffer(void)
-{
-    infile[0].fp = yyin = stdin;
-#if 0
-    strncpy(infile[0].name, name, ALEN);
-    infile[0].name[ALEN - 1] = 0;
+/*
+    inilinebuffer - initialise the stack of input files. The filename parameter
+                    could be used in error messages.
+*/
+#ifdef REMEMBER_FILENAME
+PUBLIC void inilinebuffer(char *str)
+#else
+PUBLIC void inilinebuffer(void)
 #endif
-    infile[0].linenum = 0;
+{
+    infile[0].fp = yyin;
+#ifdef REMEMBER_FILENAME
+    infile[0].name = str ? str : "stdin";
+#endif
 }
 
-static void redirect(pEnv env, FILE *fp)
+#ifdef REMEMBER_FILENAME
+PRIVATE void redirect(char *filnam, FILE *fp)
+#else
+PRIVATE void redirect(FILE *fp)
+#endif
 {
     infile[ilevel].linenum = yylineno;
     if (ilevel + 1 == INPSTACKMAX)
-        execerror(env, "fewer include files", "redirect");
+        execerror("fewer include files", "include");
     infile[++ilevel].fp = yyin = fp;
-#if 0
-    strncpy(infile[ilevel].name, name, ALEN);
-    infile[ilevel].name[ALEN - 1] = 0;
+#ifdef REMEMBER_FILENAME
+    infile[ilevel].name = filnam;
 #endif
     infile[ilevel].linenum = yylineno = 0;
-    new_buffer(env);
+    new_buffer();
 }
 
 /*
-    include - insert the contents of a file in the input. If the file cannot be
-              found in the current directory, it is searched in the same
-              directory as the executable.
+    include - insert the contents of a file in the input.
+
+              Files are read in the current directory or if that fails
+              from the same directory as where the executable is stored.
+              If that path also fails an error is generated unless error
+              is set to 0.
 */
-void include(pEnv env, char *name, int error)
+PUBLIC void include(pEnv env, char *filnam, int error)
 {
     FILE *fp;
-    int leng;
-    char *path, *str;
+    char *ptr;
+#ifdef SEARCH_EXEC_DIRECTORY
+    char *str;
+#endif
 
-    if ((fp = fopen(name, "r")) != 0)
-        ;
-    else if ((path = strrchr(g_argv[0], '/')) != 0) {
-        leng = path - g_argv[0];
-        str = GC_malloc_atomic(leng + strlen(name) + 2);
-        sprintf(str, "%.*s/%s", leng, g_argv[0], name);
-        fp = fopen(str, "r");
+/*
+    First try to open filnam in the current working directory.
+*/
+    if ((fp = fopen(filnam, "r")) != 0) {
+/*
+    Replace the pathname of argv[0] with the pathname of filnam.
+*/
+        if (strchr(filnam, '/')) {
+            env->pathname = GC_strdup(filnam);
+            ptr = strrchr(env->pathname, '/');
+            *ptr = 0;
+        }
     }
+#ifdef SEARCH_EXEC_DIRECTORY
+/*
+    Prepend pathname to the filename and try again.
+*/
+    else if (strcmp(env->pathname, ".")) {
+        str = GC_malloc_atomic(strlen(env->pathname) + strlen(filnam) + 2);
+        sprintf(str, "%s/%s", env->pathname, filnam);
+        if ((fp = fopen(str, "r")) != 0) {
+/*
+    If this succeeds, establish a new pathname.
+*/
+            env->pathname = GC_strdup(str);
+            ptr = strrchr(env->pathname, '/');
+            *ptr = 0;
+        }
+    }
+#endif
     if (fp)
-        redirect(env, fp);
+#ifdef REMEMBER_FILENAME
+        redirect(filnam, fp);
+#else
+        redirect(fp);
+#endif
     else if (error)
-        execerror(env, "valid file name", "include");
+        execerror("valid file name", "include");
 }
 
+/*
+    yywrap - continue reading after EOF.
+*/
 int yywrap(void)
 {
-    if (yyin != stdin)
-        fclose(yyin);
     if (!ilevel)
         return 1;
     yyin = infile[--ilevel].fp;
@@ -80,11 +121,15 @@ int yywrap(void)
     return 0;
 }
 
+/*
+    yyerror - error processing during source file reads.
+*/
 int yyerror(pEnv env, char *str)
 {
     int i, j;
 
     if (line[0]) {
+        fflush(stdout);
         fprintf(stderr, "%s\n", line);
         for (i = strlen(line) - yyleng; i >= 0; i--)
             if (!strncmp(&line[i], yytext, yyleng)) {
@@ -95,6 +140,7 @@ int yyerror(pEnv env, char *str)
         fprintf(stderr, "^\n\t%s\n", str);
         line[0] = 0;
     }
-    abortexecution();
+    vec_resize(env->stck, 0);
+    abortexecution_();
     return 0;
 }

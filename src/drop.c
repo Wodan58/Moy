@@ -1,52 +1,59 @@
 /*
     module  : drop.c
-    version : 1.12
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef DROP_C
 #define DROP_C
 
 /**
-drop  :  A N  ->  B
+OK 2140  drop  :  DDA	A N  ->  B
 Aggregate B is the result of deleting the first N elements of A.
 */
-PRIVATE void do_drop(pEnv env)
+void drop_(pEnv env)
 {
-    char *str;
-    int i, num;
-    Node *node;
-    long set;
+    int i, j;
+    Node aggr, elem, node;
 
-    TWOPARAMS("drop");
-    POSITIVEINDEX(env->stk, "drop");
-    num = env->stk->u.num;
-    POP(env->stk);
-    switch (env->stk->op) {
+    PARM(2, TAKE);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    switch (aggr.op) {
     case LIST_:
-	node = env->stk->u.lis;
-	while (num-- > 0 && node)
-	    node = node->next;
-	UNARY(LIST_NEWNODE, node);
-	break;
+        j = vec_size(aggr.u.lis);
+        if (elem.u.num >= j)
+            node.u.lis = 0;
+        else {
+            vec_init(node.u.lis);
+            vec_shallow_copy(node.u.lis, aggr.u.lis);
+            vec_resize(node.u.lis, j - elem.u.num);
+        }
+        break;
+
     case STRING_:
-	str = env->stk->u.str;
-	while (num-- > 0 && *str)
-	    str++;
-	UNARY(STRING_NEWNODE, GC_strdup(str));
-	break;
+        j = strlen(aggr.u.str);
+        if (elem.u.num >= j)
+            node.u.str = "";
+        else {
+            node.u.str = GC_malloc_atomic(j - elem.u.num + 1);
+            strcpy(node.u.str, aggr.u.str + elem.u.num);
+            node.op = STRING_;
+        }
+        break;
+
     case SET_:
-	for (set = i = 0; i < SETSIZE_; i++)
-	    if (env->stk->u.set & ((long)1 << i)) {
-		if (num < 1)
-		    set |= (long)1 << i;
-		else
-		    num--;
-	    }
-	UNARY(SET_NEWNODE, set);
-	break;
+        node.u.set = 0;
+        for (i = 0, j = elem.u.num; i < SETSIZE; i++)
+            if (aggr.u.set & ((long)1 << i)) {
+                if (j < 1)
+                    node.u.set |= ((long)1 << i);
+                else
+                    j--;
+            }
     default:
-	BADAGGREGATE("drop");
-	break;
+        break;
     }
+    node.op = aggr.op;
+    vec_push(env->stck, node);
 }
 #endif

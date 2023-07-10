@@ -1,47 +1,50 @@
 /*
     module  : uncons.c
-    version : 1.17
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef UNCONS_C
 #define UNCONS_C
 
 /**
-uncons  :  A  ->  F R
+OK 2120  uncons  :  DAA	A  ->  F R
 F and R are the first and the rest of non-empty aggregate A.
 */
-PRIVATE void do_uncons(pEnv env)
+void uncons_(pEnv env)
 {
-    char *str;
     int i = 0;
-    Node *save;
-    long set;
+    Node node, temp;
 
-    ONEPARAM("uncons");
-    switch (env->stk->op) {
+    PARM(1, FIRST);
+    node = vec_pop(env->stck);
+    switch (node.op) {
     case LIST_:
-	save = env->stk->u.lis;
-	CHECKEMPTYLIST(save, "uncons");
-	GUNARY(save->op, save->u);
-	PUSH_PTR(LIST_, save->next);
-	break;
+        vec_init(temp.u.lis);
+        vec_shallow_copy(temp.u.lis, node.u.lis);
+        node = vec_pop(temp.u.lis);
+        vec_push(env->stck, node);
+        temp.op = LIST_;
+        vec_push(env->stck, temp);
+        break;
+
     case STRING_:
-	str = env->stk->u.str;
-	CHECKEMPTYSTRING(str, "uncons");
-	UNARY(CHAR_NEWNODE, *str);
-	PUSH_PTR(STRING_, GC_strdup(++str));
-	break;
+        temp.u.num = *node.u.str++;
+        temp.op = CHAR_;
+        vec_push(env->stck, temp);
+        node.u.str = GC_strdup(node.u.str);  
+        vec_push(env->stck, node);
+        break;
+
     case SET_:
-	set = env->stk->u.set;
-	CHECKEMPTYSET(set, "uncons");
-	while (!(set & ((long)1 << i)))
-	    i++;
-	UNARY(INTEGER_NEWNODE, i);
-	PUSH_NUM(SET_, set & ~((long)1 << i));
-	break;
+        while (!(node.u.set & ((long)1 << i)))
+            i++;
+        temp.u.num = i;
+        temp.op = INTEGER_;
+        vec_push(env->stck, temp);
+        node.u.set &= ~((long)1 << i);
+        vec_push(env->stck, node);
     default:
-	BADAGGREGATE("uncons");
-	break;
+        break;
     }
 }
 #endif

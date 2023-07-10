@@ -1,18 +1,24 @@
 /*
     module  : ifset.c
-    version : 1.9
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef IFSET_C
 #define IFSET_C
 
 /**
-ifset  :  X [T] [E]  ->  ...
+OK 2660  ifset  :  DDDU	X [T] [E]  ->  ...
 If X is a set, executes T else executes E.
 */
-#define PROCEDURE	do_ifset
-#define NAME		"ifset"
-#define TYP		SET_
-#include "if_type.h"
-/* ifset.c */
+void ifset_(pEnv env)
+{
+    Node first, second, node;
+
+    PARM(3, WHILE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    node = node.op == SET_ ? first : second;
+    prog(env, node.u.lis);
+}
 #endif

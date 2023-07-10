@@ -1,18 +1,21 @@
 /*
     module  : __memorymax.c
-    version : 1.12
-    date    : 06/29/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef __MEMORYMAX_C
 #define __MEMORYMAX_C
 
 /**
-__memorymax  :  ->  I
+OK 1160  __memorymax  :  A 	->  I
 Pushes value of total size of memory.
 */
-PRIVATE void do___memorymax(pEnv env)
+void __memorymax_(pEnv env)
 {
-    COMPILE;
-    PUSH_NUM(INTEGER_, GC_get_memory_use());
+    Node node;
+
+    node.u.num = GC_get_memory_use();
+    node.op = INTEGER_;
+    vec_push(env->stck, node);
 }
 #endif

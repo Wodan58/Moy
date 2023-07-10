@@ -1,25 +1,30 @@
 /*
     module  : round.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ROUND_C
 #define ROUND_C
 
-PRIVATE double round2(double num)
+/**
+OK 3240  round  :  DA	F  ->  G
+G is F rounded to the nearest integer.
+*/
+double round2(double num)
 {
     if (num < 0)
-	return -floor(-num + 0.5);
+        return -floor(-num + 0.5);
     return floor(num + 0.5);
 }
 
-/**
-round  :  F  ->  G
-G is F rounded to the nearest integer.
-*/
-#define PROCEDURE	do_round
-#define NAME		"round"
-#define FUNC		round2
-#include "ufloat.h"
-/* round.c */
+void round_(pEnv env)
+{
+    Node node;
+
+    PARM(1, UFLOAT);
+    node = vec_pop(env->stck);
+    node.u.dbl = round2(node.op == FLOAT_ ? node.u.dbl : node.u.num);
+    node.op = FLOAT_;
+    vec_push(env->stck, node);
+}
 #endif

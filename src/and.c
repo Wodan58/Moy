@@ -1,19 +1,34 @@
 /*
     module  : and.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef AND_C
 #define AND_C
 
 /**
-and  :  X Y  ->  Z
+OK 1360  and  :  DDA	X Y  ->  Z
 Z is the intersection of sets X and Y, logical conjunction for truth values.
 */
-#define PROCEDURE	do_and
-#define NAME		"and"
-#define OPER1		&
-#define OPER2		&&
-#include "andorxor.h"
-/* and.c */
+void and_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, ANDORXOR);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    switch (first.op) {
+    case SET_:
+        first.u.set = first.u.set & second.u.set;
+        break;
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+        first.u.num = first.u.num && second.u.num;
+        first.op = BOOLEAN_;
+    default:
+        break;
+    }
+    vec_push(env->stck, first);
+}
 #endif

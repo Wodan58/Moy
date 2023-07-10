@@ -1,71 +1,69 @@
 /*
     module  : tailrec.c
-    version : 1.18
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef TAILREC_C
 #define TAILREC_C
 
 /**
-tailrec  :  [P] [T] [R1]  ->  ...
+OK 2740  tailrec  :  DDDU	[P] [T] [R1]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses.
 */
-#ifdef COMPILING
-void put_tailrec(pEnv env, Node *prog[3])
+void tailrec_(pEnv env)
 {
-    static int ident;
-    FILE *oldfp;
+    unsigned size1, size2;
+    Node first, second, third;
 
-    fprintf(declfp, "void tailrec_%d(pEnv env);", ++ident);
-    fprintf(outfp, "tailrec_%d(env);", ident);
-    oldfp = outfp;
-    outfp = nextfile();
-    fprintf(outfp, "void tailrec_%d(pEnv env) {", ident);
-    fprintf(outfp, "int num; Node *save; for (;;) {");
-    fprintf(outfp, "save = env->stk;");
-    compile(env, prog[0]);
-    fprintf(outfp, "num = env->stk->u.num; env->stk = save; if (num) {");
-    compile(env, prog[1]);
-    fprintf(outfp, "break; }");
-    compile(env, prog[2]);
-    fprintf(outfp, "} }\n");
-    closefile(outfp);
-    outfp = oldfp;
-}
-#endif
-
-void tailrec(pEnv env, Node *prog[])
-{
-    int num;
-    Node *save;
-
-tailrec:
-    save = env->stk;
-    exeterm(env, prog[0]);
-    num = env->stk->u.num;
-    env->stk = save;
-    if (num)
-	exeterm(env, prog[1]);
-    else {
-	exeterm(env, prog[2]);
-	goto tailrec;
-    }
-}
-
-PRIVATE void do_tailrec(pEnv env)
-{
-    Node *prog[3];
-
-    THREEPARAMS("tailrec");
-    THREEQUOTES("tailrec");
-    prog[2] = env->stk->u.lis;
-    POP(env->stk);
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_tailrec);
-    tailrec(env, prog);
+    PARM(3, IFTE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    size2 = vec_size(env->prog);
+    /*
+        setup the continuation
+    */
+    code(env, tailrec_);
+    vec_push(env->prog, third);
+    vec_push(env->prog, second);
+    vec_push(env->prog, first);
+    /*
+        push the false branch of tailrec
+    */
+    prog(env, third.u.lis);
+    /*
+        register the target location for the false branch
+    */
+    size1 = vec_size(env->prog);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size2);
+    /*
+        skip the false branch of tailrec
+    */
+    code(env, jump_);
+    /*
+        push the true branch of tailrec
+    */
+    prog(env, second.u.lis);
+    /*
+        push the jump address onto the program stack
+    */
+    push(env, size1);
+    /*
+        jump on false past the true branch of tailrec
+    */
+    code(env, fjump_);
+    /*
+        save the stack before the condition and restore it afterwards with
+        the condition code included.
+    */
+    save(env, first.u.lis, 0);
+    /*
+        push the test of the tailrec
+    */
+    prog(env, first.u.lis);
 }
 #endif

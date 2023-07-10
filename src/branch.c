@@ -1,42 +1,24 @@
 /*
     module  : branch.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef BRANCH_C
 #define BRANCH_C
 
 /**
-branch  :  B [T] [F]  ->  ...
+OK 2610  branch  :  DDDU	B [T] [F]  ->  ...
 If B is true, then executes T else executes F.
 */
-#ifdef COMPILING
-void put_branch(pEnv env, Node *prog[2])
+void branch_(pEnv env)
 {
-    fprintf(outfp, "{ /* BRANCH */");
-    fprintf(outfp, "int num = env->stk->u.num; POP(env->stk); if (num) {");
-    compile(env, prog[0]);
-    fprintf(outfp, "} else {");
-    compile(env, prog[1]);
-    fprintf(outfp, "} }");
-}
-#endif
+    Node first, second, third;
 
-PRIVATE void do_branch(pEnv env)
-{
-    int num;
-    Node *prog[2];
-
-    TWOPARAMS("branch");
-    TWOQUOTES("branch");
-    prog[1] = env->stk->u.lis;
-    POP(env->stk);
-    prog[0] = env->stk->u.lis;
-    POP(env->stk);
-    INSTANT(put_branch);
-    ONEPARAM("branch");
-    num = env->stk->u.num;
-    POP(env->stk);
-    exeterm(env, num ? prog[0] : prog[1]);
+    PARM(3, WHILE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    first = first.u.num ? second : third;
+    prog(env, first.u.lis);
 }
 #endif

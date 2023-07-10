@@ -1,54 +1,52 @@
 /*
     module  : null.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef NULL_C
 #define NULL_C
 
 /**
-null  :  X  ->  B
+OK 2210  null  :  DA	X  ->  B
 Tests for empty aggregate X or zero numeric.
 */
-PRIVATE void do_null(pEnv env)
+void null_(pEnv env)
 {
-    int num = 0;
+    Node node;
 
-    ONEPARAM("null");
-    switch (env->stk->op) {
-    case ANON_FUNCT_:
-	num = !env->stk->u.proc;
-	break;
-#ifdef COMPILING
+    PARM(1, ANYTYPE);
+    node = vec_pop(env->stck);
+    switch (node.op) {
+    case USR_PRIME_:
     case USR_:
-#endif
+        node.u.num = !node.u.ent;
+        break;
+    case ANON_PRIME_:
+    case ANON_FUNCT_:
+        node.u.num = !node.u.proc;
+        break;
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
-	num = !env->stk->u.num;
-	break;
+        node.u.num = !node.u.num;
+        break;
     case SET_:
-	num = !env->stk->u.set;
-	break;
-#ifndef COMPILING
-    case USR_:
-#endif
+        node.u.num = !node.u.set;
+        break;
     case STRING_:
-	num = !*env->stk->u.str;
-	break;
+        node.u.num = !*node.u.str;
+        break;
     case LIST_:
-	num = !env->stk->u.lis;
-	break;
+        node.u.num = !vec_size(node.u.lis);
+        break;
     case FLOAT_:
-	num = !env->stk->u.dbl;
-	break;
+        node.u.num = !node.u.dbl;
+        break;
     case FILE_:
-	num = !env->stk->u.fil;
-	break;
-    default:
-	BADDATA("null");
-	break;
+        node.u.num = !node.u.fil;
+        break;
     }
-    UNARY(BOOLEAN_NEWNODE, num);
+    node.op = BOOLEAN_;
+    vec_push(env->stck, node);
 }
 #endif

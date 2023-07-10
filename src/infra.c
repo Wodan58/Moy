@@ -1,61 +1,50 @@
 /*
     module  : infra.c
-    version : 1.18
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef INFRA_C
 #define INFRA_C
 
 /**
-infra  :  L1 [P]  ->  L2
+OK 2830  infra  :  DDA	L1 [P]  ->  L2
 Using list L1 as stack, executes P and returns a new list L2.
 The first element of L1 is used as the top of stack,
 and after execution of P the top of stack becomes the first element of L2.
 */
-#ifdef COMPILING
-void put_infra(pEnv env, Node *prog)
+void infra_(pEnv env)
 {
-    fprintf(outfp, "{ /* INFRA */");
-    fprintf(outfp, "Node *save, *list = env->stk->u.lis; POP(env->stk);");
-    fprintf(outfp, "save = env->stk;");
-    fprintf(outfp, "env->stk = list;");
-    compile(env, prog);
-    fprintf(outfp, "list = env->stk;");
-    fprintf(outfp, "env->stk = save;");
-    fprintf(outfp, "PUSH_PTR(LIST_, list); }");
-}
-#endif
+    Node aggr, list, node;
 
-PRIVATE void do_infra(pEnv env)
-{
-    Node *prog, *list, *save;
-
-/*
- 1. Register the program
- 2. Register the list
- 3. Make a backup of the stack, starting with save
- 4. Empty the stack
- 5. Copy the list onto the stack
- 6. Execute the program
- 7. Collect the stack into a list
- 8. Empty the stack
- 9. Restore the original stack
-10. Put the collected list onto the restored stack
-*/
-    ONEPARAM("infra");
-    ONEQUOTE("infra");
-    prog = env->stk->u.lis;	// 1
-    POP(env->stk);
-    INSTANT(put_infra);
-    ONEPARAM("infra");
-    LIST("infra");
-    list = env->stk->u.lis;	// 2
-    POP(env->stk);
-    save = env->stk;		// 3
-    env->stk = list;		// 5
-    exeterm(env, prog);		// 6
-    list = env->stk;		// 7
-    env->stk = save;		// 8
-    PUSH_PTR(LIST_, list);	// 10
+    PARM(2, INFRA);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
+    /*
+        the old stack is restored with the list on top
+    */
+    code(env, unstack_);
+    /*
+        the list becomes the top of the stack
+    */
+    code(env, cons_);
+    /*
+        the old stack is saved in the program
+    */
+    vec_init(node.u.lis);
+    vec_copy(node.u.lis, env->stck);
+    node.op = LIST_;
+    vec_push(env->prog, node);
+    /*
+        after executing the program the stack is listed
+    */
+    code(env, stack_);
+    /*
+        the program is executed on the alternate stack
+    */
+    prog(env, list.u.lis);
+    /*
+        the list parameter is installed as the stack
+    */
+    vec_copy(env->stck, aggr.u.lis);
 }
 #endif

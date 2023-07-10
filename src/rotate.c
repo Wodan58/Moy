@@ -1,27 +1,25 @@
 /*
     module  : rotate.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ROTATE_C
 #define ROTATE_C
 
 /**
-rotate  :  X Y Z  ->  Z Y X
+OK 1250  rotate  :  DDDAAA 	X Y Z  ->  Z Y X
 Interchanges X and Z.
 */
-PRIVATE void do_rotate(pEnv env)
+void rotate_(pEnv env)
 {
-    Node *first, *second, *third;
+    Node first, second, third;
 
-    THREEPARAMS("rotate");
-    first = env->stk;
-    POP(env->stk);
-    second = env->stk;
-    POP(env->stk);
-    third = env->stk;
-    GUNARY(first->op, first->u);
-    DUPLICATE(second);
-    DUPLICATE(third);
+    PARM(3, ANYTYPE);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    vec_push(env->stck, third);
+    vec_push(env->stck, second);
+    vec_push(env->stck, first);
 }
 #endif

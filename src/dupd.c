@@ -1,26 +1,24 @@
 /*
     module  : dupd.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef DUPD_C
 #define DUPD_C
 
-#ifdef DUP_X
-#undef DUP_X
-#undef DUP_C
-#endif
-
-#include "dup.c"
-
 /**
-dupd  :  Y Z  ->  Y Y Z
+OK 1270  dupd  :  DDAAA	Y Z  ->  Y Y Z
 As if defined by:   dupd  ==  [dup] dip
 */
-#define PROCEDURE	do_dupd
-#define NAME		"dupd"
-#define PARAMCOUNT	TWOPARAMS
-#define ARGUMENT	do_dup
-#include "dipped.h"
-/* dupd.c */
+void dupd_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, ANYTYPE);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    vec_push(env->stck, first);
+    vec_push(env->stck, first);
+    vec_push(env->stck, second);
+}
 #endif

@@ -1,25 +1,18 @@
 /*
     module  : app2.c
-    version : 1.7
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef APP2_C
 #define APP2_C
 
-#ifdef UNARY2_X
-#undef UNARY2_X
-#undef UNARY2_C
-#endif
-
-#include "unary2.c"
-
 /**
-app2  :  X1 X2 [P]  ->  R1 R2
+OK 2550  app2  :  DDDAA	X1 X2 [P]  ->  R1 R2
 Obsolescent.  ==  unary2
 */
-PRIVATE void do_app2(pEnv env)
+void app2_(pEnv env)
 {
-    do_unary2(env);
+    unary2_(env);
+    /* filler */
 }
-/* app2.c */
 #endif

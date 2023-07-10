@@ -1,23 +1,25 @@
 /*
     module  : body.c
-    version : 1.14
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef BODY_C
 #define BODY_C
 
 /**
-body  :  U  ->  [P]
+OK 2200  body  :  DA	U  ->  [P]
 Quotation [P] is the body of user-defined symbol U.
 */
-PRIVATE void do_body(pEnv env)
+void body_(pEnv env)
 {
-    ONEPARAM("body");
-#ifdef COMPILING
-    USERDEF("body");
-    UNARY(LIST_NEWNODE, dict_body(env, env->stk->u.num));
-#else
-    UNARY(LIST_NEWNODE, ANON_FUNCT_NEWNODE(env->stk->u.proc, 0));
-#endif
+    Node node;
+    Entry ent;
+
+    PARM(1, BODY);
+    node = vec_pop(env->stck);
+    ent = sym_at(env->symtab, node.u.ent);
+    node.u.lis = ent.u.body;
+    node.op = LIST_;
+    vec_push(env->stck, node);
 }
 #endif

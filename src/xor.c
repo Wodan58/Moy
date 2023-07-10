@@ -1,20 +1,35 @@
 /*
     module  : xor.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef XOR_C
 #define XOR_C
 
 /**
-xor  :  X Y  ->  Z
+OK 1350  xor  :  DDA	X Y  ->  Z
 Z is the symmetric difference of sets X and Y,
 logical exclusive disjunction for truth values.
 */
-#define PROCEDURE	do_xor
-#define NAME		"xor"
-#define OPER1		^
-#define OPER2		!=
-#include "andorxor.h"
-/* xor.c */
+void xor_(pEnv env)
+{
+    Node first, second;
+
+    PARM(2, ANDORXOR);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    switch (first.op) {
+    case SET_:
+        first.u.set = first.u.set ^ second.u.set;
+        break;
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+        first.u.num = first.u.num != second.u.num;
+        first.op = BOOLEAN_;
+    default:
+        break;
+    }
+    vec_push(env->stck, first);
+}
 #endif

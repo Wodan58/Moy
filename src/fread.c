@@ -1,31 +1,35 @@
 /*
     module  : fread.c
-    version : 1.15
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FREAD_C
 #define FREAD_C
 
 /**
-fread  :  S I  ->  S L
+OK 1910  fread  :  DDAA	S I  ->  S L
 I bytes are read from the current position of stream S
 and returned as a list of I integers.
 */
-PRIVATE void do_fread(pEnv env)
+void fread_(pEnv env)
 {
-    int i, count;
-    Node *cur = 0;
-    unsigned char *volatile buf;
+    long count;
+    Node node, elem;
+    unsigned char *buf;
 
-    COMPILE;
-    TWOPARAMS("fread");
-    INTEGER("fread");
-    count = env->stk->u.num;
-    POP(env->stk);
-    FILE("fread");
+    PARM(2, FREAD);
+    node = vec_pop(env->stck);
+    count = node.u.num;
+    node = vec_back(env->stck);
     buf = GC_malloc_atomic(count);
-    for (i = fread(buf, 1, count, env->stk->u.fil) - 1; i >= 0; i--)
-	cur = INTEGER_NEWNODE(buf[i], cur);
-    PUSH_PTR(LIST_, cur);
+    count = fread(buf, 1, count, node.u.fil);
+    vec_init(node.u.lis);
+    elem.op = INTEGER_;
+    for (--count; count >= 0; count--) {
+        elem.u.num = buf[count];
+        vec_push(node.u.lis, elem);
+    }
+    node.op = LIST_;
+    vec_push(env->stck, node);
 }
 #endif

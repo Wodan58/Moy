@@ -1,38 +1,42 @@
 /*
     module  : first.c
-    version : 1.13
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef FIRST_C
 #define FIRST_C
 
 /**
-first  :  A  ->  F
+OK 2040  first  :  DA	A  ->  F
 F is the first member of the non-empty aggregate A.
 */
-PRIVATE void do_first(pEnv env)
+void first_(pEnv env)
 {
     int i = 0;
+    Node node, temp;
 
-    ONEPARAM("first");
-    switch (env->stk->op) {
+    PARM(1, FIRST);
+    node = vec_pop(env->stck);
+    switch (node.op) {
     case LIST_:
-	CHECKEMPTYLIST(env->stk->u.lis, "first");
-	GUNARY(env->stk->u.lis->op, env->stk->u.lis->u);
-	break;
+        temp = vec_back(node.u.lis);
+        vec_push(env->stck, temp);
+        break;
+
     case STRING_:
-	CHECKEMPTYSTRING(env->stk->u.str, "first");
-	UNARY(CHAR_NEWNODE, *env->stk->u.str);
-	break;
+        temp.u.num = *node.u.str;
+        temp.op = CHAR_;
+        vec_push(env->stck, temp);
+        break;
+
     case SET_:
-	CHECKEMPTYSET(env->stk->u.set, "first");
-	while (!(env->stk->u.set & ((long)1 << i)))
-	    i++;
-	UNARY(INTEGER_NEWNODE, i);
-	break;
+        while (!(node.u.set & ((long)1 << i)))
+            i++;
+        temp.u.num = i;
+        temp.op = INTEGER_;
+        vec_push(env->stck, temp);
     default:
-	BADAGGREGATE("first");
-	break;
+        break;
     }
 }
 #endif

@@ -1,18 +1,10 @@
 (*
     module  : gc.joy
-    version : 1.2
-    date    : 06/23/22
+    version : 1.4
+    date    : 07/10/23
 *)
-DEFINE
-    swoncat == swap concat;
-    from-to ==		(*  lo  hi  agg  *)
-	[] cons  [pop pop] swoncat
-	[>] swap
-	[ [dup succ] dip ]
-	[cons]
-	linrec;
-    from-to-list == [] from-to.
+1 100 from-to-list pop.
 
-1 9000 from-to-list.
-
-gc.
+__memorymax
+gc
+__memorymax >.

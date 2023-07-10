@@ -1,40 +1,43 @@
 /*
     module  : rest.c
-    version : 1.11
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef REST_C
 #define REST_C
 
 /**
-rest  :  A  ->  R
+OK 2050  rest  :  DA	A  ->  R
 R is the non-empty aggregate A with its first member removed.
 */
-PRIVATE void do_rest(pEnv env)
+void rest_(pEnv env)
 {
     int i = 0;
-    char *str;
+    Node node, temp;
 
-    ONEPARAM("rest");
-    switch (env->stk->op) {
+    PARM(1, FIRST);
+    node = vec_pop(env->stck);
+    switch (node.op) {
     case LIST_:
-	CHECKEMPTYLIST(env->stk->u.lis, "rest");
-	UNARY(LIST_NEWNODE, env->stk->u.lis->next);
-	break;
+        vec_init(temp.u.lis);
+        vec_shallow_copy(temp.u.lis, node.u.lis);
+        (void)vec_pop(temp.u.lis);
+        temp.op = LIST_;
+        vec_push(env->stck, temp);
+        break;
+
     case STRING_:
-	str = env->stk->u.str;
-	CHECKEMPTYSTRING(str, "rest");
-	UNARY(STRING_NEWNODE, GC_strdup(++str));
-	break;
+        node.u.str = GC_strdup(++node.u.str);  
+        vec_push(env->stck, node);
+        break;
+
     case SET_:
-	CHECKEMPTYSET(env->stk->u.set, "rest");
-	while (!(env->stk->u.set & ((long)1 << i)))
-	    i++;
-	UNARY(SET_NEWNODE, env->stk->u.set & ~((long)1 << i));
-	break;
+        while (!(node.u.set & ((long)1 << i)))
+            i++;
+        node.u.set &= ~((long)1 << i);
+        vec_push(env->stck, node);
     default:
-	BADAGGREGATE("rest");
-	break;
+        break;
     }
 }
 #endif

@@ -1,17 +1,19 @@
 /*
     module  : id.c
-    version : 1.10
-    date    : 06/20/22
+    version : 1.1
+    date    : 07/10/23
 */
 #ifndef ID_C
 #define ID_C
 
 /**
-id  :  ->
+OK 1200  id  :  N	->
 Identity function, does nothing.
 Any program of the form  P id Q  is equivalent to just  P Q.
 */
-PRIVATE void do_id(pEnv env)
+void id_(pEnv env)
 {
+    env->nothing++;
+/* do nothing */
 }
 #endif
