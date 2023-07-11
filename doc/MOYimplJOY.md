@@ -140,6 +140,12 @@ YYDEBUG
 When activated, this define allows the user to see the parse tree,
 as maintained by bison.
 
+COSMO
+-----
+
+Compiling against the cosmopolitan library seems attractive, but the
+combination of cosmopolitan and the BDW garbage collector may be difficult.
+
 Implementation details
 ======================
 

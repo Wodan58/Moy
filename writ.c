@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.1
- *  date    : 07/10/23
+ *  version : 1.2
+ *  date    : 07/11/23
  */
 #include "globals.h"
 
@@ -70,11 +70,13 @@ PUBLIC void writefactor(pEnv env, Node node)
         }
         putchar('"');
         break;
+#if 0
     case LIST_:
         putchar('[');
         writeterm(env, node.u.lis);
         putchar(']');
         break;
+#endif
     case FLOAT_:
         printf("%g", node.u.dbl);
         break;
@@ -90,8 +92,10 @@ PUBLIC void writefactor(pEnv env, Node node)
         else
             printf("file:%p", node.u.fil);
         break;
+#if 0
     default:
         yyerror(env, "a factor cannot begin with this symbol");
+#endif
     }
 }
 

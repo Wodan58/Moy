@@ -1,7 +1,7 @@
 #
-#   module  : %M%
-#   version : %I%
-#   date    : %G%
+#   module  : CMakeLists.txt
+#   version : 1.1
+#   date    : 07/11/23
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -58,7 +58,7 @@ exe9(test30)
 #
 add_custom_target(test04.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test04.joy
-		  COMMAND joy 10 -vd <${CMAKE_SOURCE_DIR}/test/test04.joy
+		  COMMAND joy 10 -vwd <${CMAKE_SOURCE_DIR}/test/test04.joy
                           >test04.out)
 
 #
@@ -66,7 +66,7 @@ add_custom_target(test04.out ALL
 #
 add_custom_target(test05.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test05.joy
-		  COMMAND joy -vd ${CMAKE_SOURCE_DIR}/test/test05.joy
+		  COMMAND joy -vwd ${CMAKE_SOURCE_DIR}/test/test05.joy
                           ${CMAKE_SOURCE_DIR}/test/test05.joy >test05.out)
 
 #
@@ -74,18 +74,18 @@ add_custom_target(test05.out ALL
 #
 add_custom_target(test23.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test23.joy
-		  COMMAND joy -h ${CMAKE_SOURCE_DIR}/test/test23.joy >test23.out)
+		  COMMAND joy -wh ${CMAKE_SOURCE_DIR}/test/test23.joy >test23.out)
 
 #
 #  Test rest of options
 #
 add_custom_target(test26.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test26.joy
-		  COMMAND joy -sd <${CMAKE_SOURCE_DIR}/test/test26.joy >test26.out)
+		  COMMAND joy -wsd <${CMAKE_SOURCE_DIR}/test/test26.joy >test26.out)
 
 add_custom_target(test27.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test27.joy
-		  COMMAND joy -hs ${CMAKE_SOURCE_DIR}/test/test27.joy >test27.out)
+		  COMMAND joy -whs ${CMAKE_SOURCE_DIR}/test/test27.joy >test27.out)
 
 #
 #  Test not open file

@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.1
- *  date    : 07/10/23
+ *  version : 1.2
+ *  date    : 07/11/23
  */
 #include "globals.h"
 
@@ -73,9 +73,11 @@ next:
         case FILE_:
             vec_push(env->stck, node);
             break;
+#if 0
         default:
             fprintf(stderr, "exeterm: attempting to execute bad node\n");
             break;
+#endif
         }
     }
 }

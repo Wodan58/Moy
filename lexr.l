@@ -1,13 +1,17 @@
 %{
 /*
     module  : lexr.l
-    version : 1.2
-    date    : 07/10/23
+    version : 1.3
+    date    : 07/11/23
 */
 #include "globals.h"
 
 #define YY_DECL		int yylex(pEnv env)
 #define YY_NO_UNPUT
+
+#define malloc(s)	GC_malloc_atomic(s)
+#define realloc(p,s)	GC_realloc(p,s)
+#define free(p)		GC_free(p)
 
 #define OUT_OF_COM	0
 #define WITHIN_COM	1
@@ -110,8 +114,10 @@ skip:
 
 void new_buffer(void)
 {
+#if 0
     if (include_stack_ptr >= INPSTACKMAX)
 	execerror("fewer include files", "redirect");
+#endif
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
 }

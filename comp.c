@@ -1,7 +1,7 @@
 /*
     module  : comp.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/11/23
 */
 #include "globals.h"
 
@@ -15,8 +15,8 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 {
     FILE *fp1, *fp2;
     char *name1, *name2;
-    long num, num1, num2;
     double dbl, dbl1, dbl2;
+    long num, num1 = 0, num2 = 0;
 
     switch (first.op) {
     case USR_:
@@ -179,17 +179,14 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
         default:
             return 1; /* unequal */
         }
-    default:
-        break;
     }
-    return 1; /* unequal */
+cmpnum:
+    num = num1 - num2;
+    return num < 0 ? -1 : num > 0;
 cmpdbl:
     dbl = dbl1 - dbl2;
     return dbl < 0 ? -1 : dbl > 0;
 cmpstr:
     num = strcmp(name1, name2);
-    return num < 0 ? -1 : num > 0;
-cmpnum:
-    num = num1 - num2;
     return num < 0 ? -1 : num > 0;
 }

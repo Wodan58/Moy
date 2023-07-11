@@ -1,13 +1,11 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.2
-#   date    : 07/10/23
+#   version : 1.4
+#   date    : 07/11/23
 #
 cmake_minimum_required(VERSION 3.4)
 project(Moy VERSION 1.0)
-if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set(CMAKE_BUILD_TYPE "Release")
-endif()
 if(WIN32)
 option(WINDOWS "Use _MSC_VER compiler" ON)
 endif()
@@ -30,9 +28,9 @@ endif()
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 #add_definitions(-ansi -pedantic "-Dkh_inline=""" -DULLONG_MAX=ULONG_MAX)
 add_definitions(-DGC_BDW -DTRACING -DJVERSION="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
-add_executable(joy arty.c comp.c dtim.c eval.c ${FLEX_MyScanner_OUTPUTS} list.c
-                   main.c manl.c modl.c parm.c ${BISON_MyParser_OUTPUTS} prog.c
-                   read.c repl.c save.c scan.c syml.c undo.c util.c writ.c)
+add_executable(joy arty.c comp.c dtim.c eval.c ${FLEX_MyScanner_OUTPUTS} main.c
+                   manl.c modl.c parm.c ${BISON_MyParser_OUTPUTS} prog.c read.c
+                   repl.c save.c scan.c syml.c undo.c util.c writ.c)
 if(WINDOWS)
 target_link_libraries(joy gc-lib)
 include_directories(bdwgc/include)
