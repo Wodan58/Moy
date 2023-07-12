@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/12/23
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -18,8 +18,7 @@ void __manual_list_(pEnv env)
     vec_init(node.u.lis);
     node.op = temp.op = LIST_;
     elem.op = STRING_;
-    for (i = 0; optable[i].name; i++) /* find end */
-        ;
+    i = sizeof(optable) / sizeof(optable[0]); /* find end */
     while (--i) {
         vec_init(temp.u.lis);
         elem.u.str = optable[i].messg2;
