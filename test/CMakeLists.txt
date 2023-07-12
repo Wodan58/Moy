@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.1
-#   date    : 07/11/23
+#   version : 1.2
+#   date    : 07/12/23
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -48,8 +48,10 @@ exe9(test16)
 exe9(test17)
 exe9(test18)
 exe9(test19)
+exe9(test20)
 exe9(test21)
 exe9(test22)
+exe9(test23)
 exe9(test25)
 exe9(test30)
 
@@ -58,7 +60,7 @@ exe9(test30)
 #
 add_custom_target(test04.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test04.joy
-		  COMMAND joy 10 -vwd <${CMAKE_SOURCE_DIR}/test/test04.joy
+		  COMMAND joy 10 <${CMAKE_SOURCE_DIR}/test/test04.joy
                           >test04.out)
 
 #
@@ -66,26 +68,8 @@ add_custom_target(test04.out ALL
 #
 add_custom_target(test05.out ALL
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test05.joy
-		  COMMAND joy -vwd ${CMAKE_SOURCE_DIR}/test/test05.joy
+		  COMMAND joy ${CMAKE_SOURCE_DIR}/test/test05.joy
                           ${CMAKE_SOURCE_DIR}/test/test05.joy >test05.out)
-
-#
-#  Test help
-#
-add_custom_target(test23.out ALL
-		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test23.joy
-		  COMMAND joy -wh ${CMAKE_SOURCE_DIR}/test/test23.joy >test23.out)
-
-#
-#  Test rest of options
-#
-add_custom_target(test26.out ALL
-		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test26.joy
-		  COMMAND joy -wsd <${CMAKE_SOURCE_DIR}/test/test26.joy >test26.out)
-
-add_custom_target(test27.out ALL
-		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test27.joy
-		  COMMAND joy -whs ${CMAKE_SOURCE_DIR}/test/test27.joy >test27.out)
 
 #
 #  Test not open file
@@ -93,3 +77,18 @@ add_custom_target(test27.out ALL
 add_custom_target(test24.out ALL
                   DEPENDS joy
                   COMMAND joy nonexist)
+
+#
+#  Test rest of options
+#
+add_custom_target(test26.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test26.joy
+		  COMMAND joy -vs <${CMAKE_SOURCE_DIR}/test/test26.joy >test26.out)
+
+add_custom_target(test27.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test27.joy
+		  COMMAND joy -wh ${CMAKE_SOURCE_DIR}/test/test27.joy >test27.out)
+
+add_custom_target(test28.out ALL
+		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test/test28.joy
+		  COMMAND joy -d <${CMAKE_SOURCE_DIR}/test/test28.joy >test28.out)

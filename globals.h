@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/12/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -187,8 +187,8 @@ PUBLIC void exeterm(pEnv env);
 PUBLIC char *nickname(int o);
 PUBLIC char *showname(int o);
 PUBLIC int operindex(proc_t proc);
+PUBLIC char *cmpname(proc_t proc);
 PUBLIC char *opername(proc_t proc);
-PUBLIC char *printname(proc_t proc);
 PUBLIC char *operarity(proc_t proc);
 PUBLIC proc_t operproc(int o);
 PUBLIC OpTable *readtable(int o);
@@ -198,7 +198,7 @@ PUBLIC void lookup(pEnv env, char *name);
 PUBLIC void enteratom(pEnv env, char *name, NodeList *list);
 PUBLIC void execute(pEnv env, NodeList *list);
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
-PUBLIC NodeList *reverse(NodeList *list);
+PUBLIC void reverse(NodeList *list);
 /* main.c */
 PUBLIC void abortexecution_(void);
 PUBLIC void execerror(char *message, char *op);

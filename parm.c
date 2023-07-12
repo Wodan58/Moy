@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.1
-    version : 07/10/23
+    date    : 1.2
+    version : 07/12/23
 */
 #include "globals.h"
 
@@ -40,14 +40,11 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 
     leng = vec_size(env->stck);
 /*
-    first check the number of parameters:
-*/
-    checknum(num, leng, file);
-/*
-    next check the type of parameters:
+    check number and type of parameters:
 */
     switch (type) {
     case ANYTYPE:
+        checknum(num, leng, file);
         break;
 /*
     one quote is needed:

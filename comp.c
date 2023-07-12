@@ -1,7 +1,7 @@
 /*
     module  : comp.c
-    version : 1.2
-    date    : 07/11/23
+    version : 1.3
+    date    : 07/12/23
 */
 #include "globals.h"
 
@@ -26,7 +26,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
             name2 = sym_at(env->symtab, second.u.ent).name;
             goto cmpstr;
         case ANON_FUNCT_:
-            name2 = opername(second.u.proc);
+            name2 = cmpname(second.u.proc);
             goto cmpstr;
         case BOOLEAN_:
         case CHAR_:
@@ -43,13 +43,13 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
         }
         break;
     case ANON_FUNCT_:
-        name1 = opername(first.u.proc);
+        name1 = cmpname(first.u.proc);
         switch (second.op) {
         case USR_:
             name2 = sym_at(env->symtab, second.u.ent).name;
             goto cmpstr;
         case ANON_FUNCT_:
-            name2 = opername(second.u.proc);
+            name2 = cmpname(second.u.proc);
             goto cmpstr;
         case BOOLEAN_:
         case CHAR_:
@@ -127,7 +127,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
             name2 = sym_at(env->symtab, second.u.ent).name;
             goto cmpstr;
         case ANON_FUNCT_:
-            name2 = opername(second.u.proc);
+            name2 = cmpname(second.u.proc);
             goto cmpstr;
         case BOOLEAN_:
         case CHAR_:

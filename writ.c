@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.2
- *  date    : 07/11/23
+ *  version : 1.3
+ *  date    : 07/12/23
  */
 #include "globals.h"
 
@@ -31,7 +31,7 @@ PUBLIC void writefactor(pEnv env, Node node)
         break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-        printf("%s", printname(node.u.proc));
+        printf("%s", opername(node.u.proc));
         if (node.op == ANON_PRIME_)
             putchar('\'');
         break;

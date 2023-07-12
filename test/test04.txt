@@ -1,4 +1,0 @@
-"test" 
-[[true 'A {1 2 3} "test" 3.14 stdin] file:0x1a5d0a0] 
-file:0x1a5d0a0 
-10 

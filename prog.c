@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/12/23
 */
 #include "globals.h"
 
@@ -11,9 +11,12 @@
 PUBLIC void prog(pEnv env, NodeList *list)
 {
     int i, j;
+    Node node;
 
-    for (i = 0, j = vec_size(list); i < j; i++)
-        vec_push(env->prog, vec_at(list, i));
+    for (i = 0, j = vec_size(list); i < j; i++) {
+        node = vec_at(list, i);
+        vec_push(env->prog, node);
+    }
 }
 
 /*
@@ -46,7 +49,7 @@ PUBLIC void push(pEnv env, long num)
 PUBLIC void prime(pEnv env, Node node)
 {
     if (node.op == USR_ || node.op == ANON_FUNCT_)
-        node.op -= 2;
+        node.op += 10;
     vec_push(env->prog, node);
 }
 

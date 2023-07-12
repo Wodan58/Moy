@@ -1,10 +1,8 @@
 (*
     module  : small.joy
-    version : 1.3
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/20/22
 *)
-DEFINE	last == dup rest null [first] [rest last] branch.
-
 [] small.
 [1] small.
 [1 2] small false =.
@@ -17,8 +15,3 @@ DEFINE	last == dup rest null [first] [rest last] branch.
 0 small.
 1 small.
 2 small false =.
-
-[last] first small.
-[pop] first small.
-1.5 small.
-stdin small.

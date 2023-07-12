@@ -1,7 +1,7 @@
 /*
     module  : syml.c
-    date    : 1.1
-    version : 07/10/23
+    date    : 1.2
+    version : 07/12/23
 */
 #include <stdio.h>
 #include <string.h>
@@ -32,19 +32,21 @@ void sym_push(SymList *v, Entry x)
     v->a[v->n++] = x;
 }
 
+int sym_size(SymList *v)
+{
+    return v ? v->n : 0;
+}
+
 Entry sym_at(SymList *v, int i)
 {
-    return v->a[i];
+    if (i < sym_size(v))
+        return v->a[i];
+    return v->a[0];
 }
 
 Entry *sym_lvalue(SymList *v, int i)
 {
     return &v->a[i];
-}
-
-int sym_size(SymList *v)
-{
-    return v ? v->n : 0;
 }
 
 int sym_max(SymList *v)

@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.1
- *  date    : 07/10/23
+ *  version : 1.3
+ *  date    : 07/12/23
  */
 #include "globals.h"
 
@@ -18,10 +18,8 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
     switch (env->token) {
     case USR_:
         lookup(env, yylval.str);
-        if (!env->location && strchr(yylval.str, '.')) {
+        if (!env->location && strchr(yylval.str, '.'))
             yyerror(env, "no such field in module");
-            return;
-        }
         ent = sym_at(env->symtab, env->location);
         /* execute immediate functions at compile time */
         if (ent.flags == IMMEDIATE)
@@ -46,25 +44,22 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
         vec_push(env->stck, node);
         break;
     case '{':
-        do {
-            env->token = yylex(env);
+        while ((env->token = yylex(env)) != '}')
             if ((env->token != CHAR_ && env->token != INTEGER_)
                 || yylval.num < 0 || yylval.num >= SETSIZE)
                 yyerror(env, "small numeric expected in set");
             else
                 set |= ((long)1 << yylval.num);
-        } while (env->token != '}');
         node.u.set = set;
         node.op = SET_;
         vec_push(env->stck, node);
         break;
     case '[':
-        env->token = yylex(env);
+        env->token = yylex(env); /* read past [ */
         readterm(env);
         break;
     case '(':
         yyerror(env, "'(' not implemented");
-        env->token = yylex(env);
         break;
     default:
         yyerror(env, "a factor cannot begin with this symbol");
@@ -85,15 +80,13 @@ PUBLIC void readterm(pEnv env)
             readfactor(env);
             if (vec_size(env->stck)) {
                 if (!node.u.lis)
-                    vec_init(node.u.lis);
+                    vec_init(node.u.lis); /* initialize the list */
                 vec_push(node.u.lis, vec_pop(env->stck));
             }
-            env->token = yylex(env);
-        } while (env->token != ']');
-        if (!node.u.lis)
-            vec_init(node.u.lis);
-        vec_push(node.u.lis, node); /* scratch value */
-        vec_reverse(node.u.lis); /* excludes scratch */
+        } while ((env->token = yylex(env)) != ']'); /* read past factor */
+        if (node.u.lis)
+            reverse(node.u.lis); /* reverse the list */
     }
     vec_push(env->stck, node);
+    env->token = yylex(env); /* read past ] */
 }

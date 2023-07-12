@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.2
- *  date    : 07/11/23
+ *  version : 1.3
+ *  date    : 07/12/23
  */
 #include "globals.h"
 
@@ -60,7 +60,7 @@ PUBLIC void exeterm(pEnv env)
             break;
         case USR_PRIME_:
         case ANON_PRIME_:
-            node.op += 2;
+            node.op -= 10;
             goto next;
 next:
         case BOOLEAN_:
@@ -89,7 +89,7 @@ static OpTable optable[] = {
 {OK, "__ILLEGAL",           id_,            "A",        "->",
 "internal error, cannot happen - supposedly."},
 
-{OK, "__COPIED",            id_,            "A",        "->",
+{OK, "__COPIED",            id_,            "U",        "->",
 "no message ever, used for gc."},
 
 {OK, "__USR",               id_,            "U",        "->",
@@ -124,9 +124,13 @@ static OpTable optable[] = {
 {OK, " file type",          id_,            "A",        "->  FILE:",
 "The type of references to open I/O streams,\ntypically but not necessarily files.\nThe only literals of this type are stdin, stdout, and stderr."},
 
-#include "tabl.c"
+{OK, "__USR_PRIME",         id_,            "A",        "->",
+"user node, to be pushed."},
 
-{OK, 0, id_, "", "->", "->"}
+{OK, "__ANON_PRIME",        id_,            "U",        "->",
+"function call, to be pushed."},
+
+#include "tabl.c"
 };
 
 #include "prim.c"
@@ -141,7 +145,7 @@ PUBLIC char *nickname(int o)
     char *str;
     int ch, size;
 
-    size = sizeof(optable) / sizeof(optable[0]) - 1;
+    size = sizeof(optable) / sizeof(optable[0]);
     if (o >= 0 && o < size) {
         str = optable[o].name;
         ch = *str;
@@ -161,7 +165,7 @@ PUBLIC char *showname(int o)
 {
     int size;
 
-    size = sizeof(optable) / sizeof(optable[0]) - 1;
+    size = sizeof(optable) / sizeof(optable[0]);
     if (o >= 0 && o < size)
         return optable[o].name;
     return 0;
@@ -174,27 +178,41 @@ PUBLIC int operindex(proc_t proc)
 {
     int i, size;
 
-    size = sizeof(optable) / sizeof(optable[0]) - 1;
-    for (i = size - 1; i > ANON_FUNCT_; i--)
+    size = sizeof(optable) / sizeof(optable[0]);
+    for (i = size - 1; i > FILE_; i--)
         if (optable[i].proc == proc)
-            break;
-    return i;
+            return i;
+    return ANON_FUNCT_;
 }
 
 /*
-    opername - return the name of an operator, used in Compare.
+    cmpname - return the name of an operator, used in Compare.
 */
-PUBLIC char *opername(proc_t proc)
+PUBLIC char *cmpname(proc_t proc)
 {
     return nickname(operindex(proc));
 }
 
 /*
-    printname - return the name of an operator, used in writefactor.
+    opername - return the name of an operator, used in writefactor.
 */
-PUBLIC char *printname(proc_t proc)
+PUBLIC char *opername(proc_t proc)
 {
     return showname(operindex(proc));
+}
+
+/*
+    readtable - return a pointer into optable; when looping, the index o
+                is increased from 0 onwards until the index becomes invalid.
+*/
+PUBLIC OpTable *readtable(int o)
+{
+    int size;
+
+    size = sizeof(optable) / sizeof(optable[0]);
+    if (o >= 0 && o < size)
+        return &optable[o];
+    return 0;
 }
 
 /*
@@ -202,18 +220,8 @@ PUBLIC char *printname(proc_t proc)
 */
 PUBLIC char *operarity(proc_t proc)
 {
-    return optable[operindex(proc)].arity;
-}
+    OpTable *tab;
 
-/*
-    readtable - return a pointer into optable.
-*/
-PUBLIC OpTable *readtable(int o)
-{
-    int size;
-
-    size = sizeof(optable) / sizeof(optable[0]) - 1;
-    if (o >= 0 && o < size)
-        return &optable[o];
-    return 0;
+    tab = readtable(operindex(proc));
+    return tab->arity;
 }

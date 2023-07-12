@@ -1,18 +1,18 @@
 /*
     module  : repl.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/12/23
 */
 #include "globals.h"
 
 /*
  *  Initialise the symbol table with builtins. There is no need to classify
- *  builtins.
+ *  builtins. The hash table contains an index into the symbol table.
  */
 PUBLIC void inisymboltable(pEnv env) /* initialise */
 {
-    int i, rv;
     Entry ent;
+    int i, rv;
     khiter_t key;
     OpTable *tab;
 
@@ -39,6 +39,7 @@ PRIVATE void enterglobal(pEnv env, char *name)
     khiter_t key;
 
     env->location = sym_size(env->symtab);
+    ent.flags = 0;
     ent.name = name;
     ent.is_user = 1;
     ent.u.body = 0; /* may be assigned in definition */
@@ -140,8 +141,7 @@ PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
 /*
  *  Reverse a list after reading.
  */
-#if 0
-PUBLIC NodeList *reverse(NodeList *list)
+PUBLIC void reverse(NodeList *list)
 {
     Node node;
 
@@ -151,6 +151,4 @@ PUBLIC NodeList *reverse(NodeList *list)
         vec_push(list, node); /* scratch value */
         vec_reverse(list); /* excludes scratch */
     }
-    return list;
 }
-#endif

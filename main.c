@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.1
- *  date    : 07/10/23
+ *  version : 1.2
+ *  date    : 07/12/23
  */
 #include "globals.h"
 
@@ -154,7 +154,9 @@ PRIVATE void options(void)
     printf("the filename parameter cannot start with '-' or a digit\n");
     printf("Options:\n");
     printf("  -h : print this help text and exit\n");
+#ifdef TRACING
     printf("  -d : print a trace of program execution\n");
+#endif
     printf("  -s : dump user-defined functions after execution\n");
     printf("  -v : do not print a copyright notice\n");
     printf("  -w : suppress warnings about overwriting builtin\n");
@@ -200,7 +202,9 @@ PRIVATE int my_main(int argc, char **argv)
         if (argv[i][0] == '-') {
             for (j = 1; argv[i][j]; j++)
                 switch (argv[i][j]) {
+#ifdef TRACING
                 case 'd' : env.debugging = 1; break;
+#endif
                 case 'h' : helping = 1; break;
                 case 's' : symdump = 1; break;
                 case 'v' : verbose = 0; break;
