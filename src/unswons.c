@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
@@ -36,10 +36,10 @@ void unswons_(pEnv env)
         break;
 
     case SET_:
-        while (!(node.u.set & ((long)1 << i)))
+        while (!(node.u.set & ((int64_t)1 << i)))
             i++;
         temp.u.num = i;
-        node.u.set &= ~((long)1 << i);
+        node.u.set &= ~((int64_t)1 << i);
         vec_push(env->stck, node);
         temp.op = INTEGER_;
         vec_push(env->stck, temp);

@@ -1,7 +1,7 @@
 /*
     module  : comp.c
-    version : 1.3
-    date    : 07/12/23
+    version : 1.4
+    date    : 07/17/23
 */
 #include "globals.h"
 
@@ -16,7 +16,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
     FILE *fp1, *fp2;
     char *name1, *name2;
     double dbl, dbl1, dbl2;
-    long num, num1 = 0, num2 = 0;
+    int64_t num, num1 = 0, num2 = 0;
 
     switch (first.op) {
     case USR_:

@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef FILTER_C
 #define FILTER_C
@@ -99,7 +99,7 @@ void filter_(pEnv env)
         vec_push(env->prog, node);
         node.op = INTEGER_;
         for (i = 0; i < SETSIZE; i++)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 /*
                     push the element that may be added to the result
                 */

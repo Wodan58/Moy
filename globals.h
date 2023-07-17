@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.2
-    date    : 07/12/23
+    version : 1.3
+    date    : 07/17/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -12,11 +12,13 @@
 #include <time.h>
 #include <math.h>
 #include <setjmp.h>
-#include <assert.h>
+#include <inttypes.h>
 
 #ifdef _MSC_VER
 #include <io.h>
+#pragma warning(disable : 4244)
 #pragma warning(disable : 4267)
+#pragma warning(disable : 4996)
 #else
 #include <unistd.h>
 #endif
@@ -28,12 +30,16 @@
     The following #defines are present in the source code.
     They have been accepted as an addition to the original code.
 */
-#define CORRECT_INTERN_LOOKUP
+#define BDW_GARBAGE_COLLECTOR    /* main.c */
+#define REMEMBER_FILENAME        /* scan.c */
 #define SEARCH_EXEC_DIRECTORY
+#define CORRECT_INTERN_LOOKUP    /* parm.c */
+#define USE_SNPRINTF             /* format.c */
 
 /* configure                     */
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
+#define BUFFERMAX 80
 #define DISPLAYMAX 10            /* nesting in HIDE & MODULE */
 #define INIECHOFLAG 0
 #define INIAUTOPUT 1
@@ -222,7 +228,7 @@ PUBLIC void parm(pEnv env, int num, Params op, char *file);
 /* prog.c */
 PUBLIC void prog(pEnv env, NodeList *list);
 PUBLIC void code(pEnv env, proc_t proc);
-PUBLIC void push(pEnv env, long num);
+PUBLIC void push(pEnv env, int64_t num);
 PUBLIC void prime(pEnv env, Node node);
 PUBLIC Node pop(pEnv env);
 /* scan.c */
@@ -232,12 +238,13 @@ PUBLIC void inilinebuffer(char *filnam);
 PUBLIC void inilinebuffer(void);
 #endif
 PUBLIC int yyerror(pEnv env, char *message);
-PUBLIC void include(pEnv env, char *filnam, int error);
+PUBLIC void my_error(pEnv env, char *message, YYLTYPE *bloc);
+PUBLIC int include(pEnv env, char *filnam, int error);
 int yywrap(void);
 /* lexr.l */
 int getnextchar(void);
 void new_buffer(void);
-int old_buffer(void);
+void old_buffer(void);
 int yylex(pEnv env);
 /* util.c */
 PUBLIC int ChrVal(char *str);

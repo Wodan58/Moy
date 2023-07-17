@@ -1,7 +1,7 @@
 /*
     module  : modl.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #include "globals.h"
 
@@ -44,7 +44,7 @@ void initmod(pEnv env, char *name)
 void initpriv(pEnv env, int priv)
 {
     static int hide_count;
-    char str[SETSIZE];
+    char str[BUFFERMAX];
 
     if (++hide_index >= DISPLAYMAX) {
         hide_index = DISPLAYMAX - 1;

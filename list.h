@@ -1,23 +1,24 @@
 /*
     module  : list.h
-    date    : 1.2
-    version : 07/11/23
+    date    : 1.3
+    version : 07/17/23
 */
 struct NodeList {
-    unsigned long m : 30, /* capacity */
-                  n : 30, /* valid items */
-                  o :  1, /* ownership */
-                  t :  2, /* arity */
-                  u :  1; /* unused */
-    YYSTYPE *a;           /* union */
-    Operator *b;          /* datatype */
+    uint64_t m : 30, /* capacity */
+             n : 30, /* valid items */
+             o :  1, /* ownership */
+             t :  2, /* arity */
+             u :  1; /* used */
+    YYSTYPE *a;      /* union */
+    Operator *b;     /* datatype */
 };
 
 /* arity tells: saving and restoring stack in a condition is necessary */
 enum arity_t {
     ARITY_UNKNOWN, /* not yet calculated */
+    ARITY_KNOWN,
     ARITY_NOT_OK,
-    ARITY_OK
+    ARITY_OK,
 };
 
 #define vec_init(v)	vec_init_again(&(v))
@@ -37,6 +38,7 @@ static __inline void vec_init_again(NodeList **v)
     (*v)->a = 0;
     (*v)->b = 0;
     (*v)->o = NOT_OWNER;
+    (*v)->u = 0;
 }
 
 /* vec_push assumes that v has been initialized to 0 before its called */
@@ -148,6 +150,16 @@ static __inline int vec_getarity(NodeList *v)
 static __inline void vec_setarity(NodeList *v, int s)
 {
     v->t = s;
+}
+
+static __inline int vec_used(NodeList *v)
+{
+    return v->t;
+}
+
+static __inline void vec_setused(NodeList *v)
+{
+    v->t = 1;
 }
 
 /* vec_reverse assumes that an extra element has been added as scratch */

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.4
-    date    : 07/12/23
+    version : 1.5
+    date    : 07/17/23
 */
 #include "globals.h"
 
@@ -22,29 +22,35 @@ static YY_BUFFER_STATE include_stack[INPSTACKMAX];
 /* requires -std=c99 */
 static int input(void);
 
+/*
+    Skip multi-line comment
+*/
 static void SkipComment(void)
 {
     int ch;
 
-    ch = input();
+    ch = input(); /* read past ( */
     do {
-	while (ch != '*' && ch != EOF)
+	while (ch != '*')
 	    ch = input();
-	if (ch == EOF)
-	    break;
-    } while ((ch = input()) != ')' && ch != EOF);
+    } while ((ch = input()) != ')');
 }
 
+/*
+    Skip space characters
+*/
 int getnextchar(void)
 {
     int ch;
 
     while ((ch = input()) <= ' ')
-	if (ch == EOF)
-	    break;
+	;
     return ch;
 }
 
+/*
+    Add a character to the current input line
+*/
 static void addline(int ch)
 {
     static int linepos;
@@ -59,6 +65,9 @@ static void addline(int ch)
     line[linepos] = 0;
 }
 
+/*
+    Echo an input line to stdout
+*/
 static void putline(pEnv env, char *str, int leng, int status)
 {
     static int first;
@@ -104,29 +113,27 @@ skip:
     if (env->echoflag > 1)
 	printf("\t");
     printf("%s\n", line);		/* include newline */
-    line[0] = 0;			/* invalidate line */
     linenum++;
 }
 
 void new_buffer(void)
 {
-#if 0
-    if (include_stack_ptr >= INPSTACKMAX)
-	execerror("fewer include files", "redirect");
-#endif
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
 }
 
-int old_buffer(void)
+void old_buffer(void)
 {
     linenum = yylineno + 1;
-    if (include_stack_ptr > 0) {
-        if (include_stack[--include_stack_ptr])
-	    yy_switch_to_buffer(include_stack[include_stack_ptr]);
-    }
-    return 0;
+    if (--include_stack_ptr < 0)
+        include_stack_ptr = 0;
+    if (include_stack[include_stack_ptr])
+	yy_switch_to_buffer(include_stack[include_stack_ptr]);
 }
+
+/* Update the column positions, each time some text is matched. */
+#define YY_USER_ACTION	do { yylloc.first_column = yylloc.last_column; \
+			     yylloc.last_column += yyleng; } while (0);
 %}
 
 %option		yylineno
@@ -149,13 +156,13 @@ linecom		#.*
 %%
 
 <<EOF>>		{ quit_(env); }
-
 <COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
 <COMMENT>.	addline(yytext[0]);
 <COMMENT>\n	putline(env, "\n", 1, WITHIN_COM);
 
 [\n]+.*\n	{ int i = 0; putline(env, yytext, yyleng, OUT_OF_COM);
-		  while (yytext[i] == '\n') i++; yyless(i); }
+		  while (yytext[i] == '\n') i++; yyless(i); /* reset columns */
+                  yylloc.first_column = yylloc.last_column = 0; }
 LIBRA[ \t]*	|
 DEFINE[ \t]*	|
 IN[ \t]*	|
@@ -170,7 +177,7 @@ MODULE[ \t]*	return MODULE;
 {character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
 {integer}	|
 {octal}		|
-{hexal}		{ yylval.num = strtol(yytext, 0, 0); return INTEGER_; }
+{hexal}		{ yylval.num = strtoll(yytext, 0, 0); return INTEGER_; }
 {float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
 {string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }

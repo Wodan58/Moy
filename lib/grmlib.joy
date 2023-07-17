@@ -49,7 +49,7 @@ IN
 	"generate B" gen-trace
 	unswons
 						# binary operators
-	[ [ [[ | ] in]
+	[ [ [dup [ | ] in ]
 	    pop
 	    [ [] cons cons cons dup ] dip
 	    uncons first
@@ -57,25 +57,25 @@ IN
 	      [[i] dip generate] dip ]
 	    dip
 	    [i] dip generate ]
-	  [ [[ _ ] in ]
+	  [ [dup [ _ ] in ]
 	    pop uncons first
 	    [ [generate] cons swons ]
 	    dip generate ]
 						# unary operators
-	  [ [[ ? ] in ]
+	  [ [dup [ ? ] in ]
 	    pop
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first generate ]
-	  [ [[ + ] in ]
+	  [ [dup [ + ] in ]
 	    swons
 	    [] cons cons cons cons dup
 	    [ i second generate ] dip
 	    i dup
 	    [ [generate] cons swons ] dip
 	    second generate ]
-	  [ [[ * ] in ]
+	  [ [dup [ * ] in ]
 	    swons
 	    [ [] cons cons cons dup
 	      [i unswons i] dip ]
@@ -83,15 +83,15 @@ IN
 	    dup
 	    [ [i] dip [generate] cons swons ] dip
 	    second generate ]
-	  [ [[ $ ] in]
+	  [ [dup [ $ ] in]
 	    pop first i
 	    Min2Tre generate ]
-	  [ [[QUOTE] in ]
+	  [ [dup [QUOTE] in ]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [[epsilon] in ]
+	  [ [dup [epsilon] in ]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom
@@ -144,7 +144,7 @@ IN
 	"parse B" prs-trace
 	unswons
 						# binary operators
-	[ [ [[ | ] in]
+	[ [ [dup [ | ] in]
 	    pop
 	    [ [] cons cons dup ] dip
 	    uncons first
@@ -152,25 +152,25 @@ IN
 	      [[i] dip parse] dip ]
 	    dip
 	    [i] dip parse ]
-	  [ [[ _ ] in ]
+	  [ [dup [ _ ] in ]
 	    pop uncons first swap # in generate there is no swap
 	    [ [parse] cons swons ]
 	    dip parse ]
 						# unary operators
-	  [ [[ ? ] in ]
+	  [ [dup [ ? ] in ]
 	    pop
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
 	    dip
 	    [i] dip first parse ]
-	  [ [[ + ] in ]
+	  [ [dup [ + ] in ]
 	    swons
 	    [] cons cons cons dup
 	    [ i second parse ] dip
 	    i dup
 	    [ [parse] cons swons ] dip
 	    second parse ]
-	  [ [[ * ] in ]
+	  [ [dup [ * ] in ]
 	    swons
 	    [ [] cons cons dup
 	      [i unswons i] dip ]
@@ -178,15 +178,15 @@ IN
 	    dup
 	    [ [i] dip [parse] cons swons ] dip
 	    second parse ]
-	  [ [[ $ ] in]
+	  [ [dup [ $ ] in]
 	    pop first i
 	    Min2Tre parse ]
-	  [ [[QUOTE] in ]
+	  [ [dup [QUOTE] in ]
 	    pop first
 	    swap [swons] dip
 	    unswons i ]
 						# operands
-	  [ [[epsilon] in ]
+	  [ [dup [epsilon] in ]
 	    pop pop
 	    unswons i ]
 	  [ # default: an atom

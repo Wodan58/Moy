@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #include "globals.h"
 
@@ -15,8 +15,8 @@
 PUBLIC int arity(pEnv env, NodeList *quot, int num)
 {
     char *str;
-    Node node;
     Entry ent;
+    Node node, prev;
     NodeList *list = 0;
     int i, j = vec_size(quot);
 
@@ -26,16 +26,20 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
         node = vec_at(quot, i);
         vec_push(list, node);
     }
+    prev.op = 0;
+    prev.u.lis = 0;
     while (vec_size(list)) {
         node = vec_pop(list);
         switch (node.op) {
         case USR_:
             ent = sym_at(env->symtab, node.u.ent);
-            if (ent.u.body)
+            if (ent.u.body && !vec_used(ent.u.body)) {
                 for (i = 0, j = vec_size(ent.u.body); i < j; i++) {
                     node = vec_at(ent.u.body, i);
                     vec_push(list, node);
                 }
+                vec_setused(ent.u.body);
+            }
             break;
         case ANON_FUNCT_:
             str = operarity(node.u.proc); /* problem: lineair search */
@@ -45,6 +49,15 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
                 else if (*str == 'D') { /* delete */
                     if (--num < 0)
                         return -1;
+                } else if (*str == 'P') { /* previous */
+                    if (prev.op == LIST_) {
+                        for (i = 0, j = vec_size(prev.u.lis); i < j; i++) {
+                            node = vec_at(prev.u.lis, i);
+                            vec_push(list, node);
+                        }
+                        break;
+                    }
+                    return -1;
                 } else if (*str == 'U') /* unknown */
                     return -1;
             break;
@@ -61,6 +74,7 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
             num++;
             break;
         }
+        prev = node;
     }
     return num;
 }

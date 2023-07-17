@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.2
- *  date    : 07/12/23
+ *  version : 1.3
+ *  date    : 07/17/23
  */
 #include "globals.h"
 
@@ -74,10 +74,11 @@ PRIVATE void report_clock(pEnv env)
  *  The version must be set on the commandline when compiling:
  *  -DJVERSION="\"alpha\"" or whatever.
  */
+#ifdef COPYRIGHT
 PRIVATE void copyright(char *file)
 {
     int i, j = 0;
-    char str[INPLINEMAX], *ptr;
+    char str[BUFFERMAX], *ptr;
 
     static struct {
         char *file;
@@ -103,7 +104,7 @@ PRIVATE void copyright(char *file)
             file = ptr + 1;
         for (i = 0; table[i].file; i++) {
             if (!strcmp(file, table[i].file)) {
-                strftime(str, sizeof(str), "%H:%M:%S on %b %e %Y",
+                strftime(str, sizeof(str), "%H:%M:%S on %b %d %Y",
                     gmtime(&table[i].stamp));
                 printf("JOY  -  compiled at %s (%s)\n", str, table[i].gc);
                 j = 1;
@@ -121,11 +122,13 @@ PRIVATE void copyright(char *file)
     if (j)
         printf("Copyright 2001 by Manfred von Thun\n");
 }
+#endif
 
 /*
     dump the symbol table - accessed from quit_, because env is needed;
     do this only for user defined symbols.
 */
+#ifdef SYMBOLS
 PRIVATE void dump_table(pEnv env)
 {
     int i;
@@ -134,12 +137,15 @@ PRIVATE void dump_table(pEnv env)
     for (i = sym_size(env->symtab) - 1; i >= 0; i--) {
         ent = sym_at(env->symtab, i);
         if (!ent.is_user)
-            break;
-        printf("(%d) %s == ", i, ent.name);
-        writeterm(env, ent.u.body);
-        putchar('\n');
+            printf("(%d) %s\n", i, ent.name);
+        else {
+            printf("(%d) %s == ", i, ent.name);
+            writeterm(env, ent.u.body);
+            putchar('\n');
+        }
     }
 }
+#endif
 
 /*
     options - print help on startup options and exit: options are those that
@@ -157,9 +163,15 @@ PRIVATE void options(void)
 #ifdef TRACING
     printf("  -d : print a trace of program execution\n");
 #endif
-    printf("  -s : dump user-defined functions after execution\n");
+#ifdef SYMBOLS
+    printf("  -s : dump symbol table functions after execution\n");
+#endif
+#ifdef COPYRIGHT
     printf("  -v : do not print a copyright notice\n");
+#endif
+#ifdef OVERWRITE
     printf("  -w : suppress warnings about overwriting builtin\n");
+#endif
 #if YYDEBUG
     printf("  -y : print a trace of parser execution\n");
 #endif
@@ -171,7 +183,13 @@ PRIVATE int my_main(int argc, char **argv)
     static unsigned char mustinclude = 1;
     int i, j, ch;
     char *filename = 0, *ptr;
-    unsigned char verbose = 1, symdump = 0, helping = 0;
+#ifdef COPYRIGHT
+    unsigned char verbose = 1;
+#endif
+#ifdef SYMBOLS
+    unsigned char symdump = 0;
+#endif
+    unsigned char helping = 0;
 
     Env env; /* global variables */
     memset(&env, 0, sizeof(env));
@@ -191,7 +209,10 @@ PRIVATE int my_main(int argc, char **argv)
      *  Initialize yyin and other environmental parameters.
      */
     yyin = stdin;
-    if ((ptr = strrchr(env.pathname = argv[0], '/')) != 0)
+    env.pathname = argv[0];
+    if ((ptr = strrchr(env.pathname, '/')) != 0)
+        *ptr = 0;
+    else if ((ptr = strrchr(env.pathname, '\\')) != 0)
         *ptr = 0;
     else
         env.pathname = ".";
@@ -206,9 +227,15 @@ PRIVATE int my_main(int argc, char **argv)
                 case 'd' : env.debugging = 1; break;
 #endif
                 case 'h' : helping = 1; break;
+#ifdef SYMBOLS
                 case 's' : symdump = 1; break;
+#endif
+#ifdef COPYRIGHT
                 case 'v' : verbose = 0; break;
+#endif
+#ifdef OVERWRITE
                 case 'w' : env.overwrite = 0; break;
+#endif
 #if YYDEBUG
                 case 'y' : yydebug = 1; break;
 #endif
@@ -246,10 +273,14 @@ PRIVATE int my_main(int argc, char **argv)
     }
     env.g_argc = argc;
     env.g_argv = argv;
+#ifdef COPYRIGHT
     if (verbose)
         copyright(filename);
+#endif
+#ifdef SYMBOLS
     if (symdump)
         my_atexit(dump_table);
+#endif
     if (helping)
         options();
     env.echoflag = INIECHOFLAG;
@@ -263,8 +294,8 @@ PRIVATE int my_main(int argc, char **argv)
     inisymboltable(&env);
     setjmp(begin);
     if (mustinclude) {
-        mustinclude = 0;
-        include(&env, "usrlib.joy", ERROR_ON_USRLIB);
+        mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
+        fflush(stdout); /* flush include messages */
     }
     return yyparse(&env);
 }
@@ -273,14 +304,14 @@ int main(int argc, char **argv)
 {
     int (*volatile m)(int, char **) = my_main;
 
-#ifdef GC_BDW
-    GC_INIT();
-#else
+#ifndef BDW_GARBAGE_COLLECTOR
 #ifdef SIGNAL_HANDLING
     GC_init(&argc, fatal);
 #else
     GC_init(&argc);
 #endif
+#else
+    GC_INIT();
 #endif
     return (*m)(argc, argv);
 }

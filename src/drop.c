@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef DROP_C
 #define DROP_C
@@ -44,9 +44,9 @@ void drop_(pEnv env)
     case SET_:
         node.u.set = 0;
         for (i = 0, j = elem.u.num; i < SETSIZE; i++)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 if (j < 1)
-                    node.u.set |= ((long)1 << i);
+                    node.u.set |= ((int64_t)1 << i);
                 else
                     j--;
             }

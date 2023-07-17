@@ -1,13 +1,13 @@
 /*
     module  : ifinteger.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef IFINTEGER_C
 #define IFINTEGER_C
 
 /**
-OK 2630  ifinteger  :  DDDU	X [T] [E]  ->  ...
+OK 2630  ifinteger  :  DDDP	X [T] [E]  ->  ...
 If X is an integer, executes T else executes E.
 */
 void ifinteger_(pEnv env)

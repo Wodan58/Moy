@@ -11,7 +11,7 @@
 *)
 DEFINE
     r-fact ==
-	[ dup null ]	(* dup *)
+	[ dup null ]
 	[ pop 1]
 	[ dup pred r-fact *]
 	ifte.
@@ -26,7 +26,7 @@ DEFINE
 *)
 DEFINE
     r-mcc91 ==
-	[ dup 100 > ]	(* dup *)
+	[ dup 100 > ]
 	[ 10 - ]
 	[ 11 + r-mcc91 r-mcc91 ]
 	ifte.
@@ -42,8 +42,8 @@ DEFINE
 DEFINE
     r-ack ==
 #	stack putln
-	[ [ [over null]  popd succ ]		# over
-	  [ [dup null]  pop pred 1 r-ack ]	# dup
+	[ [ [over null]  popd succ ]
+	  [ [dup null]  pop pred 1 r-ack ]
 	  [ [dup pred swap] dip pred r-ack r-ack ] ]
 	cond.
 
@@ -63,7 +63,7 @@ DEFINE
 
 DEFINE
     r-hamilhyp ==   #  [] n  =>  [...]
-	[ dup null ]	(* dup *)
+	[ dup null ]
 	[ pop ]
 	[ dup rollup pred       r-hamilhyp
 	  dupd cons swap pred   r-hamilhyp ]
@@ -77,7 +77,7 @@ DEFINE
 
 DEFINE
     x-fact ==
-	[ [ over null ]		(* over *)
+	[ [ over null ]
 	  [ pop pop 1]
 	  [ [dup pred] dip x *]
 	  ifte ]
@@ -90,7 +90,7 @@ DEFINE
 	dup [x] dip x.
 DEFINE
     x-mcc91 ==
-	[ [ over 100 > ]	(* over *)
+	[ [ over 100 > ]
 	  [ pop 10 - ]
 	  [ [11 +] dip twice-x ]
 	  ifte ]
@@ -101,16 +101,16 @@ DEFINE
 (*
     r-ack ==
 #	stack putln
-	[ [ [over null]  popd succ ]		# over
-	  [ [dup null]  pop pred 1 r-ack ]	# dup
+	[ [ [over null]  popd succ ]
+	  [ [dup null]  pop pred 1 r-ack ]
 	  [ [dup pred swap] dip pred r-ack r-ack ] ]
 	cond.
 *)
 
 DEFINE
     x-ack ==
-	[ [ [ [2 pick null]  pop popd succ ]	(* pick *)
-	    [ [over null]  [pop pred 1] dip x ]		(* over *)
+	[ [ [ [2 pick null]  pop popd succ ]
+	    [ [over null]  [pop pred 1] dip x ]
 	    [ [[dup pred swap] dip pred] dip twice-x ] ]
 	cond ]
 	x.
@@ -126,8 +126,8 @@ DEFINE
 	dup [i] dip i.
 DEFINE
     y-ack ==
-	[ [ [ [2 pick null]  pop popd succ ]	(* pick *)
-	    [ [over null]  [pop pred 1] dip i ]		(* over *)
+	[ [ [ [2 pick null]  pop popd succ ]
+	    [ [over null]  [pop pred 1] dip i ]
 	    [ [[dup pred swap] dip pred] dip twice-i ] ]
 	cond ]
 	y.
@@ -146,7 +146,7 @@ DEFINE
 
 DEFINE
     x-hamilhyp ==
-	[ [ over null ]		(* over *)
+	[ [ over null ]
 	  [ pop pop ]
 	  [ dup [ [dup rollup pred] dip  x ] dip
 	    [dupd cons] dip
@@ -165,8 +165,8 @@ DEFINE
 # definition:
 
 DEFINE ack == (* I:n I:m -> I:a *)
-    [ [ [dup 0 =] [pop 1 +] ]			(* dup *)
-      [ [over 0 =] [popd 1 - 1 swap] [] ]	(* over *)
+    [ [ [dup 0 =] [pop 1 +] ]
+      [ [over 0 =] [popd 1 - 1 swap] [] ]
       [ [dup rollup [1 -] dip] [swap 1 - ack] ] ]
     condlinrec .
 
@@ -187,7 +187,7 @@ DEFINE
 
 DEFINE
     l-mcc91 ==
-	[ dup 100 > ]	(* dup *)
+	[ dup 100 > ]
 	[ 10 - ]
 	[ 11 + ]
 	[ l-mcc91 ]
@@ -207,8 +207,8 @@ DEFINE
 
 DEFINE
     clr-ack ==
-	[ [ [over null]  [popd succ] ]		(* over *)
-	  [ [dup null]  [pop pred 1]  [] ]	(* dup *)
+	[ [ [over null]  [popd succ] ]
+	  [ [dup null]  [pop pred 1]  [] ]
 	  [ [[dup pred swap] dip pred]  [clr-ack] ] ]
 	condlinrec.
 
@@ -226,7 +226,7 @@ DEFINE
 
 DEFINE 
     lr-hamilhyp ==
-	[ dup null ]	(* dup *)
+	[ dup null ]
 	[ pop ]
 	[ dup rollup pred ]
 	[ dupd cons swap pred lr-hamilhyp ]
@@ -236,14 +236,14 @@ DEFINE
 
 DEFINE
     toggle ==   #   {..} i  ->  {..]
-	[has]  [[not] dip swons not]  [swons]  ifte.
+	[over over has]  [[not] dip swons not]  [swons]  ifte.
 
 {}  4  toggle.
 {1 2 7}  2 toggle.
 
 DEFINE
     lr-grayseq ==
-	[ dup null ]	(* dup *)
+	[ dup null ]
 	[ pop ]
 	[ dup rollup pred ]
 	[ dupd
@@ -259,7 +259,7 @@ DEFINE
 
 DEFINE
     cnr-hamilhyp ==
-	[ [ [dup null] [pop] ]		(* dup *)
+	[ [ [dup null] [pop] ]
 	  [ [dup rollup pred]
 	    [dupd cons swap pred]
 	    [] ] ]
@@ -270,8 +270,8 @@ DEFINE
 
 DEFINE
     cnr-ack ==
-	[ [ [over null]  [popd succ] ]		(* over *)
-	  [ [dup null]  [pop pred 1]  [] ]	(* dup *)
+	[ [ [over null]  [popd succ] ]
+	  [ [dup null]  [pop pred 1]  [] ]
 	  [ [[dup pred swap] dip pred]  []  [] ] ]
 	condnestrec.
 
@@ -279,7 +279,7 @@ DEFINE
 
 DEFINE
     cnr-grayseq ==
-	[ [ [dup null]  [pop] ]		(* dup *)
+	[ [ [dup null]  [pop] ]
 	  [ [dup rollup pred]
 	    [dupd
 	     dup [first swap toggle] dip # inserted
@@ -292,7 +292,7 @@ DEFINE
 DEFINE
     cnr-hanoi ==
 	[[rolldown] infra] dip
-	[ [ [dup null] [pop pop] ]	(* dup *)
+	[ [ [dup null] [pop pop] ]
 	  [ [dup2 [[rotate] infra] dip pred]
 	    [ [dup rest put] dip
 	      [[swap] infra] dip pred ]
@@ -305,12 +305,12 @@ DEFINE
   
 DEFINE
     cnr-fact ==
-	[ [ [dup null] [pop 1] ]	(* dup *)
+	[ [ [dup null] [pop 1] ]
 	  [ [dup pred] [*] ] ]
 	condnestrec;
 
     cnr-mcc91 ==
-	[ [ [dup 100 >] [10 -] ]	(* dup *)
+	[ [ [dup 100 >] [10 -] ]
 	  [ [11 +] [] [] ] ]
 	condnestrec.
 
@@ -321,12 +321,12 @@ DEFINE
 
 DEFINE
     cnr-even ==
-	[ [ [dup 2 rem null] [pop true] ]	(* dup *)
+	[ [ [dup 2 rem null] [pop true] ]
 	  [ [pop false] ] ]
 	condnestrec;
 
     cnr-abs ==
-	[ [ [dup 0 <] [0 swap -] ]	(* dup *)
+	[ [ [dup 0 <] [0 swap -] ]
 	  [ [] ] ]
 	condnestrec.
 

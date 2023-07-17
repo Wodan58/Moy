@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.3
- *  date    : 07/12/23
+ *  version : 1.4
+ *  date    : 07/17/23
  */
 #include "globals.h"
 
@@ -13,7 +13,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
 {
     Node node;
     Entry ent;
-    long set = 0;
+    uint64_t set = 0;
 
     switch (env->token) {
     case USR_:
@@ -49,7 +49,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
                 || yylval.num < 0 || yylval.num >= SETSIZE)
                 yyerror(env, "small numeric expected in set");
             else
-                set |= ((long)1 << yylval.num);
+                set |= ((int64_t)1 << yylval.num);
         node.u.set = set;
         node.op = SET_;
         vec_push(env->stck, node);

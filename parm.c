@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.2
-    version : 07/12/23
+    date    : 1.3
+    version : 07/17/23
 */
 #include "globals.h"
 
@@ -606,7 +606,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
         case SET_   : if (!first.u.set)
                           execerror("non-empty set", file);
                       for (i = 0, j = second.u.num; i < SETSIZE; i++)
-                          if (first.u.set & ((long)1 << i)) {
+                          if (first.u.set & ((int64_t)1 << i)) {
                               if (!j)
                                   return;
                               j--;
@@ -637,7 +637,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
         case SET_   : if (!second.u.set)
                           execerror("non-empty set", file);
                       for (i = 0, j = first.u.num; i < SETSIZE; i++)
-                          if (second.u.set & ((long)1 << i)) {
+                          if (second.u.set & ((int64_t)1 << i)) {
                               if (!j)
                                   return;
                               j--;

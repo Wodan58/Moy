@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef CONS_C
 #define CONS_C
@@ -32,7 +32,7 @@ void cons_(pEnv env)
         break;
 
     case SET_:
-        node.u.set = aggr.u.set | ((long)1 << elem.u.num);
+        node.u.set = aggr.u.set | ((int64_t)1 << elem.u.num);
     default:
         break;
     }

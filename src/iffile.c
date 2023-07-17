@@ -1,13 +1,13 @@
 /*
     module  : iffile.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef IFFILE_C
 #define IFFILE_C
 
 /**
-OK 2700  iffile  :  DDDU	X [T] [E]  ->  ...
+OK 2700  iffile  :  DDDP	X [T] [E]  ->  ...
 If X is a file, executes T else executes E.
 */
 void iffile_(pEnv env)

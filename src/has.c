@@ -1,7 +1,7 @@
 /*
     module  : has.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef HAS_C
 #define HAS_C
@@ -36,7 +36,7 @@ void has_(pEnv env)
             }
         break;
     case SET_:
-        found = (aggr.u.set & ((long)1 << elem.u.num)) > 0;
+        found = (aggr.u.set & ((int64_t)1 << elem.u.num)) > 0;
     default:
         break;
     }

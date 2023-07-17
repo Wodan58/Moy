@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef FREAD_C
 #define FREAD_C
@@ -13,7 +13,7 @@ and returned as a list of I integers.
 */
 void fread_(pEnv env)
 {
-    long count;
+    int64_t count;
     Node node, elem;
     unsigned char *buf;
 

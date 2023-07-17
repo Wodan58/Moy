@@ -1,13 +1,13 @@
 /*
     module  : while.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef WHILE_C
 #define WHILE_C
 
 /**
-OK 2720  while  :  DDU	[B] [D]  ->  ...
+OK 2720  while  :  DDP	[B] [D]  ->  ...
 While executing B yields true executes D.
 */
 void while_(pEnv env)

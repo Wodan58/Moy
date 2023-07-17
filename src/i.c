@@ -1,13 +1,13 @@
 /*
     module  : i.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef I_C
 #define I_C
 
 /**
-OK 2430  i  :  DU	[P]  ->  ...
+OK 2430  i  :  DP	[P]  ->  ...
 Executes P. So, [P] i  ==  P.
 */
 PRIVATE void i_(pEnv env)

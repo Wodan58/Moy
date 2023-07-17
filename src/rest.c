@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef REST_C
 #define REST_C
@@ -32,9 +32,9 @@ void rest_(pEnv env)
         break;
 
     case SET_:
-        while (!(node.u.set & ((long)1 << i)))
+        while (!(node.u.set & ((int64_t)1 << i)))
             i++;
-        node.u.set &= ~((long)1 << i);
+        node.u.set &= ~((int64_t)1 << i);
         vec_push(env->stck, node);
     default:
         break;

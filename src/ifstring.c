@@ -1,13 +1,13 @@
 /*
     module  : ifstring.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef IFSTRING_C
 #define IFSTRING_C
 
 /**
-OK 2670  ifstring  :  DDDU 	X [T] [E]  ->  ...
+OK 2670  ifstring  :  DDDP 	X [T] [E]  ->  ...
 If X is a string, executes T else executes E.
 */
 void ifstring_(pEnv env)

@@ -1,7 +1,7 @@
 /*
     module  : syml.c
-    date    : 1.2
-    version : 07/12/23
+    date    : 1.3
+    version : 07/14/23
 */
 #include <stdio.h>
 #include <string.h>
@@ -39,9 +39,7 @@ int sym_size(SymList *v)
 
 Entry sym_at(SymList *v, int i)
 {
-    if (i < sym_size(v))
-        return v->a[i];
-    return v->a[0];
+    return v->a[i];
 }
 
 Entry *sym_lvalue(SymList *v, int i)

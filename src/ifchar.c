@@ -1,13 +1,13 @@
 /*
     module  : ifchar.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef IFCHAR_C
 #define IFCHAR_C
 
 /**
-OK 2640  ifchar  :  DDDU	X [T] [E]  ->  ...
+OK 2640  ifchar  :  DDDP	X [T] [E]  ->  ...
 If X is a character, executes T else executes E.
 */
 void ifchar_(pEnv env)

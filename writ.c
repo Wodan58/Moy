@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.3
- *  date    : 07/12/23
+ *  version : 1.5
+ *  date    : 07/17/23
  */
 #include "globals.h"
 
@@ -39,20 +39,20 @@ PUBLIC void writefactor(pEnv env, Node node)
         printf("%s", node.u.num ? "true" : "false");
         break;
     case CHAR_:
-        if (node.u.num == '\n')
-            printf("'\\n");
+        if (node.u.num >= 8 && node.u.num <= 13)
+            printf("'\\%c", "btnvfr"[node.u.num - 8]);
         else
             printf("'%c", (int)node.u.num);
         break;
     case INTEGER_:
-        printf("%ld", (long)node.u.num);
+	printf("%" PRId64, node.u.num);
         break;
     case SET_:
         putchar('{');
         for (i = 0; i < SETSIZE; i++)
-            if (node.u.set & ((long)1 << i)) {
+            if (node.u.set & ((int64_t)1 << i)) {
                 printf("%d", i);
-                node.u.set &= ~((long)1 << i);
+                node.u.set &= ~((int64_t)1 << i);
                 if (node.u.set)
                     putchar(' ');
             }
@@ -61,10 +61,8 @@ PUBLIC void writefactor(pEnv env, Node node)
     case STRING_:
         putchar('"');
         for (ptr = node.u.str; ptr && *ptr; ptr++) {
-            if (*ptr == '"' || *ptr == '\\' || *ptr == '\n')
-                putchar('\\');
-            if (*ptr == '\n')
-                putchar('n');
+            if (*ptr >= 8 && *ptr <= 13)
+                printf("\\%c", "btnvfr"[*ptr - 8]);
             else
                 putchar(*ptr);
         }
@@ -127,7 +125,7 @@ PRIVATE void writing(pEnv env, NodeList *stack)
         node = vec_pop(stack);
         if (node.op != LIST_) {
             if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
-                putchar(node.u.num);
+                putchar((int)node.u.num);
             else 
                 writefactor(env, node);
             spacing(stack, node);
@@ -167,6 +165,7 @@ PUBLIC void writeterm(pEnv env, NodeList *list)
 /*
     writestack - print the contents of the stack in readable format to stdout.
 */
+#ifdef TRACING
 PUBLIC void writestack(pEnv env, NodeList *list)
 {
     Node node;
@@ -181,3 +180,4 @@ PUBLIC void writestack(pEnv env, NodeList *list)
     }
     writing(env, stack);
 }
+#endif

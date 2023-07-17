@@ -1,7 +1,7 @@
 /*
     module  : save.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #include "globals.h"
 #include "prim.h"
@@ -17,10 +17,17 @@ PUBLIC void save(pEnv env, NodeList *list, int num)
 
     if (!list)
         return;
-    if ((status = vec_getarity(list)) == ARITY_UNKNOWN) {
-        status = arity(env, list, num) == 1 ? ARITY_OK : ARITY_NOT_OK;
-        vec_setarity(list, status);
+    if ((status = vec_getarity(list)) == ARITY_UNKNOWN)
+        status = arity(env, list, num) == 1 ? ARITY_OK : ARITY_KNOWN;
+    if (status == ARITY_KNOWN) {
+#ifdef ARITY
+        printf("arity: ");
+        writeterm(env, list);
+        printf("\n");
+#endif
+        status = ARITY_NOT_OK;
     }
+    vec_setarity(list, status);
     if (status == ARITY_NOT_OK) {
         /*
             replace the new stack with the old stack

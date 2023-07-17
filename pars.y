@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.2
-    date    : 07/12/23
+    version : 1.3
+    date    : 07/17/23
 */
 #include "globals.h"
 %}
@@ -29,16 +29,23 @@
 %type <set> opt_set set
 %type <lis> opt_term term factor list
 
+/* generate include file with symbols and types */
+%defines
+
+/* advanced semantic type */
 %union {
-    long num;		/* USR, BOOLEAN, CHAR, INTEGER */
+    int64_t num;	/* USR, BOOLEAN, CHAR, INTEGER */
     proc_t proc;	/* ANON_FUNCT */
-    unsigned long set;	/* SET */
+    uint64_t set;	/* SET */
     char *str;		/* STRING */
     NodeList *lis;	/* LIST */
     double dbl;		/* FLOAT */
     FILE *fil;		/* FILE */
     pEntry ent;		/* SYMBOL */
 };
+
+/* start the grammar with cycle */
+%start cycle
 
 %%
 
@@ -99,7 +106,7 @@ term : term factor { int i, j; for (i = 0, j = vec_size($1); i < j; i++)
 factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 			lookup(env, $1);
 			if (!env->location && strchr($1, '.'))
-			    yyerror(env, "no such field in module");
+			    my_error(env, "no such field in module", &@1);
 			else {
 			    ent = sym_at(env->symtab, env->location);
 			    /* execute immediate functions at compile time */
@@ -129,9 +136,9 @@ list : '[' opt_term ']' { $$ = $2; } ;
 
 set : '{' opt_set '}' { $$ = $2; } ;
 
-opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE)
-				yyerror(env, "small numeric expected in set");
-				else $$ |= (long)1 << $2; }
+opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE) my_error(env,
+                                    "small numeric expected in set", &@2);
+				else $$ |= (int64_t)1 << $2; }
 	| /* empty */ { $$ = 0; } ;
 
 char_or_int : CHAR_ | INTEGER_ ;

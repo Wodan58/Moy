@@ -1,7 +1,7 @@
 /*
     module  : some.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef SOME_C
 #define SOME_C
@@ -81,7 +81,7 @@ void some_(pEnv env)
     case SET_:
         node.op = INTEGER_;
         for (i = 0; i < SETSIZE; i++)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 /*
                     push the location of the result type
                 */

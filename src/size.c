@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -26,7 +26,7 @@ void size_(pEnv env)
         break;
     case SET_:
         for (i = 0, temp.u.num = 0; i < SETSIZE; i++)
-            if (node.u.set & ((long)1 << i))
+            if (node.u.set & ((int64_t)1 << i))
                 temp.u.num++;
     default:
         break;

@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -43,7 +43,7 @@ void primrec_(pEnv env)
     case SET_:
         node.op = INTEGER_;
         for (j = i = 0; i < SETSIZE; i++)
-            if (first.u.set & ((long)1 << i)) {
+            if (first.u.set & ((int64_t)1 << i)) {
                 node.u.num = i;
                 vec_push(env->stck, node);
                 j++;

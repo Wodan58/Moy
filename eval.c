@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.3
- *  date    : 07/12/23
+ *  version : 1.4
+ *  date    : 07/17/23
  */
 #include "globals.h"
 
@@ -9,6 +9,15 @@
 #define PARM(n, m)
 #else
 #define PARM(n, m)      parm(env, n, m, __FILE__)
+#endif
+
+#if ALARM
+static volatile sig_atomic_t time_out;
+
+PRIVATE void catch_alarm(__attribute__((unused)) int sig) 
+{
+    time_out = 1;
+}
 #endif
 
 #ifdef STATS
@@ -29,11 +38,26 @@ PUBLIC void exeterm(pEnv env)
     Node node;
     Entry ent;
 
+#if ALARM
+    static int init;
+
+    if (!init) {
+        init = 1;
+        signal(SIGALRM, catch_alarm); /* install alarm clock */
+    }
+    alarm(ALARM); /* set alarm to trigger after ALARM seconds */
+#endif
 #ifdef STATS
     if (++calls == 1)
         atexit(report_stats);
 #endif
     while (vec_size(env->prog)) {
+#if ALARM
+        if (time_out) {
+            time_out = 0;
+            execerror("more time", "exeterm");
+        }
+#endif
 #ifdef STATS
         ++opers;
 #endif
@@ -80,6 +104,9 @@ next:
 #endif
         }
     }
+#if ALARM
+    alarm(0); /* set alarm off */
+#endif
 }
 
 #include "prim.h"

@@ -1,13 +1,13 @@
 /*
     module  : scan.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #include "globals.h"
 
 extern FILE *yyin;
-extern char line[], *yytext;
-extern int yylineno, yyleng;
+extern char line[];
+extern int yylineno;
 
 static int ilevel;
 
@@ -60,7 +60,7 @@ PRIVATE void redirect(FILE *fp)
               If that path also fails an error is generated unless error
               is set to 0.
 */
-PUBLIC void include(pEnv env, char *filnam, int error)
+PUBLIC int include(pEnv env, char *filnam, int error)
 {
     FILE *fp;
     char *ptr;
@@ -98,14 +98,17 @@ PUBLIC void include(pEnv env, char *filnam, int error)
         }
     }
 #endif
-    if (fp)
+    if (fp) {
 #ifdef REMEMBER_FILENAME
         redirect(filnam, fp);
 #else
         redirect(fp);
 #endif
-    else if (error)
+        return 0; /* ok */
+    }
+    if (error)
         execerror("valid file name", "include");
+    return 1; /* nok */
 }
 
 /*
@@ -122,25 +125,30 @@ int yywrap(void)
 }
 
 /*
-    yyerror - error processing during source file reads.
+    my_error - error processing during parsing; location info as parameter.
+*/
+void my_error(pEnv env, char *str, YYLTYPE *bloc)
+{
+    int leng = bloc->last_column - 1;
+
+    fflush(stdout);
+#ifdef REMEMBER_FILENAME
+    leng += fprintf(stderr, "%s:%d:", infile[ilevel].name, yylineno);
+#endif
+    fprintf(stderr, "%s\n%*s^\n%*s%s\n", line, leng, "", leng, "", str);
+    line[0] = 0; /* invalidate line */
+    vec_resize(env->stck, 0);
+    abortexecution_();
+}
+
+/*
+    yyerror - error processing during source file read; location info global.
 */
 int yyerror(pEnv env, char *str)
 {
-    int i, j;
+    YYLTYPE bloc;
 
-    if (line[0]) {
-        fflush(stdout);
-        fprintf(stderr, "%s\n", line);
-        for (i = strlen(line) - yyleng; i >= 0; i--)
-            if (!strncmp(&line[i], yytext, yyleng)) {
-                for (j = 0; j < i; j++)
-                    fputc(' ', stderr);
-                break;
-            }
-        fprintf(stderr, "^\n\t%s\n", str);
-        line[0] = 0;
-    }
-    vec_resize(env->stck, 0);
-    abortexecution_();
+    bloc.last_column = yylloc.last_column;
+    my_error(env, str, &bloc);
     return 0;
 }

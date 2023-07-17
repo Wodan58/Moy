@@ -1,0 +1,8 @@
+(*
+    module  : test29.joy
+    version : 1.1
+    date    : 07/17/23
+*)
+
+(* test of EOF in read.c *)
+get.

@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -35,9 +35,9 @@ void small_(pEnv env)
         break;
     case SET_:
         if (node.u.set) {
-            while (!(node.u.set & ((long)1 << i)))
+            while (!(node.u.set & ((int64_t)1 << i)))
                 i++;
-            node.u.num = (node.u.set & ~((long)1 << i)) == 0;
+            node.u.num = (node.u.set & ~((int64_t)1 << i)) == 0;
         } else
             node.u.num = 1;
         break;

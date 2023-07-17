@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.2
-#   date    : 07/12/23
+#   version : 1.3
+#   date    : 07/17/23
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -53,7 +53,10 @@ exe9(test21)
 exe9(test22)
 exe9(test23)
 exe9(test25)
+exe9(test29)
 exe9(test30)
+exe9(test31)
+exe9(test32)
 
 #
 #  Taking parameter 10 and redirecting

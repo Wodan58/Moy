@@ -1,1 +1,1 @@
-40 [dup small] [] [pred dup pred] [+] binrec. (* dup *)
+39 [dup small] [] [pred dup pred] [+] binrec.

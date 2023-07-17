@@ -12,7 +12,7 @@ LIBRA
     odd == even not;
     prime ==
 	2
-	[ [dup * >] nullary  [rem 0 >] dip  and ]
+	[ over over dup * > ord 2 pick 2 pick rem and ]
 	[ succ ]
 	while
 	dup * < ;

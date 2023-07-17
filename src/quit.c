@@ -1,7 +1,7 @@
 /*
     module  : quit.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.3
+    date    : 07/17/23
 */
 #ifndef QUIT_C
 #define QUIT_C
@@ -10,6 +10,7 @@
 OK 3160  quit  :  N	->
 Exit from Joy.
 */
+#if defined(STATS) || defined(SYMBOLS)
 static int exit_index;
 static void (*table[DISPLAYMAX])(pEnv);
 
@@ -27,10 +28,15 @@ PRIVATE void my_exit(pEnv env)
     while (--exit_index >= 0)
 	(*table[exit_index])(env);
 }
+#endif
 
 PUBLIC void quit_(pEnv env)
 {
+#if defined(STATS) || defined(SYMBOLS)
     my_exit(env);
+#else
+    env->nothing++;
+#endif
     exit(EXIT_SUCCESS);
 }
 #endif

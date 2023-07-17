@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.2
-    date    : 07/12/23
+    version : 1.3
+    date    : 07/17/23
 */
 #include "globals.h"
 
@@ -34,7 +34,7 @@ PUBLIC void code(pEnv env, proc_t proc)
 /*
     push - push an integer on the code stack
 */
-PUBLIC void push(pEnv env, long num)
+PUBLIC void push(pEnv env, int64_t num)
 {
     Node node;
 

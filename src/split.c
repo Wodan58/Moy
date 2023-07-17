@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -105,7 +105,7 @@ void split_(pEnv env)
         vec_push(env->prog, temp);
         node.op = INTEGER_;
         for (i = 0; i < SETSIZE; i++)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 /*
                     push the element that may be added to the result
                 */

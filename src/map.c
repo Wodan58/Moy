@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef MAP_C
 #define MAP_C
@@ -92,7 +92,7 @@ void map_(pEnv env)
         vec_push(env->prog, temp);
         node.op = INTEGER_;
         for (i = 0; i < SETSIZE; i++)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 /*
                     push the location of the result type
                 */

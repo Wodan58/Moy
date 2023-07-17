@@ -1,7 +1,7 @@
 /*
     module  : abs.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef ABS_C
 #define ABS_C
@@ -20,7 +20,7 @@ void abs_(pEnv env)
     if (node.op == FLOAT_)
         node.u.dbl = fabs(node.u.dbl);
     else
-        node.u.num = labs(node.u.num);
+        node.u.num = llabs(node.u.num);
     vec_push(env->stck, node);
 }
 #endif

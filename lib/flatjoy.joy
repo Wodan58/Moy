@@ -10,7 +10,7 @@ P3 == [ [[1 2][3 4][5] []] [[dup *] map] map ]. # double nesting
 DEFINE
     c  ==  concat;
     j2f-f ==
-        [ list ]
+        [ dup list ]
         [ [[[]] concat] dip [j2f-f] step [[] cons c] concat ]
         [ [] cons [c] cons concat ]
         ifte;
@@ -38,7 +38,7 @@ P3 j2f-forwards i i .
 DEFINE
     s  ==  swoncat;
     j2f-r ==
-        [ list ]
+        [ dup list ]
         [ [[swons] swoncat] dip [j2f-r] step [] swons ]
         [ [] cons [s] cons swoncat ]
         ifte;

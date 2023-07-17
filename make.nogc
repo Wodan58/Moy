@@ -3,11 +3,11 @@
 .PRECIOUS: lexr.c
 
 CC = gcc
-CFLAGS = -DGC_BDW -DTRACING -O3 -Wall -Wextra -Werror
+CFLAGS = -O3 -Wall -Wextra -Werror
 OBJECTS = arty.o comp.o dtim.o eval.o lexr.o main.o manl.o modl.o parm.o pars.o prog.o read.o repl.o save.o scan.o syml.o undo.o util.o writ.o
 
 joy: prep $(OBJECTS)
-	gcc -o$@ $(OBJECTS) -lgc
+	$(CC) -o$@ $(OBJECTS) -lgc
 
 $(OBJECTS): globals.h
 
@@ -25,7 +25,7 @@ clean:
 	SOURCE_DATE_EPOCH=1047920271 $(CC) $(CFLAGS) -c $<
 
 .y.c:
-	bison -do$*.c $<
+	bison -o$@ $<
 
 .l.c:
 	flex -o$@ $<

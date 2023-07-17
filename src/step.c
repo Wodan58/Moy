@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
 #ifndef STEP_C
 #define STEP_C
@@ -40,7 +40,7 @@ void step_(pEnv env)
     case SET_:
         node.op = INTEGER_;
         for (i = SETSIZE - 1; i >= 0; i--)
-            if (aggr.u.set & ((long)1 << i)) {
+            if (aggr.u.set & ((int64_t)1 << i)) {
                 prog(env, list.u.lis);
                 node.u.num = i;
                 vec_push(env->prog, node);

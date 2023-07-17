@@ -1,9 +1,9 @@
 /*
     module  : rotated.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 07/17/23
 */
-#ifndef ROTATED_X
+#ifndef ROTATED_C
 #define ROTATED_C
 
 /**
