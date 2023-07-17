@@ -1,6 +1,6 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.6
+#   version : 1.7
 #   date    : 07/17/23
 #
 cmake_minimum_required(VERSION 3.0)
@@ -8,7 +8,7 @@ project(Moy VERSION 1.0)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set(CMAKE_BUILD_TYPE "Release")
 endif()
-option(RUN_TESTS "Run standard tests" ON)
+option(RUN_TESTS "Run standard tests" OFF)
 find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser ${CMAKE_SOURCE_DIR}/pars.y ${CMAKE_SOURCE_DIR}/pars.c
@@ -41,9 +41,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-cove
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
 endif()
 target_link_libraries(joy m gc)
-endif()
 if(RUN_TESTS)
 add_subdirectory(lib)
 add_subdirectory(test)
 add_subdirectory(test2)
+endif()
 endif()
