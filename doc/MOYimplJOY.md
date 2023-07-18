@@ -126,6 +126,7 @@ Static analyzers point to various flaws in the source code, such as the use of
 `gmtime` and `localtime`, that should be replaced by _r functions. Ok, but
 the new functions are not available on the Windows platform. That is why this
 define is there. Maybe it should be replaced by a USE_R_FUNCTIONS define.
+This define is no longer needed.
 
 SOURCE_DATE_EPOCH
 -----------------

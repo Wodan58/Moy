@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.3
- *  date    : 07/17/23
+ *  version : 1.4
+ *  date    : 07/18/23
  */
 #include "globals.h"
 
@@ -223,10 +223,10 @@ PRIVATE int my_main(int argc, char **argv)
         if (argv[i][0] == '-') {
             for (j = 1; argv[i][j]; j++)
                 switch (argv[i][j]) {
+                case 'h' : helping = 1; break;
 #ifdef TRACING
                 case 'd' : env.debugging = 1; break;
 #endif
-                case 'h' : helping = 1; break;
 #ifdef SYMBOLS
                 case 's' : symdump = 1; break;
 #endif
@@ -293,6 +293,7 @@ PRIVATE int my_main(int argc, char **argv)
 #endif
     inisymboltable(&env);
     setjmp(begin);
+    vec_resize(env.prog, 0);
     if (mustinclude) {
         mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
         fflush(stdout); /* flush include messages */
