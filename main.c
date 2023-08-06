@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.4
- *  date    : 07/18/23
+ *  version : 1.5
+ *  date    : 08/06/23
  */
 #include "globals.h"
 
@@ -40,20 +40,6 @@ PUBLIC void execerror(char *message, char *op)
     fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
     abortexecution_();
 }
-
-/*
-    fatal terminates the program after a stack overflow, likely to result in
-    heap corruption that makes it impossible to continue. And exit instead of
-    _exit may fail too.
-*/
-#ifdef SIGNAL_HANDLING
-PRIVATE void fatal(void)
-{
-    fflush(stdout);
-    fprintf(stderr, "fatal error: memory overflow\n");
-    exit(EXIT_FAILURE);
-}
-#endif
 
 /*
     report_clock - report the amount of time spent.
@@ -306,11 +292,7 @@ int main(int argc, char **argv)
     int (*volatile m)(int, char **) = my_main;
 
 #ifndef BDW_GARBAGE_COLLECTOR
-#ifdef SIGNAL_HANDLING
-    GC_init(&argc, fatal);
-#else
     GC_init(&argc);
-#endif
 #else
     GC_INIT();
 #endif

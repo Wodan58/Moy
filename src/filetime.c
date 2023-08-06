@@ -1,14 +1,12 @@
 /*
     module  : filetime.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/06/23
 */
 #ifndef FILETIME_C
 #define FILETIME_C
 
-#ifndef COSMO
 #include <sys/stat.h>
-#endif
 
 /**
 OK 3210  filetime  :  DA 	F  ->  T

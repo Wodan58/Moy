@@ -17,7 +17,6 @@ Build instructions
     cmake --build .
 
 There is a customized version of usrlib.joy waiting in the build directory.
-And also in this directory.
 
 Changes
 -------

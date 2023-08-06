@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/06/23
 */
 #include "globals.h"
 
@@ -42,6 +42,9 @@ PRIVATE void redirect(FILE *fp)
 #endif
 {
     infile[ilevel].linenum = yylineno;
+#if 0
+    infile[ilevel].fp = yyin;
+#endif
     if (ilevel + 1 == INPSTACKMAX)
         execerror("fewer include files", "include");
     infile[++ilevel].fp = yyin = fp;
