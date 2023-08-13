@@ -52,10 +52,10 @@ LIBRA
         [concat]
 	linrec;
     powerlist1 ==
-	[null] [[] cons] [uncons]
+	[dup null] [[] cons] [uncons]
 	[dup swapd [cons] map popd concat] linrec;
     powerlist2 ==
-	[null] [[] cons] [uncons]
+	[dup null] [[] cons] [uncons]
 	[dup swapd [cons] map popd swoncat] linrec;
     insertlist ==	(*   Sequence  Item   ->   List(Sequence) *)
 	swons
@@ -74,7 +74,7 @@ LIBRA
 	  flatten ]
 	linrec;
     qsort ==
-	[small] [] [uncons [>] split] [swapd cons concat] binrec;
+	[dup small] [] [uncons [>] split] [swapd cons concat] binrec;
     qsort1-1 ==
 	[small]
 	[]

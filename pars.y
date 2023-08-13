@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.3
-    date    : 07/17/23
+    version : 1.4
+    date    : 08/13/23
 */
 #include "globals.h"
 %}
@@ -120,7 +120,7 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 				node.u.proc = ent.u.proc;
 				node.op = ANON_FUNCT_;
 			    }
-                            vec_init(list);
+			    vec_init(list);
 			    vec_push(list, node);
 			}
 			$$ = list;
@@ -137,7 +137,7 @@ list : '[' opt_term ']' { $$ = $2; } ;
 set : '{' opt_set '}' { $$ = $2; } ;
 
 opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE) my_error(env,
-                                    "small numeric expected in set", &@2);
+				    "small numeric expected in set", &@2);
 				else $$ |= (int64_t)1 << $2; }
 	| /* empty */ { $$ = 0; } ;
 

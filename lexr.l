@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.5
-    date    : 07/17/23
+    version : 1.6
+    date    : 08/13/23
 */
 #include "globals.h"
 
@@ -126,7 +126,7 @@ void old_buffer(void)
 {
     linenum = yylineno + 1;
     if (--include_stack_ptr < 0)
-        include_stack_ptr = 0;
+	include_stack_ptr = 0;
     if (include_stack[include_stack_ptr])
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
 }
@@ -155,14 +155,14 @@ linecom		#.*
 
 %%
 
-<<EOF>>		{ quit_(env); }
+<<EOF>>		quit_(env);
 <COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
 <COMMENT>.	addline(yytext[0]);
 <COMMENT>\n	putline(env, "\n", 1, WITHIN_COM);
 
 [\n]+.*\n	{ int i = 0; putline(env, yytext, yyleng, OUT_OF_COM);
 		  while (yytext[i] == '\n') i++; yyless(i); /* reset columns */
-                  yylloc.first_column = yylloc.last_column = 0; }
+		  yylloc.first_column = yylloc.last_column = 0; }
 LIBRA[ \t]*	|
 DEFINE[ \t]*	|
 IN[ \t]*	|
@@ -175,10 +175,15 @@ MODULE[ \t]*	return MODULE;
 "=="[ \t]*	return JEQUAL;
 
 {character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
-{integer}	|
 {octal}		|
-{hexal}		{ yylval.num = strtoll(yytext, 0, 0); return INTEGER_; }
-{float}		{ yylval.dbl = atof(yytext); return FLOAT_; }
+{hexal}		|
+{integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-' ? 1 : 0),
+		  0, 0);
+		  if (yylval.num == MAXINT) { yylval.dbl = strtod(yytext, 0);
+		  return FLOAT_; }
+		  if (yytext[0] == '-') yylval.num = -yylval.num;
+		  return INTEGER_; }
+{float}		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
 {string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ if (comment) SkipComment(); else BEGIN COMMENT; }
@@ -187,6 +192,6 @@ MODULE[ \t]*	return MODULE;
 ^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
 ^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
 ^\%LISTING.*	env->echoflag = atoi(yytext + 8);
-[ \t\n\r]+	;
+[ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];
