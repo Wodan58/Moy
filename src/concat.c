@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -33,6 +33,7 @@ void concat_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         i = strlen(first.u.str);
         j = strlen(second.u.str);
         result.u.str = GC_malloc_atomic(i + j + 1);

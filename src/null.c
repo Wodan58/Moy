@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef NULL_C
 #define NULL_C
@@ -45,6 +45,9 @@ void null_(pEnv env)
     case FILE_:
         node.u.num = !node.u.fil;
         break;
+    case BIGNUM_:
+	node.u.num = node.u.str[1] == '0';
+	break;
     }
     node.op = BOOLEAN_;
     vec_push(env->stck, node);

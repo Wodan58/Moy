@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -22,6 +22,7 @@ void size_(pEnv env)
         temp.u.num = vec_size(node.u.lis);
         break;
     case STRING_:
+    case BIGNUM_:
         temp.u.num = strlen(node.u.str);
         break;
     case SET_:

@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.3
-    date    : 07/17/23
+    version : 1.6
+    date    : 08/21/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -16,25 +16,24 @@
 
 #ifdef _MSC_VER
 #include <io.h>
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4267)
-#pragma warning(disable : 4996)
+#pragma warning(disable : 4244 4267 4996)
 #else
 #include <unistd.h>
 #endif
 
-#include <gc.h>                  /* system installed BDW or local gc.h */
-#include "khash.h"
-
 /*
     The following #defines are present in the source code.
-    They have been accepted as an addition to the original code.
 */
 #define BDW_GARBAGE_COLLECTOR    /* main.c */
-#define REMEMBER_FILENAME        /* scan.c */
-#define SEARCH_EXEC_DIRECTORY
-#define CORRECT_INTERN_LOOKUP    /* parm.c */
-#define USE_SNPRINTF             /* format.c */
+#if 0
+#define USE_BIGNUM_ARITHMETIC
+#endif
+
+#include <gc.h>                  /* system installed BDW or local gc.h */
+#include "khash.h"
+#ifdef USE_BIGNUM_ARITHMETIC
+#include "bignum.h"
+#endif
 
 /* configure                     */
 #define INPSTACKMAX 10
@@ -59,6 +58,7 @@ typedef enum {
     HELP,
     INFRA,
     UFLOAT,
+    MUL,
     BFLOAT,
     FGET,
     FPUT,
@@ -145,6 +145,11 @@ typedef struct Entry {
     } u;
 } Entry;
 
+typedef struct Token {
+    YYSTYPE yylval;
+    Symbol symb;
+} Token;
+
 /*
     The symbol table is accessed through a hash table.
 */
@@ -152,11 +157,13 @@ KHASH_MAP_INIT_STR(Symtab, pEntry)
 
 #include "list.h"          /* nodelist */
 #include "syml.h"          /* symlist */
+#include "tokl.h"	   /* tokenlist */
 
 /*
     Global variables are stored locally in the main function.
 */
 typedef struct Env {
+    TokList *tokens;       /* read ahead table */
     NodeList *stck, *prog; /* both stack and code are stored in vectors */
     SymList *symtab;       /* symbol table */
     khash_t(Symtab) *hash;
@@ -232,11 +239,7 @@ PUBLIC void push(pEnv env, int64_t num);
 PUBLIC void prime(pEnv env, Node node);
 PUBLIC Node pop(pEnv env);
 /* scan.c */
-#ifdef REMEMBER_FILENAME
 PUBLIC void inilinebuffer(char *filnam);
-#else
-PUBLIC void inilinebuffer(void);
-#endif
 PUBLIC int yyerror(pEnv env, char *message);
 PUBLIC void my_error(pEnv env, char *message, YYLTYPE *bloc);
 PUBLIC int include(pEnv env, char *filnam, int error);
@@ -244,7 +247,10 @@ int yywrap(void);
 /* lexr.l */
 int getnextchar(void);
 void new_buffer(void);
-void old_buffer(void);
+void old_buffer(int num);
+int my_yylex(pEnv env);
+/* ylex.c */
+void ungetsym(Symbol sym);
 int yylex(pEnv env);
 /* util.c */
 PUBLIC int ChrVal(char *str);
@@ -258,8 +264,10 @@ PUBLIC void writefactor(pEnv env, Node node);
 PUBLIC void writeterm(pEnv env, NodeList *list);
 PUBLIC void writestack(pEnv env, NodeList *list);
 /* modl.c */
+PUBLIC void savemod(int *hide, int *modl);
+PUBLIC void undomod(int hide, int modl);
 PUBLIC void initmod(pEnv env, char *name);
-PUBLIC void initpriv(pEnv env, int priv);
+PUBLIC void initpriv(pEnv env);
 PUBLIC void stoppriv(void);
 PUBLIC void exitpriv(void);
 PUBLIC void exitmod(void);

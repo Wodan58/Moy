@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.4
-    version : 08/13/23
+    date    : 1.5
+    version : 08/21/23
 */
 #include "globals.h"
 
@@ -140,6 +140,20 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 /*
     two floats or integers are needed:
 */
+    case MUL:
+	if (leng < 2)
+	    execerror("two parameters", file);
+	first = vec_back(env->stck);
+	second = vec_at(env->stck, leng - 2);
+	if (first.op != BIGNUM_ && first.op != FLOAT_ && first.op != INTEGER_)
+	    execerror("float or (big)integer", file);
+	if (second.op != BIGNUM_ && second.op != FLOAT_ &&
+	    second.op != INTEGER_)
+	    execerror("two floats or (big)integers", file);
+	break;
+/*
+    two floats or integers are needed:
+*/
     case BFLOAT:
 	if (leng < 2)
 	    execerror("two parameters", file);
@@ -188,7 +202,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    execerror("two parameters", file);
 	first = vec_back(env->stck);
 	second = vec_at(env->stck, leng - 2);
-	if (first.op != STRING_)
+	if (first.op != STRING_ && first.op != BIGNUM_)
 	    execerror("string", file);
 	if (second.op != FILE_ || !second.u.fil)
 	    execerror("file", file);
@@ -316,8 +330,9 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    execerror("two parameters", file);
 	first = vec_back(env->stck);
 	second = vec_at(env->stck, leng - 2);
-	if ((first.op == FLOAT_ || first.op == INTEGER_) &&
-	    (second.op == FLOAT_ || second.op == INTEGER_))
+	if ((first.op == BIGNUM_ || first.op == FLOAT_ || first.op == INTEGER_)
+	    && (second.op == BIGNUM_ || second.op == FLOAT_ ||
+	    second.op == INTEGER_))
 	    ;
 	else if (first.op != INTEGER_)
 	    execerror("integer", file);
@@ -331,7 +346,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	if (leng < 1)
 	    execerror("one parameter", file);
 	first = vec_back(env->stck);
-	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_)
+	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
+	    first.op != BIGNUM_)
 	    execerror("aggregate parameter", file);
 	break;
 /*
@@ -344,7 +360,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	second = vec_at(env->stck, leng - 2);
 	if (first.op != LIST_)
 	    execerror("quotation as top parameter", file);
-	if (second.op != LIST_ && second.op != STRING_ && second.op != SET_)
+	if (second.op != LIST_ && second.op != STRING_ && second.op != SET_ &&
+	    second.op != BIGNUM_)
 	    execerror("aggregate parameter", file);
 	break;
     case TAKE:
@@ -354,7 +371,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	second = vec_at(env->stck, leng - 2);
 	if (first.op != INTEGER_ || first.u.num < 0)
 	    execerror("non-negative integer", file);
-	if (second.op != LIST_ && second.op != STRING_ && second.op != SET_)
+	if (second.op != LIST_ && second.op != STRING_ && second.op != SET_ &&
+	    second.op != BIGNUM_)
 	    execerror("aggregate parameter", file);
 	break;
 /*
@@ -365,7 +383,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    execerror("two parameters", file);
 	first = vec_back(env->stck);
 	second = vec_at(env->stck, leng - 2);
-	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_)
+	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
+	    second.op != BIGNUM_)
 	    execerror("aggregate parameter", file);
 	if (first.op != second.op)
 	    execerror("two parameters of the same type", file);
@@ -415,7 +434,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    execerror("one parameter", file);
 	first = vec_back(env->stck);
 	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
-	    first.op != INTEGER_ && first.op != BOOLEAN_)
+	    first.op != INTEGER_ && first.op != BOOLEAN_ && first.op != BIGNUM_)
 	    execerror("different type", file);
 	break;
 /*
@@ -437,7 +456,6 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	first = vec_back(env->stck);
 	if (first.op != STRING_)
 	    execerror("string", file);
-#ifdef CORRECT_INTERN_LOOKUP
 	/*
 	    a negative number is not a valid name
 	*/
@@ -455,7 +473,6 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	     if (!isalnum((int)first.u.str[i]) &&
 		 !strchr("-=_", first.u.str[i]))
 		 execerror("valid name", file);
-#endif
 	break;
 /*
     character:
@@ -505,6 +522,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	case LIST_:
 	    break;
 	case STRING_:
+	case BIGNUM_:
 	    if (second.op != CHAR_)
 		execerror("character", file);
 	    break;
@@ -529,6 +547,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	case LIST_:
 	    break;
 	case STRING_:
+	case BIGNUM_:
 	    if (first.op != CHAR_)
 		execerror("character", file);
 	    break;
@@ -571,6 +590,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 		execerror("non-empty list", file);
 	    break;
 	case STRING_:
+	case BIGNUM_:
 	    if (!*first.u.str)
 		execerror("non-empty string", file);
 	    break;
@@ -598,7 +618,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 		      if (second.u.num >= vec_size(first.u.lis))
 			  execerror("smaller index", file);
 		      break;
-	case STRING_: if (!*first.u.str)
+	case STRING_:
+	case BIGNUM_: if (!*first.u.str)
 			  execerror("non-empty string", file);
 		      if (second.u.num >= (int)strlen(first.u.str))
 			  execerror("smaller index", file);
@@ -629,7 +650,8 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 		      if (first.u.num >= vec_size(second.u.lis))
 			  execerror("smaller index", file);
 		      break;
-	case STRING_: if (!*second.u.str)
+	case STRING_:
+	case BIGNUM_: if (!*second.u.str)
 			  execerror("non-empty string", file);
 		      if (first.u.num >= (int)strlen(second.u.str))
 			  execerror("smaller index", file);

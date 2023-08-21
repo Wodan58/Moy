@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -54,6 +54,9 @@ void small_(pEnv env)
     case FILE_:
         node.u.num = (node.u.fil - stdin) < 2;
         break;
+    case BIGNUM_:
+	node.u.num = node.u.str[1] == '0' || !strcmp(node.u.str, " 1");
+	break;
 #endif
     }
     node.op = BOOLEAN_;

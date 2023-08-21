@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef FORMAT_C
 #define FORMAT_C
@@ -17,9 +17,7 @@ PRIVATE void format_(pEnv env)
 {
     Node first, second, third, fourth;
     char format[7], *result;
-#ifdef USE_SNPRINTF
     int leng;
-#endif
 
     PARM(4, FORMAT);
     fourth = vec_pop(env->stck); /* min width */
@@ -28,14 +26,9 @@ PRIVATE void format_(pEnv env)
     first = vec_pop(env->stck);  /* number */
     strcpy(format, "%*.*ld");
     format[5] = second.u.num;
-#ifdef USE_SNPRINTF
     leng = snprintf(0, 0, format, third.u.num, fourth.u.num, first.u.num) + 1;
     result = GC_malloc_atomic(leng + 1);
     snprintf(result, leng, format, third.u.num, fourth.u.num, first.u.num);
-#else
-    result = GC_malloc_atomic(INPLINEMAX); /* should be sufficient */
-    sprintf(result, format, third.u.num, fourth.u.num, first.u.num);
-#endif
     first.u.str = result;
     first.op = STRING_;
     vec_push(env->stck, first);

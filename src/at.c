@@ -1,7 +1,7 @@
 /*
     module  : at.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef AT_C
 #define AT_C
@@ -25,6 +25,7 @@ void at_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         node.u.num = aggr.u.str[elem.u.num];
         node.op = CHAR_;
         vec_push(env->stck, node);

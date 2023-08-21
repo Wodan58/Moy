@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.5
- *  date    : 08/06/23
+ *  version : 1.6
+ *  date    : 08/21/23
  */
 #include "globals.h"
 
@@ -29,13 +29,13 @@ PUBLIC void execerror(char *message, char *op)
     char *ptr, *str;
 
     if ((ptr = strrchr(op, '/')) != 0)
-        ptr++;
+	ptr++;
     else
-        ptr = op;
+	ptr = op;
     if ((str = strrchr(ptr, '.')) != 0 && str[1] == 'c')
-        leng = str - ptr;
+	leng = str - ptr;
     else
-        leng = strlen(ptr);
+	leng = strlen(ptr);
     fflush(stdout);
     fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
     abortexecution_();
@@ -47,10 +47,9 @@ PUBLIC void execerror(char *message, char *op)
 #ifdef STATS
 PRIVATE void report_clock(pEnv env)
 {
-    double timediff;
-
-    timediff = (clock() - env->startclock) / CLOCKS_PER_SEC;
-    fprintf(stderr, "%.2f seconds CPU to execute\n", timediff);
+    fflush(stdout);
+    fprintf(stderr, "%ld milliseconds CPU to execute\n",
+    (clock() - env->startclock) * 1000 / CLOCKS_PER_SEC);
 }
 #endif
 
@@ -67,46 +66,46 @@ PRIVATE void copyright(char *file)
     char str[BUFFERMAX], *ptr;
 
     static struct {
-        char *file;
-        time_t stamp;
-        char *gc;
+	char *file;
+	time_t stamp;
+	char *gc;
     } table[] = {
-        { "joytut.inp", 994075177, "NOBDW" },
-        { "jp-joytst.joy", 994075177, "NOBDW" },
-        { "laztst.joy", 1005579152, "BDW" },
-        { "symtst.joy", 1012575285, "BDW" },
-        { "plgtst.joy", 1012575285, "BDW" },
-        { "lsptst.joy", 1012575285, "BDW" },
-        { "mtrtst.joy", 1017847160, "BDW" },
-        { "grmtst.joy", 1017847160, "BDW" },
-        { "reptst.joy", 1047653638, "NOBDW" },
-        { "jp-reprodtst.joy", 1047653638, "NOBDW" },
-        { "flatjoy.joy", 1047653638, "NOBDW" },
-        { "modtst.joy", 1047920271, "BDW" },
-        { 0, 1056113062, "NOBDW" } };
+	{ "joytut.inp", 994075177, "NOBDW" },
+	{ "jp-joytst.joy", 994075177, "NOBDW" },
+	{ "laztst.joy", 1005579152, "BDW" },
+	{ "symtst.joy", 1012575285, "BDW" },
+	{ "plgtst.joy", 1012575285, "BDW" },
+	{ "lsptst.joy", 1012575285, "BDW" },
+	{ "mtrtst.joy", 1017847160, "BDW" },
+	{ "grmtst.joy", 1017847160, "BDW" },
+	{ "reptst.joy", 1047653638, "NOBDW" },
+	{ "jp-reprodtst.joy", 1047653638, "NOBDW" },
+	{ "flatjoy.joy", 1047653638, "NOBDW" },
+	{ "modtst.joy", 1047920271, "BDW" },
+	{ 0, 1056113062, "NOBDW" } };
 
     if (file) {
-        if ((ptr = strrchr(file, '/')) != 0)
-            file = ptr + 1;
-        for (i = 0; table[i].file; i++) {
-            if (!strcmp(file, table[i].file)) {
-                strftime(str, sizeof(str), "%H:%M:%S on %b %d %Y",
-                    gmtime(&table[i].stamp));
-                printf("JOY  -  compiled at %s (%s)\n", str, table[i].gc);
-                j = 1;
-                break;
-            }
-        }
+	if ((ptr = strrchr(file, '/')) != 0)
+	    file = ptr + 1;
+	for (i = 0; table[i].file; i++) {
+	    if (!strcmp(file, table[i].file)) {
+		strftime(str, sizeof(str), "%H:%M:%S on %b %d %Y",
+		    gmtime(&table[i].stamp));
+		printf("JOY  -  compiled at %s (%s)\n", str, table[i].gc);
+		j = 1;
+		break;
+	    }
+	}
     } else {
-        printf("JOY  -  compiled at %s on %s", __TIME__, __DATE__);
+	printf("JOY  -  compiled at %s on %s", __TIME__, __DATE__);
 #ifdef JVERSION
-        printf(" (%s)", JVERSION);
+	printf(" (%s)", JVERSION);
 #endif
-        putchar('\n');
-        j = 1;
+	putchar('\n');
+	j = 1;
     }
     if (j)
-        printf("Copyright 2001 by Manfred von Thun\n");
+	printf("Copyright 2001 by Manfred von Thun\n");
 }
 #endif
 
@@ -121,21 +120,21 @@ PRIVATE void dump_table(pEnv env)
     Entry ent;
 
     for (i = sym_size(env->symtab) - 1; i >= 0; i--) {
-        ent = sym_at(env->symtab, i);
-        if (!ent.is_user)
-            printf("(%d) %s\n", i, ent.name);
-        else {
-            printf("(%d) %s == ", i, ent.name);
-            writeterm(env, ent.u.body);
-            putchar('\n');
-        }
+	ent = sym_at(env->symtab, i);
+	if (!ent.is_user)
+	    printf("(%d) %s\n", i, ent.name);
+	else {
+	    printf("(%d) %s == ", i, ent.name);
+	    writeterm(env, ent.u.body);
+	    putchar('\n');
+	}
     }
 }
 #endif
 
 /*
     options - print help on startup options and exit: options are those that
-              cannot be set from within the language itself.
+	      cannot be set from within the language itself.
 */
 PRIVATE void options(void)
 {
@@ -190,6 +189,7 @@ PRIVATE int my_main(int argc, char **argv)
     vec_init(env.stck);
     vec_init(env.prog);
     sym_init(env.symtab);
+    tok_init(env.tokens);
     env.overwrite = INIWARNING;
     /*
      *  Initialize yyin and other environmental parameters.
@@ -197,92 +197,88 @@ PRIVATE int my_main(int argc, char **argv)
     yyin = stdin;
     env.pathname = argv[0];
     if ((ptr = strrchr(env.pathname, '/')) != 0)
-        *ptr = 0;
+	*ptr = 0;
     else if ((ptr = strrchr(env.pathname, '\\')) != 0)
-        *ptr = 0;
+	*ptr = 0;
     else
-        env.pathname = ".";
+	env.pathname = ".";
     /*
      *  First look for options. They start with -.
      */
     for (i = 1; i < argc; i++)
-        if (argv[i][0] == '-') {
-            for (j = 1; argv[i][j]; j++)
-                switch (argv[i][j]) {
-                case 'h' : helping = 1; break;
+	if (argv[i][0] == '-') {
+	    for (j = 1; argv[i][j]; j++)
+		switch (argv[i][j]) {
+		case 'h' : helping = 1; break;
 #ifdef TRACING
-                case 'd' : env.debugging = 1; break;
+		case 'd' : env.debugging = 1; break;
 #endif
 #ifdef SYMBOLS
-                case 's' : symdump = 1; break;
+		case 's' : symdump = 1; break;
 #endif
 #ifdef COPYRIGHT
-                case 'v' : verbose = 0; break;
+		case 'v' : verbose = 0; break;
 #endif
 #ifdef OVERWRITE
-                case 'w' : env.overwrite = 0; break;
+		case 'w' : env.overwrite = 0; break;
 #endif
 #if YYDEBUG
-                case 'y' : yydebug = 1; break;
+		case 'y' : yydebug = 1; break;
 #endif
-                }
-            /*
-                Overwrite the options with subsequent parameters.
-            */
-            for (--argc; i < argc; i++)
-                argv[i] = argv[i + 1];
-            break;
-        }
+		}
+	    /*
+		Overwrite the options with subsequent parameters.
+	    */
+	    for (--argc; i < argc; i++)
+		argv[i] = argv[i + 1];
+	    break;
+	}
     /*
      *  Look for a possible filename parameter. Filenames cannot start with -
      *  and cannot start with a digit, unless preceded by a path: e.g. './'.
      */
     for (i = 1; i < argc; i++) {
-        ch = argv[i][0];
-        if (!isdigit(ch)) {
-            if ((yyin = freopen(filename = argv[i], "r", stdin)) == 0) {
-                fprintf(stderr, "failed to open the file '%s'.\n", filename);
-                return 0;
-            }
-            /*
-             *  Overwrite argv[0] with the filename and shift subsequent
-             *  parameters. Also change directory to that filename.
-             */
-            if ((ptr = strrchr(argv[0] = filename, '/')) != 0) {
-                *ptr++ = 0;
-                argv[0] = filename = ptr;
-            }
-            for (--argc; i < argc; i++)
-                argv[i] = argv[i + 1];
-            break;
-        }
+	ch = argv[i][0];
+	if (!isdigit(ch)) {
+	    if ((yyin = freopen(filename = argv[i], "r", stdin)) == 0) {
+		fprintf(stderr, "failed to open the file '%s'.\n", filename);
+		return 0;
+	    }
+	    /*
+	     *  Overwrite argv[0] with the filename and shift subsequent
+	     *  parameters. Also change directory to that filename.
+	     */
+	    if ((ptr = strrchr(argv[0] = filename, '/')) != 0) {
+		*ptr++ = 0;
+		argv[0] = filename = ptr;
+	    }
+	    for (--argc; i < argc; i++)
+		argv[i] = argv[i + 1];
+	    break;
+	}
     }
     env.g_argc = argc;
     env.g_argv = argv;
 #ifdef COPYRIGHT
     if (verbose)
-        copyright(filename);
+	copyright(filename);
 #endif
 #ifdef SYMBOLS
     if (symdump)
-        my_atexit(dump_table);
+	my_atexit(dump_table);
 #endif
     if (helping)
-        options();
+	options();
     env.echoflag = INIECHOFLAG;
     env.autoput = INIAUTOPUT;
     env.undeferror = INIUNDEFERROR;
-#ifdef REMEMBER_FILENAME
     inilinebuffer(filename);
-#else
-    inilinebuffer();
-#endif
     inisymboltable(&env);
     setjmp(begin);
     vec_resize(env.prog, 0);
     if (mustinclude) {
-        mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
-        fflush(stdout); /* flush include messages */
+	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
+	fflush(stdout); /* flush include messages */
     }
     return yyparse(&env);
 }

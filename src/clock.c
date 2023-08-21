@@ -1,14 +1,14 @@
 /*
     module  : clock.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef CLOCK_C
 #define CLOCK_C
 
 /**
 OK 1130  clock  :  A	->  I
-Pushes the integer value of current CPU usage in seconds.
+Pushes the integer value of current CPU usage in milliseconds.
 */
 void clock_(pEnv env)
 {

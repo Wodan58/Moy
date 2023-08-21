@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef DROP_C
 #define DROP_C
@@ -31,6 +31,7 @@ void drop_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         j = strlen(aggr.u.str);
         if (elem.u.num >= j)
             node.u.str = "";

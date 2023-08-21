@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.4
-    date    : 08/13/23
+    version : 1.5
+    date    : 08/21/23
 */
 #include "globals.h"
 %}
@@ -22,8 +22,9 @@
 %token <lis> LIST_		9
 %token <dbl> FLOAT_		10
 %token <fil> FILE_		11
-%token <str> USR_PRIME_		12
-%token <proc> ANON_PRIME_	13
+%token <str> BIGNUM_		12
+%token <str> USR_PRIME_		13
+%token <proc> ANON_PRIME_	14
 
 %type <num> char_or_int
 %type <set> opt_set set
@@ -68,7 +69,7 @@ module : MODULE USR_ { initmod(env, $2); } ;
 
 opt_private : private | /* empty */ ;
 
-private : JPRIVATE { initpriv(env, 1); } seq_definition { stoppriv(); } ;
+private : JPRIVATE { initpriv(env); } seq_definition { stoppriv(); } ;
 
 opt_public : public | /* empty */ ;
 

@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -32,6 +32,7 @@ void primrec_(pEnv env)
         break;
  
     case STRING_:
+    case BIGNUM_:
         node.op = CHAR_;
         j = strlen(first.u.str);
         for (str = first.u.str; *str; str++) {

@@ -1,7 +1,7 @@
 /*
     module  : push.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef PUSH_C
 #define PUSH_C
@@ -26,6 +26,7 @@ void push_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         i = strlen(node.u.str);
         node.u.str[i++] = elem.u.num;
         node.u.str[i] = 0;

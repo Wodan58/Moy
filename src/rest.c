@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef REST_C
 #define REST_C
@@ -27,6 +27,7 @@ void rest_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         node.u.str = GC_strdup(++node.u.str);  
         vec_push(env->stck, node);
         break;

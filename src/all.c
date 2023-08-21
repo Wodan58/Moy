@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef ALL_C
 #define ALL_C
@@ -52,6 +52,7 @@ void all_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         node.op = CHAR_;
         for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
             /*

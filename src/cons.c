@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef CONS_C
 #define CONS_C
@@ -26,6 +26,7 @@ void cons_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         node.u.str = GC_malloc_atomic(strlen(aggr.u.str) + 2);
         node.u.str[0] = elem.u.num;
         strcpy(&node.u.str[1], aggr.u.str);

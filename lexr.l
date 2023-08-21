@@ -1,12 +1,12 @@
 %{
 /*
     module  : lexr.l
-    version : 1.6
-    date    : 08/13/23
+    version : 1.7
+    date    : 08/21/23
 */
 #include "globals.h"
 
-#define YY_DECL		int yylex(pEnv env)
+#define YY_DECL		int my_yylex(pEnv env)
 #define YY_NO_UNPUT
 
 #define OUT_OF_COM	0
@@ -19,37 +19,8 @@ static int comment, linenum;
 static int include_stack_ptr;
 static YY_BUFFER_STATE include_stack[INPSTACKMAX];
 
-/* requires -std=c99 */
-static int input(void);
-
 /*
-    Skip multi-line comment
-*/
-static void SkipComment(void)
-{
-    int ch;
-
-    ch = input(); /* read past ( */
-    do {
-	while (ch != '*')
-	    ch = input();
-    } while ((ch = input()) != ')');
-}
-
-/*
-    Skip space characters
-*/
-int getnextchar(void)
-{
-    int ch;
-
-    while ((ch = input()) <= ' ')
-	;
-    return ch;
-}
-
-/*
-    Add a character to the current input line
+    Add a character to the current input line, upto INPLINEMAX.
 */
 static void addline(int ch)
 {
@@ -70,65 +41,45 @@ static void addline(int ch)
 */
 static void putline(pEnv env, char *str, int leng, int status)
 {
-    static int first;
-    int i, start, finish;
+    int i, target;
 
-    start = strstr(str, "(*") != 0;
-    finish = strstr(str, "*)") != 0;
-    comment = start && finish;
-    if (status == OUT_OF_COM) {
-	first = 0;
-	if (comment)
-	    goto skip;
-	if (start) {
-	    addline('(');
-	    addline('*');
-	    return;			/* add start of comment */
-	}
-    } else if (!first) {
-	first = 1;
-	if (strstr(line, "(*"))
-	    goto skip;
-	addline('(');			/* add start of comment */
-	addline('*');
-    }
-skip:
     for (i = 0; i < leng; i++)
 	addline(str[i]);
     if (!env->echoflag)
 	return;
     i = linenum;
-    if (status == LEAVE_COMM)
-	linenum = yylineno;		/* yylineno should not be corrected */
-    else
-	linenum = yylineno - 1;
+    target = status == LEAVE_COMM ? yylineno : yylineno - 1;
     if (i)
-	for (; i < linenum; i++) {
+	for (; i < target; i++) {
 	    if (env->echoflag > 2)
 		printf("%4d", i);
-	    printf("\n");		/* fill in missing lines */
+	    putchar('\n');		/* fill in missing lines */
 	}
-    if (env->echoflag > 2)
-	printf("%4d", linenum);
-    if (env->echoflag > 1)
-	printf("\t");
-    printf("%s\n", line);		/* include newline */
-    linenum++;
+    if (linenum <= target || target == 1) {
+	if (env->echoflag > 2)
+	    printf("%4d", target);
+	if (env->echoflag > 1)
+	    putchar('\t');
+	printf("%s\n", line);		/* include newline */
+    }
+    linenum = target + 1;
 }
 
 void new_buffer(void)
 {
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
+    yylineno = 1; /* restart with line 1 */
 }
 
-void old_buffer(void)
+void old_buffer(int num)
 {
-    linenum = yylineno + 1;
     if (--include_stack_ptr < 0)
 	include_stack_ptr = 0;
     if (include_stack[include_stack_ptr])
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
+    yylineno = num; /* restart old file */
+    linenum = num + 1;
 }
 
 /* Update the column positions, each time some text is matched. */
@@ -158,7 +109,7 @@ linecom		#.*
 <<EOF>>		quit_(env);
 <COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
 <COMMENT>.	addline(yytext[0]);
-<COMMENT>\n	putline(env, "\n", 1, WITHIN_COM);
+<COMMENT>\n	{ putline(env, "\n", 1, WITHIN_COM); }
 
 [\n]+.*\n	{ int i = 0; putline(env, yytext, yyleng, OUT_OF_COM);
 		  while (yytext[i] == '\n') i++; yyless(i); /* reset columns */
@@ -176,22 +127,38 @@ MODULE[ \t]*	return MODULE;
 
 {character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
 {octal}		|
-{hexal}		|
+{hexal}		{ yylval.num = strtoll(yytext, 0, 0); if (yylval.num == MAXINT)
+		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
+		  return INTEGER_; }
 {integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-' ? 1 : 0),
 		  0, 0);
-		  if (yylval.num == MAXINT) { yylval.dbl = strtod(yytext, 0);
-		  return FLOAT_; }
+		  if (yylval.num == MAXINT) { yylval.str = GC_strdup(yytext);
+		  return BIGNUM_; }
 		  if (yytext[0] == '-') yylval.num = -yylval.num;
 		  return INTEGER_; }
 {float}		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
 {string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
-{comment}	{ if (comment) SkipComment(); else BEGIN COMMENT; }
+{comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
 ^\$.*		system(yytext + 1);
 ^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
-^\%PUT.*	fprintf(stderr, "%s\n", yytext + 4);
+^\%PUT.*	{ fflush(stdout); fprintf(stderr, "%s\n", yytext + 4); }
 ^\%LISTING.*	env->echoflag = atoi(yytext + 8);
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];
+
+%%
+
+/*
+    Skip space characters
+*/
+int getnextchar(void)
+{
+    int ch;
+
+    while ((ch = input()) <= ' ')
+	;
+    return ch;
+}

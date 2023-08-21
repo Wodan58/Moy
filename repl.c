@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.2
-    date    : 07/12/23
+    version : 1.3
+    date    : 08/21/23
 */
 #include "globals.h"
 
@@ -18,13 +18,13 @@ PUBLIC void inisymboltable(pEnv env) /* initialise */
 
     env->hash = kh_init(Symtab);
     for (i = 0; (tab = readtable(i)) != 0; i++) {
-        ent.flags = tab->flags;
-        ent.is_user = 0;
-        ent.name = tab->name;
-        ent.u.proc = tab->proc;
-        key = kh_put(Symtab, env->hash, ent.name, &rv);
-        kh_value(env->hash, key) = i;
-        sym_push(env->symtab, ent);
+	ent.flags = tab->flags;
+	ent.is_user = 0;
+	ent.name = tab->name;
+	ent.u.proc = tab->proc;
+	key = kh_put(Symtab, env->hash, ent.name, &rv);
+	kh_value(env->hash, key) = i;
+	sym_push(env->symtab, ent);
     }
 }
 
@@ -65,9 +65,9 @@ PUBLIC void lookup(pEnv env, char *name)
      * added during the first time read of private sections.
      */
     if ((env->location = qualify(env, name)) == 0)
-        /* not found, enter in global, unless it is a module-member  */
-        if (strchr(name, '.') == 0)
-            enterglobal(env, name);
+	/* not found, enter in global, unless it is a module-member  */
+	if (strchr(name, '.') == 0)
+	    enterglobal(env, name);
 }
 
 /*
@@ -83,16 +83,20 @@ PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
      *  and public sections of a module.
      *  They should be found during the second read.
      */
-    if ((env->location = qualify(env, name)) == 0)
-        enterglobal(env, classify(env, name));
+    if ((env->location = qualify(env, name)) == 0) {
+	if (strchr(name, '.') == 0)
+	    enterglobal(env, classify(env, name));
+	else
+	    enterglobal(env, name);
+    }
     temp = sym_lvalue(env->symtab, env->location);
     if (!temp->is_user) {
-        if (env->overwrite) {
-            fflush(stdout);
-            fprintf(stderr, "warning: overwriting inbuilt '%s'\n", temp->name);
-        }
-        enterglobal(env, name);
-        temp = sym_lvalue(env->symtab, env->location);
+	if (env->overwrite) {
+	    fflush(stdout);
+	    fprintf(stderr, "warning: overwriting inbuilt '%s'\n", temp->name);
+	}
+	enterglobal(env, name);
+	temp = sym_lvalue(env->symtab, env->location);
     }
     temp->u.body = list;
 }
@@ -108,18 +112,18 @@ PUBLIC void execute(pEnv env, NodeList *list)
     vec_copy(env->prog, list);
     exeterm(env);
     if (vec_size(env->stck)) {
-        if (env->autoput == 2)
-            writeterm(env, env->stck);
-        else if (env->autoput == 1) {
-            node = vec_pop(env->stck);
-            if (node.op == LIST_) {
-                putchar('[');
-                writeterm(env, node.u.lis);
-                putchar(']');
-            } else
-                writefactor(env, node);
-        }
-        putchar('\n');
+	if (env->autoput == 2)
+	    writeterm(env, env->stck);
+	else if (env->autoput == 1) {
+	    node = vec_pop(env->stck);
+	    if (node.op == LIST_) {
+		putchar('[');
+		writeterm(env, node.u.lis);
+		putchar(']');
+	    } else
+		writefactor(env, node);
+	}
+	putchar('\n');
     }
 }
 
@@ -146,9 +150,9 @@ PUBLIC void reverse(NodeList *list)
     Node node;
 
     if (list) {
-        node.u.lis = 0;
-        node.op = LIST_;
-        vec_push(list, node); /* scratch value */
-        vec_reverse(list); /* excludes scratch */
+	node.u.lis = 0;
+	node.op = LIST_;
+	vec_push(list, node); /* scratch value */
+	vec_reverse(list); /* excludes scratch */
     }
 }

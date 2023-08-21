@@ -1,7 +1,7 @@
 /*
     module  : fpush.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef FPUSH_C
 #define FPUSH_C
@@ -28,6 +28,7 @@ void fpush_(pEnv env)
             break;
 
         case STRING_:
+	case BIGNUM_:
             i = strlen(node.u.str);
             node.u.str[i++] = elem.u.num;
             node.u.str[i] = 0;

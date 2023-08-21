@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef FILTER_C
 #define FILTER_C
@@ -61,6 +61,7 @@ void filter_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         node.u.str = GC_strdup(aggr.u.str);
         node.u.str[0] = 0;
         vec_push(env->prog, node);

@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -16,14 +16,15 @@ PRIVATE int compatible(int first, int second)
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
-    case FLOAT_:
     case SET_:
+    case FLOAT_:
         switch (second) {
         case BOOLEAN_:
         case CHAR_:
         case INTEGER_:
-        case FLOAT_:
         case SET_:
+        case FLOAT_:
+	case BIGNUM_:
             return 1;
 
         default:
@@ -38,6 +39,25 @@ PRIVATE int compatible(int first, int second)
         case USR_:
         case ANON_FUNCT_:
         case STRING_:
+	case BIGNUM_:
+            return 1;
+
+        default:
+            return 0;
+        }
+	break;
+
+    case BIGNUM_:
+        switch (second) {
+	case USR_:
+	case ANON_FUNCT_:
+        case BOOLEAN_:
+        case CHAR_:
+        case INTEGER_:
+        case SET_:
+	case STRING_:
+        case FLOAT_:
+	case BIGNUM_:
             return 1;
 
         default:

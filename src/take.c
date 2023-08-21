@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/21/23
 */
 #ifndef TAKE_C
 #define TAKE_C
@@ -32,6 +32,7 @@ void take_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         j = strlen(aggr.u.str);
         if (elem.u.num >= j)
             node = aggr;

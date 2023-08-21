@@ -1,7 +1,7 @@
 /*
     module  : in.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef IN_C
 #define IN_C
@@ -29,6 +29,7 @@ void in_(pEnv env)
         }
         break;
     case STRING_:
+    case BIGNUM_:
         for (i = strlen(aggr.u.str) - 1; i >= 0; i--)
             if (aggr.u.str[i] == elem.u.num) {
                 found = 1;

@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.4
- *  date    : 07/17/23
+ *  version : 1.5
+ *  date    : 08/21/23
  */
 #include "globals.h"
 
@@ -39,6 +39,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
     case INTEGER_:
     case STRING_:
     case FLOAT_:
+    case BIGNUM_:
         node.u = yylval;
         node.op = env->token;
         vec_push(env->stck, node);

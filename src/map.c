@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/21/23
 */
 #ifndef MAP_C
 #define MAP_C
@@ -58,6 +58,7 @@ void map_(pEnv env)
         break;
 
     case STRING_:
+    case BIGNUM_:
         temp.u.str = GC_strdup(aggr.u.str);
         temp.u.str[0] = 0;
         vec_push(env->prog, temp);
