@@ -1,7 +1,7 @@
 /*
     module  : dupd.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef DUPD_C
 #define DUPD_C
@@ -15,10 +15,10 @@ void dupd_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
-    vec_push(env->stck, first);
-    vec_push(env->stck, first);
-    vec_push(env->stck, second);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
+    lst_push(env->stck, first);
+    lst_push(env->stck, first);
+    lst_push(env->stck, second);
 }
 #endif

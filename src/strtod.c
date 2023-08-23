@@ -1,7 +1,7 @@
 /*
     module  : strtod.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef STRTOD_C
 #define STRTOD_C
@@ -15,9 +15,9 @@ void strtod_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     node.u.dbl = strtod(node.u.str, 0);
     node.op = FLOAT_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

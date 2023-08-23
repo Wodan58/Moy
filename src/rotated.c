@@ -1,7 +1,7 @@
 /*
     module  : rotated.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef ROTATED_C
 #define ROTATED_C
@@ -15,13 +15,13 @@ void rotated_(pEnv env)
     Node first, second, third, fourth;
 
     PARM(4, ANYTYPE);
-    fourth = vec_pop(env->stck);
-    third = vec_pop(env->stck);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
-    vec_push(env->stck, third);
-    vec_push(env->stck, second);
-    vec_push(env->stck, first);
-    vec_push(env->stck, fourth);
+    fourth = lst_pop(env->stck);
+    third = lst_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
+    lst_push(env->stck, third);
+    lst_push(env->stck, second);
+    lst_push(env->stck, first);
+    lst_push(env->stck, fourth);
 }
 #endif

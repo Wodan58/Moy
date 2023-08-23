@@ -1,7 +1,7 @@
 /*
     module  : pick.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef PICK_C
 #define PICK_C
@@ -16,11 +16,11 @@ void pick_(pEnv env)
     Node node, temp;
 
     PARM(1, UNMKTIME);
-    node = vec_pop(env->stck);
-    size = vec_size(env->stck);
+    node = lst_pop(env->stck);
+    size = lst_size(env->stck);
     if (node.u.num < size) {
-        temp = vec_at(env->stck, size - node.u.num - 1);
-        vec_push(env->stck, temp);
+        temp = lst_at(env->stck, size - node.u.num - 1);
+        lst_push(env->stck, temp);
     }
 }
 #endif

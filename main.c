@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.6
- *  date    : 08/21/23
+ *  version : 1.7
+ *  date    : 08/23/23
  */
 #include "globals.h"
 
@@ -119,8 +119,8 @@ PRIVATE void dump_table(pEnv env)
     int i;
     Entry ent;
 
-    for (i = sym_size(env->symtab) - 1; i >= 0; i--) {
-	ent = sym_at(env->symtab, i);
+    for (i = vec_size(env->symtab) - 1; i >= 0; i--) {
+	ent = vec_at(env->symtab, i);
 	if (!ent.is_user)
 	    printf("(%d) %s\n", i, ent.name);
 	else {
@@ -186,10 +186,10 @@ PRIVATE int my_main(int argc, char **argv)
 #ifdef STATS
     my_atexit(report_clock);
 #endif
-    vec_init(env.stck);
-    vec_init(env.prog);
-    sym_init(env.symtab);
-    tok_init(env.tokens);
+    lst_init(env.stck);
+    lst_init(env.prog);
+    vec_init(env.tokens);
+    vec_init(env.symtab);
     env.overwrite = INIWARNING;
     /*
      *  Initialize yyin and other environmental parameters.
@@ -275,7 +275,7 @@ PRIVATE int my_main(int argc, char **argv)
     inilinebuffer(filename);
     inisymboltable(&env);
     setjmp(begin);
-    vec_resize(env.prog, 0);
+    lst_resize(env.prog, 0);
     if (mustinclude) {
 	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
 	fflush(stdout); /* flush include messages */

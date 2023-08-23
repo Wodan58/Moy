@@ -1,7 +1,7 @@
 /*
     module  : __memoryindex.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef __MEMORYINDEX_C
 #define __MEMORYINDEX_C
@@ -14,8 +14,8 @@ void __memoryindex_(pEnv env)
 {
     Node node;
 
-    node.u.num = GC_get_heap_size();
+    node.u.num = GC_get_memory_use() - GC_get_free_bytes();
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

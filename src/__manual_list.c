@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.2
-    date    : 07/12/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -15,20 +15,20 @@ void __manual_list_(pEnv env)
     int i;
     Node node, temp, elem;
 
-    vec_init(node.u.lis);
+    lst_init(node.u.lis);
     node.op = temp.op = LIST_;
     elem.op = STRING_;
     i = sizeof(optable) / sizeof(optable[0]); /* find end */
     while (--i) {
-        vec_init(temp.u.lis);
+        lst_init(temp.u.lis);
         elem.u.str = optable[i].messg2;
-        vec_push(temp.u.lis, elem);
+        lst_push(temp.u.lis, elem);
         elem.u.str = optable[i].messg1;
-        vec_push(temp.u.lis, elem);
+        lst_push(temp.u.lis, elem);
         elem.u.str = optable[i].name;
-        vec_push(temp.u.lis, elem);
-        vec_push(node.u.lis, temp);
+        lst_push(temp.u.lis, elem);
+        lst_push(node.u.lis, temp);
     }
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

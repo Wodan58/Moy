@@ -1,7 +1,7 @@
 /*
     module  : times.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef TIMES_C
 #define TIMES_C
@@ -16,8 +16,8 @@ void times_(pEnv env)
     Node node, list;
 
     PARM(2, TIMES);
-    list = vec_pop(env->stck);
-    node = vec_pop(env->stck);
+    list = lst_pop(env->stck);
+    node = lst_pop(env->stck);
     for (i = node.u.num; i; i--)
         prog(env, list.u.lis);
 }

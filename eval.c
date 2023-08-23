@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.5
- *  date    : 08/21/23
+ *  version : 1.6
+ *  date    : 08/23/23
  */
 #include "globals.h"
 
@@ -52,7 +52,7 @@ PUBLIC void exeterm(pEnv env)
     if (++calls == 1)
 	atexit(report_stats);
 #endif
-    while (vec_size(env->prog)) {
+    while (lst_size(env->prog)) {
 #if ALARM
 	if (time_out) {
 	    time_out = 0;
@@ -71,10 +71,10 @@ PUBLIC void exeterm(pEnv env)
 	    fflush(stdout);
 	}
 #endif
-	node = vec_pop(env->prog);
+	node = lst_pop(env->prog);
 	switch (node.op) {
 	case USR_:
-	    ent = sym_at(env->symtab, node.u.ent);
+	    ent = vec_at(env->symtab, node.u.ent);
 	    if (ent.u.body)
 		prog(env, ent.u.body);
 	    else if (env->undeferror)
@@ -97,7 +97,7 @@ next:
 	case FLOAT_:
 	case FILE_:
 	case BIGNUM_:
-	    vec_push(env->stck, node);
+	    lst_push(env->stck, node);
 	    break;
 #if 0
 	default:

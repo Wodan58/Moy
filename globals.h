@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.6
-    date    : 08/21/23
+    version : 1.7
+    date    : 08/23/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -24,28 +24,29 @@
 /*
     The following #defines are present in the source code.
 */
-#define BDW_GARBAGE_COLLECTOR    /* main.c */
+#define BDW_GARBAGE_COLLECTOR	/* main.c */
 #if 0
 #define USE_BIGNUM_ARITHMETIC
 #endif
 
-#include <gc.h>                  /* system installed BDW or local gc.h */
+#include <gc.h>		     /* system installed BDW or local gc.h */
 #include "khash.h"
+#include "kvec.h"
 #ifdef USE_BIGNUM_ARITHMETIC
 #include "bignum.h"
 #endif
 
-/* configure                     */
+/* configure		     */
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
-#define DISPLAYMAX 10            /* nesting in HIDE & MODULE */
+#define DISPLAYMAX 10	     /* nesting in HIDE & MODULE */
 #define INIECHOFLAG 0
 #define INIAUTOPUT 1
 #define INIUNDEFERROR 0
 #define INIWARNING 1
 
-/* installation dependent        */
+/* installation dependent    */
 #define SETSIZE 64
 #define MAXINT 9223372036854775807LL
 
@@ -107,18 +108,18 @@ typedef enum {
 #define PRIVATE
 #define PUBLIC
 
-/* types                         */
-typedef int Symbol;              /* symbol created by scanner */
+/* types		     */
+typedef int Symbol;	     /* symbol created by scanner */
 
-typedef struct Env *pEnv;        /* pointer to global variables */
+typedef struct Env *pEnv;    /* pointer to global variables */
 
-typedef void (*proc_t)(pEnv);    /* procedure */
+typedef void (*proc_t)(pEnv); /* procedure */
 
-typedef struct NodeList NodeList;/* forward */
+typedef struct NodeList NodeList; /* forward */
 
-typedef int pEntry;              /* index in symbol table */
+typedef int pEntry;	     /* index in symbol table */
 
-typedef unsigned char Operator;  /* opcode / datatype */
+typedef unsigned char Operator; /* opcode / datatype */
 
 /*
     Lists are stored in vectors of type Node.
@@ -140,8 +141,8 @@ typedef struct Node {
 typedef struct Entry {
     char *name, is_user, flags;
     union {
-        NodeList *body;
-        proc_t proc;
+	NodeList *body;
+	proc_t proc;
     } u;
 } Entry;
 
@@ -155,28 +156,30 @@ typedef struct Token {
 */
 KHASH_MAP_INIT_STR(Symtab, pEntry)
 
-#include "list.h"          /* nodelist */
-#include "syml.h"          /* symlist */
-#include "tokl.h"	   /* tokenlist */
+#include "list.h"	   /* nodelist */
 
 /*
     Global variables are stored locally in the main function.
 */
 typedef struct Env {
-    TokList *tokens;       /* read ahead table */
-    NodeList *stck, *prog; /* both stack and code are stored in vectors */
-    SymList *symtab;       /* symbol table */
+    vector(Token) *tokens; /* read ahead table */
+    vector(Entry) *symtab; /* symbol table */
     khash_t(Symtab) *hash;
+    NodeList *stck, *prog; /* stack, code, and quotations are vectors */
+#if 0
+    TokList *tokens;       /* read ahead table */
+    SymList *symtab;       /* symbol table */
+#endif
     clock_t startclock;    /* main */
     char *pathname;
     char **g_argv;
     int g_argc;
-    int token;             /* yylex */
+    int token;		   /* yylex */
     pEntry location;       /* lookup */
-    char *hide_stack[DISPLAYMAX];
+    int hide_stack[DISPLAYMAX];
     struct module {
-        char *name;
-        int hide;
+	char *name;
+	int hide;
     } module_stack[DISPLAYMAX];
     unsigned char autoput; /* options */
     unsigned char echoflag;
@@ -241,11 +244,11 @@ PUBLIC Node pop(pEnv env);
 /* scan.c */
 PUBLIC void inilinebuffer(char *filnam);
 PUBLIC int yyerror(pEnv env, char *message);
-PUBLIC void my_error(pEnv env, char *message, YYLTYPE *bloc);
+PUBLIC void my_error(char *message, YYLTYPE *bloc);
 PUBLIC int include(pEnv env, char *filnam, int error);
 int yywrap(void);
 /* lexr.l */
-int getnextchar(void);
+int get_char(void);
 void new_buffer(void);
 void old_buffer(int num);
 int my_yylex(pEnv env);
@@ -264,8 +267,8 @@ PUBLIC void writefactor(pEnv env, Node node);
 PUBLIC void writeterm(pEnv env, NodeList *list);
 PUBLIC void writestack(pEnv env, NodeList *list);
 /* modl.c */
-PUBLIC void savemod(int *hide, int *modl);
-PUBLIC void undomod(int hide, int modl);
+PUBLIC void savemod(int *hide, int *modl, int *hcnt);
+PUBLIC void undomod(int hide, int modl, int hcnt);
 PUBLIC void initmod(pEnv env, char *name);
 PUBLIC void initpriv(pEnv env);
 PUBLIC void stoppriv(void);

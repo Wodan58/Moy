@@ -1,7 +1,7 @@
 /*
     module  : dtim.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #include "globals.h"
 
@@ -11,8 +11,8 @@ PUBLIC void dtime(Node node, struct tm *t)
     Node temp;
 
     memset(t, 0, sizeof(struct tm));
-    for (i = vec_size(node.u.lis) - 1; i >= 0; i--) {
-        temp = vec_at(node.u.lis, i);
+    for (i = lst_size(node.u.lis) - 1; i >= 0; i--) {
+        temp = lst_at(node.u.lis, i);
         switch (i) {
         case 8: t->tm_year  = temp.u.num - 1900; break;
         case 7: t->tm_mon   = temp.u.num - 1; break;

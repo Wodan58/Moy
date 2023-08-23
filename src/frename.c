@@ -1,7 +1,7 @@
 /*
     module  : frename.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FRENAME_C
 #define FRENAME_C
@@ -16,10 +16,10 @@ void frename_(pEnv env)
     Node node, path;
 
     PARM(2, FOPEN);
-    path = vec_pop(env->stck);
-    node = vec_pop(env->stck);
+    path = lst_pop(env->stck);
+    node = lst_pop(env->stck);
     node.u.num = !rename(node.u.str, path.u.str);
     node.op = BOOLEAN_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

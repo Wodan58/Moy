@@ -1,7 +1,7 @@
 /*
     module  : fput.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FPUT_C
 #define FPUT_C
@@ -16,8 +16,8 @@ void fput_(pEnv env)
     Node node, elem;
 
     PARM(2, FPUT);
-    elem = vec_pop(env->stck);
-    node = vec_back(env->stck);
+    elem = lst_pop(env->stck);
+    node = lst_back(env->stck);
     fflush(stdout);
     if ((stdout_dup = dup(1)) != -1)
         dup2(fileno(node.u.fil), 1);

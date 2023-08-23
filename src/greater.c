@@ -1,7 +1,7 @@
 /*
     module  : greater.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef GREATER_C
 #define GREATER_C
@@ -16,14 +16,14 @@ void greater_(pEnv env)
     Node first, second, node;
 
     PARM(2, ANYTYPE);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
     if (first.op == SET_ || second.op == SET_)
         node.u.num = first.u.set != second.u.set &&
                      !(second.u.set & ~first.u.set);
     else
         node.u.num = Compare(env, first, second) > 0;
     node.op = BOOLEAN_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

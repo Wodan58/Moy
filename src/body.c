@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef BODY_C
 #define BODY_C
@@ -16,10 +16,10 @@ void body_(pEnv env)
     Entry ent;
 
     PARM(1, BODY);
-    node = vec_pop(env->stck);
-    ent = sym_at(env->symtab, node.u.ent);
+    node = lst_pop(env->stck);
+    ent = vec_at(env->symtab, node.u.ent);
     node.u.lis = ent.u.body;
     node.op = LIST_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

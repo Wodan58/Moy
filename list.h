@@ -1,7 +1,7 @@
 /*
     module  : list.h
-    date    : 1.3
-    version : 07/17/23
+    date    : 1.4
+    version : 08/23/23
 */
 struct NodeList {
     uint64_t m : 30, /* capacity */
@@ -21,7 +21,7 @@ enum arity_t {
     ARITY_OK,
 };
 
-#define vec_init(v)	vec_init_again(&(v))
+#define lst_init(v)	lst_init_again(&(v))
 
 /* ownership determines whether the vector can have new elements added */
 enum owner_t {
@@ -30,7 +30,7 @@ enum owner_t {
 };
 
 /* initialize vector header and set the array as not owned by the head */
-static __inline void vec_init_again(NodeList **v)
+static inline void lst_init_again(NodeList **v)
 {
     *v = GC_malloc(sizeof(NodeList));
     (*v)->t = ARITY_UNKNOWN;
@@ -41,8 +41,8 @@ static __inline void vec_init_again(NodeList **v)
     (*v)->u = 0;
 }
 
-/* vec_push assumes that v has been initialized to 0 before its called */
-static __inline void vec_push(NodeList *v, Node x)
+/* lst_push assumes that v has been initialized to 0 before its called */
+static inline void lst_push(NodeList *v, Node x)
 {
     void *ptr;
     unsigned m;
@@ -62,15 +62,15 @@ static __inline void vec_push(NodeList *v, Node x)
     v->b[v->n++] = x.op;
 }
 
-static __inline int vec_size(NodeList *v)
+static inline int lst_size(NodeList *v)
 {
     return v ? v->n : 0;
 }
 
-/* vec_copy assumes that v exists and need not be created; array is ok */
-static __inline void vec_copy(NodeList *v, NodeList *w)
+/* lst_copy assumes that v exists and need not be created; array is ok */
+static inline void lst_copy(NodeList *v, NodeList *w)
 {
-    if ((v->n = vec_size(w)) != 0) { /* set new number of items */
+    if ((v->n = lst_size(w)) != 0) { /* set new number of items */
         if (v->n > v->m) { /* new number exceeds maximum */
             v->a = GC_malloc(v->n * sizeof(YYSTYPE));
             v->b = GC_malloc(v->n);
@@ -83,8 +83,8 @@ static __inline void vec_copy(NodeList *v, NodeList *w)
     }
 }
 
-/* vec_shallow_copy makes a copy without taking ownership of the array */
-static __inline void vec_shallow_copy(NodeList *v, NodeList *w)
+/* lst_shallow_copy makes a copy without taking ownership of the array */
+static inline void lst_shallow_copy(NodeList *v, NodeList *w)
 {
     v->m = w->m;
     v->n = w->n;
@@ -93,18 +93,18 @@ static __inline void vec_shallow_copy(NodeList *v, NodeList *w)
     v->b = w->b;
 }
 
-/* vec_shallow_copy_take_ownership makes a copy while taking ownership */
-static __inline void vec_shallow_copy_take_ownership(NodeList *v, NodeList *w)
+/* lst_shallow_copy_take_ownership makes a copy while taking ownership */
+static inline void lst_shallow_copy_take_ownership(NodeList *v, NodeList *w)
 {
     if (w->o == OWNER) {
-        vec_shallow_copy(v, w);
+        lst_shallow_copy(v, w);
         w->o = NOT_OWNER;
         v->o = OWNER;
     } else
-        vec_copy(v, w);
+        lst_copy(v, w);
 }
 
-static __inline Node vec_at(NodeList *v, int i)
+static inline Node lst_at(NodeList *v, int i)
 {
     Node node;
 
@@ -113,13 +113,13 @@ static __inline Node vec_at(NodeList *v, int i)
     return node;
 }
 
-static __inline void vec_assign(NodeList *v, int i, Node x)
+static inline void lst_assign(NodeList *v, int i, Node x)
 {
     v->a[i] = x.u;
     v->b[i] = x.op;
 }
 
-static __inline Node vec_pop(NodeList *v)
+static inline Node lst_pop(NodeList *v)
 {
     Node node;
 
@@ -128,7 +128,7 @@ static __inline Node vec_pop(NodeList *v)
     return node;
 }
 
-static __inline Node vec_back(NodeList *v)
+static inline Node lst_back(NodeList *v)
 {
     Node node;
 
@@ -137,35 +137,35 @@ static __inline Node vec_back(NodeList *v)
     return node;
 }
 
-static __inline void vec_resize(NodeList *v, int s)
+static inline void lst_resize(NodeList *v, int s)
 {
     v->n = s;
 }
 
-static __inline int vec_getarity(NodeList *v)
+static inline int lst_getarity(NodeList *v)
 {
     return v->t;
 }
 
-static __inline void vec_setarity(NodeList *v, int s)
+static inline void lst_setarity(NodeList *v, int s)
 {
     v->t = s;
 }
 
-static __inline int vec_used(NodeList *v)
+static inline int lst_used(NodeList *v)
 {
     return v->t;
 }
 
-static __inline void vec_setused(NodeList *v)
+static inline void lst_setused(NodeList *v)
 {
     v->t = 1;
 }
 
-/* vec_reverse assumes that an extra element has been added as scratch */
-static __inline void vec_reverse(NodeList *v)
+/* lst_reverse assumes that an extra element has been added as scratch */
+static inline void lst_reverse(NodeList *v)
 {
-    int i, j, k = vec_size(v) - 1;
+    int i, j, k = lst_size(v) - 1;
 
     for (i = 0, j = k - 1; i < j; i++, j--) {
         v->a[k] = v->a[i];
@@ -175,5 +175,5 @@ static __inline void vec_reverse(NodeList *v)
         v->a[j] = v->a[k];
         v->b[j] = v->b[k];
     }
-    vec_resize(v, k);
+    lst_resize(v, k);
 }

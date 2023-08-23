@@ -1,7 +1,7 @@
 /*
     module  : cos.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef COS_C
 #define COS_C
@@ -15,9 +15,9 @@ void cos_(pEnv env)
     Node node;
 
     PARM(1, UFLOAT);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     node.u.dbl = cos(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
     node.op = FLOAT_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

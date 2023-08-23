@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef UNARY2_C
 #define UNARY2_C
@@ -17,11 +17,11 @@ void unary2_(pEnv env)
     Node node, temp;
 
     PARM(3, DIP);
-    node = vec_pop(env->stck);
-    temp = vec_pop(env->stck);  /* Z */
+    node = lst_pop(env->stck);
+    temp = lst_pop(env->stck);  /* Z */
     code(env, swap_);
-    size = vec_size(env->prog); /* location of first Z, then Y' */
-    vec_push(env->prog, temp);  /* first Z, then Y' */
+    size = lst_size(env->prog); /* location of first Z, then Y' */
+    lst_push(env->prog, temp);  /* first Z, then Y' */
     /*
         save the stack before the condition and restore it afterwards with
         the condition code included.

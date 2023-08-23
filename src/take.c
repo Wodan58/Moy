@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.2
-    date    : 08/21/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef TAKE_C
 #define TAKE_C
@@ -16,17 +16,17 @@ void take_(pEnv env)
     Node elem, aggr, node;
 
     PARM(2, TAKE);
-    elem = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    elem = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        j = vec_size(aggr.u.lis);
+        j = lst_size(aggr.u.lis);
         if (elem.u.num >= j)
             node = aggr;
         else {
-            vec_init(node.u.lis);
+            lst_init(node.u.lis);
             for (i = j - elem.u.num; i < j; i++)
-                vec_push(node.u.lis, vec_at(aggr.u.lis, i));
+                lst_push(node.u.lis, lst_at(aggr.u.lis, i));
             node.op = LIST_;
         }
         break;
@@ -55,6 +55,6 @@ void take_(pEnv env)
     default:
         break;
     }
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

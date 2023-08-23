@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.5
- *  date    : 08/21/23
+ *  version : 1.6
+ *  date    : 08/23/23
  */
 #include "globals.h"
 
@@ -20,7 +20,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
         lookup(env, yylval.str);
         if (!env->location && strchr(yylval.str, '.'))
             yyerror(env, "no such field in module");
-        ent = sym_at(env->symtab, env->location);
+        ent = vec_at(env->symtab, env->location);
         /* execute immediate functions at compile time */
         if (ent.flags == IMMEDIATE)
             (*ent.u.proc)(env);
@@ -32,7 +32,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
                 node.u.proc = ent.u.proc;
                 node.op = ANON_FUNCT_;
             }
-            vec_push(env->stck, node);
+            lst_push(env->stck, node);
         }
         break;
     case CHAR_:
@@ -42,7 +42,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
     case BIGNUM_:
         node.u = yylval;
         node.op = env->token;
-        vec_push(env->stck, node);
+        lst_push(env->stck, node);
         break;
     case '{':
         while ((env->token = yylex(env)) != '}')
@@ -53,7 +53,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
                 set |= ((int64_t)1 << yylval.num);
         node.u.set = set;
         node.op = SET_;
-        vec_push(env->stck, node);
+        lst_push(env->stck, node);
         break;
     case '[':
         env->token = yylex(env); /* read past [ */
@@ -79,15 +79,15 @@ PUBLIC void readterm(pEnv env)
     if (env->token != ']') {
         do {
             readfactor(env);
-            if (vec_size(env->stck)) {
+            if (lst_size(env->stck)) {
                 if (!node.u.lis)
-                    vec_init(node.u.lis); /* initialize the list */
-                vec_push(node.u.lis, vec_pop(env->stck));
+                    lst_init(node.u.lis); /* initialize the list */
+                lst_push(node.u.lis, lst_pop(env->stck));
             }
         } while ((env->token = yylex(env)) != ']'); /* read past factor */
         if (node.u.lis)
             reverse(node.u.lis); /* reverse the list */
     }
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
     env->token = yylex(env); /* read past ] */
 }

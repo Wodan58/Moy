@@ -1,7 +1,7 @@
 /*
     module  : x.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef X_C
 #define X_C
@@ -15,7 +15,7 @@ void x_(pEnv env)
     Node node;
 
     PARM(1, DIP);
-    node = vec_back(env->stck);
+    node = lst_back(env->stck);
     prog(env, node.u.lis);
 }
 #endif

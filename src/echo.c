@@ -1,7 +1,7 @@
 /*
     module  : echo.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef ECHO_C
 #define ECHO_C
@@ -16,6 +16,6 @@ void echo_(pEnv env)
 
     node.u.num = env->echoflag;
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

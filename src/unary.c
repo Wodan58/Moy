@@ -1,7 +1,7 @@
 /*
     module  : unary.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef UNARY_C
 #define UNARY_C
@@ -28,15 +28,15 @@ void unary_(pEnv env)
     /*
         remove the program from the stack
     */
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     /*
         restore the old stack after the program, except the former top
     */
-    vec_init(temp.u.lis);
-    vec_copy(temp.u.lis, env->stck);
-    (void)vec_pop(temp.u.lis);
+    lst_init(temp.u.lis);
+    lst_copy(temp.u.lis, env->stck);
+    (void)lst_pop(temp.u.lis);
     temp.op = LIST_;
-    vec_push(env->prog, temp);
+    lst_push(env->prog, temp);
     /*
         the list parameter is installed as the stack
     */

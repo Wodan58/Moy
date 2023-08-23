@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FGET_C
 #define FGET_C
@@ -16,7 +16,7 @@ void fget_(pEnv env)
     int stdin_dup;
 
     PARM(1, FGET);
-    node = vec_back(env->stck);
+    node = lst_back(env->stck);
     if ((stdin_dup = dup(0)) != -1)
         dup2(fileno(node.u.fil), 0);
     env->token = yylex(env);

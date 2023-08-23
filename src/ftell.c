@@ -1,7 +1,7 @@
 /*
     module  : ftell.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FTELL_C
 #define FTELL_C
@@ -15,9 +15,9 @@ void ftell_(pEnv env)
     Node node;
 
     PARM(1, FGET);
-    node = vec_back(env->stck);
+    node = lst_back(env->stck);
     node.u.num = ftell(node.u.fil);
     node.op = INTEGER_;
-    vec_push(env->stck, node);    
+    lst_push(env->stck, node);    
 }
 #endif

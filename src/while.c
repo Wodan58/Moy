@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef WHILE_C
 #define WHILE_C
@@ -16,15 +16,15 @@ void while_(pEnv env)
     Node test, body;
 
     PARM(2, WHILE);
-    body = vec_pop(env->stck);
-    test = vec_pop(env->stck);
-    size = vec_size(env->prog);
+    body = lst_pop(env->stck);
+    test = lst_pop(env->stck);
+    size = lst_size(env->prog);
     /*
         setup the continuation
     */
     code(env, while_);
-    vec_push(env->prog, body);
-    vec_push(env->prog, test);
+    lst_push(env->prog, body);
+    lst_push(env->prog, test);
     /*
         push the body of the while
     */

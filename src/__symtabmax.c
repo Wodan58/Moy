@@ -1,7 +1,7 @@
 /*
     module  : __symtabmax.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef __SYMTABMAX_C
 #define __SYMTABMAX_C
@@ -14,8 +14,8 @@ void __symtabmax_(pEnv env)
 {
     Node node;
 
-    node.u.num = sym_max(env->symtab);
+    node.u.num = vec_max(env->symtab);
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

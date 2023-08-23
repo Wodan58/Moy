@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.6
- *  date    : 08/21/23
+ *  version : 1.7
+ *  date    : 08/23/23
  */
 #include "globals.h"
 
@@ -25,7 +25,7 @@ PUBLIC void writefactor(pEnv env, Node node)
     switch (node.op) {
     case USR_:
     case USR_PRIME_:
-	printf("%s", sym_at(env->symtab, node.u.ent).name);
+	printf("%s", vec_at(env->symtab, node.u.ent).name);
 	if (node.op == USR_PRIME_)
 	    putchar('\'');
 	break;
@@ -107,8 +107,8 @@ PRIVATE void spacing(NodeList *stack, Node node)
 {
     if (node.op == CHAR_ && node.u.num == '[') /* inspect preceding node */
 	;
-    else if (vec_size(stack)) { /* inspect following node */
-	node = vec_back(stack);
+    else if (lst_size(stack)) { /* inspect following node */
+	node = lst_back(stack);
 	if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 	    ;
 	else
@@ -124,8 +124,8 @@ PRIVATE void writing(pEnv env, NodeList *stack)
     int i, j;
     Node node, temp;
 
-    while (vec_size(stack)) {
-	node = vec_pop(stack);
+    while (lst_size(stack)) {
+	node = lst_pop(stack);
 	if (node.op != LIST_) {
 	    if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 		putchar((int)node.u.num);
@@ -135,14 +135,14 @@ PRIVATE void writing(pEnv env, NodeList *stack)
 	} else {
 	    temp.u.num = ']';
 	    temp.op = CHAR_;
-	    vec_push(stack, temp);
-	    for (i = 0, j = vec_size(node.u.lis); i < j; i++) {
-		temp = vec_at(node.u.lis, i);
-		vec_push(stack, temp);
+	    lst_push(stack, temp);
+	    for (i = 0, j = lst_size(node.u.lis); i < j; i++) {
+		temp = lst_at(node.u.lis, i);
+		lst_push(stack, temp);
 	    }	    
 	    temp.u.num = '[';
 	    temp.op = CHAR_;
-	    vec_push(stack, temp);
+	    lst_push(stack, temp);
 	}
     }
 }
@@ -154,13 +154,13 @@ PUBLIC void writeterm(pEnv env, NodeList *list)
 {
     Node node;
     NodeList *stack = 0;
-    int i, j = vec_size(list);
+    int i, j = lst_size(list);
 
     if (j)
-	vec_init(stack);
+	lst_init(stack);
     for (i = 0; i < j; i++) {
-	node = vec_at(list, i);
-	vec_push(stack, node);
+	node = lst_at(list, i);
+	lst_push(stack, node);
     }
     writing(env, stack);
 }
@@ -173,13 +173,13 @@ PUBLIC void writestack(pEnv env, NodeList *list)
 {
     Node node;
     NodeList *stack = 0;
-    int i, j = vec_size(list);
+    int i, j = lst_size(list);
 
     if (j)
-	vec_init(stack);
+	lst_init(stack);
     for (i = j - 1; i >= 0; i--) {
-	node = vec_at(list, i);
-	vec_push(stack, node);
+	node = lst_at(list, i);
+	lst_push(stack, node);
     }
     writing(env, stack);
 }

@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.5
-    date    : 08/21/23
+    version : 1.6
+    date    : 08/23/23
 */
 #include "globals.h"
 %}
@@ -10,7 +10,7 @@
 %lex-param	{env}
 %parse-param	{pEnv env}
 
-%token MODULE JPRIVATE JPUBLIC JEQUAL END
+%token MODULE JPRIVATE JPUBLIC EQDEF END
 
 %token <str> USR_		2
 %token <proc> ANON_FUNCT_	3
@@ -88,7 +88,7 @@ opt_definition : definition | /* empty */ ;
 /*
     A definition is an atomic symbol and a term, separated by '==' .
 */
-definition : USR_ JEQUAL opt_term { enteratom(env, $1, $3); }
+definition : USR_ EQDEF opt_term { enteratom(env, $1, $3); }
 	   | private opt_public END { exitpriv(); }
 	   | module opt_private opt_public END { exitmod(); } ;
 
@@ -97,8 +97,8 @@ opt_term : term | /* empty */ { $$ = 0; } ;
 /*
     A term is one or more factors.
 */
-term : term factor { int i, j; for (i = 0, j = vec_size($1); i < j; i++)
-		     vec_push($2, vec_at($1, i)); $$ = $2; }
+term : term factor { int i, j; for (i = 0, j = lst_size($1); i < j; i++)
+		     lst_push($2, lst_at($1, i)); $$ = $2; }
      | factor ;
 
 /*
@@ -107,13 +107,13 @@ term : term factor { int i, j; for (i = 0, j = vec_size($1); i < j; i++)
 factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 			lookup(env, $1);
 			if (!env->location && strchr($1, '.'))
-			    my_error(env, "no such field in module", &@1);
+			    my_error("no such field in module", &@1);
 			else {
-			    ent = sym_at(env->symtab, env->location);
+			    ent = vec_at(env->symtab, env->location);
 			    /* execute immediate functions at compile time */
 			    if (ent.flags == IMMEDIATE) {
 				(*ent.u.proc)(env);
-				node = vec_pop(env->stck);
+				node = lst_pop(env->stck);
 			    } else if (ent.is_user) {
 				node.u.ent = env->location;
 				node.op = USR_;
@@ -121,8 +121,8 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 				node.u.proc = ent.u.proc;
 				node.op = ANON_FUNCT_;
 			    }
-			    vec_init(list);
-			    vec_push(list, node);
+			    lst_init(list);
+			    lst_push(list, node);
 			}
 			$$ = list;
 		    }
@@ -137,7 +137,7 @@ list : '[' opt_term ']' { $$ = $2; } ;
 
 set : '{' opt_set '}' { $$ = $2; } ;
 
-opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE) my_error(env,
+opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE) my_error(
 				    "small numeric expected in set", &@2);
 				else $$ |= (int64_t)1 << $2; }
 	| /* empty */ { $$ = 0; } ;

@@ -1,7 +1,7 @@
 /*
     module  : binrec.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef BINREC_C
 #define BINREC_C
@@ -18,14 +18,14 @@ void binrec_(pEnv env)
     Node first, second, third, fourth;
 
     PARM(4, LINREC);
-    fourth = vec_pop(env->stck);
-    third = vec_pop(env->stck);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
+    fourth = lst_pop(env->stck);
+    third = lst_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
     /*
         register the return address
     */
-    size2 = vec_size(env->prog);
+    size2 = lst_size(env->prog);
     /*
         execute R2 after returning from the recursion
     */
@@ -34,23 +34,23 @@ void binrec_(pEnv env)
         setup the continuation
     */
     code(env, binrec_);
-    vec_push(env->prog, fourth);
-    vec_push(env->prog, third);
-    vec_push(env->prog, second);
-    vec_push(env->prog, first);
+    lst_push(env->prog, fourth);
+    lst_push(env->prog, third);
+    lst_push(env->prog, second);
+    lst_push(env->prog, first);
     /*
         save point for the first result
     */
-    size3 = vec_size(env->prog);
+    size3 = lst_size(env->prog);
     code(env, id_);
     /*
         setup the continuation
     */
     code(env, binrec_);
-    vec_push(env->prog, fourth);
-    vec_push(env->prog, third);
-    vec_push(env->prog, second);
-    vec_push(env->prog, first);
+    lst_push(env->prog, fourth);
+    lst_push(env->prog, third);
+    lst_push(env->prog, second);
+    lst_push(env->prog, first);
     /*
         pop the result and save it in the program
     */
@@ -66,7 +66,7 @@ void binrec_(pEnv env)
     /*
         register the target location for the false branch
     */
-    size1 = vec_size(env->prog);
+    size1 = lst_size(env->prog);
     /*
         push the jump address onto the program stack
     */

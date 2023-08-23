@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -17,27 +17,27 @@ void split_(pEnv env)
     Node aggr, list, node, temp;
 
     PARM(2, STEP);
-    list = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    list = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     /*
         register the location of the result aggregate
     */
-    size = vec_size(env->prog);
+    size = lst_size(env->prog);
     /*
         build a result aggregate of the correct type
     */
     temp.op = aggr.op;
     switch (aggr.op) {
     case LIST_:
-        vec_init(temp.u.lis);
-        vec_push(env->prog, temp);
-        vec_init(temp.u.lis);
-        vec_push(env->prog, temp);
-        for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+        lst_init(temp.u.lis);
+        lst_push(env->prog, temp);
+        lst_init(temp.u.lis);
+        lst_push(env->prog, temp);
+        for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
             /*
                 push the element to be split
             */
-            node = vec_at(aggr.u.lis, i);
+            node = lst_at(aggr.u.lis, i);
             prime(env, node);
             /*
                 push the location of the result types
@@ -66,17 +66,17 @@ void split_(pEnv env)
     case BIGNUM_:
         temp.u.str = GC_strdup(aggr.u.str);
         temp.u.str[0] = 0;
-        vec_push(env->prog, temp);
+        lst_push(env->prog, temp);
         temp.u.str = GC_strdup(aggr.u.str);
         temp.u.str[0] = 0;
-        vec_push(env->prog, temp);
+        lst_push(env->prog, temp);
         node.op = CHAR_;
         for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
             /*
                 push the element that may be added to the result
             */
             node.u.num = aggr.u.str[i];
-            vec_push(env->prog, node);
+            lst_push(env->prog, node);
             /*
                 push the location of the result types
             */
@@ -96,14 +96,14 @@ void split_(pEnv env)
             /*
                 push the element that may be added to the result
             */
-            vec_push(env->prog, node);
+            lst_push(env->prog, node);
         }
         break;
 
     case SET_:
         temp.u.set = 0;
-        vec_push(env->prog, temp);
-        vec_push(env->prog, temp);
+        lst_push(env->prog, temp);
+        lst_push(env->prog, temp);
         node.op = INTEGER_;
         for (i = 0; i < SETSIZE; i++)
             if (aggr.u.set & ((int64_t)1 << i)) {
@@ -111,7 +111,7 @@ void split_(pEnv env)
                     push the element that may be added to the result
                 */
                 node.u.num = i;
-                vec_push(env->prog, node);
+                lst_push(env->prog, node);
                 /*
                     push the location of the result types
                 */
@@ -131,7 +131,7 @@ void split_(pEnv env)
                 /*
                     push the element that may be added to the result
                 */
-                vec_push(env->prog, node);
+                lst_push(env->prog, node);
             }
     default:
         break;

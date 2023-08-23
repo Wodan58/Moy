@@ -1,7 +1,7 @@
 /*
     module  : localtime.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef LOCALTIME_C
 #define LOCALTIME_C
@@ -22,32 +22,32 @@ void localtime_(pEnv env)
     Node node, temp;
 
     PARM(1, UNMKTIME);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     timval = node.u.num;
     t = localtime(&timval);
-    vec_init(temp.u.lis);
+    lst_init(temp.u.lis);
     node.u.num = daynums[t->tm_wday];
     node.op = INTEGER_;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_yday;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_isdst;
     node.op = BOOLEAN_;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_sec;
     node.op = INTEGER_;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_min;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_hour;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_mday;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_mon + 1;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     node.u.num = t->tm_year + 1900;
-    vec_push(temp.u.lis, node);
+    lst_push(temp.u.lis, node);
     temp.op = LIST_;
-    vec_push(env->stck, temp);
+    lst_push(env->stck, temp);
 }
 #endif

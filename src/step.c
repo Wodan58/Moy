@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef STEP_C
 #define STEP_C
@@ -17,13 +17,13 @@ void step_(pEnv env)
     Node aggr, list, node;
 
     PARM(2, STEP);
-    list = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    list = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        for (i = 0, j = vec_size(aggr.u.lis); i < j; i++) {
+        for (i = 0, j = lst_size(aggr.u.lis); i < j; i++) {
             prog(env, list.u.lis);
-            node = vec_at(aggr.u.lis, i);
+            node = lst_at(aggr.u.lis, i);
             prime(env, node);
         }
         break;
@@ -34,7 +34,7 @@ void step_(pEnv env)
         for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
             prog(env, list.u.lis);
             node.u.num = aggr.u.str[i];
-            vec_push(env->prog, node);
+            lst_push(env->prog, node);
         }
         break;
 
@@ -44,7 +44,7 @@ void step_(pEnv env)
             if (aggr.u.set & ((int64_t)1 << i)) {
                 prog(env, list.u.lis);
                 node.u.num = i;
-                vec_push(env->prog, node);
+                lst_push(env->prog, node);
             }
     default:
         break;

@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef FREAD_C
 #define FREAD_C
@@ -18,18 +18,18 @@ void fread_(pEnv env)
     unsigned char *buf;
 
     PARM(2, FREAD);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     count = node.u.num;
-    node = vec_back(env->stck);
+    node = lst_back(env->stck);
     buf = GC_malloc_atomic(count);
     count = fread(buf, 1, count, node.u.fil);
-    vec_init(node.u.lis);
+    lst_init(node.u.lis);
     elem.op = INTEGER_;
     for (--count; count >= 0; count--) {
         elem.u.num = buf[count];
-        vec_push(node.u.lis, elem);
+        lst_push(node.u.lis, elem);
     }
     node.op = LIST_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

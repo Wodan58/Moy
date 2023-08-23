@@ -1,7 +1,7 @@
 /*
     module  : mktime.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef MKTIME_C
 #define MKTIME_C
@@ -17,10 +17,10 @@ void mktime_(pEnv env)
     struct tm t;
 
     PARM(1, HELP);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     dtime(node, &t);
     node.u.num = mktime(&t);
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

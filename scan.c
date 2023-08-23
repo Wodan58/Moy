@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.4
-    date    : 08/21/23
+    version : 1.5
+    date    : 08/23/23
 */
 #include "globals.h"
 
@@ -103,7 +103,7 @@ int yywrap(void)
 /*
     my_error - error processing during parsing; location info as parameter.
 */
-void my_error(pEnv env, char *str, YYLTYPE *bloc)
+void my_error(char *str, YYLTYPE *bloc)
 {
     int leng = bloc->last_column - 1;
 
@@ -111,7 +111,6 @@ void my_error(pEnv env, char *str, YYLTYPE *bloc)
     leng += fprintf(stderr, "%s:%d:", infile[ilevel].name, yylineno);
     fprintf(stderr, "%s\n%*s^\n%*s%s\n", line, leng, "", leng, "", str);
     line[0] = 0; /* invalidate line */
-    vec_resize(env->stck, 0);
     abortexecution_();
 }
 
@@ -123,6 +122,7 @@ int yyerror(pEnv env, char *str)
     YYLTYPE bloc;
 
     bloc.last_column = yylloc.last_column;
-    my_error(env, str, &bloc);
+    my_error(str, &bloc);
+    env->nothing++;
     return 0;
 }

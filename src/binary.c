@@ -1,7 +1,7 @@
 /*
     module  : binary.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef BINARY_C
 #define BINARY_C
@@ -19,14 +19,14 @@ void binary_(pEnv env)
     PARM(3, DIP);
     code(env, unstack_);
     code(env, cons_);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
 
-    vec_init(temp.u.lis);
-    vec_copy(temp.u.lis, env->stck);
-    (void)vec_pop(temp.u.lis);
-    (void)vec_pop(temp.u.lis);
+    lst_init(temp.u.lis);
+    lst_copy(temp.u.lis, env->stck);
+    (void)lst_pop(temp.u.lis);
+    (void)lst_pop(temp.u.lis);
     temp.op = LIST_;
-    vec_push(env->prog, temp);
+    lst_push(env->prog, temp);
 
     prog(env, node.u.lis);
 }

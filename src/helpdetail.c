@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -17,12 +17,12 @@ void helpdetail_(pEnv env)
     Node node, temp;
 
     PARM(1, HELP);
-    node = vec_pop(env->stck);
-    for (printf("\n"), i = vec_size(node.u.lis) - 1; i >= 0; i--) {
-        temp = vec_at(node.u.lis, i);
+    node = lst_pop(env->stck);
+    for (printf("\n"), i = lst_size(node.u.lis) - 1; i >= 0; i--) {
+        temp = lst_at(node.u.lis, i);
         opcode = temp.op;
         if (opcode == USR_) {
-            ent = sym_at(env->symtab, temp.u.ent);
+            ent = vec_at(env->symtab, temp.u.ent);
             printf("%s  ==\n    ", ent.name);
             writeterm(env, ent.u.body);
 	    printf("\n\n");

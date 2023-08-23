@@ -1,7 +1,7 @@
 /*
     module  : unary3.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef UNARY3_C
 #define UNARY3_C
@@ -16,17 +16,17 @@ PRIVATE void unary3_(pEnv env)
     Node param1, param2, node;
 
     PARM(4, DIP);
-    node = vec_pop(env->stck);
-    param2 = vec_pop(env->stck);
-    param1 = vec_pop(env->stck);
+    node = lst_pop(env->stck);
+    param2 = lst_pop(env->stck);
+    param1 = lst_pop(env->stck);
 
     code(env, rolldown_);
 
-    size2 = vec_size(env->prog); /* location of first Z, then Y' */
-    vec_push(env->prog, param2); /* first Z, then Y' */
+    size2 = lst_size(env->prog); /* location of first Z, then Y' */
+    lst_push(env->prog, param2); /* first Z, then Y' */
 
-    size1 = vec_size(env->prog); /* location of first Y, then X' */
-    vec_push(env->prog, param1); /* first Y, then X' */
+    size1 = lst_size(env->prog); /* location of first Y, then X' */
+    lst_push(env->prog, param1); /* first Y, then X' */
 
     /*
         save the stack before the condition and restore it afterwards with

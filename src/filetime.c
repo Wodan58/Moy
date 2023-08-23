@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.2
-    date    : 08/06/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -18,12 +18,12 @@ void filetime_(pEnv env)
     struct stat buf;
 
     PARM(1, STRTOD);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     if (stat(node.u.str, &buf) == -1)
         node.u.num = 0;
     else
         node.u.num = buf.st_mtime;
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

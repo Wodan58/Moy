@@ -1,7 +1,7 @@
 /*
     module  : cond.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef COND_C
 #define COND_C
@@ -18,25 +18,25 @@ void cond_(pEnv env)
     Node aggr, elem, node;
 
     PARM(1, CASE);
-    aggr = vec_pop(env->stck);
+    aggr = lst_pop(env->stck);
     /*
         jump address past last cond line
     */
-    size2 = vec_size(env->prog);
+    size2 = lst_size(env->prog);
     /*
         the last cond line comes without test and no jump is needed
     */
-    elem = vec_at(aggr.u.lis, 0);
+    elem = lst_at(aggr.u.lis, 0);
     prog(env, elem.u.lis);
-    for (i = 1, j = vec_size(aggr.u.lis); i < j; i++) {
+    for (i = 1, j = lst_size(aggr.u.lis); i < j; i++) {
         /*
             jump address to the next cond line
         */
-        size1 = vec_size(env->prog);
+        size1 = lst_size(env->prog);
         /*
             read a cond line
         */
-        elem = vec_at(aggr.u.lis, i);
+        elem = lst_at(aggr.u.lis, i);
         /*
             push the jump address onto the program stack
         */

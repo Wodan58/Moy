@@ -1,7 +1,7 @@
 /*
     module  : frexp.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FREXP_C
 #define FREXP_C
@@ -17,15 +17,15 @@ PRIVATE void frexp_(pEnv env)
     Node node;
 
     PARM(1, UFLOAT);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     if (node.op != FLOAT_) {
         node.u.dbl = node.u.num;
         node.op = FLOAT_;
     }
     node.u.dbl = frexp(node.u.dbl, &exp);
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
     node.u.num = exp;
     node.op = INTEGER_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

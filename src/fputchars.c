@@ -1,7 +1,7 @@
 /*
     module  : fputchars.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FPUTCHARS_C
 #define FPUTCHARS_C
@@ -15,8 +15,8 @@ void fputchars_(pEnv env) /* suggested by Heiko Kuhrt, as "fputstring_" */
     Node node, elem;
 
     PARM(2, FPUTCHARS);
-    elem = vec_pop(env->stck);
-    node = vec_back(env->stck);
+    elem = lst_pop(env->stck);
+    node = lst_back(env->stck);
     fprintf(node.u.fil, "%s", elem.u.str);
 }
 #endif

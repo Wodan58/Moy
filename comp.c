@@ -1,7 +1,7 @@
 /*
     module  : comp.c
-    version : 1.7
-    date    : 08/21/23
+    version : 1.8
+    date    : 08/23/23
 */
 #include "globals.h"
 
@@ -14,17 +14,20 @@
 PUBLIC int Compare(pEnv env, Node first, Node second)
 {
     FILE *fp1, *fp2;
+    char *name1, *name2;
     double dbl, dbl1, dbl2;
-    char str[2], *name1, *name2;
     int64_t num, num1 = 0, num2 = 0;
+#ifdef USE_BIGNUM_ARITHMETIC
+    char str[2];
 
     str[1] = 0;
+#endif
     switch (first.op) {
     case USR_:
-	name1 = sym_at(env->symtab, first.u.ent).name;
+	name1 = vec_at(env->symtab, first.u.ent).name;
 	switch (second.op) {
 	case USR_:
-	    name2 = sym_at(env->symtab, second.u.ent).name;
+	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	    name2 = cmpname(second.u.proc);
@@ -48,7 +51,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	name1 = cmpname(first.u.proc);
 	switch (second.op) {
 	case USR_:
-	    name2 = sym_at(env->symtab, second.u.ent).name;
+	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	    name2 = cmpname(second.u.proc);
@@ -149,7 +152,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	name1 = first.u.str;
 	switch (second.op) {
 	case USR_:
-	    name2 = sym_at(env->symtab, second.u.ent).name;
+	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	    name2 = cmpname(second.u.proc);

@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef ALL_C
 #define ALL_C
@@ -17,16 +17,16 @@ void all_(pEnv env)
     Node aggr, list, node;
 
     PARM(2, STEP);
-    size = vec_size(env->prog);
+    size = lst_size(env->prog);
     /*
         if all tests pass, the result will be true.
     */
     code(env, true_);
-    list = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    list = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+        for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
             /*
                 push the location of the result type
             */
@@ -46,7 +46,7 @@ void all_(pEnv env)
             /*
                 push the element to be mapped
             */
-            node = vec_at(aggr.u.lis, i);
+            node = lst_at(aggr.u.lis, i);
             prime(env, node);
         }
         break;
@@ -75,7 +75,7 @@ void all_(pEnv env)
                 push the element to be mapped
             */
             node.u.num = aggr.u.str[i];
-            vec_push(env->prog, node);
+            lst_push(env->prog, node);
         }
         break;
 
@@ -103,7 +103,7 @@ void all_(pEnv env)
                     push the element to be mapped
                 */
                 node.u.num = i;
-                vec_push(env->prog, node);
+                lst_push(env->prog, node);
             }
     default:
         break;

@@ -1,7 +1,7 @@
 /*
     module  : of.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef OF_C
 #define OF_C
@@ -16,19 +16,19 @@ void of_(pEnv env)
     Node elem, aggr, node;
 
     PARM(2, OF);
-    aggr = vec_pop(env->stck);
-    elem = vec_pop(env->stck);
+    aggr = lst_pop(env->stck);
+    elem = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        node = vec_at(aggr.u.lis, vec_size(aggr.u.lis) - elem.u.num - 1);
-        vec_push(env->stck, node);
+        node = lst_at(aggr.u.lis, lst_size(aggr.u.lis) - elem.u.num - 1);
+        lst_push(env->stck, node);
         break;
 
     case STRING_:
     case BIGNUM_:
         node.u.num = aggr.u.str[elem.u.num];
         node.op = CHAR_;
-        vec_push(env->stck, node);
+        lst_push(env->stck, node);
         break;
 
     case SET_:
@@ -37,7 +37,7 @@ void of_(pEnv env)
                 if (!j) {
                     node.u.num = i;
                     node.op = INTEGER_;
-                    vec_push(env->stck, node);
+                    lst_push(env->stck, node);
                     break;
                 }
                 j--;

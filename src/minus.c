@@ -1,7 +1,7 @@
 /*
     module  : minus.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef MINUS_C
 #define MINUS_C
@@ -16,8 +16,8 @@ void minus_(pEnv env)
     Node first, second;
 
     PARM(2, PLUSMINUS);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
     switch (first.op) {
     case FLOAT_:
 	switch (second.op) {
@@ -35,7 +35,7 @@ void minus_(pEnv env)
 	switch (second.op) {
 	case FLOAT_:
             second.u.dbl = first.u.num - second.u.dbl;
-            vec_push(env->stck, second);
+            lst_push(env->stck, second);
 	    return;
 
 	default:
@@ -44,6 +44,6 @@ void minus_(pEnv env)
 	}
 	break;
     }
-    vec_push(env->stck, first);
+    lst_push(env->stck, first);
 }
 #endif

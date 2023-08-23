@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FOPEN_C
 #define FOPEN_C
@@ -16,10 +16,10 @@ void fopen_(pEnv env)
     Node path, mode, node;
 
     PARM(2, FOPEN);
-    mode = vec_pop(env->stck);
-    path = vec_pop(env->stck);
+    mode = lst_pop(env->stck);
+    path = lst_pop(env->stck);
     node.u.fil = fopen(path.u.str, mode.u.str);
     node.op = FILE_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : linrec.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef LINREC_C
 #define LINREC_C
@@ -17,14 +17,14 @@ void linrec_(pEnv env)
     Node first, second, third, fourth;
 
     PARM(4, LINREC);
-    fourth = vec_pop(env->stck);
-    third = vec_pop(env->stck);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
+    fourth = lst_pop(env->stck);
+    third = lst_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
     /*
         register the return address
     */
-    size2 = vec_size(env->prog);
+    size2 = lst_size(env->prog);
     /*
         execute R2 after returning from the recursion
     */
@@ -33,10 +33,10 @@ void linrec_(pEnv env)
         setup the continuation
     */
     code(env, linrec_);
-    vec_push(env->prog, fourth);
-    vec_push(env->prog, third);
-    vec_push(env->prog, second);
-    vec_push(env->prog, first);
+    lst_push(env->prog, fourth);
+    lst_push(env->prog, third);
+    lst_push(env->prog, second);
+    lst_push(env->prog, first);
     /*
         push the R1 branch of linrec
     */
@@ -44,7 +44,7 @@ void linrec_(pEnv env)
     /*
         register the target location for the false branch
     */
-    size1 = vec_size(env->prog);
+    size1 = lst_size(env->prog);
     /*
         push the jump address onto the program stack
     */

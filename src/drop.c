@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef DROP_C
 #define DROP_C
@@ -16,17 +16,17 @@ void drop_(pEnv env)
     Node aggr, elem, node;
 
     PARM(2, TAKE);
-    elem = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    elem = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        j = vec_size(aggr.u.lis);
+        j = lst_size(aggr.u.lis);
         if (elem.u.num >= j)
             node.u.lis = 0;
         else {
-            vec_init(node.u.lis);
-            vec_shallow_copy(node.u.lis, aggr.u.lis);
-            vec_resize(node.u.lis, j - elem.u.num);
+            lst_init(node.u.lis);
+            lst_shallow_copy(node.u.lis, aggr.u.lis);
+            lst_resize(node.u.lis, j - elem.u.num);
         }
         break;
 
@@ -55,6 +55,6 @@ void drop_(pEnv env)
         break;
     }
     node.op = aggr.op;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : tpush.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef TPUSH_C
 #define TPUSH_C
@@ -18,16 +18,16 @@ void tpush_(pEnv env)
     Node test, jump, elem, node;
 
     PARM(1, ANYTYPE);
-    test = vec_pop(env->stck);
-    jump = vec_pop(env->prog);
-    elem = vec_pop(env->prog);
+    test = lst_pop(env->stck);
+    jump = lst_pop(env->prog);
+    elem = lst_pop(env->prog);
     if (test.u.num)
-        node = vec_at(env->prog, jump.u.num + 1);
+        node = lst_at(env->prog, jump.u.num + 1);
     else
-        node = vec_at(env->prog, jump.u.num); /* one step further away */
+        node = lst_at(env->prog, jump.u.num); /* one step further away */
     switch (node.op) {
     case LIST_:
-        vec_push(node.u.lis, elem);
+        lst_push(node.u.lis, elem);
         break;
 
     case STRING_:
@@ -43,8 +43,8 @@ void tpush_(pEnv env)
         break;
     }
     if (test.u.num)
-        vec_assign(env->prog, jump.u.num + 1, node); /* write node */
+        lst_assign(env->prog, jump.u.num + 1, node); /* write node */
     else
-        vec_assign(env->prog, jump.u.num, node); /* write node */
+        lst_assign(env->prog, jump.u.num, node); /* write node */
 }
 #endif

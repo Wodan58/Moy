@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #include "globals.h"
 
@@ -24,7 +24,7 @@ PUBLIC void inisymboltable(pEnv env) /* initialise */
 	ent.u.proc = tab->proc;
 	key = kh_put(Symtab, env->hash, ent.name, &rv);
 	kh_value(env->hash, key) = i;
-	sym_push(env->symtab, ent);
+	vec_push(env->symtab, ent);
     }
 }
 
@@ -38,14 +38,14 @@ PRIVATE void enterglobal(pEnv env, char *name)
     Entry ent;
     khiter_t key;
 
-    env->location = sym_size(env->symtab);
+    env->location = vec_size(env->symtab);
     ent.flags = 0;
     ent.name = name;
     ent.is_user = 1;
     ent.u.body = 0; /* may be assigned in definition */
     key = kh_put(Symtab, env->hash, ent.name, &rv);
     kh_value(env->hash, key) = env->location;
-    sym_push(env->symtab, ent);
+    vec_push(env->symtab, ent);
 }
 
 /*
@@ -76,7 +76,7 @@ PUBLIC void lookup(pEnv env, char *name)
  */
 PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
 {
-    Entry *temp;
+    Entry temp;
 
     /*
      *  Local symbols are only added during the first read of private sections
@@ -89,16 +89,15 @@ PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
 	else
 	    enterglobal(env, name);
     }
-    temp = sym_lvalue(env->symtab, env->location);
-    if (!temp->is_user) {
+    temp = vec_at(env->symtab, env->location);
+    if (!temp.is_user) {
 	if (env->overwrite) {
 	    fflush(stdout);
-	    fprintf(stderr, "warning: overwriting inbuilt '%s'\n", temp->name);
+	    fprintf(stderr, "warning: overwriting inbuilt '%s'\n", temp.name);
 	}
 	enterglobal(env, name);
-	temp = sym_lvalue(env->symtab, env->location);
     }
-    temp->u.body = list;
+    vec_at(env->symtab, env->location).u.body = list;
 }
 
 /*
@@ -109,13 +108,13 @@ PUBLIC void execute(pEnv env, NodeList *list)
 {
     Node node;
 
-    vec_copy(env->prog, list);
+    lst_copy(env->prog, list);
     exeterm(env);
-    if (vec_size(env->stck)) {
+    if (lst_size(env->stck)) {
 	if (env->autoput == 2)
 	    writeterm(env, env->stck);
 	else if (env->autoput == 1) {
-	    node = vec_pop(env->stck);
+	    node = lst_pop(env->stck);
 	    if (node.op == LIST_) {
 		putchar('[');
 		writeterm(env, node.u.lis);
@@ -135,10 +134,10 @@ PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
     Node node;
     NodeList *list;
 
-    vec_init(list);
+    lst_init(list);
     node.u = u;
     node.op = op;
-    vec_push(list, node);
+    lst_push(list, node);
     return list;
 }
 
@@ -152,7 +151,7 @@ PUBLIC void reverse(NodeList *list)
     if (list) {
 	node.u.lis = 0;
 	node.op = LIST_;
-	vec_push(list, node); /* scratch value */
-	vec_reverse(list); /* excludes scratch */
+	lst_push(list, node); /* scratch value */
+	lst_reverse(list); /* excludes scratch */
     }
 }

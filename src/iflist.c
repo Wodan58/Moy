@@ -1,7 +1,7 @@
 /*
     module  : iflist.c
-    version : 1.2
-    date    : 07/17/23
+    version : 1.3
+    date    : 08/23/23
 */
 #ifndef IFLIST_C
 #define IFLIST_C
@@ -15,9 +15,9 @@ void iflist_(pEnv env)
     Node first, second, node;
 
     PARM(3, WHILE);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
-    node = vec_back(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
+    node = lst_back(env->stck);
     node = node.op == LIST_ ? first : second;
     prog(env, node.u.lis);
 }

@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -19,15 +19,15 @@ void primrec_(pEnv env)
     Node first, second, third, node;
 
     PARM(3, PRIMREC);
-    third = vec_pop(env->stck);
-    second = vec_pop(env->stck);
-    first = vec_pop(env->stck);
+    third = lst_pop(env->stck);
+    second = lst_pop(env->stck);
+    first = lst_pop(env->stck);
     switch (first.op) {
     case LIST_:
-        j = vec_size(first.u.lis);
+        j = lst_size(first.u.lis);
         for (i = j - 1; i >= 0; i--) {
-            node = vec_at(first.u.lis, i);
-            vec_push(env->stck, node);
+            node = lst_at(first.u.lis, i);
+            lst_push(env->stck, node);
         }
         break;
  
@@ -37,7 +37,7 @@ void primrec_(pEnv env)
         j = strlen(first.u.str);
         for (str = first.u.str; *str; str++) {
             node.u.num = *str;
-            vec_push(env->stck, node);
+            lst_push(env->stck, node);
         }
         break;
 
@@ -46,7 +46,7 @@ void primrec_(pEnv env)
         for (j = i = 0; i < SETSIZE; i++)
             if (first.u.set & ((int64_t)1 << i)) {
                 node.u.num = i;
-                vec_push(env->stck, node);
+                lst_push(env->stck, node);
                 j++;
             }
         break;
@@ -55,7 +55,7 @@ void primrec_(pEnv env)
         node.op = INTEGER_;
         for (j = i = first.u.num; i > 0; i--) {
             node.u.num = i;
-            vec_push(env->stck, node);
+            lst_push(env->stck, node);
         }
     default:
         break;

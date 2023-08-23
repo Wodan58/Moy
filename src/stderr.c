@@ -1,7 +1,7 @@
 /*
     module  : stderr.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef STDERR_C
 #define STDERR_C
@@ -16,6 +16,6 @@ void stderr_(pEnv env)
 
     node.u.fil = stderr;
     node.op = FILE_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

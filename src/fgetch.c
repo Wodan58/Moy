@@ -1,7 +1,7 @@
 /*
     module  : fgetch.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef FGETCH_C
 #define FGETCH_C
@@ -15,9 +15,9 @@ void fgetch_(pEnv env)
     Node node;
 
     PARM(1, FGET);
-    node = vec_back(env->stck);
+    node = lst_back(env->stck);
     node.u.num = getc(node.u.fil);
     node.op = CHAR_;
-    vec_push(env->stck, node);    
+    lst_push(env->stck, node);    
 }
 #endif

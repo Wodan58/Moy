@@ -1,7 +1,7 @@
 /*
     module  : true.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef TRUE_C
 #define TRUE_C
@@ -16,6 +16,6 @@ void true_(pEnv env)
 
     node.u.num = 1;
     node.op = BOOLEAN_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

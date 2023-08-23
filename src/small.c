@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.3
-    date    : 08/21/23
+    version : 1.4
+    date    : 08/23/23
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -16,7 +16,7 @@ void small_(pEnv env)
     Node node;
 
     PARM(1, SMALL);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     switch (node.op) {
 #if 0
     case USR_PRIME_:
@@ -45,7 +45,7 @@ void small_(pEnv env)
         node.u.num = strlen(node.u.str) < 2;
         break;
     case LIST_:
-        node.u.num = vec_size(node.u.lis) < 2;
+        node.u.num = lst_size(node.u.lis) < 2;
         break;
 #if 0
     case FLOAT_:
@@ -60,6 +60,6 @@ void small_(pEnv env)
 #endif
     }
     node.op = BOOLEAN_;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

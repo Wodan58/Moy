@@ -1,7 +1,7 @@
 /*
     module  : ternary.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef TERNARY_C
 #define TERNARY_C
@@ -28,17 +28,17 @@ void ternary_(pEnv env)
     /*
         read the program from the stack
     */
-    list = vec_pop(env->stck);
+    list = lst_pop(env->stck);
     /*
         restore the old stack after the test
     */
-    vec_init(temp.u.lis);
-    vec_copy(temp.u.lis, env->stck);
-    (void)vec_pop(temp.u.lis);
-    (void)vec_pop(temp.u.lis);
-    (void)vec_pop(temp.u.lis);
+    lst_init(temp.u.lis);
+    lst_copy(temp.u.lis, env->stck);
+    (void)lst_pop(temp.u.lis);
+    (void)lst_pop(temp.u.lis);
+    (void)lst_pop(temp.u.lis);
     temp.op = LIST_;
-    vec_push(env->prog, temp);
+    lst_push(env->prog, temp);
     /*
         execute program
     */

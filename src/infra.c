@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef INFRA_C
 #define INFRA_C
@@ -17,8 +17,8 @@ void infra_(pEnv env)
     Node aggr, list, node;
 
     PARM(2, INFRA);
-    list = vec_pop(env->stck);
-    aggr = vec_pop(env->stck);
+    list = lst_pop(env->stck);
+    aggr = lst_pop(env->stck);
     /*
         the old stack is restored with the list on top
     */
@@ -30,10 +30,10 @@ void infra_(pEnv env)
     /*
         the old stack is saved in the program
     */
-    vec_init(node.u.lis);
-    vec_copy(node.u.lis, env->stck);
+    lst_init(node.u.lis);
+    lst_copy(node.u.lis, env->stck);
     node.op = LIST_;
-    vec_push(env->prog, node);
+    lst_push(env->prog, node);
     /*
         after executing the program the stack is listed
     */
@@ -45,6 +45,6 @@ void infra_(pEnv env)
     /*
         the list parameter is installed as the stack
     */
-    vec_copy(env->stck, aggr.u.lis);
+    lst_copy(env->stck, aggr.u.lis);
 }
 #endif

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.7
-    date    : 08/21/23
+    version : 1.8
+    date    : 08/23/23
 */
 #include "globals.h"
 
@@ -14,7 +14,7 @@
 #define LEAVE_COMM	2
 
 char line[INPLINEMAX + 1];
-static int comment, linenum;
+static int linenum;
 
 static int include_stack_ptr;
 static YY_BUFFER_STATE include_stack[INPSTACKMAX];
@@ -123,7 +123,7 @@ PRIVATE[ \t]*	return JPRIVATE;
 "."[ \t]*	|
 END[ \t]*	return END;
 MODULE[ \t]*	return MODULE;
-"=="[ \t]*	return JEQUAL;
+"=="[ \t]*	return EQDEF;
 
 {character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
 {octal}		|
@@ -154,7 +154,7 @@ MODULE[ \t]*	return MODULE;
 /*
     Skip space characters
 */
-int getnextchar(void)
+int get_char(void)
 {
     int ch;
 

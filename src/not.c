@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef NOT_C
 #define NOT_C
@@ -15,7 +15,7 @@ void not_(pEnv env)
     Node node;
 
     PARM(1, NOT);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     switch (node.op) {
     case SET_:
         node.u.set = ~node.u.set;
@@ -28,6 +28,6 @@ void not_(pEnv env)
     default:
         break;
     }
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : neg.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 08/23/23
 */
 #ifndef NEG_C
 #define NEG_C
@@ -15,11 +15,11 @@ void neg_(pEnv env)
     Node node;
 
     PARM(1, UFLOAT);
-    node = vec_pop(env->stck);
+    node = lst_pop(env->stck);
     if (node.op == FLOAT_)
         node.u.dbl = -node.u.dbl;
     else
         node.u.num = -node.u.num;
-    vec_push(env->stck, node);
+    lst_push(env->stck, node);
 }
 #endif
