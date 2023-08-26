@@ -1,13 +1,13 @@
 /*
     module  : round.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 08/26/23
 */
 #ifndef ROUND_C
 #define ROUND_C
 
 /**
-OK 3240  round  :  DA	F  ->  G
+OK 1693  round  :  DA	F  ->  G
 G is F rounded to the nearest integer.
 */
 double round2(double num)

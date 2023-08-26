@@ -21,8 +21,6 @@ There is a customized version of usrlib.joy waiting in the build directory.
 Changes
 -------
 
-Some builtins have been added compared to Joy: `casting`, `filetime`, `over`,
-`pick`, `round`, and `typeof`.
 Directives borrowed from [42minjoy](https://github.com/Wodan58/42minjoy) are:
 `%INCLUDE`, `%PUT`, and `%LISTING`.
 The build system requires new builtins in only one location: as a .c file in

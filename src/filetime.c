@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.3
-    date    : 08/23/23
+    version : 1.4
+    date    : 08/26/23
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 
 /**
-OK 3210  filetime  :  DA 	F  ->  T
+OK 1943  filetime  :  DA 	F  ->  T
 T is the modification time of file F.
 */
 void filetime_(pEnv env)

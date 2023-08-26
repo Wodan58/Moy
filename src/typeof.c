@@ -1,13 +1,13 @@
 /*
     module  : typeof.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 08/26/23
 */
 #ifndef TYPEOF_C
 #define TYPEOF_C
 
 /**
-OK 3250  typeof  :  DA	X  ->  I
+OK 2323  typeof  :  DA	X  ->  I
 Replace X by its type.
 */
 void typeof_(pEnv env)

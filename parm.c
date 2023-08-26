@@ -1,7 +1,7 @@
 /*
-    module  : parm.c
-    date    : 1.6
-    version : 08/23/23
+    module  : %M%
+    date    : %I%
+    version : %G%
 */
 #include "globals.h"
 
@@ -50,8 +50,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
     one quote is needed:
 */
     case DIP:
-	if (leng < 2)
-	    execerror("two parameters", file);
+	checknum(num, leng, file);
 	first = lst_back(env->stck);
 	if (first.op != LIST_)
 	    execerror("quotation as top parameter", file);

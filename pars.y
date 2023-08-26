@@ -1,8 +1,8 @@
 %{
 /*
-    module  : pars.y
-    version : 1.6
-    date    : 08/23/23
+    module  : %M%
+    version : %I%
+    date    : %G%
 */
 #include "globals.h"
 %}
@@ -129,6 +129,7 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 	| CHAR_     { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u); }
 	| INTEGER_  { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u); }
 	| STRING_   { YYSTYPE u; u.str = $1; $$ = newnode(STRING_, u); }
+	| BIGNUM_   { YYSTYPE u; u.str = $1; $$ = newnode(BIGNUM_, u); }
 	| FLOAT_    { YYSTYPE u; u.dbl = $1; $$ = newnode(FLOAT_, u); }
 	| list      { YYSTYPE u; u.lis = $1; $$ = newnode(LIST_, u); }
 	| set       { YYSTYPE u; u.set = $1; $$ = newnode(SET_, u); } ;

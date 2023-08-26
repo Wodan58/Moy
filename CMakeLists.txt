@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.11
-#   date    : 08/23/23
+#   version : 1.12
+#   date    : 08/24/23
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
@@ -21,7 +21,7 @@ else()
   FLEX_TARGET(MyScanner ${CMAKE_SOURCE_DIR}/lexr.l ${CMAKE_SOURCE_DIR}/lexr.c)
 endif()
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
-add_definitions(-DSYMBOLS -DCOPYRIGHT -DJVERSION="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
+add_definitions(-DCOPYRIGHT -DJVERSION="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
 add_executable(joy arty.c comp.c dtim.c eval.c ${FLEX_MyScanner_OUTPUTS} main.c
                    manl.c modl.c parm.c ${BISON_MyParser_OUTPUTS} prog.c read.c
                    repl.c save.c scan.c undo.c util.c writ.c ylex.c)

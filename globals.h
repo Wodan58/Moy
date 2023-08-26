@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.7
-    date    : 08/23/23
+    version : 1.8
+    date    : 08/24/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -166,10 +166,6 @@ typedef struct Env {
     vector(Entry) *symtab; /* symbol table */
     khash_t(Symtab) *hash;
     NodeList *stck, *prog; /* stack, code, and quotations are vectors */
-#if 0
-    TokList *tokens;       /* read ahead table */
-    SymList *symtab;       /* symbol table */
-#endif
     clock_t startclock;    /* main */
     char *pathname;
     char **g_argv;
