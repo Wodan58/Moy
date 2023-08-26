@@ -1,7 +1,7 @@
 /*
-    module  : %M%
-    date    : %I%
-    version : %G%
+    module  : parm.c
+    date    : 1.7
+    version : 08/26/23
 */
 #include "globals.h"
 

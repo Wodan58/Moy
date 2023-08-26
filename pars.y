@@ -1,8 +1,8 @@
 %{
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : pars.y
+    version : 1.7
+    date    : 08/26/23
 */
 #include "globals.h"
 %}
