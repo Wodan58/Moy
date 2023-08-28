@@ -1,7 +1,7 @@
 /*
     module  : modl.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 08/28/23
 */
 #include "globals.h"
 
@@ -117,6 +117,8 @@ char *classify(pEnv env, char *name)
     size_t leng;
     char temp[BUFFERMAX], *buf = 0, *str;
 
+    if (strchr(name, '.'))
+	return name;
     /*
      * inside a private section, names that are to be entered in the symbol
      * table should get the hide number as a prefix.

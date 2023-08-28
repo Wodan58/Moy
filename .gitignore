@@ -5,3 +5,8 @@ prim.c
 prim.h
 tabl.c
 moy.tar
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+joy.exe

@@ -1,7 +1,7 @@
 /*
     module  : ylex.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.5
+    date    : 08/28/23
 */
 #include "globals.h"
 
@@ -100,6 +100,7 @@ int yylex(pEnv env)
 /*
     Copy the global variables of modl.c into local variables.
 */
+	tok.symb = symb;
 	savemod(&hide, &modl, &hcnt);
 	do {
 	    switch (symb) {
@@ -117,9 +118,11 @@ int yylex(pEnv env)
 			    break;
 	    case JPUBLIC  : stoppriv();
 			    break;
-	    case EQDEF	  : if (strchr(yylval.str, '.') == 0)
-				yylval.str = classify(env, yylval.str);
-			    enteratom(env, yylval.str, 0);
+	    case EQDEF	  : if (tok.symb == USR_) {
+				if (strchr(yylval.str, '.') == 0)
+				    yylval.str = classify(env, yylval.str);
+				enteratom(env, yylval.str, 0);
+			    }
 			    break;
 	    case END	  : if (module) {
 				exitmod();
@@ -132,6 +135,7 @@ int yylex(pEnv env)
 				goto done;
 			    break;
 	    }
+	    tok.symb = symb; /* previous symbol */
 	    push_symb(env, symb);
 	    symb = my_yylex(env);
 	} while (1);

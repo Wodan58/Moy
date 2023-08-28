@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.5
-    date    : 08/23/23
+    version : 1.6
+    date    : 08/28/23
 */
 #include "globals.h"
 
@@ -24,7 +24,7 @@ static struct {
 PUBLIC void inilinebuffer(char *str)
 {
     infile[0].fp = yyin;
-    infile[0].name = str ? str : "stdin";
+    infile[0].name = str;
 }
 
 PRIVATE void redirect(char *filnam, FILE *fp)

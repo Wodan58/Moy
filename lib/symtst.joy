@@ -4,7 +4,7 @@
 
 "symlib" libload.
 0 __settracegc.
-#1 setecho.
+1 setecho.
 
 (* The translations will use the following unary and binary operators:*)
 

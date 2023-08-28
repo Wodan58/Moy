@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.7
- *  date    : 08/23/23
+ *  version : 1.9
+ *  date    : 08/28/23
  */
 #include "globals.h"
 
@@ -10,6 +10,7 @@
 extern FILE *yyin;
 
 static jmp_buf begin;
+static char *filename = "stdin";
 
 /*
     abort execution and restart reading from yyin. In the NOBDW version the
@@ -37,7 +38,8 @@ PUBLIC void execerror(char *message, char *op)
     else
 	leng = strlen(ptr);
     fflush(stdout);
-    fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
+    fprintf(stderr, "%s:run time error: %s needed for %.*s\n", filename,
+	    message, leng, ptr);
     abortexecution_();
 }
 
@@ -84,7 +86,7 @@ PRIVATE void copyright(char *file)
 	{ "modtst.joy", 1047920271, "BDW" },
 	{ 0, 1056113062, "NOBDW" } };
 
-    if (file) {
+    if (strcmp(file, "stdin")) {
 	if ((ptr = strrchr(file, '/')) != 0)
 	    file = ptr + 1;
 	for (i = 0; table[i].file; i++) {
@@ -167,7 +169,7 @@ PRIVATE int my_main(int argc, char **argv)
 {
     static unsigned char mustinclude = 1;
     int i, j, ch;
-    char *filename = 0, *ptr;
+    char *ptr;
 #ifdef COPYRIGHT
     unsigned char verbose = 1;
 #endif

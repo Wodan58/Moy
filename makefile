@@ -3,7 +3,7 @@
 .PRECIOUS: lexr.c
 
 CC = gcc
-CFLAGS = -DSYMBOLS -DCOPYRIGHT -DJVERSION="\"Release 1.0\"" -O3 -Wall -Wextra -Werror
+CFLAGS = -DCOPYRIGHT -DJVERSION="\"Release 1.0\"" -O3 -Wall -Wextra -Werror
 OBJECTS = arty.o comp.o dtim.o eval.o lexr.o main.o manl.o modl.o parm.o \
 	  pars.o prog.o read.o repl.o save.o scan.o undo.o util.o writ.o \
 	  ylex.o
