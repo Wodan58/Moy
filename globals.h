@@ -1,6 +1,6 @@
 /*
     module  : globals.h
-    version : 1.9
+    version : 1.10
     date    : 08/29/23
 */
 #ifndef GLOBALS_H
@@ -9,9 +9,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
-#include <math.h>
 #include <setjmp.h>
+#include <signal.h>
+#include <math.h>
+#include <time.h>
 #include <inttypes.h>
 
 #ifdef _MSC_VER
