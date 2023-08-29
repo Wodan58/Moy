@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.6
-    date    : 08/28/23
+    version : 1.7
+    date    : 08/29/23
 */
 #include "globals.h"
 
@@ -111,7 +111,7 @@ void my_error(char *str, YYLTYPE *bloc)
     leng += fprintf(stderr, "%s:%d:", infile[ilevel].name, yylineno);
     fprintf(stderr, "%s\n%*s^\n%*s%s\n", line, leng, "", leng, "", str);
     line[0] = 0; /* invalidate line */
-    abortexecution_();
+    abortexecution_(PARS_ERR);
 }
 
 /*

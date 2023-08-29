@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.8
-    date    : 08/24/23
+    version : 1.9
+    date    : 08/29/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -24,7 +24,6 @@
 /*
     The following #defines are present in the source code.
 */
-#define BDW_GARBAGE_COLLECTOR	/* main.c */
 #if 0
 #define USE_BIGNUM_ARITHMETIC
 #endif
@@ -99,6 +98,13 @@ typedef enum {
     DIVIDE,
     FWRITE
 } Params;
+
+typedef enum {
+    NOT_USED,
+    MY_ABORT,
+    PARS_ERR,
+    EXEC_ERR
+} Aborts;
 
 typedef enum {
     OK,
@@ -212,7 +218,7 @@ PUBLIC void execute(pEnv env, NodeList *list);
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
 PUBLIC void reverse(NodeList *list);
 /* main.c */
-PUBLIC void abortexecution_(void);
+PUBLIC void abortexecution_(int num);
 PUBLIC void execerror(char *message, char *op);
 /* quit.c */
 PUBLIC void my_atexit(proc_t proc);

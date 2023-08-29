@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.9
- *  date    : 08/28/23
+ *  version : 1.10
+ *  date    : 08/29/23
  */
 #include "globals.h"
 
@@ -16,9 +16,9 @@ static char *filename = "stdin";
     abort execution and restart reading from yyin. In the NOBDW version the
     stack is cleared as well.
 */
-PUBLIC void abortexecution_(void)
+PUBLIC void abortexecution_(int num)
 {
-    longjmp(begin, 1);
+    longjmp(begin, num);
 }
 
 /*
@@ -40,7 +40,7 @@ PUBLIC void execerror(char *message, char *op)
     fflush(stdout);
     fprintf(stderr, "%s:run time error: %s needed for %.*s\n", filename,
 	    message, leng, ptr);
-    abortexecution_();
+    abortexecution_(EXEC_ERR);
 }
 
 /*
@@ -51,7 +51,7 @@ PRIVATE void report_clock(pEnv env)
 {
     fflush(stdout);
     fprintf(stderr, "%ld milliseconds CPU to execute\n",
-    (clock() - env->startclock) * 1000 / CLOCKS_PER_SEC);
+	   (clock() - env->startclock) * 1000 / CLOCKS_PER_SEC);
 }
 #endif
 
@@ -276,7 +276,8 @@ PRIVATE int my_main(int argc, char **argv)
     env.undeferror = INIUNDEFERROR;
     inilinebuffer(filename);
     inisymboltable(&env);
-    setjmp(begin);
+    if (setjmp(begin) == SIGSEGV) /* return here after error or abort */
+	quit_(&env); /* do not continue after SIGSEGV */
     lst_resize(env.prog, 0);
     if (mustinclude) {
 	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
@@ -289,10 +290,6 @@ int main(int argc, char **argv)
 {
     int (*volatile m)(int, char **) = my_main;
 
-#ifndef BDW_GARBAGE_COLLECTOR
-    GC_init(&argc);
-#else
     GC_INIT();
-#endif
     return (*m)(argc, argv);
 }
