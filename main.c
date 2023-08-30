@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.10
- *  date    : 08/29/23
+ *  version : 1.11
+ *  date    : 08/30/23
  */
 #include "globals.h"
 
@@ -290,6 +290,7 @@ int main(int argc, char **argv)
 {
     int (*volatile m)(int, char **) = my_main;
 
+    signal(SIGSEGV, abortexecution_);
     GC_INIT();
     return (*m)(argc, argv);
 }
