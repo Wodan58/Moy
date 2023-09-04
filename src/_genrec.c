@@ -1,13 +1,13 @@
 /*
     module  : _genrec.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef _GENREC_C
 #define _GENREC_C
 
 /**
-OK 3170  (_genrec)  :  DDDDU	[B] [T] [R1] [R2]  ->  ...
+OK 3140  (_genrec)  :  DDDDU	[B] [T] [R1] [R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */

@@ -1,13 +1,13 @@
 /*
     module  : jtrue.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef JTRUE_C
 #define JTRUE_C
 
 /**
-OK 3350  (jtrue)  :  N	->
+OK 3410  (jtrue)  :  N	->
 Pop the jump location from the program stack. If the top of the data stack
 is true, jump to that location.
 */

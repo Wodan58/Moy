@@ -1,13 +1,13 @@
 /*
     module  : char.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef CHAR_C
 #define CHAR_C
 
 /**
-OK 2340  char  :  DA	X  ->  B
+OK 2320  char  :  DA	X  ->  B
 Tests whether X is a character.
 */
 void char_(pEnv env)

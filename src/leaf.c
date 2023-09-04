@@ -1,13 +1,13 @@
 /*
     module  : leaf.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef LEAF_C
 #define LEAF_C
 
 /**
-OK 2390  leaf  :  DA	X  ->  B
+OK 2370  leaf  :  DA	X  ->  B
 Tests whether X is not a list.
 */
 void leaf_(pEnv env)

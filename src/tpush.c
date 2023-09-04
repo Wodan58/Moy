@@ -1,13 +1,13 @@
 /*
     module  : tpush.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef TPUSH_C
 #define TPUSH_C
 
 /**
-OK 3330  (tpush)  :  D	->
+OK 3390  (tpush)  :  D	->
 Pop the location of two aggregates and an element from the program stack.
 The element is added to one of the two aggregates, depending on the value
 on top of the data stack.

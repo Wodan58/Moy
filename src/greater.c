@@ -1,13 +1,13 @@
 /*
     module  : greater.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef GREATER_C
 #define GREATER_C
 
 /**
-OK 2240  >\0greater  :  DDA	X Y  ->  B
+OK 2230  >\0greater  :  DDA	X Y  ->  B
 Either both X and Y are numeric or both are strings or symbols.
 Tests whether X greater than Y.  Also supports float.
 */

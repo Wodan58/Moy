@@ -9,15 +9,6 @@ This project implements [Joy](https://github.com/Wodan58/Joy) and uses the
 [BDW garbage collector](https://github.com/ivmai/bdwgc). The document in the
 doc directory explains the raison d'être of this implementation.
 
-Build instructions
-------------------
-
-    cd build
-    cmake ..
-    cmake --build .
-
-There is a customized version of usrlib.joy waiting in the build directory.
-
 Changes
 -------
 
@@ -26,8 +17,20 @@ Directives borrowed from [42minjoy](https://github.com/Wodan58/42minjoy) are:
 The build system requires new builtins in only one location: as a .c file in
 the src-directory.
 
-Purpose
--------
+Build instructions
+------------------
 
-This implementation, when finished, might be used to solve problems given in
-[projecteuler.net](https://projecteuler.net).
+    cd build
+    SOURCE_DATE_EPOCH=1047920271 cmake ..
+    cmake --build .
+
+There is a customized version of usrlib.joy waiting in the build directory.
+
+See also
+--------
+
+Implementation|Dependencies
+---|---
+[Joy - NOBDW](https://github.com/Wodan58/Joy)|
+[joy1 - BDW](https://github.com/Wodan58/joy1)|[BDW garbage collector](https://github.com/ivmai/bdwgc)
+[Moy](https://github.com/Wodan58/Moy)|[BDW garbage collector](https://github.com/ivmai/bdwgc) and [Lex & Yacc](https://sourceforge.net/projects/winflexbison/files/win_flex_bison-latest.zip)

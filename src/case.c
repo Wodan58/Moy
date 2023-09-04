@@ -1,13 +1,13 @@
 /*
     module  : case.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef CASE_C
 #define CASE_C
 
 /**
-OK 2110  case  :  DDU	X [..[X Y]..]  ->  Y i
+OK 2100  case  :  DDU	X [..[X Y]..]  ->  Y i
 Indexing on the value of X, execute the matching Y.
 */
 void case_(pEnv env)

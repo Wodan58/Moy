@@ -1,13 +1,13 @@
 /*
     module  : equal.c
-    version : 1.3
-    date    : 08/23/23
+    version : 1.4
+    date    : 09/04/23
 */
 #ifndef EQUAL_C
 #define EQUAL_C
 
 /**
-OK 2290  equal  :  DDA	T U  ->  B
+OK 2280  equal  :  DDA	T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
 PRIVATE int compatible(int first, int second)

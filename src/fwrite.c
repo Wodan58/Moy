@@ -1,13 +1,13 @@
 /*
     module  : fwrite.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef FWRITE_C
 #define FWRITE_C
 
 /**
-OK 1920  fwrite  :  DDA	S L  ->  S
+OK 1910  fwrite  :  DDA	S L  ->  S
 A list of integers are written as bytes to the current position of stream S.
 */
 void fwrite_(pEnv env)

@@ -1,13 +1,13 @@
 /*
     module  : condnestrec.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef CONDNESTREC_C
 #define CONDNESTREC_C
 
 /**
-OK 2770  condnestrec  :  DU	[ [C1] [C2] .. [D] ]  ->  ...
+OK 2750  condnestrec  :  DU	[ [C1] [C2] .. [D] ]  ->  ...
 A generalisation of condlinrec.
 Each [Ci] is of the form [[B] [R1] [R2] .. [Rn]] and [D] is of the form
 [[R1] [R2] .. [Rn]]. Tries each B, or if all fail, takes the default [D].

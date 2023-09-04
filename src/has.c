@@ -1,13 +1,13 @@
 /*
     module  : has.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef HAS_C
 #define HAS_C
 
 /**
-OK 2300  has  :  DDA	A X  ->  B
+OK 2290  has  :  DDA	A X  ->  B
 Tests whether aggregate A has X as a member.
 */
 void has_(pEnv env)

@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.6
- *  date    : 08/23/23
+ *  version : 1.7
+ *  date    : 09/04/23
  */
 #include "globals.h"
 
@@ -84,8 +84,10 @@ PUBLIC void exeterm(pEnv env)
 	    (*node.u.proc)(env);
 	    break;
 	case USR_PRIME_:
+	    node.op = USR_;
+	    goto next;
 	case ANON_PRIME_:
-	    node.op -= 11;
+	    node.op = ANON_FUNCT_;
 	    goto next;
 next:
 	case BOOLEAN_:
@@ -153,14 +155,14 @@ static OpTable optable[] = {
 {OK, " file type",		id_,	"A",	"->  FILE:",
 "The type of references to open I/O streams,\ntypically but not necessarily files.\nThe only literals of this type are stdin, stdout, and stderr."},
 
+{OK, " bignum type",		id_,	"A",	"->  F",
+"The type of arbitrary precision floating-point numbers.\nLiterals of this type are written with embedded decimal points (like 1.2)\nand optional exponent specifiers (like 1.5E2)."},
+
 {OK, "__USR_PRIME",		id_,	"A",	"->",
 "user node, to be pushed."},
 
 {OK, "__ANON_PRIME",		id_,	"U",	"->",
 "function call, to be pushed."},
-
-{OK, " bignum type",		id_,	"A",	"->  F",
-"The type of arbitrary precision floating-point numbers.\nLiterals of this type are written with embedded decimal points (like 1.2)\nand optional exponent specifiers (like 1.5E2)."},
 
 #include "tabl.c"
 };

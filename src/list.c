@@ -1,13 +1,13 @@
 /*
     module  : list.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef LIST_C
 #define LIST_C
 
 /**
-OK 2380  list  :  DA	X  ->  B
+OK 2360  list  :  DA	X  ->  B
 Tests whether X is a list.
 */
 void list_(pEnv env)

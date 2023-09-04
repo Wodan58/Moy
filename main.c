@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.11
- *  date    : 08/30/23
+ *  version : 1.12
+ *  date    : 09/04/23
  */
 #include "globals.h"
 
@@ -192,6 +192,10 @@ PRIVATE int my_main(int argc, char **argv)
     lst_init(env.prog);
     vec_init(env.tokens);
     vec_init(env.symtab);
+#ifdef MULTI_TASK_THREAD_JOY
+    vec_init(env.context);
+    vec_init(env.channel);
+#endif
     env.overwrite = INIWARNING;
     /*
      *  Initialize yyin and other environmental parameters.

@@ -1,13 +1,13 @@
 /*
     module  : cswap.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef CSWAP_C
 #define CSWAP_C
 
 /**
-OK 3270  (cswap)  :  N	->
+OK 3330  (cswap)  :  N	->
 Pop the location of an element from the code stack.
 Swap that element with the top of the data stack.
 */

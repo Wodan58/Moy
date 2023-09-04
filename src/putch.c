@@ -1,13 +1,13 @@
 /*
     module  : putch.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef PUTCH_C
 #define PUTCH_C
 
 /**
-OK 3120  putch  :  D	N  ->
+OK 3090  putch  :  D	N  ->
 N : numeric, writes character whose ASCII is N.
 */
 void putch_(pEnv env)

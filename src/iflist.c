@@ -1,13 +1,13 @@
 /*
     module  : iflist.c
-    version : 1.3
-    date    : 08/23/23
+    version : 1.4
+    date    : 09/04/23
 */
 #ifndef IFLIST_C
 #define IFLIST_C
 
 /**
-OK 2680  iflist  :  DDDP	X [T] [E]  ->  ...
+OK 2660  iflist  :  DDDP	X [T] [E]  ->  ...
 If X is a list, executes T else executes E.
 */
 void iflist_(pEnv env)

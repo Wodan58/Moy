@@ -1,7 +1,7 @@
 /*
     module  : rand.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef RAND_C
 #define RAND_C

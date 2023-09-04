@@ -1,7 +1,7 @@
 /*
     module  : mul.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef MUL_C
 #define MUL_C

@@ -1,13 +1,13 @@
 /*
     module  : helpdetail.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
 
 /**
-OK 2940  helpdetail  :  D	[ S1 S2 .. ]  ->
+OK 2920  helpdetail  :  D	[ S1 S2 .. ]  ->
 Gives brief help on each symbol S in the list.
 */
 void helpdetail_(pEnv env)
@@ -35,7 +35,7 @@ void helpdetail_(pEnv env)
                 opcode = operindex(maxint_);
             printf("%s\t:  %s.\n%s\n", optable[opcode].name,
                 optable[opcode].messg1, optable[opcode].messg2);
-	    if (opcode <= FILE_)
+	    if (opcode <= BIGNUM_)
 		printf("\n");
         }
     }

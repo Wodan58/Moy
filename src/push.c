@@ -1,13 +1,13 @@
 /*
     module  : push.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef PUSH_C
 #define PUSH_C
 
 /**
-OK 3280  (push)  :  D	->
+OK 3340  (push)  :  D	->
 Pop the location of an aggregate from the program stack. Pop an element
 from the data stack and add that element to the aggregate.
 */

@@ -1,13 +1,13 @@
 /*
     module  : help.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef HELP_C
 #define HELP_C
 
 /**
-OK 2920  help  :  N	->
+OK 2900  help  :  N	->
 Lists all defined symbols, including those from library files.
 Then lists all primitives of raw Joy.
 (There is a variant: "_help" which lists hidden symbols).

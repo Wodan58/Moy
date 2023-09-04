@@ -1,13 +1,13 @@
 /*
     module  : unswons.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
 
 /**
-OK 2130  unswons  :  DAA	A  ->  R F
+OK 2120  unswons  :  DAA	A  ->  R F
 R and F are the rest and the first of non-empty aggregate A.
 */
 void unswons_(pEnv env)

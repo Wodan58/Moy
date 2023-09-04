@@ -1,13 +1,13 @@
 /*
     module  : jfalse.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef JFALSE_C
 #define JFALSE_C
 
 /**
-OK 3340  (jfalse)  :  N	->
+OK 3400  (jfalse)  :  N	->
 Pop the jump location from the program stack. If the top of the data stack
 is false, jump to that location.
 */

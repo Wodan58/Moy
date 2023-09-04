@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.10
-    date    : 08/29/23
+    version : 1.11
+    date    : 09/04/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -27,6 +27,7 @@
 */
 #if 0
 #define USE_BIGNUM_ARITHMETIC
+#define MULTI_TASK_THREAD_JOY
 #endif
 
 #include <gc.h>		     /* system installed BDW or local gc.h */
@@ -97,7 +98,9 @@ typedef enum {
     DIV,
     REM,
     DIVIDE,
-    FWRITE
+    FWRITE,
+    RECEIVE,
+    SEND
 } Params;
 
 typedef enum {
@@ -116,15 +119,15 @@ typedef enum {
 #define PUBLIC
 
 /* types		     */
-typedef int Symbol;	     /* symbol created by scanner */
+typedef int Symbol;	     	/* symbol created by scanner */
 
-typedef struct Env *pEnv;    /* pointer to global variables */
+typedef struct Env *pEnv;    	/* pointer to global variables */
 
-typedef void (*proc_t)(pEnv); /* procedure */
+typedef void (*proc_t)(pEnv); 	/* procedure */
 
 typedef struct NodeList NodeList; /* forward */
 
-typedef int pEntry;	     /* index in symbol table */
+typedef int pEntry;	     	/* index in symbol table */
 
 typedef unsigned char Operator; /* opcode / datatype */
 
@@ -165,12 +168,20 @@ KHASH_MAP_INIT_STR(Symtab, pEntry)
 
 #include "list.h"	   /* nodelist */
 
+#ifdef MULTI_TASK_THREAD_JOY
+#include "task.h"	   /* context, channel */
+#endif
+
 /*
     Global variables are stored locally in the main function.
 */
 typedef struct Env {
     vector(Token) *tokens; /* read ahead table */
     vector(Entry) *symtab; /* symbol table */
+#ifdef MULTI_TASK_THREAD_JOY
+    vector(Context) *context;
+    vector(Channel) *channel;
+#endif
     khash_t(Symtab) *hash;
     NodeList *stck, *prog; /* stack, code, and quotations are vectors */
     clock_t startclock;    /* main */
@@ -179,6 +190,9 @@ typedef struct Env {
     int g_argc;
     int token;		   /* yylex */
     pEntry location;       /* lookup */
+#ifdef MULTI_TASK_THREAD_JOY
+    int current;
+#endif
     int hide_stack[DISPLAYMAX];
     struct module {
 	char *name;
@@ -256,7 +270,6 @@ void new_buffer(void);
 void old_buffer(int num);
 int my_yylex(pEnv env);
 /* ylex.c */
-void ungetsym(Symbol sym);
 int yylex(pEnv env);
 /* util.c */
 PUBLIC int ChrVal(char *str);

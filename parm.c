@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.7
-    version : 08/26/23
+    date    : 1.8
+    version : 09/04/23
 */
 #include "globals.h"
 
@@ -210,7 +210,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	if (leng < 1)
 	    execerror("one parameter", file);
 	first = lst_back(env->stck);
-	if (first.op != STRING_)
+	if (first.op != STRING_ && first.op != BIGNUM_)
 	    execerror("string", file);
 	break;
 /*
@@ -263,7 +263,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	second = lst_at(env->stck, leng - 2);
 	if (first.op != INTEGER_)
 	    execerror("integer", file);
-	if (second.op != STRING_)
+	if (second.op != STRING_ && second.op != BIGNUM_)
 	    execerror("string as second parameter", file);
 	break;
 /*
@@ -722,6 +722,26 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    if (second.op != INTEGER_)
 		execerror("numeric list", file);
 	}
+	break;
+/*
+    channel as top parameter:
+*/
+    case RECEIVE:
+	if (leng < 1)
+	    execerror("one parameter", file);
+	first = lst_back(env->stck);
+	if (first.op != INTEGER_)
+	    execerror("channel", file);
+	break;
+/*
+    channel as second parameter:
+*/
+    case SEND:
+	if (leng < 2)
+	    execerror("two parameters", file);
+	second = lst_at(env->stck, leng - 2);
+	if (second.op != INTEGER_)
+	    execerror("channel", file);
 	break;
     }
 }

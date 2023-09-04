@@ -1,13 +1,13 @@
 /*
     module  : uncons.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef UNCONS_C
 #define UNCONS_C
 
 /**
-OK 2120  uncons  :  DAA	A  ->  F R
+OK 2110  uncons  :  DAA	A  ->  F R
 F and R are the first and the rest of non-empty aggregate A.
 */
 void uncons_(pEnv env)

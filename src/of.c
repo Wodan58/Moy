@@ -1,13 +1,13 @@
 /*
     module  : of.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef OF_C
 #define OF_C
 
 /**
-OK 2080  of  :  DDA	I A  ->  X
+OK 2070  of  :  DDA	I A  ->  X
 X (= A[I]) is the I-th member of aggregate A.
 */
 void of_(pEnv env)

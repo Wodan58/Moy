@@ -1,13 +1,13 @@
 /*
     module  : intern.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef INTERN_C
 #define INTERN_C
 
 /**
-OK 2190  intern  :  DA	"sym"  ->  sym
+OK 2180  intern  :  DA	"sym"  ->  sym
 Pushes the item whose name is "sym".
 */
 PRIVATE void intern_(pEnv env)

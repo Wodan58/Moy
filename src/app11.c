@@ -1,13 +1,13 @@
 /*
     module  : app11.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 09/04/23
 */
 #ifndef APP11_C
 #define APP11_C
 
 /**
-OK 2470  app11  :  DDDA	X Y [P]  ->  R
+OK 2450  app11  :  DDDA	X Y [P]  ->  R
 Executes P, pushes result R on stack.
 */
 void app11_(pEnv env)

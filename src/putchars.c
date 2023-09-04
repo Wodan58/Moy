@@ -1,13 +1,13 @@
 /*
     module  : putchars.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef PUTCHARS_C
 #define PUTCHARS_C
 
 /**
-OK 3130  putchars  :  D	"abc.."  ->
+OK 3100  putchars  :  D	"abc.."  ->
 Writes abc.. (without quotes)
 */
 void putchars_(pEnv env)

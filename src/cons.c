@@ -1,13 +1,13 @@
 /*
     module  : cons.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/04/23
 */
 #ifndef CONS_C
 #define CONS_C
 
 /**
-OK 2020  cons  :  DDA	X A  ->  B
+OK 2010  cons  :  DDA	X A  ->  B
 Aggregate B is A with a new member X (first member for sequences).
 */
 void cons_(pEnv env)

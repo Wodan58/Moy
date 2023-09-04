@@ -1,13 +1,13 @@
 /*
     module  : quit.c
-    version : 1.3
-    date    : 07/17/23
+    version : 1.4
+    date    : 09/04/23
 */
 #ifndef QUIT_C
 #define QUIT_C
 
 /**
-OK 3160  quit  :  N	->
+OK 3130  quit  :  N	->
 Exit from Joy.
 */
 #if defined(STATS) || defined(SYMBOLS)

@@ -1,13 +1,13 @@
 /*
     module  : float.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef FLOAT_C
 #define FLOAT_C
 
 /**
-OK 2410  float  :  DA	R  ->  B
+OK 2390  float  :  DA	R  ->  B
 Tests whether R is a float.
 */
 void float_(pEnv env)

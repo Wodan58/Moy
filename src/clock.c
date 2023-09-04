@@ -1,7 +1,7 @@
 /*
     module  : clock.c
-    version : 1.3
-    date    : 08/23/23
+    version : 1.4
+    date    : 09/04/23
 */
 #ifndef CLOCK_C
 #define CLOCK_C

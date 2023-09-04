@@ -1,13 +1,13 @@
 /*
     module  : compare.c
-    version : 1.2
-    date    : 08/23/23
+    version : 1.3
+    date    : 09/04/23
 */
 #ifndef COMPARE_C
 #define COMPARE_C
 
 /**
-OK 2060  compare  :  DDA	A B  ->  I
+OK 2050  compare  :  DDA	A B  ->  I
 I (=-1,0,+1) is the comparison of aggregates A and B.
 The values correspond to the predicates <=, =, >=.
 */

@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.5
-    date    : 08/23/23
+    version : 1.6
+    date    : 09/04/23
 */
 #include "globals.h"
 
@@ -48,8 +48,10 @@ PUBLIC void push(pEnv env, int64_t num)
 */
 PUBLIC void prime(pEnv env, Node node)
 {
-    if (node.op == USR_ || node.op == ANON_FUNCT_)
-	node.op += 11;
+    if (node.op == USR_)
+	node.op = USR_PRIME_;
+    if (node.op == ANON_FUNCT_)
+	node.op = ANON_PRIME_;
     lst_push(env->prog, node);
 }
 
