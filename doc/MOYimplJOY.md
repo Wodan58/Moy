@@ -13,7 +13,7 @@ repaired, unless it is a consequence of using Flex and Bison.
 Compile options
 ===============
 
-The source code contains a number of #ifdef, #ifndef, #if constructs that
+The source code contains a number of `#ifdef`, `#ifndef`, `#if` constructs that
 modify what becomes part of the final binary. Explaining these defines may
 illustrate why this implementation exists.
 
@@ -44,9 +44,9 @@ TRACING
 
 Tracing allows inspection of program execution. It shows stack and code
 separated by `:`. The top of the stack is presented immediately to the left of
-`:`; the start of the code is situated immediately to the right of `:`.
-As it happens, in this implementation, that is all there is. There are no dumps
-and there are no values on the hardware stack.
+`:`; the start of the code is situated immediately to the right of `:`. As it
+happens, in this implementation, that is all there is. There are no dumps and
+there are no values on the hardware stack.
 
 _MSC_VER
 --------
@@ -67,32 +67,31 @@ be used, because file and line are reported when this define is enabled.
 SIGNAL_HANDLING
 ---------------
 
-If `mygc` is used instead of the BDW garbage collector, this define offers the
+If `gc.c` is used instead of the BDW garbage collector, this define offers the
 possibility to catch a segment violation and print a user-selected error
-message.
-The use of this feature is not recommended, because it prevents during
-debugging to pinpoint the exact location where the error occurred.
-Also `mygc` is not recommended, as it is slower than the BDW garbage collector
-and the extra dependency is overcome by building from source by the Microsoft
-compiler or installing the BDW package in other environments.
+message. The use of this feature is not recommended, because it prevents during
+debugging to pinpoint the exact location where the error occurred. Also `gc.c`
+is not recommended, as it is slower than the BDW garbage collector and the
+extra dependency is overcome by building from source by the Microsoft compiler
+or installing the BDW package in other environments.
 
 JVERSION
 --------
 
 This define can be used to tell something about the compile options, such as
-whether it is a Release build, and what the version number is.
-The version happens to be always 1.0 and whether it is a Release build or not
-can be seen by executing `ccmake .`. That program reads the latest
-CMakeCache.txt and reports about the options available therein.
+whether it is a Release build, and what the version number is. The version
+happens to be always 1.0 and whether it is a Release build or not can be seen
+by executing `ccmake .`. That program reads the latest CMakeCache.txt and
+reports about the options available therein.
 
 BDW_GARBAGE_COLLECTOR
 ---------------------
 
 The BDW garbage collector creates an extra dependency, but if it can be
 installed system wide, it is easy enough to link against it. It is faster than
-`mygc`. The interface is kept the same, except that initialization is different.
-The `mygc` needs to know what the top of the stack is, that is why it receives
-the address of argc.
+`gc.c`. The interface is kept the same, except that initialization was
+different. The `gc.c` needs to know what the top of the stack is, that is why
+it receives the address of argc through a global variable.
 
 CORRECT_INTERN_LOOKUP
 ---------------------
@@ -116,14 +115,14 @@ USE_SNPRINTF
 
 Snprintf calculates the size of the buffer that is needed by printf. It makes
 the use of printf safer. The downside is that snprintf is not available in the
-ansi standard. Even so, it might be beneficial to use this define when snprintf
+ANSI standard. Even so, it might be beneficial to use this define when snprintf
 is available.
 
 WIN32
 -----
 
 Static analyzers point to various flaws in the source code, such as the use of
-`gmtime` and `localtime`, that should be replaced by _r functions. Ok, but
+`gmtime` and `localtime`, that should be replaced by `_r` functions. Ok, but
 the new functions are not available on the Windows platform. That is why this
 define is there. Maybe it should be replaced by a USE_R_FUNCTIONS define.
 This define is no longer needed.
@@ -131,10 +130,10 @@ This define is no longer needed.
 SOURCE_DATE_EPOCH
 -----------------
 
-This shell variable, when available during the compilation of main.c causes the
-date and time stamp to be that of the last known version created by the author
-of Joy. This timestamp indicates that the language is still the one from that
-date, even though some builtins have been added since.
+This shell variable, when available during the compilation of `main.c` causes
+the date and time stamp to be that of the last known version created by the
+author of Joy. This timestamp indicates that the language is still the one from
+that date, even though some builtins have been added since.
 
 #if 0
 -----
@@ -145,8 +144,8 @@ still needs to be kept around in case of future changes.
 YYDEBUG
 -------
 
-When activated, this define allows the user to see the parse tree,
-as maintained by bison. A -y command flag is also required.
+When activated, this define allows the user to see the parse tree, as
+maintained by bison. A `-y` command flag is also required.
 
 COSMO
 -----
@@ -205,13 +204,13 @@ linked lists and the absence of recursion. There are exceptions: `get` and
 The big advantage of not using recursion is in the size of data structures that
 can be handled. A program that builds a list of integers looks like this:
 
-    echo '1 100000 from-to-list.' | ./joy.exe
+    echo '1 100000 from-to-list.' | build/joy.exe
 
-This program fails in `joy0`, the original version. It also fails in `Joy`.
-The reason is stack overflow. The original has a recursive garbage collector
-that causes the stack overflow. `Joy` has Cheney's algorithm implemented, that
-is not recursive but still fails because from-to-list makes use of `linrec` and
-`linrec` recurses.
+This program fails in `joy0`, the original version. It also fails in `Joy` and
+`joy1`. The reason is stack overflow. The original has a recursive garbage
+collector that causes the stack overflow. `Joy` has Cheney's algorithm
+implemented, that is not recursive but still fails because `from-to-list` makes
+use of `linrec` and `linrec` recurses.
 
 This implementation does not use recursion and so succeeds where other
 implementations fail. There is also a downside: function calling is slower.
@@ -219,7 +218,6 @@ implementations fail. There is also a downside: function calling is slower.
 Summary
 =======
 
-Linked lists are not good engineering.
-Recursion is not good engineering.
-Dynamic memory is not good engineering.
-Ok, this implementation uses dynamic memory. Lots of it.
+Linked lists are not good engineering. Recursion is not good engineering.
+Dynamic memory is not good engineering. Ok, this implementation uses dynamic
+memory. Lots of it.
