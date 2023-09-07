@@ -7,15 +7,16 @@ platform:
 environment:
   BDWGC_VERSION: 8.0.4
   BDWGC_ARCHIVE: gc-%BDWGC_VERSION%.tar.gz
-  WINFLEXBISON_ARCHIVE: win_flex_bison-latest.zip
+  WINFB_VERSION: 2.5.25
+  WINFB_ARCHIVE: win_flex_bison-%WINFB_VERSION%.zip
 
 install:
   # install BDWGC and flex/bison
   - if not exist %BDWGC_ARCHIVE% appveyor DownloadFile "https://github.com/ivmai/bdwgc/releases/download/v%BDWGC_VERSION%/%BDWGC_ARCHIVE%"
-  - if not exist %WINFLEXBISON_ARCHIVE% appveyor DownloadFile "https://sourceforge.net/projects/winflexbison/files/%WINFLEXBISON_ARCHIVE%"
+  - if not exist %WINFB_ARCHIVE% appveyor DownloadFile "https://github.com/lexxmark/winflexbison/releases/download/v%WINFB_VERSION%/%WINFB_ARCHIVE%"
   - tar xf %BDWGC_ARCHIVE%
   - move gc-%BDWGC_VERSION% bdwgc
-  - 7z x -y %WINFLEXBISON_ARCHIVE%
+  - 7z x -y %WINFB_ARCHIVE%
   - ren win_bison.exe bison.exe
   - ren win_flex.exe flex.exe
   - set PATH=.;%PATH%
