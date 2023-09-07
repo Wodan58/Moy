@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.7
- *  date    : 09/04/23
+ *  version : 1.8
+ *  date    : 09/07/23
  */
 #include "globals.h"
 
@@ -64,9 +64,9 @@ PUBLIC void exeterm(pEnv env)
 #endif
 #ifdef TRACING
 	if (env->debugging) {
-	    writestack(env, env->stck);
+	    writestack(env, env->stck, stdout);
 	    printf(" : ");
-	    writeterm(env, env->prog);
+	    writeterm(env, env->prog, stdout);
 	    putchar('\n');
 	    fflush(stdout);
 	}

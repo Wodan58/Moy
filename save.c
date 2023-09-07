@@ -1,7 +1,7 @@
 /*
     module  : save.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/07/23
 */
 #include "globals.h"
 #include "prim.h"
@@ -22,7 +22,7 @@ PUBLIC void save(pEnv env, NodeList *list, int num)
     if (status == ARITY_KNOWN) {
 #ifdef ARITY
         printf("arity: ");
-        writeterm(env, list);
+        writeterm(env, list, stdout);
         printf("\n");
 #endif
         status = ARITY_NOT_OK;

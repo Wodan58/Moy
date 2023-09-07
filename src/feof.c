@@ -1,13 +1,13 @@
 /*
     module  : feof.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/07/23
 */
 #ifndef FEOF_C
 #define FEOF_C
 
 /**
-OK 1840  feof  :  DAA	S  ->  S B
+OK 1840  feof  :  A	S  ->  S B
 B is the end-of-file status of stream S.
 */
 void feof_(pEnv env)

@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.12
- *  date    : 09/04/23
+ *  version : 1.13
+ *  date    : 09/07/23
  */
 #include "globals.h"
 
@@ -127,7 +127,7 @@ PRIVATE void dump_table(pEnv env)
 	    printf("(%d) %s\n", i, ent.name);
 	else {
 	    printf("(%d) %s == ", i, ent.name);
-	    writeterm(env, ent.u.body);
+	    writeterm(env, ent.u.body, stdout);
 	    putchar('\n');
 	}
     }

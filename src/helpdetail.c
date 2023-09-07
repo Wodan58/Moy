@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/07/23
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -24,7 +24,7 @@ void helpdetail_(pEnv env)
         if (opcode == USR_) {
             ent = vec_at(env->symtab, temp.u.ent);
             printf("%s  ==\n    ", ent.name);
-            writeterm(env, ent.u.body);
+            writeterm(env, ent.u.body, stdout);
 	    printf("\n\n");
         } else {
             if (opcode == ANON_FUNCT_)

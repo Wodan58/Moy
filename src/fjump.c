@@ -1,7 +1,7 @@
 /*
-    module  : fjump.c
-    version : 1.3
-    date    : 09/04/23
+    module  : %M%
+    version : %I%
+    date    : %G%
 */
 #ifndef FJUMP_C
 #define FJUMP_C

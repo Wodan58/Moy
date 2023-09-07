@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.4
-    date    : 08/23/23
+    version : 1.5
+    date    : 09/07/23
 */
 #include "globals.h"
 
@@ -112,15 +112,15 @@ PUBLIC void execute(pEnv env, NodeList *list)
     exeterm(env);
     if (lst_size(env->stck)) {
 	if (env->autoput == 2)
-	    writeterm(env, env->stck);
+	    writeterm(env, env->stck, stdout);
 	else if (env->autoput == 1) {
 	    node = lst_pop(env->stck);
 	    if (node.op == LIST_) {
 		putchar('[');
-		writeterm(env, node.u.lis);
+		writeterm(env, node.u.lis, stdout);
 		putchar(']');
 	    } else
-		writefactor(env, node);
+		writefactor(env, node, stdout);
 	}
 	putchar('\n');
     }

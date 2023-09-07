@@ -1,13 +1,13 @@
 /*
     module  : fseek.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/07/23
 */
 #ifndef FSEEK_C
 #define FSEEK_C
 
 /**
-OK 1980  fseek  :  DDDAA	S P W  ->  S B
+OK 1980  fseek  :  DDA	S P W  ->  S B
 Stream S is repositioned to position P relative to whence-point W,
 where W = 0, 1, 2 for beginning, current position, end respectively.
 */

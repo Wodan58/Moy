@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.11
-    date    : 09/04/23
+    version : 1.13
+    date    : 09/07/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -38,6 +38,7 @@
 #endif
 
 /* configure		     */
+#define UNKNOWN_ 1	     /* extra datatype, unknown to yacc */
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
@@ -260,6 +261,7 @@ PUBLIC void prime(pEnv env, Node node);
 PUBLIC Node pop(pEnv env);
 /* scan.c */
 PUBLIC void inilinebuffer(char *filnam);
+PUBLIC int redirect(char *filnam, FILE *fp);
 PUBLIC int yyerror(pEnv env, char *message);
 PUBLIC void my_error(char *message, YYLTYPE *bloc);
 PUBLIC int include(pEnv env, char *filnam, int error);
@@ -279,9 +281,9 @@ PUBLIC char *DelSpace(char *str);
 PUBLIC void readfactor(pEnv env); /* read a JOY factor */
 PUBLIC void readterm(pEnv env);
 /* writ.c */
-PUBLIC void writefactor(pEnv env, Node node);
-PUBLIC void writeterm(pEnv env, NodeList *list);
-PUBLIC void writestack(pEnv env, NodeList *list);
+PUBLIC void writefactor(pEnv env, Node node, FILE *fp);
+PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp);
+PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp);
 /* modl.c */
 PUBLIC void savemod(int *hide, int *modl, int *hcnt);
 PUBLIC void undomod(int hide, int modl, int hcnt);

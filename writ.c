@@ -1,14 +1,14 @@
 /*
  *  module  : writ.c
- *  version : 1.7
- *  date    : 08/23/23
+ *  version : 1.8
+ *  date    : 09/07/23
  */
 #include "globals.h"
 
 /*
     writefactor - print a factor in readable format to stdout.
 */
-PUBLIC void writefactor(pEnv env, Node node)
+PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 {
     int i;
     char *ptr;
@@ -25,73 +25,74 @@ PUBLIC void writefactor(pEnv env, Node node)
     switch (node.op) {
     case USR_:
     case USR_PRIME_:
-	printf("%s", vec_at(env->symtab, node.u.ent).name);
+	fprintf(fp, "%s", vec_at(env->symtab, node.u.ent).name);
 	if (node.op == USR_PRIME_)
-	    putchar('\'');
+	    putc('\'', fp);
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	printf("%s", opername(node.u.proc));
+	fprintf(fp, "%s", opername(node.u.proc));
 	if (node.op == ANON_PRIME_)
-	    putchar('\'');
+	    putc('\'', fp);
 	break;
     case BOOLEAN_:
-	printf("%s", node.u.num ? "true" : "false");
+	fprintf(fp, "%s", node.u.num ? "true" : "false");
 	break;
     case CHAR_:
 	if (node.u.num >= 8 && node.u.num <= 13)
-	    printf("'\\%c", "btnvfr"[node.u.num - 8]);
+	    fprintf(fp, "'\\%c", "btnvfr"[node.u.num - 8]);
 	else
-	    printf("'%c", (int)node.u.num);
+	    fprintf(fp, "'%c", (int)node.u.num);
 	break;
+    case UNKNOWN_:
     case INTEGER_:
-	printf("%" PRId64, node.u.num);
+	fprintf(fp, "%" PRId64, node.u.num);
 	break;
     case SET_:
-	putchar('{');
+	putc('{', fp);
 	for (i = 0; i < SETSIZE; i++)
 	    if (node.u.set & ((int64_t)1 << i)) {
-		printf("%d", i);
+		fprintf(fp, "%d", i);
 		node.u.set &= ~((int64_t)1 << i);
 		if (node.u.set)
-		    putchar(' ');
+		    putc(' ', fp);
 	    }
-	putchar('}');
+	putc('}', fp);
 	break;
     case STRING_:
-	putchar('"');
+	putc('"', fp);
 	for (ptr = node.u.str; ptr && *ptr; ptr++) {
 	    if (*ptr >= 8 && *ptr <= 13)
-		printf("\\%c", "btnvfr"[*ptr - 8]);
+		fprintf(fp, "\\%c", "btnvfr"[*ptr - 8]);
 	    else
-		putchar(*ptr);
+		putc(*ptr, fp);
 	}
-	putchar('"');
+	putc('"', fp);
 	break;
 #if 0
     case LIST_:
-	putchar('[');
-	writeterm(env, node.u.lis);
-	putchar(']');
+	putc('[', fp);
+	writeterm(env, node.u.lis, fp);
+	putc(']', fp);
 	break;
 #endif
     case FLOAT_:
-	printf("%g", node.u.dbl);
+	fprintf(fp, "%g", node.u.dbl);
 	break;
     case FILE_:
 	if (!node.u.fil)
-	    printf("file:NULL");
+	    fprintf(fp, "file:NULL");
 	else if (node.u.fil == stdin)
-	    printf("file:stdin");
+	    fprintf(fp, "file:stdin");
 	else if (node.u.fil == stdout)
-	    printf("file:stdout");
+	    fprintf(fp, "file:stdout");
 	else if (node.u.fil == stderr)
-	    printf("file:stderr");
+	    fprintf(fp, "file:stderr");
 	else
-	    printf("file:%p", node.u.fil);
+	    fprintf(fp, "file:%p", node.u.fil);
 	break;
     case BIGNUM_:
-	printf("%s", node.u.str);
+	fprintf(fp, "%s", node.u.str);
 	break;
 #if 0
     default:
@@ -103,7 +104,7 @@ PUBLIC void writefactor(pEnv env, Node node)
 /*
     spacing - write a space character, except after [ or before ].
 */
-PRIVATE void spacing(NodeList *stack, Node node)
+PRIVATE void spacing(NodeList *stack, Node node, FILE *fp)
 {
     if (node.op == CHAR_ && node.u.num == '[') /* inspect preceding node */
 	;
@@ -112,14 +113,14 @@ PRIVATE void spacing(NodeList *stack, Node node)
 	if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 	    ;
 	else
-	    putchar(' ');
+	    putc(' ', fp);
     }
 }
 
 /*
     writing - print from a stack, used by writeterm and writestack.
 */
-PRIVATE void writing(pEnv env, NodeList *stack)
+PRIVATE void writing(pEnv env, NodeList *stack, FILE *fp)
 {
     int i, j;
     Node node, temp;
@@ -128,10 +129,10 @@ PRIVATE void writing(pEnv env, NodeList *stack)
 	node = lst_pop(stack);
 	if (node.op != LIST_) {
 	    if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
-		putchar((int)node.u.num);
+		putc((int)node.u.num, fp);
 	    else 
-		writefactor(env, node);
-	    spacing(stack, node);
+		writefactor(env, node, fp);
+	    spacing(stack, node, fp);
 	} else {
 	    temp.u.num = ']';
 	    temp.op = CHAR_;
@@ -150,7 +151,7 @@ PRIVATE void writing(pEnv env, NodeList *stack)
 /*
     writeterm - print the contents of a list in readable format to stdout.
 */
-PUBLIC void writeterm(pEnv env, NodeList *list)
+PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
 {
     Node node;
     NodeList *stack = 0;
@@ -162,14 +163,14 @@ PUBLIC void writeterm(pEnv env, NodeList *list)
 	node = lst_at(list, i);
 	lst_push(stack, node);
     }
-    writing(env, stack);
+    writing(env, stack, fp);
 }
 
 /*
     writestack - print the contents of the stack in readable format to stdout.
 */
 #ifdef TRACING
-PUBLIC void writestack(pEnv env, NodeList *list)
+PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp)
 {
     Node node;
     NodeList *stack = 0;
@@ -181,6 +182,6 @@ PUBLIC void writestack(pEnv env, NodeList *list)
 	node = lst_at(list, i);
 	lst_push(stack, node);
     }
-    writing(env, stack);
+    writing(env, stack, fp);
 }
 #endif

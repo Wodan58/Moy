@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.6
- *  date    : 08/23/23
+ *  version : 1.7
+ *  date    : 09/07/23
  */
 #include "globals.h"
 
@@ -89,5 +89,4 @@ PUBLIC void readterm(pEnv env)
             reverse(node.u.lis); /* reverse the list */
     }
     lst_push(env->stck, node);
-    env->token = yylex(env); /* read past ] */
 }

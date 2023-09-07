@@ -1,13 +1,13 @@
 /*
     module  : fputch.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/07/23
 */
 #ifndef FPUTCH_C
 #define FPUTCH_C
 
 /**
-OK 1950  fputch  :  DDA	S C  ->  S
+OK 1950  fputch  :  A	S C  ->  S
 The character C is written to the current position of stream S.
 */
 void fputch_(pEnv env)

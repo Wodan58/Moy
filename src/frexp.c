@@ -1,7 +1,7 @@
 /*
-    module  : frexp.c
-    version : 1.3
-    date    : 09/04/23
+    module  : %M%
+    version : %I%
+    date    : %G%
 */
 #ifndef FREXP_C
 #define FREXP_C
