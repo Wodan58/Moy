@@ -1,7 +1,7 @@
 /*
     module  : div.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef DIV_C
 #define DIV_C
@@ -12,6 +12,7 @@ Integers K and L are the quotient and remainder of dividing I by J.
 */
 void div_(pEnv env)
 {
+#ifndef COMPILER
     lldiv_t result;
     Node first, second;
 
@@ -23,5 +24,6 @@ void div_(pEnv env)
     lst_push(env->stck, first);
     first.u.num = result.rem;
     lst_push(env->stck, first);
+#endif
 }
 #endif

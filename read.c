@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.7
- *  date    : 09/07/23
+ *  version : 1.8
+ *  date    : 09/11/23
  */
 #include "globals.h"
 
@@ -64,6 +64,21 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
         break;
     default:
         yyerror(env, "a factor cannot begin with this symbol");
+    }
+}
+
+/*
+ *  Reverse a list after reading.
+ */
+PUBLIC void reverse(NodeList *list)
+{
+    Node node;
+
+    if (list) {
+	node.u.lis = 0;
+	node.op = LIST_;
+	lst_push(list, node); /* scratch value */
+	lst_reverse(list); /* excludes scratch */
     }
 }
 

@@ -1,7 +1,7 @@
 /*
     module  : undefs.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef UNDEFS_C
 #define UNDEFS_C
@@ -12,6 +12,7 @@ Push a list of all undefined symbols in the current symbol table.
 */
 void undefs_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Entry ent;
     Node node, elem;
@@ -20,12 +21,13 @@ void undefs_(pEnv env)
     node.op = LIST_;
     elem.op = STRING_;
     for (i = vec_size(env->symtab) - 1; i; i--) {
-        ent = vec_at(env->symtab, i);
-        if (ent.name[0] && ent.name[0] != '_' && !ent.u.body) {
-            elem.u.str = ent.name;
-            lst_push(node.u.lis, elem);
-        }
+	ent = vec_at(env->symtab, i);
+	if (ent.name[0] && ent.name[0] != '_' && !ent.u.body) {
+	    elem.u.str = ent.name;
+	    lst_push(node.u.lis, elem);
+	}
     }
     lst_push(env->stck, node);
+#endif
 }
 #endif

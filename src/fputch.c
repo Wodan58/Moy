@@ -1,7 +1,7 @@
 /*
     module  : fputch.c
-    version : 1.4
-    date    : 09/07/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FPUTCH_C
 #define FPUTCH_C
@@ -12,11 +12,13 @@ The character C is written to the current position of stream S.
 */
 void fputch_(pEnv env)
 {
+#ifndef COMPILER
     Node node, elem;
 
     PARM(2, FREAD);
     elem = lst_pop(env->stck);
     node = lst_back(env->stck);
     putc(elem.u.num, node.u.fil);
+#endif
 }
 #endif

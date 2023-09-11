@@ -1,7 +1,7 @@
 /*
     module  : i.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef I_C
 #define I_C
@@ -12,10 +12,12 @@ Executes P. So, [P] i  ==  P.
 */
 PRIVATE void i_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, DIP);
     node = lst_pop(env->stck);
     prog(env, node.u.lis);
+#endif
 }
 #endif

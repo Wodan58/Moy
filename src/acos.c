@@ -1,7 +1,7 @@
 /*
     module  : acos.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef ACOS_C
 #define ACOS_C
@@ -12,6 +12,7 @@ G is the arc cosine of F.
 */
 void acos_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -19,5 +20,6 @@ void acos_(pEnv env)
     node.u.dbl = acos(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
     node.op = FLOAT_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

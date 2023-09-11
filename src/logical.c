@@ -1,7 +1,7 @@
 /*
     module  : logical.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef LOGICAL_C
 #define LOGICAL_C
@@ -12,6 +12,7 @@ Tests whether X is a logical.
 */
 void logical_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -19,5 +20,6 @@ void logical_(pEnv env)
     node.u.num = node.op == BOOLEAN_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

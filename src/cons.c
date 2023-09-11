@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef CONS_C
 #define CONS_C
@@ -12,6 +12,7 @@ Aggregate B is A with a new member X (first member for sequences).
 */
 void cons_(pEnv env)
 {
+#ifndef COMPILER
     Node elem, aggr, node;
 
     PARM(2, CONS);
@@ -19,25 +20,29 @@ void cons_(pEnv env)
     elem = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        lst_init(node.u.lis);
-        if (lst_size(aggr.u.lis))
-            lst_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
-        lst_push(node.u.lis, elem);
-        break;
+	lst_init(node.u.lis);
+	if (lst_size(aggr.u.lis))
+	    lst_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
+	lst_push(node.u.lis, elem);
+	break;
 
     case STRING_:
     case BIGNUM_:
-        node.u.str = GC_malloc_atomic(strlen(aggr.u.str) + 2);
-        node.u.str[0] = elem.u.num;
-        strcpy(&node.u.str[1], aggr.u.str);
-        break;
+	node.u.str = GC_malloc_atomic(strlen(aggr.u.str) + 2);
+	node.u.str[0] = elem.u.num;
+	strcpy(&node.u.str[1], aggr.u.str);
+	break;
 
     case SET_:
-        node.u.set = aggr.u.set | ((int64_t)1 << elem.u.num);
+	node.u.set = aggr.u.set | ((int64_t)1 << elem.u.num);
+	break;
+
     default:
-        break;
+	node.u.lis = 0;
+	break;
     }
     node.op = aggr.op;
     lst_push(env->stck, node);
+#endif
 }
 #endif

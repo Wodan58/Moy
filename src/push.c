@@ -1,7 +1,7 @@
 /*
     module  : push.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef PUSH_C
 #define PUSH_C
@@ -13,6 +13,7 @@ from the data stack and add that element to the aggregate.
 */
 void push_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node jump, elem, node;
 
@@ -22,21 +23,22 @@ void push_(pEnv env)
     node = lst_at(env->prog, jump.u.num); /* read node */
     switch (node.op) {
     case LIST_:
-        lst_push(node.u.lis, elem);
-        break;
+	lst_push(node.u.lis, elem);
+	break;
 
     case STRING_:
     case BIGNUM_:
-        i = strlen(node.u.str);
-        node.u.str[i++] = elem.u.num;
-        node.u.str[i] = 0;
-        break;
+	i = strlen(node.u.str);
+	node.u.str[i++] = elem.u.num;
+	node.u.str[i] = 0;
+	break;
 
     case SET_:
-        node.u.set |= ((int64_t)1 << elem.u.num);
+	node.u.set |= ((int64_t)1 << elem.u.num);
     default:
-        break;
+	break;
     }
     lst_assign(env->prog, jump.u.num, node); /* write node */
+#endif
 }
 #endif

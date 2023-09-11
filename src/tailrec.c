@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef TAILREC_C
 #define TAILREC_C
@@ -13,6 +13,7 @@ Else executes R1, recurses.
 */
 void tailrec_(pEnv env)
 {
+#ifndef COMPILER
     unsigned size1, size2;
     Node first, second, third;
 
@@ -22,48 +23,49 @@ void tailrec_(pEnv env)
     first = lst_pop(env->stck);
     size2 = lst_size(env->prog);
     /*
-        setup the continuation
+	setup the continuation
     */
     code(env, tailrec_);
     lst_push(env->prog, third);
     lst_push(env->prog, second);
     lst_push(env->prog, first);
     /*
-        push the false branch of tailrec
+	push the false branch of tailrec
     */
     prog(env, third.u.lis);
     /*
-        register the target location for the false branch
+	register the target location for the false branch
     */
     size1 = lst_size(env->prog);
     /*
-        push the jump address onto the program stack
+	push the jump address onto the program stack
     */
     push(env, size2);
     /*
-        skip the false branch of tailrec
+	skip the false branch of tailrec
     */
     code(env, jump_);
     /*
-        push the true branch of tailrec
+	push the true branch of tailrec
     */
     prog(env, second.u.lis);
     /*
-        push the jump address onto the program stack
+	push the jump address onto the program stack
     */
     push(env, size1);
     /*
-        jump on false past the true branch of tailrec
+	jump on false past the true branch of tailrec
     */
     code(env, fjump_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     save(env, first.u.lis, 0);
     /*
-        push the test of the tailrec
+	push the test of the tailrec
     */
     prog(env, first.u.lis);
+#endif
 }
 #endif

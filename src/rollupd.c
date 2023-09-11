@@ -1,7 +1,7 @@
 /*
     module  : rollupd.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef ROLLUPD_C
 #define ROLLUPD_C
@@ -12,6 +12,7 @@ As if defined by:   rollupd  ==  [rollup] dip
 */
 void rollupd_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, third, fourth;
 
     PARM(4, ANYTYPE);
@@ -23,5 +24,6 @@ void rollupd_(pEnv env)
     lst_push(env->stck, first);
     lst_push(env->stck, second);
     lst_push(env->stck, fourth);
+#endif
 }
 #endif

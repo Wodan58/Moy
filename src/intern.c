@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef INTERN_C
 #define INTERN_C
@@ -12,6 +12,8 @@ Pushes the item whose name is "sym".
 */
 PRIVATE void intern_(pEnv env)
 {
+#ifndef COMPILER
+#ifndef RUNTIME
     Node node;
     Entry ent;
 
@@ -20,12 +22,14 @@ PRIVATE void intern_(pEnv env)
     lookup(env, node.u.str);
     ent = vec_at(env->symtab, env->location);
     if (ent.is_user) {
-        node.op = USR_;
-        node.u.ent = env->location;
+	node.op = USR_;
+	node.u.ent = env->location;
     } else {
-        node.op = ANON_FUNCT_;
-        node.u.proc = ent.u.proc;
+	node.op = ANON_FUNCT_;
+	node.u.proc = ent.u.proc;
     }
     lst_push(env->stck, node);
+#endif
+#endif
 }
 #endif

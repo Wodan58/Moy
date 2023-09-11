@@ -1,7 +1,7 @@
 /*
     module  : rand.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef RAND_C
 #define RAND_C
@@ -12,10 +12,12 @@ I is a random integer.
 */
 void rand_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     node.u.num = rand();
     node.op = INTEGER_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

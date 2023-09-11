@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef UNARY2_C
 #define UNARY2_C
@@ -12,7 +12,8 @@ Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.
 */
 void unary2_(pEnv env)
-{ /*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
+{
+#ifndef COMPILER /*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
     unsigned size;
     Node node, temp;
 
@@ -23,30 +24,31 @@ void unary2_(pEnv env)
     size = lst_size(env->prog); /* location of first Z, then Y' */
     lst_push(env->prog, temp);  /* first Z, then Y' */
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate Z' on top of the stack
+	Calculate Z' on top of the stack
     */
     prog(env, node.u.lis);
     /*
-        Push the address of Z
+	Push the address of Z
     */
     push(env, size);
     /*
-        Swap Z and Y'
+	Swap Z and Y'
     */
     code(env, cswap_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate Y' on top of the stack
+	Calculate Y' on top of the stack
     */
     prog(env, node.u.lis);
+#endif
 }
 #endif

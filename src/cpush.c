@@ -1,7 +1,7 @@
 /*
     module  : cpush.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef CPUSH_C
 #define CPUSH_C
@@ -13,11 +13,13 @@ Pop an element from the data stack and store it at the given location.
 */
 void cpush_(pEnv env)
 {
+#ifndef COMPILER
     Node jump, node;
 
     PARM(1, ANYTYPE);
     jump = lst_pop(env->prog);
     node = lst_pop(env->stck);
     lst_assign(env->prog, jump.u.num, node); /* write node */
+#endif
 }
 #endif

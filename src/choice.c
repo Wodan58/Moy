@@ -1,7 +1,7 @@
 /*
     module  : choice.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef CHOICE_C
 #define CHOICE_C
@@ -12,6 +12,7 @@ If B is true, then X = T else X = F.
 */
 void choice_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, third;
 
     PARM(3, ANYTYPE);
@@ -20,5 +21,6 @@ void choice_(pEnv env)
     first = lst_pop(env->stck);
     first = first.u.num ? second : third;
     lst_push(env->stck, first);
+#endif
 }
 #endif

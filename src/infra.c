@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef INFRA_C
 #define INFRA_C
@@ -14,37 +14,39 @@ and after execution of P the top of stack becomes the first element of L2.
 */
 void infra_(pEnv env)
 {
+#ifndef COMPILER
     Node aggr, list, node;
 
     PARM(2, INFRA);
     list = lst_pop(env->stck);
     aggr = lst_pop(env->stck);
     /*
-        the old stack is restored with the list on top
+	the old stack is restored with the list on top
     */
     code(env, unstack_);
     /*
-        the list becomes the top of the stack
+	the list becomes the top of the stack
     */
     code(env, cons_);
     /*
-        the old stack is saved in the program
+	the old stack is saved in the program
     */
     lst_init(node.u.lis);
     lst_copy(node.u.lis, env->stck);
     node.op = LIST_;
     lst_push(env->prog, node);
     /*
-        after executing the program the stack is listed
+	after executing the program the stack is listed
     */
     code(env, stack_);
     /*
-        the program is executed on the alternate stack
+	the program is executed on the alternate stack
     */
     prog(env, list.u.lis);
     /*
-        the list parameter is installed as the stack
+	the list parameter is installed as the stack
     */
     lst_copy(env->stck, aggr.u.lis);
+#endif
 }
 #endif

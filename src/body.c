@@ -1,7 +1,7 @@
 /*
     module  : body.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef BODY_C
 #define BODY_C
@@ -12,6 +12,7 @@ Quotation [P] is the body of user-defined symbol U.
 */
 void body_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
     Entry ent;
 
@@ -21,5 +22,6 @@ void body_(pEnv env)
     node.u.lis = ent.u.body;
     node.op = LIST_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

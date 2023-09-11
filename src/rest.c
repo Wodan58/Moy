@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef REST_C
 #define REST_C
@@ -12,6 +12,7 @@ R is the non-empty aggregate A with its first member removed.
 */
 void rest_(pEnv env)
 {
+#ifndef COMPILER
     int i = 0;
     Node node, temp;
 
@@ -19,26 +20,27 @@ void rest_(pEnv env)
     node = lst_pop(env->stck);
     switch (node.op) {
     case LIST_:
-        lst_init(temp.u.lis);
-        lst_shallow_copy(temp.u.lis, node.u.lis);
-        (void)lst_pop(temp.u.lis);
-        temp.op = LIST_;
-        lst_push(env->stck, temp);
-        break;
+	lst_init(temp.u.lis);
+	lst_shallow_copy(temp.u.lis, node.u.lis);
+	(void)lst_pop(temp.u.lis);
+	temp.op = LIST_;
+	lst_push(env->stck, temp);
+	break;
 
     case STRING_:
     case BIGNUM_:
-        node.u.str = GC_strdup(++node.u.str);  
-        lst_push(env->stck, node);
-        break;
+	node.u.str = GC_strdup(++node.u.str);  
+	lst_push(env->stck, node);
+	break;
 
     case SET_:
-        while (!(node.u.set & ((int64_t)1 << i)))
-            i++;
-        node.u.set &= ~((int64_t)1 << i);
-        lst_push(env->stck, node);
+	while (!(node.u.set & ((int64_t)1 << i)))
+	    i++;
+	node.u.set &= ~((int64_t)1 << i);
+	lst_push(env->stck, node);
     default:
-        break;
+	break;
     }
+#endif
 }
 #endif

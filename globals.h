@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.13
-    date    : 09/07/23
+    version : 1.15
+    date    : 09/11/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -17,7 +17,7 @@
 
 #ifdef _MSC_VER
 #include <io.h>
-#pragma warning(disable : 4244 4267 4996)
+#pragma warning(disable : 4005 4244 4267 4996)
 #else
 #include <unistd.h>
 #endif
@@ -38,7 +38,7 @@
 #endif
 
 /* configure		     */
-#define UNKNOWN_ 1	     /* extra datatype, unknown to yacc */
+#define UNKNOWN_ 1	     /* extra datatype, unknown to parser */
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
@@ -187,6 +187,7 @@ typedef struct Env {
     NodeList *stck, *prog; /* stack, code, and quotations are vectors */
     clock_t startclock;    /* main */
     char *pathname;
+    char *filename;
     char **g_argv;
     int g_argc;
     int token;		   /* yylex */
@@ -216,74 +217,25 @@ typedef struct OpTable {
 } OpTable;
 
 /* Public procedures: */
+/* arty.c */
+PUBLIC int arity(pEnv env, NodeList *quot, int num);
 /* eval.c */
-PUBLIC void exeterm(pEnv env);
-PUBLIC char *nickname(int o);
-PUBLIC char *showname(int o);
+PUBLIC void exeterm(pEnv env, NodeList *list);
+PUBLIC char *nickname(int ch);
+PUBLIC char *showname(int i);
 PUBLIC int operindex(proc_t proc);
 PUBLIC char *cmpname(proc_t proc);
 PUBLIC char *opername(proc_t proc);
 PUBLIC char *operarity(proc_t proc);
-PUBLIC proc_t operproc(int o);
-PUBLIC OpTable *readtable(int o);
-/* repl.c */
-PUBLIC void inisymboltable(pEnv env); /* initialise */
-PUBLIC void lookup(pEnv env, char *name);
-PUBLIC void enteratom(pEnv env, char *name, NodeList *list);
+/* exec.c */
 PUBLIC void execute(pEnv env, NodeList *list);
-PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
-PUBLIC void reverse(NodeList *list);
+/* lexr.l */
+PUBLIC void new_buffer(void);
+PUBLIC void old_buffer(int num);
+PUBLIC int my_yylex(pEnv env);
+PUBLIC int get_char(void);
 /* main.c */
 PUBLIC void abortexecution_(int num);
-PUBLIC void execerror(char *message, char *op);
-/* quit.c */
-PUBLIC void my_atexit(proc_t proc);
-PUBLIC void quit_(pEnv env);
-/* comp.c */
-PUBLIC int Compare(pEnv env, Node first, Node second);
-/* manl.c */
-PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */);
-/* dtim.c */
-PUBLIC void dtime(Node node, struct tm *t);
-/* arty.c */
-PUBLIC int arity(pEnv env, NodeList *quot, int num);
-/* save.c */
-PUBLIC void save(pEnv env, NodeList *quot, int num);
-/* undo.c */
-PUBLIC void undo(pEnv env, NodeList *quot, int num);
-/* parm.c */
-PUBLIC void parm(pEnv env, int num, Params op, char *file);
-/* prog.c */
-PUBLIC void prog(pEnv env, NodeList *list);
-PUBLIC void code(pEnv env, proc_t proc);
-PUBLIC void push(pEnv env, int64_t num);
-PUBLIC void prime(pEnv env, Node node);
-PUBLIC Node pop(pEnv env);
-/* scan.c */
-PUBLIC void inilinebuffer(char *filnam);
-PUBLIC int redirect(char *filnam, FILE *fp);
-PUBLIC int yyerror(pEnv env, char *message);
-PUBLIC void my_error(char *message, YYLTYPE *bloc);
-PUBLIC int include(pEnv env, char *filnam, int error);
-int yywrap(void);
-/* lexr.l */
-int get_char(void);
-void new_buffer(void);
-void old_buffer(int num);
-int my_yylex(pEnv env);
-/* ylex.c */
-int yylex(pEnv env);
-/* util.c */
-PUBLIC int ChrVal(char *str);
-PUBLIC char *StrVal(char *str);
-PUBLIC char *DelSpace(char *str);
-/* read.c */
-PUBLIC void readfactor(pEnv env); /* read a JOY factor */
-PUBLIC void readterm(pEnv env);
-/* writ.c */
-PUBLIC void writefactor(pEnv env, Node node, FILE *fp);
-PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp);
-PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp);
 /* modl.c */
 PUBLIC void savemod(int *hide, int *modl, int *hcnt);
 PUBLIC void undomod(int hide, int modl, int hcnt);
@@ -294,4 +246,49 @@ PUBLIC void exitpriv(void);
 PUBLIC void exitmod(void);
 PUBLIC char *classify(pEnv env, char *name);
 PUBLIC pEntry qualify(pEnv env, char *name);
+/* otab.c */
+PUBLIC OpTable *readtable(int i);
+/* parm.c */
+PUBLIC void parm(pEnv env, int num, Params type, char *file);
+/* prog.c */
+PUBLIC void prog(pEnv env, NodeList *list);
+PUBLIC void code(pEnv env, proc_t proc);
+PUBLIC void push(pEnv env, int64_t num);
+PUBLIC void prime(pEnv env, Node node);
+PUBLIC Node pop(pEnv env);
+/* read.c */
+PUBLIC void readfactor(pEnv env) /* read a JOY factor */;
+PUBLIC void reverse(NodeList *list);
+PUBLIC void readterm(pEnv env);
+/* repl.c */
+PUBLIC void inisymboltable(pEnv env) /* initialise */;
+PUBLIC void lookup(pEnv env, char *name);
+PUBLIC void enteratom(pEnv env, char *name, NodeList *list);
+PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
+/* save.c */
+PUBLIC void save(pEnv env, NodeList *list, int num);
+/* scan.c */
+PUBLIC void inilinebuffer(char *str);
+PUBLIC int redirect(char *file, char *name, FILE *fp);
+PUBLIC int include(pEnv env, char *name, int error);
+PUBLIC int yywrap(void);
+PUBLIC void my_error(char *str, YYLTYPE *bloc);
+PUBLIC int yyerror(pEnv env, char *str);
+/* undo.c */
+PUBLIC void undo(pEnv env, NodeList *list, int num);
+/* util.c */
+PUBLIC int ChrVal(char *str);
+PUBLIC char *StrVal(char *str);
+PUBLIC char *DelSpace(char *str);
+/* writ.c */
+PUBLIC void writefactor(pEnv env, Node node, FILE *fp);
+PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp);
+PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp);
+/* xerr.c */
+PUBLIC void execerror(char *filename, char *message, char *op);
+/* ylex.c */
+PUBLIC int yylex(pEnv env);
+/* quit.c */
+PUBLIC void my_atexit(proc_t proc);
+PUBLIC void quit_(pEnv env);
 #endif

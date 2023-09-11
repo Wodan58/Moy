@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.8
- *  date    : 09/07/23
+ *  version : 1.9
+ *  date    : 09/11/23
  */
 #include "globals.h"
 
@@ -20,7 +20,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 */
 #if 0
     if (!n)
-	execerror("non-empty stack", "print");
+	execerror(env->filename, "non-empty stack", "print");
 #endif
     switch (node.op) {
     case USR_:
@@ -47,6 +47,8 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     case UNKNOWN_:
     case INTEGER_:
 	fprintf(fp, "%" PRId64, node.u.num);
+	if (node.op == UNKNOWN_)
+	    fputc('\\', fp);
 	break;
     case SET_:
 	putc('{', fp);

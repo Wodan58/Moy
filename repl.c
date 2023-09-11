@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.5
-    date    : 09/07/23
+    version : 1.6
+    date    : 09/11/23
 */
 #include "globals.h"
 
@@ -101,32 +101,6 @@ PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
 }
 
 /*
- *  Execute a program and print the result according to the autoput settings,
- *  if there is anything to be printed.
- */
-PUBLIC void execute(pEnv env, NodeList *list)
-{
-    Node node;
-
-    lst_copy(env->prog, list);
-    exeterm(env);
-    if (lst_size(env->stck)) {
-	if (env->autoput == 2)
-	    writeterm(env, env->stck, stdout);
-	else if (env->autoput == 1) {
-	    node = lst_pop(env->stck);
-	    if (node.op == LIST_) {
-		putchar('[');
-		writeterm(env, node.u.lis, stdout);
-		putchar(']');
-	    } else
-		writefactor(env, node, stdout);
-	}
-	putchar('\n');
-    }
-}
-
-/*
  *  Allocate and fill a singleton list.
  */
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
@@ -139,19 +113,4 @@ PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
     node.op = op;
     lst_push(list, node);
     return list;
-}
-
-/*
- *  Reverse a list after reading.
- */
-PUBLIC void reverse(NodeList *list)
-{
-    Node node;
-
-    if (list) {
-	node.u.lis = 0;
-	node.op = LIST_;
-	lst_push(list, node); /* scratch value */
-	lst_reverse(list); /* excludes scratch */
-    }
 }

@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -12,23 +12,30 @@ Pushes a list L of lists (one per operator) of three documentation strings.
 */
 void __manual_list_(pEnv env)
 {
+#ifndef COMPILER
+#ifndef RUNTIME
     int i;
+    OpTable *tab;
     Node node, temp, elem;
 
     lst_init(node.u.lis);
     node.op = temp.op = LIST_;
     elem.op = STRING_;
-    i = sizeof(optable) / sizeof(optable[0]); /* find end */
+    for (i = 0; (tab = readtable(i)) != 0; i++) /* find end */
+	;
     while (--i) {
-        lst_init(temp.u.lis);
-        elem.u.str = optable[i].messg2;
-        lst_push(temp.u.lis, elem);
-        elem.u.str = optable[i].messg1;
-        lst_push(temp.u.lis, elem);
-        elem.u.str = optable[i].name;
-        lst_push(temp.u.lis, elem);
-        lst_push(node.u.lis, temp);
+	tab = readtable(i);
+	lst_init(temp.u.lis);
+	elem.u.str = tab->messg2;
+	lst_push(temp.u.lis, elem);
+	elem.u.str = tab->messg1;
+	lst_push(temp.u.lis, elem);
+	elem.u.str = tab->name;
+	lst_push(temp.u.lis, elem);
+	lst_push(node.u.lis, temp);
     }
     lst_push(env->stck, node);
+#endif
+#endif
 }
 #endif

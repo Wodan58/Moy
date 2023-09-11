@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.4
-    date    : 09/07/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FWRITE_C
 #define FWRITE_C
@@ -12,6 +12,7 @@ A list of integers are written as bytes to the current position of stream S.
 */
 void fwrite_(pEnv env)
 {
+#ifndef COMPILER
     int i, j;
     unsigned char *buf;
     Node node, elem, temp;
@@ -21,9 +22,10 @@ void fwrite_(pEnv env)
     node = lst_back(env->stck);
     buf = GC_malloc_atomic(lst_size(elem.u.lis));
     for (i = 0, j = lst_size(elem.u.lis); i < j; i++) {
-        temp = lst_at(elem.u.lis, j - i - 1);
-        buf[i] = temp.u.num;
+	temp = lst_at(elem.u.lis, j - i - 1);
+	buf[i] = temp.u.num;
     }
     fwrite(buf, 1, lst_size(elem.u.lis), node.u.fil);
+#endif
 }
 #endif

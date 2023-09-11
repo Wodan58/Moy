@@ -1,7 +1,7 @@
 /*
     module  : cosh.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef COSH_C
 #define COSH_C
@@ -12,6 +12,7 @@ G is the hyperbolic cosine of F.
 */
 void cosh_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -19,5 +20,6 @@ void cosh_(pEnv env)
     node.u.dbl = cosh(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
     node.op = FLOAT_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

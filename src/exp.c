@@ -1,7 +1,7 @@
 /*
     module  : exp.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef EXP_C
 #define EXP_C
@@ -12,6 +12,7 @@ G is e (2.718281828...) raised to the Fth power.
 */
 void exp_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -19,5 +20,6 @@ void exp_(pEnv env)
     node.u.dbl = exp(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
     node.op = FLOAT_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

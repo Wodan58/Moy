@@ -1,7 +1,7 @@
 /*
     module  : rem.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef REM_C
 #define REM_C
@@ -12,6 +12,7 @@ Integer K is the remainder of dividing I by J.  Also supports float.
 */
 void rem_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, REM);
@@ -34,15 +35,16 @@ void rem_(pEnv env)
 	switch (second.op) {
 	case FLOAT_:
 	    second.u.dbl = fmod(first.u.num, second.u.dbl);
-            lst_push(env->stck, second);
+	    lst_push(env->stck, second);
 	    return;
 
 	default:
-            first.u.num %= second.u.num;
+	    first.u.num %= second.u.num;
 	    break;
 	}
 	break;
     }
     lst_push(env->stck, first);
+#endif
 }
 #endif

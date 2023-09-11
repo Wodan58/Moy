@@ -1,7 +1,7 @@
 /*
     module  : app4.c
-    version : 1.2
-    date    : 09/04/23
+    version : 1.3
+    date    : 09/11/23
 */
 #ifndef APP4_C
 #define APP4_C
@@ -12,7 +12,9 @@ Obsolescent.  == unary4
 */
 void app4_(pEnv env)
 {
+#ifndef COMPILER
     unary4_(env);
     /* filler */
+#endif
 }
 #endif

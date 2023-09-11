@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FORMAT_C
 #define FORMAT_C
@@ -15,6 +15,7 @@ with maximum width I and minimum width J.
 */
 PRIVATE void format_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, third, fourth;
     char format[7], *result;
     int leng;
@@ -32,5 +33,6 @@ PRIVATE void format_(pEnv env)
     first.u.str = result;
     first.op = STRING_;
     lst_push(env->stck, first);
+#endif
 }
 #endif

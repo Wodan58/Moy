@@ -1,7 +1,7 @@
 /*
     module  : iflist.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef IFLIST_C
 #define IFLIST_C
@@ -12,6 +12,7 @@ If X is a list, executes T else executes E.
 */
 void iflist_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, node;
 
     PARM(3, WHILE);
@@ -20,5 +21,6 @@ void iflist_(pEnv env)
     node = lst_back(env->stck);
     node = node.op == LIST_ ? first : second;
     prog(env, node.u.lis);
+#endif
 }
 #endif

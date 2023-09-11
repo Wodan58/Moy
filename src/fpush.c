@@ -1,7 +1,7 @@
 /*
     module  : fpush.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef FPUSH_C
 #define FPUSH_C
@@ -13,6 +13,7 @@ If the top of the data stack is true, add the element to the aggregate.
 */
 void fpush_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node test, jump, elem, node;
 
@@ -21,25 +22,26 @@ void fpush_(pEnv env)
     jump = lst_pop(env->prog);
     elem = lst_pop(env->prog);
     if (test.u.num) {
-        node = lst_at(env->prog, jump.u.num);
-        switch (node.op) {
-        case LIST_:
-            lst_push(node.u.lis, elem);
-            break;
+	node = lst_at(env->prog, jump.u.num);
+	switch (node.op) {
+	case LIST_:
+	    lst_push(node.u.lis, elem);
+	    break;
 
-        case STRING_:
+	case STRING_:
 	case BIGNUM_:
-            i = strlen(node.u.str);
-            node.u.str[i++] = elem.u.num;
-            node.u.str[i] = 0;
-            break;
+	    i = strlen(node.u.str);
+	    node.u.str[i++] = elem.u.num;
+	    node.u.str[i] = 0;
+	    break;
 
-        case SET_:
-            node.u.set |= ((int64_t)1 << elem.u.num);
-        default:
-            break;
-        }
-        lst_assign(env->prog, jump.u.num, node); /* write node */
+	case SET_:
+	    node.u.set |= ((int64_t)1 << elem.u.num);
+	default:
+	    break;
+	}
+	lst_assign(env->prog, jump.u.num, node); /* write node */
     }
+#endif
 }
 #endif

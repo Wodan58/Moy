@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.4
-    date    : 09/07/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FGET_C
 #define FGET_C
@@ -12,11 +12,13 @@ OK 3180  fget  :  A	S  ->  S F
 */
 void fget_(pEnv env)
 {
+#ifndef COMPILER
+#ifndef RUNTIME
     Node node;
 
     PARM(1, FGET);
     node = lst_back(env->stck);
-    if (!redirect("fget", node.u.fil))	/* conditional switch of file */
+    if (!redirect(env->filename, "fget", node.u.fil))	/* switch file */
 	return;
     env->token = yylex(env);
     switch (env->token) {
@@ -37,5 +39,7 @@ void fget_(pEnv env)
 	lst_push(env->stck, node);
 	break;
     }
+#endif
+#endif
 }
 #endif

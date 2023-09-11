@@ -1,10 +1,12 @@
 /*
     module  : neql.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef NEQL_C
 #define NEQL_C
+
+#include "compare.h"
 
 /**
 OK 2260  !=\0neql  :  DDA	X Y  ->  B
@@ -13,6 +15,7 @@ Tests whether X not equal to Y.  Also supports float.
 */
 void neql_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, node;
 
     PARM(2, ANYTYPE);
@@ -21,5 +24,6 @@ void neql_(pEnv env)
     node.u.num = Compare(env, first, second) != 0;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

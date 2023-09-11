@@ -1,7 +1,7 @@
 /*
     module  : localtime.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef LOCALTIME_C
 #define LOCALTIME_C
@@ -16,6 +16,7 @@ weekday is 1 = Monday ... 7 = Sunday.
 */
 void localtime_(pEnv env)
 {
+#ifndef COMPILER
     static int daynums[] = { 7, 1, 2, 3, 4, 5, 6 };
     struct tm *t;
     time_t timval;
@@ -49,5 +50,6 @@ void localtime_(pEnv env)
     lst_push(temp.u.lis, node);
     temp.op = LIST_;
     lst_push(env->stck, temp);
+#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : strtol.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef STRTOL_C
 #define STRTOL_C
@@ -14,6 +14,7 @@ but leading "0" means base 8 and leading "0x" means base 16.
 */
 void strtol_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, STRTOL);
@@ -22,5 +23,6 @@ void strtol_(pEnv env)
     first.u.num = strtol(first.u.str, 0, second.u.num);
     first.op = INTEGER_;
     lst_push(env->stck, first);
+#endif
 }
 #endif

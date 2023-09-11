@@ -1,7 +1,7 @@
 /*
     module  : pfalse.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef PFALSE_C
 #define PFALSE_C
@@ -13,12 +13,14 @@ stack. If the condition is false, jump to the location.
 */
 void pfalse_(pEnv env)
 {
+#ifndef COMPILER
     Node test, jump;
 
     PARM(1, ANYTYPE);
     test = lst_pop(env->stck);
     jump = lst_pop(env->prog);
     if (!test.u.num)
-        lst_resize(env->prog, jump.u.num);
+	lst_resize(env->prog, jump.u.num);
+#endif
 }
 #endif

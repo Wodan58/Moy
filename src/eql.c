@@ -1,10 +1,12 @@
 /*
     module  : eql.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef EQL_C
 #define EQL_C
+
+#include "compare.h"
 
 /**
 OK 2270  =\0eql  :  DDA	X Y  ->  B
@@ -13,6 +15,7 @@ Tests whether X equal to Y.  Also supports float.
 */
 void eql_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, node;
 
     PARM(2, ANYTYPE);
@@ -21,5 +24,6 @@ void eql_(pEnv env)
     node.u.num = Compare(env, first, second) == 0;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

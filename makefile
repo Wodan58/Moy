@@ -1,12 +1,16 @@
+#
+#   module  : makefile
+#   version : 1.1
+#   date    : 09/11/23
+#
 .POSIX:
 .SUFFIXES:
 .PRECIOUS: lexr.c
 
 CC = gcc
-CFLAGS = -DCOPYRIGHT -DJVERSION="\"Release 1.0\"" -O3 -Wall -Wextra -Werror
-OBJECTS = arty.o comp.o dtim.o eval.o lexr.o main.o manl.o modl.o parm.o \
-	  pars.o prog.o read.o repl.o save.o scan.o undo.o util.o writ.o \
-	  ylex.o
+CFLAGS = -DNCHECK -DCOPYRIGHT -DJVERSION="\"Release 1.0\"" -O3 -Wall -Wextra -Werror -Wno-unused-parameter
+OBJECTS = arty.o eval.o exec.o lexr.o main.o modl.o otab.o parm.o pars.o \
+	  prog.o read.o repl.o save.o scan.o undo.o util.o writ.o xerr.o ylex.o
 
 joy: prep $(OBJECTS)
 	$(CC) -o$@ $(OBJECTS) -lm -lgc

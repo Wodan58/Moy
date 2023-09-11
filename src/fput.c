@@ -1,7 +1,7 @@
 /*
     module  : fput.c
-    version : 1.4
-    date    : 09/07/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FPUT_C
 #define FPUT_C
@@ -12,6 +12,7 @@ Writes X to stream S, pops X off stack.
 */
 void fput_(pEnv env)
 {
+#ifndef COMPILER
     FILE *fp;
     Node node, elem;
 
@@ -20,11 +21,12 @@ void fput_(pEnv env)
     node = lst_back(env->stck);
     fp = node.u.fil;
     if (elem.op == LIST_) {
-        putc('[', fp);
-        writeterm(env, elem.u.lis, fp);
-        putc(']', fp);
+	putc('[', fp);
+	writeterm(env, elem.u.lis, fp);
+	putc(']', fp);
     } else
-        writefactor(env, elem, fp);
+	writefactor(env, elem, fp);
     putc(' ', fp);
+#endif
 }
 #endif

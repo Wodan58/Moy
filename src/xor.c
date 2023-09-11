@@ -1,7 +1,7 @@
 /*
     module  : xor.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef XOR_C
 #define XOR_C
@@ -13,6 +13,7 @@ logical exclusive disjunction for truth values.
 */
 void xor_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANDORXOR);
@@ -20,16 +21,17 @@ void xor_(pEnv env)
     first = lst_pop(env->stck);
     switch (first.op) {
     case SET_:
-        first.u.set = first.u.set ^ second.u.set;
-        break;
+	first.u.set = first.u.set ^ second.u.set;
+	break;
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
-        first.u.num = first.u.num != second.u.num;
-        first.op = BOOLEAN_;
+	first.u.num = first.u.num != second.u.num;
+	first.op = BOOLEAN_;
     default:
-        break;
+	break;
     }
     lst_push(env->stck, first);
+#endif
 }
 #endif

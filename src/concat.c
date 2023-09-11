@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -12,6 +12,7 @@ Sequence U is the concatenation of sequences S and T.
 */
 void concat_(pEnv env)
 {
+#ifndef COMPILER
     int i, j;
     Node first, second, result;
 
@@ -20,33 +21,34 @@ void concat_(pEnv env)
     first = lst_pop(env->stck);
     switch (first.op) {
     case LIST_:
-        if (!lst_size(first.u.lis))
-            result = second;
-        else if (!lst_size(second.u.lis))
-            result = first;
-        else {
-            lst_init(result.u.lis);
-            lst_copy(result.u.lis, second.u.lis);
-            for (i = 0, j = lst_size(first.u.lis); i < j; i++)
-                lst_push(result.u.lis, lst_at(first.u.lis, i));
-        }
-        break;
+	if (!lst_size(first.u.lis))
+	    result = second;
+	else if (!lst_size(second.u.lis))
+	    result = first;
+	else {
+	    lst_init(result.u.lis);
+	    lst_copy(result.u.lis, second.u.lis);
+	    for (i = 0, j = lst_size(first.u.lis); i < j; i++)
+		lst_push(result.u.lis, lst_at(first.u.lis, i));
+	}
+	break;
 
     case STRING_:
     case BIGNUM_:
-        i = strlen(first.u.str);
-        j = strlen(second.u.str);
-        result.u.str = GC_malloc_atomic(i + j + 1);
-        strcpy(result.u.str, first.u.str);
-        strcpy(result.u.str + i, second.u.str);
-        break;
+	i = strlen(first.u.str);
+	j = strlen(second.u.str);
+	result.u.str = GC_malloc_atomic(i + j + 1);
+	strcpy(result.u.str, first.u.str);
+	strcpy(result.u.str + i, second.u.str);
+	break;
 
     case SET_:
-        result.u.set = first.u.set | second.u.set;
+	result.u.set = first.u.set | second.u.set;
     default:
-        break;
+	break;
     }
     result.op = first.op;
     lst_push(env->stck, result);
+#endif
 }
 #endif

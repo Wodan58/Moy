@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef WHILE_C
 #define WHILE_C
@@ -12,6 +12,7 @@ While executing B yields true executes D.
 */
 void while_(pEnv env)
 {
+#ifndef COMPILER
     int size;
     Node test, body;
 
@@ -20,31 +21,32 @@ void while_(pEnv env)
     test = lst_pop(env->stck);
     size = lst_size(env->prog);
     /*
-        setup the continuation
+	setup the continuation
     */
     code(env, while_);
     lst_push(env->prog, body);
     lst_push(env->prog, test);
     /*
-        push the body of the while
+	push the body of the while
     */
     prog(env, body.u.lis);
     /*
-        push the jump address onto the program stack
+	push the jump address onto the program stack
     */
     push(env, size);
     /*
-        jump on false past the body of the while
+	jump on false past the body of the while
     */
     code(env, fjump_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     save(env, test.u.lis, 0);
     /*
-        push the test of the while
+	push the test of the while
     */
     prog(env, test.u.lis);
+#endif
 }
 #endif

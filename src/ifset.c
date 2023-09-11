@@ -1,7 +1,7 @@
 /*
     module  : ifset.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef IFSET_C
 #define IFSET_C
@@ -12,6 +12,7 @@ If X is a set, executes T else executes E.
 */
 void ifset_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, node;
 
     PARM(3, WHILE);
@@ -20,5 +21,6 @@ void ifset_(pEnv env)
     node = lst_back(env->stck);
     node = node.op == SET_ ? first : second;
     prog(env, node.u.lis);
+#endif
 }
 #endif

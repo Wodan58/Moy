@@ -1,7 +1,7 @@
 /*
     module  : tpush.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef TPUSH_C
 #define TPUSH_C
@@ -14,6 +14,7 @@ on top of the data stack.
 */
 void tpush_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node test, jump, elem, node;
 
@@ -22,29 +23,30 @@ void tpush_(pEnv env)
     jump = lst_pop(env->prog);
     elem = lst_pop(env->prog);
     if (test.u.num)
-        node = lst_at(env->prog, jump.u.num + 1);
+	node = lst_at(env->prog, jump.u.num + 1);
     else
-        node = lst_at(env->prog, jump.u.num); /* one step further away */
+	node = lst_at(env->prog, jump.u.num); /* one step further away */
     switch (node.op) {
     case LIST_:
-        lst_push(node.u.lis, elem);
-        break;
+	lst_push(node.u.lis, elem);
+	break;
 
     case STRING_:
     case BIGNUM_:
-        i = strlen(node.u.str);
-        node.u.str[i++] = elem.u.num;
-        node.u.str[i] = 0;
-        break;
+	i = strlen(node.u.str);
+	node.u.str[i++] = elem.u.num;
+	node.u.str[i] = 0;
+	break;
 
     case SET_:
-        node.u.set |= ((int64_t)1 << elem.u.num);
+	node.u.set |= ((int64_t)1 << elem.u.num);
     default:
-        break;
+	break;
     }
     if (test.u.num)
-        lst_assign(env->prog, jump.u.num + 1, node); /* write node */
+	lst_assign(env->prog, jump.u.num + 1, node); /* write node */
     else
-        lst_assign(env->prog, jump.u.num, node); /* write node */
+	lst_assign(env->prog, jump.u.num, node); /* write node */
+#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : float.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef FLOAT_C
 #define FLOAT_C
@@ -12,6 +12,7 @@ Tests whether R is a float.
 */
 void float_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -19,5 +20,6 @@ void float_(pEnv env)
     node.u.num = node.op == FLOAT_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

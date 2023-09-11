@@ -1,7 +1,7 @@
 /*
     module  : quit.c
-    version : 1.4
-    date    : 09/04/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef QUIT_C
 #define QUIT_C
@@ -34,8 +34,6 @@ PUBLIC void quit_(pEnv env)
 {
 #if defined(STATS) || defined(SYMBOLS)
     my_exit(env);
-#else
-    env->nothing++;
 #endif
     exit(EXIT_SUCCESS);
 }

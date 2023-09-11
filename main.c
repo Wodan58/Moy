@@ -1,16 +1,16 @@
 /*
  *  module  : main.c
- *  version : 1.13
- *  date    : 09/07/23
+ *  version : 1.14
+ *  date    : 09/11/23
  */
 #include "globals.h"
 
-#define ERROR_ON_USRLIB 0
+#define ERROR_ON_USRLIB 0		/* no error */
 
-extern FILE *yyin;
+extern FILE *yyin;			/* lexr.c */
+extern unsigned char mustinclude;	/* scan.c */
 
-static jmp_buf begin;
-static char *filename = "stdin";
+static jmp_buf begin;			/* restart with empty program */
 
 /*
     abort execution and restart reading from yyin. In the NOBDW version the
@@ -19,28 +19,6 @@ static char *filename = "stdin";
 PUBLIC void abortexecution_(int num)
 {
     longjmp(begin, num);
-}
-
-/*
-    print a runtime error to stderr and abort the execution of current program.
-*/
-PUBLIC void execerror(char *message, char *op)
-{
-    int leng = 0;
-    char *ptr, *str;
-
-    if ((ptr = strrchr(op, '/')) != 0)
-	ptr++;
-    else
-	ptr = op;
-    if ((str = strrchr(ptr, '.')) != 0 && str[1] == 'c')
-	leng = str - ptr;
-    else
-	leng = strlen(ptr);
-    fflush(stdout);
-    fprintf(stderr, "%s:run time error: %s needed for %.*s\n", filename,
-	    message, leng, ptr);
-    abortexecution_(EXEC_ERR);
 }
 
 /*
@@ -167,16 +145,15 @@ PRIVATE void options(void)
 
 PRIVATE int my_main(int argc, char **argv)
 {
-    static unsigned char mustinclude = 1;
-    int i, j, ch;
     char *ptr;
+    int i, j, ch;
+    unsigned char helping = 0;
 #ifdef COPYRIGHT
     unsigned char verbose = 1;
 #endif
 #ifdef SYMBOLS
     unsigned char symdump = 0;
 #endif
-    unsigned char helping = 0;
 
     Env env; /* global variables */
     memset(&env, 0, sizeof(env));
@@ -185,6 +162,7 @@ PRIVATE int my_main(int argc, char **argv)
      *  scan.c after reading EOF on the first input file.
      */
     env.startclock = clock();
+    env.overwrite = INIWARNING;
 #ifdef STATS
     my_atexit(report_clock);
 #endif
@@ -196,12 +174,12 @@ PRIVATE int my_main(int argc, char **argv)
     vec_init(env.context);
     vec_init(env.channel);
 #endif
-    env.overwrite = INIWARNING;
     /*
      *  Initialize yyin and other environmental parameters.
      */
     yyin = stdin;
     env.pathname = argv[0];
+    env.filename = "stdin";
     if ((ptr = strrchr(env.pathname, '/')) != 0)
 	*ptr = 0;
     else if ((ptr = strrchr(env.pathname, '\\')) != 0)
@@ -246,17 +224,18 @@ PRIVATE int my_main(int argc, char **argv)
     for (i = 1; i < argc; i++) {
 	ch = argv[i][0];
 	if (!isdigit(ch)) {
-	    if ((yyin = freopen(filename = argv[i], "r", stdin)) == 0) {
-		fprintf(stderr, "failed to open the file '%s'.\n", filename);
+	    if ((yyin = freopen(env.filename = argv[i], "r", stdin)) == 0) {
+		fprintf(stderr, "failed to open the file '%s'.\n",
+			env.filename);
 		return 0;
 	    }
 	    /*
 	     *  Overwrite argv[0] with the filename and shift subsequent
 	     *  parameters. Also change directory to that filename.
 	     */
-	    if ((ptr = strrchr(argv[0] = filename, '/')) != 0) {
+	    if ((ptr = strrchr(argv[0] = env.filename, '/')) != 0) {
 		*ptr++ = 0;
-		argv[0] = filename = ptr;
+		argv[0] = env.filename = ptr;
 	    }
 	    for (--argc; i < argc; i++)
 		argv[i] = argv[i + 1];
@@ -267,7 +246,7 @@ PRIVATE int my_main(int argc, char **argv)
     env.g_argv = argv;
 #ifdef COPYRIGHT
     if (verbose)
-	copyright(filename);
+	copyright(env.filename);
 #endif
 #ifdef SYMBOLS
     if (symdump)
@@ -278,7 +257,7 @@ PRIVATE int my_main(int argc, char **argv)
     env.echoflag = INIECHOFLAG;
     env.autoput = INIAUTOPUT;
     env.undeferror = INIUNDEFERROR;
-    inilinebuffer(filename);
+    inilinebuffer(env.filename);
     inisymboltable(&env);
     if (setjmp(begin) == SIGSEGV) /* return here after error or abort */
 	quit_(&env); /* do not continue after SIGSEGV */

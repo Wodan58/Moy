@@ -1,7 +1,7 @@
 /*
     module  : fseek.c
-    version : 1.4
-    date    : 09/07/23
+    version : 1.5
+    date    : 09/11/23
 */
 #ifndef FSEEK_C
 #define FSEEK_C
@@ -13,6 +13,7 @@ where W = 0, 1, 2 for beginning, current position, end respectively.
 */
 void fseek_(pEnv env)
 {
+#ifndef COMPILER
     Node node, locat, orien;
 
     PARM(3, FSEEK);
@@ -22,5 +23,6 @@ void fseek_(pEnv env)
     node.u.num = fseek(node.u.fil, locat.u.num, orien.u.num) != 0;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

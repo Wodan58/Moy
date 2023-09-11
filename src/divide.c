@@ -1,7 +1,7 @@
 /*
     module  : divide.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef DIVIDE_C
 #define DIVIDE_C
@@ -12,6 +12,7 @@ Integer K is the (rounded) ratio of integers I and J.  Also supports float.
 */
 void divide_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, DIVIDE);
@@ -33,16 +34,17 @@ void divide_(pEnv env)
     default:
 	switch (second.op) {
 	case FLOAT_:
-            second.u.dbl = first.u.num / second.u.dbl;
-            lst_push(env->stck, second);
+	    second.u.dbl = first.u.num / second.u.dbl;
+	    lst_push(env->stck, second);
 	    return;
 
 	default:
-            first.u.num /= second.u.num;
+	    first.u.num /= second.u.num;
 	    break;
 	}
 	break;
     }
     lst_push(env->stck, first);
+#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : trunc.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef TRUNC_C
 #define TRUNC_C
@@ -12,6 +12,7 @@ I is an integer equal to the float F truncated toward zero.
 */
 void trunc_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -19,5 +20,6 @@ void trunc_(pEnv env)
     node.u.num = node.u.dbl;
     node.op = INTEGER_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

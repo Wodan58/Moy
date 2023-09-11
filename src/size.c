@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -12,6 +12,7 @@ Integer I is the number of elements of aggregate A.
 */
 void size_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node node, temp;
 
@@ -19,20 +20,21 @@ void size_(pEnv env)
     node = lst_pop(env->stck);
     switch (node.op) {
     case LIST_:
-        temp.u.num = lst_size(node.u.lis);
-        break;
+	temp.u.num = lst_size(node.u.lis);
+	break;
     case STRING_:
     case BIGNUM_:
-        temp.u.num = strlen(node.u.str);
-        break;
+	temp.u.num = strlen(node.u.str);
+	break;
     case SET_:
-        for (i = 0, temp.u.num = 0; i < SETSIZE; i++)
-            if (node.u.set & ((int64_t)1 << i))
-                temp.u.num++;
+	for (i = 0, temp.u.num = 0; i < SETSIZE; i++)
+	    if (node.u.set & ((int64_t)1 << i))
+		temp.u.num++;
     default:
-        break;
+	break;
     }
     temp.op = INTEGER_;
     lst_push(env->stck, temp);
+#endif
 }
 #endif

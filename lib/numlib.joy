@@ -5,17 +5,19 @@ LIBRA
     _numlib == true;
 
 (* predicates *)
-
     positive == 0 >;
     negative == 0 <;
     even == 2 rem null;
     odd == even not;
     prime ==
-	2
-	[ over over dup * > ord 2 pick 2 pick rem and ]
-	[ succ ]
+	[dup 2 =]
+	[pop true]
+	[2
+	[over over dup * > ord 2 pick 2 pick rem and]
+	[succ]
 	while
-	dup * < ;
+#	dup * < ;
+	rem null not] ifte;
 
 (* functions *)
 

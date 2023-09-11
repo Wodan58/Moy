@@ -1,7 +1,7 @@
 /*
     module  : spush.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef SPUSH_C
 #define SPUSH_C
@@ -13,10 +13,12 @@ Read that element and push it on the data stack.
 */
 void spush_(pEnv env)
 {
+#ifndef COMPILER
     Node jump, node;
 
     jump = lst_pop(env->prog);
     node = lst_at(env->prog, jump.u.num);
     lst_push(env->stck, node);
+#endif
 }
 #endif

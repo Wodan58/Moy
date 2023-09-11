@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef GETENV_C
 #define GETENV_C
@@ -12,12 +12,14 @@ Retrieves the value of the environment variable "variable".
 */
 void getenv_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, STRTOD);
     node = lst_pop(env->stck);
     if ((node.u.str = getenv(node.u.str)) == 0)
-        node.u.str = "";
+	node.u.str = "";
     lst_push(env->stck, node);
+#endif
 }
 #endif

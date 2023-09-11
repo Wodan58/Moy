@@ -1,10 +1,12 @@
 /*
     module  : compare.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef COMPARE_C
 #define COMPARE_C
+
+#include "compare.h"
 
 /**
 OK 2050  compare  :  DDA	A B  ->  I
@@ -13,6 +15,7 @@ The values correspond to the predicates <=, =, >=.
 */
 void compare_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANYTYPE);
@@ -21,5 +24,6 @@ void compare_(pEnv env)
     first.u.num = Compare(env, first, second);
     first.op = INTEGER_;
     lst_push(env->stck, first);
+#endif
 }
 #endif

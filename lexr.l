@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.8
-    date    : 08/23/23
+    version : 1.11
+    date    : 09/11/23
 */
 #include "globals.h"
 
@@ -65,14 +65,14 @@ static void putline(pEnv env, char *str, int leng, int status)
     linenum = target + 1;
 }
 
-void new_buffer(void)
+PUBLIC void new_buffer(void)
 {
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
     yylineno = 1; /* restart with line 1 */
 }
 
-void old_buffer(int num)
+PUBLIC void old_buffer(int num)
 {
     if (--include_stack_ptr < 0)
 	include_stack_ptr = 0;
@@ -151,10 +151,7 @@ MODULE[ \t]*	return MODULE;
 
 %%
 
-/*
-    Skip space characters
-*/
-int get_char(void)
+PUBLIC int get_char(void)
 {
     int ch;
 

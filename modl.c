@@ -1,7 +1,7 @@
 /*
     module  : modl.c
-    version : 1.5
-    date    : 08/28/23
+    version : 1.6
+    date    : 09/11/23
 */
 #include "globals.h"
 
@@ -21,14 +21,14 @@ static int module_index = -1;
 /*
  * savemod saves the global variables, to be restored later with undomod.
 */
-void savemod(int *hide, int *modl, int *hcnt)
+PUBLIC void savemod(int *hide, int *modl, int *hcnt)
 {
     *hide = hide_index;
     *modl = module_index;
     *hcnt = hide_count;
 }
 
-void undomod(int hide, int modl, int hcnt)
+PUBLIC void undomod(int hide, int modl, int hcnt)
 {
     hide_index = hide;
     module_index = modl;
@@ -39,11 +39,11 @@ void undomod(int hide, int modl, int hcnt)
  * initmod registers name as a module name. Modules within modules are
  * supported. Up to a certain extent, that is.
  */
-void initmod(pEnv env, char *name)
+PUBLIC void initmod(pEnv env, char *name)
 {
     if (++module_index >= DISPLAYMAX) {
 	module_index = -1;
-	execerror("index", "display");
+	execerror(env->filename, "index", "display");
     }
     env->module_stack[module_index].name = name;
     env->module_stack[module_index].hide = hide_index;
@@ -58,11 +58,11 @@ void initmod(pEnv env, char *name)
  * Only register a new private section during the first read. During the
  * second read, the number that was installed should be picked up again.
  */
-void initpriv(pEnv env)
+PUBLIC void initpriv(pEnv env)
 {
     if (++hide_index >= DISPLAYMAX) {
 	hide_index = -1;
-	execerror("index", "display");
+	execerror(env->filename, "index", "display");
     }
     env->hide_stack[hide_index] = ++hide_count;
     inside_hide = 1;
@@ -72,7 +72,7 @@ void initpriv(pEnv env)
  * stoppriv registers the transition from private to public definitions. Names
  * should no longer be prefixed with the name of the private section.
  */
-void stoppriv(void)
+PUBLIC void stoppriv(void)
 {
     been_inside = 1;
     inside_hide = 0;
@@ -81,7 +81,7 @@ void stoppriv(void)
 /*
  * exitpriv lowers the hide_index after reading the public section.
  */
-void exitpriv(void)
+PUBLIC void exitpriv(void)
 {
     if (!been_inside)
 	return;
@@ -93,7 +93,7 @@ void exitpriv(void)
 /*
  * exitmod deregisters a module. It also ends an outstanding private section.
  */
-void exitmod(void)
+PUBLIC void exitmod(void)
 {
     if (module_index >= 0)
 	module_index--;
@@ -112,7 +112,7 @@ void exitmod(void)
  *
  * classify is used when entering the name that has a definition.
  */
-char *classify(pEnv env, char *name)
+PUBLIC char *classify(pEnv env, char *name)
 {
     size_t leng;
     char temp[BUFFERMAX], *buf = 0, *str;
@@ -161,7 +161,7 @@ char *classify(pEnv env, char *name)
  *
  * qualify is used when reading a name, as part of a definition.
  */
-pEntry qualify(pEnv env, char *name)
+PUBLIC pEntry qualify(pEnv env, char *name)
 {
     size_t leng;
     khiter_t key;

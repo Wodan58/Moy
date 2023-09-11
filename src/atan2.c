@@ -1,7 +1,7 @@
 /*
     module  : atan2.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef ATAN2_C
 #define ATAN2_C
@@ -12,14 +12,16 @@ H is the arc tangent of F / G.
 */
 void atan2_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, BFLOAT);
     second = lst_pop(env->stck);
     first = lst_pop(env->stck);
     first.u.dbl = atan2(first.op == FLOAT_ ? first.u.dbl : (double)first.u.num,
-                    second.op == FLOAT_ ? second.u.dbl : (double)second.u.num);
+		    second.op == FLOAT_ ? second.u.dbl : (double)second.u.num);
     first.op = FLOAT_;
     lst_push(env->stck, first);
+#endif
 }
 #endif

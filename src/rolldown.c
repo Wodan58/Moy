@@ -1,7 +1,7 @@
 /*
     module  : rolldown.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef ROLLDOWN_C
 #define ROLLDOWN_C
@@ -12,6 +12,7 @@ Moves Y and Z down, moves X up.
 */
 void rolldown_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second, third;
 
     PARM(3, ANYTYPE);
@@ -21,5 +22,6 @@ void rolldown_(pEnv env)
     lst_push(env->stck, second);
     lst_push(env->stck, third);
     lst_push(env->stck, first);
+#endif
 }
 #endif

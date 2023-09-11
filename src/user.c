@@ -1,7 +1,7 @@
 /*
     module  : user.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef USER_C
 #define USER_C
@@ -12,6 +12,7 @@ Tests whether X is a user-defined symbol.
 */
 void user_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -19,5 +20,6 @@ void user_(pEnv env)
     node.u.num = node.op == USR_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : ylex.c
-    version : 1.5
-    date    : 08/28/23
+    version : 1.6
+    date    : 09/11/23
 */
 #include "globals.h"
 
@@ -70,7 +70,7 @@ static void push_symb(pEnv env, Symbol symb)
     After reading MODULE or JPRIVATE, read all tokens upto END, and include
     them in the tokenlist. All symbols preceding "==" are declared.
 */
-int yylex(pEnv env)
+PUBLIC int yylex(pEnv env)
 {
     Token tok;
     Symbol symb;

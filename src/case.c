@@ -1,10 +1,12 @@
 /*
     module  : case.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef CASE_C
 #define CASE_C
+
+#include "compare.h"
 
 /**
 OK 2100  case  :  DDU	X [..[X Y]..]  ->  Y i
@@ -12,6 +14,7 @@ Indexing on the value of X, execute the matching Y.
 */
 void case_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node node, aggr, elem;
 
@@ -19,19 +22,20 @@ void case_(pEnv env)
     aggr = lst_pop(env->stck);
     node = lst_back(env->stck);
     for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
-        elem = lst_at(aggr.u.lis, i);
-        if (!i) {
-            node = elem;
-            break;
-        }
-        if (!Compare(env, node, lst_back(elem.u.lis))) {
-            lst_init(node.u.lis);
-            lst_shallow_copy(node.u.lis, elem.u.lis);
-            (void)lst_pop(node.u.lis);
-            (void)lst_pop(env->stck);
-            break;
-        }
+	elem = lst_at(aggr.u.lis, i);
+	if (!i) {
+	    node = elem;
+	    break;
+	}
+	if (!Compare(env, node, lst_back(elem.u.lis))) {
+	    lst_init(node.u.lis);
+	    lst_shallow_copy(node.u.lis, elem.u.lis);
+	    (void)lst_pop(node.u.lis);
+	    (void)lst_pop(env->stck);
+	    break;
+	}
     }
     prog(env, node.u.lis);
+#endif
 }
 #endif

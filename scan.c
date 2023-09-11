@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.9
-    date    : 09/07/23
+    version : 1.10
+    date    : 09/11/23
 */
 #include "globals.h"
 
@@ -18,6 +18,12 @@ static struct {
 } infile[INPSTACKMAX];
 
 /*
+    mustinclude - determine whether an attempt must be made to include
+		  usrlib.joy
+*/
+unsigned char mustinclude = 1;
+
+/*
     inilinebuffer - initialise the stack of input files. The filename parameter
 		    could be used in error messages.
 */
@@ -32,7 +38,7 @@ PUBLIC void inilinebuffer(char *str)
     redirect - read from another file descriptor. Some special processing in
 	       the case of reading with fget.
 */
-PUBLIC int redirect(char *name, FILE *fp)
+PUBLIC int redirect(char *file, char *name, FILE *fp)
 {
     if (fget_eof) {			/* stop reading from this file */
 	fget_eof = 0;
@@ -42,7 +48,7 @@ PUBLIC int redirect(char *name, FILE *fp)
 	return 1;			/* already reading from this file */
     infile[ilevel].line = yylineno;	/* save last line number and line */
     if (ilevel + 1 == INPSTACKMAX)	/* increase the include level */
-	execerror("fewer include files", "include");
+	execerror(file, "fewer include files", "include");
     infile[++ilevel].fp = yyin = fp; 	/* update yyin, used by yylex */
     infile[ilevel].line = 1;		/* start with line 1 */
     infile[ilevel].name = name;
@@ -90,17 +96,17 @@ PUBLIC int include(pEnv env, char *name, int error)
 	    *ptr = 0;
 	}
     }
-    if (fp && redirect(name, fp))
+    if (fp && redirect(env->filename, name, fp))
 	return 0; /* ok */
     if (error)
-	execerror("valid file name", "include");
+	execerror(env->filename, "valid file name", "include");
     return 1; /* nok */
 }
 
 /*
     yywrap - continue reading after EOF.
 */
-int yywrap(void)
+PUBLIC int yywrap(void)
 {
     if (!ilevel)			/* at end of first file, end program */
 	return 1;			/* terminate */
@@ -116,7 +122,7 @@ int yywrap(void)
 /*
     my_error - error processing during parsing; location info as parameter.
 */
-void my_error(char *str, YYLTYPE *bloc)
+PUBLIC void my_error(char *str, YYLTYPE *bloc)
 {
     int leng = bloc->last_column - 1;
 
@@ -130,12 +136,11 @@ void my_error(char *str, YYLTYPE *bloc)
 /*
     yyerror - error processing during source file read; location info global.
 */
-int yyerror(pEnv env, char *str)
+PUBLIC int yyerror(pEnv env, char *str)
 {
     YYLTYPE bloc;
 
     bloc.last_column = yylloc.last_column;
     my_error(str, &bloc);
-    env->nothing++;
     return 0;
 }

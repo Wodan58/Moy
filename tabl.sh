@@ -1,7 +1,7 @@
 #
 #   module  : tabl.sh
-#   version : 1.2
-#   date    : 07/17/23
+#   version : 1.3
+#   date    : 09/11/23
 #
 #   Generate tabl.c
 #   The directory needs to be given as parameter.
@@ -49,4 +49,4 @@ do
 	P
   }' <$i
 done | sort >$1/tabl.c
-touch $1/eval.c
+touch $1/otab.c

@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef UNARY4_C
 #define UNARY4_C
@@ -11,7 +11,8 @@ OK 2520  unary4  :  DDDDDAAAA	X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
 Executes P four times, with Xi, returns Ri (i = 1..4).
 */
 PRIVATE void unary4_(pEnv env)
-{ /*  X Y Z W [P]  unary4    ==>  X' Y' Z' W'        */
+{
+#ifndef COMPILER /*  X Y Z W [P]  unary4    ==>  X' Y' Z' W'	*/
     unsigned size1, size2, size3;
     Node param1, param2, param3, node;
 
@@ -34,64 +35,65 @@ PRIVATE void unary4_(pEnv env)
     lst_push(env->prog, param1); /* first Y, then X' */
 
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate W' on top of the stack
+	Calculate W' on top of the stack
     */
     prog(env, node.u.lis);
     /*
-        Push the address of W
+	Push the address of W
     */
     push(env, size3);
     /*
-        Swap W and Z'
+	Swap W and Z'
     */
     code(env, cswap_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate Z' on top of the stack
+	Calculate Z' on top of the stack
     */
     prog(env, node.u.lis);
     /*
-        Push the address of Z
+	Push the address of Z
     */
     push(env, size2);
     /*
-        Swap Z and Y'
+	Swap Z and Y'
     */
     code(env, cswap_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate Y' on top of the stack
+	Calculate Y' on top of the stack
     */
     prog(env, node.u.lis);
     /*
-        Push the address of Y
+	Push the address of Y
     */
     push(env, size1);
     /*
-        Swap Y and X'
+	Swap Y and X'
     */
     code(env, cswap_);
     /*
-        save the stack before the condition and restore it afterwards with
-        the condition code included.
+	save the stack before the condition and restore it afterwards with
+	the condition code included.
     */
     undo(env, node.u.lis, 1);
     /*
-        Calculate X' on top of the stack
+	Calculate X' on top of the stack
     */
     prog(env, node.u.lis);
+#endif
 }
 #endif

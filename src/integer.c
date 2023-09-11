@@ -1,7 +1,7 @@
 /*
     module  : integer.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef INTEGER_C
 #define INTEGER_C
@@ -12,6 +12,7 @@ Tests whether X is an integer.
 */
 void integer_(pEnv env)
 {
+#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -19,5 +20,6 @@ void integer_(pEnv env)
     node.u.num = node.op == INTEGER_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
+#endif
 }
 #endif

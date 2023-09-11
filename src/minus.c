@@ -1,7 +1,7 @@
 /*
     module  : minus.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef MINUS_C
 #define MINUS_C
@@ -13,6 +13,7 @@ Also supports float.
 */
 void minus_(pEnv env)
 {
+#ifndef COMPILER
     Node first, second;
 
     PARM(2, PLUSMINUS);
@@ -34,16 +35,17 @@ void minus_(pEnv env)
     default:
 	switch (second.op) {
 	case FLOAT_:
-            second.u.dbl = first.u.num - second.u.dbl;
-            lst_push(env->stck, second);
+	    second.u.dbl = first.u.num - second.u.dbl;
+	    lst_push(env->stck, second);
 	    return;
 
 	default:
-            first.u.num -= second.u.num;
+	    first.u.num -= second.u.num;
 	    break;
 	}
 	break;
     }
     lst_push(env->stck, first);
+#endif
 }
 #endif

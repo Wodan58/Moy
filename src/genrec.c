@@ -1,7 +1,7 @@
 /*
     module  : genrec.c
-    version : 1.2
-    date    : 09/04/23
+    version : 1.3
+    date    : 09/11/23
 */
 #ifndef GENREC_C
 #define GENREC_C
@@ -13,10 +13,12 @@ Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */
 void genrec_(pEnv env)
 {
+#ifndef COMPILER
     PARM(4, LINREC);
     cons_(env);
     cons_(env);
     cons_(env);
-    _genrec_(env);
+    zgenrec_(env);
+#endif
 }
 #endif

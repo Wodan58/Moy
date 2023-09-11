@@ -1,7 +1,7 @@
 /*
     module  : get.c
-    version : 1.2
-    date    : 09/04/23
+    version : 1.3
+    date    : 09/11/23
 */
 #ifndef GET_C
 #define GET_C
@@ -12,7 +12,11 @@ Reads a factor from input and pushes it onto stack.
 */
 PRIVATE void get_(pEnv env)
 {
+#ifndef COMPILER
+#ifndef RUNTIME
     env->token = yylex(env);
     readfactor(env);
+#endif
+#endif
 }
 #endif

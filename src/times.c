@@ -1,7 +1,7 @@
 /*
     module  : times.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef TIMES_C
 #define TIMES_C
@@ -12,6 +12,7 @@ N times executes P.
 */
 void times_(pEnv env)
 {
+#ifndef COMPILER
     int i;
     Node node, list;
 
@@ -19,6 +20,7 @@ void times_(pEnv env)
     list = lst_pop(env->stck);
     node = lst_pop(env->stck);
     for (i = node.u.num; i; i--)
-        prog(env, list.u.lis);
+	prog(env, list.u.lis);
+#endif
 }
 #endif

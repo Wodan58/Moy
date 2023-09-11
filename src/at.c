@@ -1,7 +1,7 @@
 /*
     module  : at.c
-    version : 1.5
-    date    : 09/04/23
+    version : 1.6
+    date    : 09/11/23
 */
 #ifndef AT_C
 #define AT_C
@@ -12,6 +12,7 @@ X (= A[I]) is the member of A at position I.
 */
 void at_(pEnv env)
 {
+#ifndef COMPILER
     int i, j;
     Node elem, aggr, node;
 
@@ -20,30 +21,31 @@ void at_(pEnv env)
     aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-        node = lst_at(aggr.u.lis, lst_size(aggr.u.lis) - elem.u.num - 1);
-        lst_push(env->stck, node);
-        break;
+	node = lst_at(aggr.u.lis, lst_size(aggr.u.lis) - elem.u.num - 1);
+	lst_push(env->stck, node);
+	break;
 
     case STRING_:
     case BIGNUM_:
-        node.u.num = aggr.u.str[elem.u.num];
-        node.op = CHAR_;
-        lst_push(env->stck, node);
-        break;
+	node.u.num = aggr.u.str[elem.u.num];
+	node.op = CHAR_;
+	lst_push(env->stck, node);
+	break;
 
     case SET_:
-        for (j = elem.u.num, i = 0; i < SETSIZE; i++)
-            if (aggr.u.set & ((int64_t)1 << i)) {
-                if (!j) {
-                    node.u.num = i;
-                    node.op = INTEGER_;
-                    lst_push(env->stck, node);
-                    break;
-                }
-                j--;
-            }
+	for (j = elem.u.num, i = 0; i < SETSIZE; i++)
+	    if (aggr.u.set & ((int64_t)1 << i)) {
+		if (!j) {
+		    node.u.num = i;
+		    node.op = INTEGER_;
+		    lst_push(env->stck, node);
+		    break;
+		}
+		j--;
+	    }
     default:
-        break;
+	break;
     }
+#endif
 }
 #endif

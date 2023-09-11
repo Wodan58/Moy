@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.3
-    date    : 09/04/23
+    version : 1.4
+    date    : 09/11/23
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
@@ -12,7 +12,8 @@ Saves state of stack and then executes [P].
 Then executes each [Pi] to give Ri pushed onto saved stack.
 */
 PRIVATE void construct_(pEnv env)
-{ /* [P] [[P1] [P2] ..] -> X1 X2 ..        */
+{
+#ifndef COMPILER /* [P] [[P1] [P2] ..] -> X1 X2 ..	*/
     int i, j;
     unsigned size1, size2;
     Node first, second, node;
@@ -23,7 +24,7 @@ PRIVATE void construct_(pEnv env)
     code(env, unstack_);
     size2 = lst_size(env->prog);
     /*
-        save the old stack; this will become the new stack
+	save the old stack; this will become the new stack
     */
     lst_init(node.u.lis);
     lst_copy(node.u.lis, env->stck);
@@ -32,51 +33,52 @@ PRIVATE void construct_(pEnv env)
 
     size1 = lst_size(env->prog);
     /*
-        the new stack after the first program needs to be saved
+	the new stack after the first program needs to be saved
     */
     code(env, id_);
     /*
-        each of the programs in the construct need to be executed
+	each of the programs in the construct need to be executed
     */
     for (i = 0, j = lst_size(second.u.lis); i < j; i++) {
-        /*
-            the new stack is restored
-        */
-        code(env, unstack_);
-        /*
-            the location where the new stack was saved needs to be pushed
-        */
-        push(env, size1);
-        /*
-            the new stack is pushed on the data stack as a list
-        */
-        code(env, spush_);
-        /*
-            the location where the old stack was saved needs to be pushed
-        */
-        push(env, size2);
-        /*
-            the result on top of the stack is added to the old stack
-        */
-        code(env, push_);
-        node = lst_at(second.u.lis, i);
-        prog(env, node.u.lis);
+	/*
+	    the new stack is restored
+	*/
+	code(env, unstack_);
+	/*
+	    the location where the new stack was saved needs to be pushed
+	*/
+	push(env, size1);
+	/*
+	    the new stack is pushed on the data stack as a list
+	*/
+	code(env, spush_);
+	/*
+	    the location where the old stack was saved needs to be pushed
+	*/
+	push(env, size2);
+	/*
+	    the result on top of the stack is added to the old stack
+	*/
+	code(env, push_);
+	node = lst_at(second.u.lis, i);
+	prog(env, node.u.lis);
     }
     /*
-        the location where the new stack is saved needs to be pushed
+	the location where the new stack is saved needs to be pushed
     */
     push(env, size1);
     /*
-        the new stack is then saved at a location in the code stack
+	the new stack is then saved at a location in the code stack
     */
     code(env, cpush_);
     /*
-        this new stack first needs to be pushed as a list
+	this new stack first needs to be pushed as a list
     */
     code(env, stack_);
     /*
-        the first program is executed
+	the first program is executed
     */
     prog(env, first.u.lis);
+#endif
 }
 #endif

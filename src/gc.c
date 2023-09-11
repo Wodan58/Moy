@@ -1,7 +1,7 @@
 /*
     module  : gc.c
-    version : 1.2
-    date    : 09/04/23
+    version : 1.3
+    date    : 09/11/23
 */
 #ifndef GC_C
 #define GC_C
@@ -12,7 +12,8 @@ Initiates garbage collection.
 */
 void gc_(pEnv env)
 {
+#ifndef COMPILER
     GC_gcollect();
-    env->nothing++;
+#endif
 }
 #endif
