@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.9
- *  date    : 09/11/23
+ *  version : 1.10
+ *  date    : 09/12/23
  */
 #include "globals.h"
 
@@ -114,15 +114,14 @@ next:
 	       is the part of the string after the first \0. The nick name
 	       should be equal to the filename of the operator.
 */
-PUBLIC char *nickname(int ch)
+PRIVATE char *nickname(int ch)
 {
     char *str;
     OpTable *tab;
 
     tab = readtable(ch);
     str = tab->name;
-    ch = *str;
-    if (isalnum(ch) || strchr(" ()-=_", ch))
+    if ((ch = *str) == '_' || isalpha(ch))
 	return str;
     while (*str)
 	str++;

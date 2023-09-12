@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.15
-    date    : 09/11/23
+    version : 1.16
+    date    : 09/12/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -221,7 +221,6 @@ typedef struct OpTable {
 PUBLIC int arity(pEnv env, NodeList *quot, int num);
 /* eval.c */
 PUBLIC void exeterm(pEnv env, NodeList *list);
-PUBLIC char *nickname(int ch);
 PUBLIC char *showname(int i);
 PUBLIC int operindex(proc_t proc);
 PUBLIC char *cmpname(proc_t proc);
