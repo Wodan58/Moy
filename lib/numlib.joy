@@ -10,14 +10,11 @@ LIBRA
     even == 2 rem null;
     odd == even not;
     prime ==
-	[dup 2 =]
-	[pop true]
-	[2
-	[over over dup * > ord 2 pick 2 pick rem and]
-	[succ]
+	2
+	[ over over dup * > ord 2 pick 2 pick rem and ]
+	[ succ ]
 	while
-#	dup * < ;
-	rem null not] ifte;
+	dup * < ;
 
 (* functions *)
 

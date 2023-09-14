@@ -1,7 +1,7 @@
 /*
     module  : plus.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/14/23
 */
 #ifndef PLUS_C
 #define PLUS_C
@@ -88,7 +88,7 @@ void plus_(pEnv env)
 		    num1 = -num1;
 		    num2 = -num2;
 		}
-		num = num1 + num2;
+		num = num1 + num2; /* unsigned addition, possible wrap around */
 		if (num < num1 || num < num2) { /* test overflow */
 		    first.u.str = num2big(num1);
 		    second.u.str = num2big(num2);

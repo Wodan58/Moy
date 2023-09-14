@@ -54,27 +54,6 @@ _MSC_VER
 Special instructions on behalf of the Microsoft C compiler are guarded by these
 defines.
 
-REMEMBER_FILENAME
------------------
-
-In error reporting, the filename is not mentioned. The line where an error
-occurred is shown, followed by a line that contains a `^`, followed by an
-error message. That is presumably enough. But in case of many more files
-in the future, it might become necessary to mention the filename where the
-error occurred. That is when this define will be needed. This define can now
-be used, because file and line are reported when this define is enabled.
-
-SIGNAL_HANDLING
----------------
-
-If `gc.c` is used instead of the BDW garbage collector, this define offers the
-possibility to catch a segment violation and print a user-selected error
-message. The use of this feature is not recommended, because it prevents during
-debugging to pinpoint the exact location where the error occurred. Also `gc.c`
-is not recommended, as it is slower than the BDW garbage collector and the
-extra dependency is overcome by building from source by the Microsoft compiler
-or installing the BDW package in other environments.
-
 JVERSION
 --------
 
@@ -83,49 +62,6 @@ whether it is a Release build, and what the version number is. The version
 happens to be always 1.0 and whether it is a Release build or not can be seen
 by executing `ccmake .`. That program reads the latest CMakeCache.txt and
 reports about the options available therein.
-
-BDW_GARBAGE_COLLECTOR
----------------------
-
-The BDW garbage collector creates an extra dependency, but if it can be
-installed system wide, it is easy enough to link against it. It is faster than
-`gc.c`. The interface is kept the same, except that initialization was
-different. The `gc.c` needs to know what the top of the stack is, that is why
-it receives the address of argc through a global variable.
-
-CORRECT_INTERN_LOOKUP
----------------------
-
-This is a check that was originally not present in Joy. The check makes sure
-that a name that is interned constitutes a valid identifier. If not, printing
-the name may look very odd. In a colored version of Joy that could be remedied
-by giving symbols their own color, but as it is, it may be better to prevent
-illegal names.
-
-SEARCH_EXEC_DIRECTORY
----------------------
-
-This is an extension that allows sloppy locations of `usrlib.joy` and other
-libraries. The aim is to make library files available without copying them to
-a host of other directories. The original only looks in the current working
-directory. That may prevent out-of-source builds in CMake.
-
-USE_SNPRINTF
-------------
-
-Snprintf calculates the size of the buffer that is needed by printf. It makes
-the use of printf safer. The downside is that snprintf is not available in the
-ANSI standard. Even so, it might be beneficial to use this define when snprintf
-is available.
-
-WIN32
------
-
-Static analyzers point to various flaws in the source code, such as the use of
-`gmtime` and `localtime`, that should be replaced by `_r` functions. Ok, but
-the new functions are not available on the Windows platform. That is why this
-define is there. Maybe it should be replaced by a USE_R_FUNCTIONS define.
-This define is no longer needed.
 
 SOURCE_DATE_EPOCH
 -----------------
@@ -146,12 +82,6 @@ YYDEBUG
 
 When activated, this define allows the user to see the parse tree, as
 maintained by bison. A `-y` command flag is also required.
-
-COSMO
------
-
-Compiling against the cosmopolitan library seems attractive, but the
-combination of cosmopolitan and the BDW garbage collector may be difficult.
 
 ALARM
 -----
@@ -193,15 +123,15 @@ remaining option, -h, cannot be disabled.
 Implementation details
 ======================
 
-About the implementation: the aim is to not disturb the language. That means
-that all tests in the test2 directory and all examples in the lib directory
-should behave exactly as in the reference implementation of Joy.
+About the implementation: the aim is to leave the language untouched. That
+means that all tests in the test2 directory and all examples in the lib
+directory should behave exactly as in the reference implementation of Joy.
 
 What is different in this implementation is the use of vectors instead of
-linked lists and the absence of recursion. There are exceptions: `get` and
+linked lists and the stackless recursion. There are exceptions: `get` and
 `fget` use readfactor that may call readterm, that calls readfactor.
 
-The big advantage of not using recursion is in the size of data structures that
+The big advantage of stackless recursion is in the size of data structures that
 can be handled. A program that builds a list of integers looks like this:
 
     echo '1 100000 from-to-list.' | build/joy.exe
@@ -212,12 +142,18 @@ collector that causes the stack overflow. `Joy` has Cheney's algorithm
 implemented, that is not recursive but still fails because `from-to-list` makes
 use of `linrec` and `linrec` recurses.
 
-This implementation does not use recursion and so succeeds where other
-implementations fail. There is also a downside: function calling is slower.
+This implementation is stackless and so succeeds where other implementations
+fail. There is also a downside: function calling is slower.
 
-Summary
-=======
+Benchmark
+---------
 
-Linked lists are not good engineering. Recursion is not good engineering.
-Dynamic memory is not good engineering. Ok, this implementation uses dynamic
-memory. Lots of it.
+Implementation|fib (time)|lst (size)
+---|---|---
+42minjoy|1m12|
+joy0|38|13395
+Joy|1m25|43052
+joy1|3m37|72883
+Moy|2m3|10000000
+
+Moy is after all not the slowest implementation.

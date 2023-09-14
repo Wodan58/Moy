@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.14
- *  date    : 09/11/23
+ *  version : 1.16
+ *  date    : 09/14/23
  */
 #include "globals.h"
 
@@ -135,7 +135,7 @@ PRIVATE void options(void)
     printf("  -v : do not print a copyright notice\n");
 #endif
 #ifdef OVERWRITE
-    printf("  -w : suppress warnings about overwriting builtin\n");
+    printf("  -w : suppress warnings: overwriting, arities\n");
 #endif
 #if YYDEBUG
     printf("  -y : print a trace of parser execution\n");
@@ -259,8 +259,7 @@ PRIVATE int my_main(int argc, char **argv)
     env.undeferror = INIUNDEFERROR;
     inilinebuffer(env.filename);
     inisymboltable(&env);
-    if (setjmp(begin) == SIGSEGV) /* return here after error or abort */
-	quit_(&env); /* do not continue after SIGSEGV */
+    setjmp(begin); /* return here after error or abort */
     lst_resize(env.prog, 0);
     if (mustinclude) {
 	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
@@ -273,7 +272,6 @@ int main(int argc, char **argv)
 {
     int (*volatile m)(int, char **) = my_main;
 
-    signal(SIGSEGV, abortexecution_);
     GC_INIT();
     return (*m)(argc, argv);
 }
