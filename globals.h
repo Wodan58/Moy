@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.16
-    date    : 09/12/23
+    version : 1.17
+    date    : 09/15/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -206,7 +206,7 @@ typedef struct Env {
     unsigned char tracegc;
     unsigned char debugging;
     unsigned char overwrite;
-    unsigned char nothing;
+    unsigned char compiling;
 } Env;
 
 typedef struct OpTable {
@@ -219,6 +219,9 @@ typedef struct OpTable {
 /* Public procedures: */
 /* arty.c */
 PUBLIC int arity(pEnv env, NodeList *quot, int num);
+/* comp.c */
+PUBLIC void initcompile(pEnv env);
+PUBLIC void compileprog(pEnv env, NodeList *list);
 /* eval.c */
 PUBLIC void exeterm(pEnv env, NodeList *list);
 PUBLIC char *showname(int i);

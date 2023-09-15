@@ -1,7 +1,7 @@
 /*
     module  : maxint.c
-    version : 1.5
-    date    : 09/12/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef MAXINT_C
 #define MAXINT_C

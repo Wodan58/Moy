@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef NOT_C
 #define NOT_C
@@ -12,7 +12,6 @@ Y is the complement of set X, logical negation for truth values.
 */
 void not_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, NOT);
@@ -26,10 +25,10 @@ void not_(pEnv env)
     case INTEGER_:
 	node.u.num = !node.u.num;
 	node.op = BOOLEAN_;
+	break;
     default:
 	break;
     }
     lst_push(env->stck, node);
-#endif
 }
 #endif

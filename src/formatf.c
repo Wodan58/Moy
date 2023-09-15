@@ -1,7 +1,7 @@
 /*
     module  : formatf.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef FORMATF_C
 #define FORMATF_C
@@ -15,7 +15,6 @@ with maximum width I and precision J.
 */
 PRIVATE void formatf_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third, fourth;
     char format[6], *result;
     int leng;
@@ -33,6 +32,5 @@ PRIVATE void formatf_(pEnv env)
     first.u.str = result;
     first.op = STRING_;
     lst_push(env->stck, first);
-#endif
 }
 #endif

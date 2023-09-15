@@ -1,7 +1,7 @@
 /*
     module  : fpush.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef FPUSH_C
 #define FPUSH_C
@@ -13,7 +13,6 @@ If the top of the data stack is true, add the element to the aggregate.
 */
 void fpush_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     Node test, jump, elem, node;
 
@@ -30,6 +29,7 @@ void fpush_(pEnv env)
 
 	case STRING_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    i = strlen(node.u.str);
 	    node.u.str[i++] = elem.u.num;
 	    node.u.str[i] = 0;
@@ -37,11 +37,12 @@ void fpush_(pEnv env)
 
 	case SET_:
 	    node.u.set |= ((int64_t)1 << elem.u.num);
+	    break;
+
 	default:
 	    break;
 	}
 	lst_assign(env->prog, jump.u.num, node); /* write node */
     }
-#endif
 }
 #endif

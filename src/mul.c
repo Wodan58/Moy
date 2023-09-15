@@ -1,7 +1,7 @@
 /*
     module  : mul.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef MUL_C
 #define MUL_C
@@ -12,7 +12,6 @@ Integer K is the product of integers I and J.  Also supports float.
 */
 void mul_(pEnv env)
 {
-#ifndef COMPILER
     int sign1, sign2;
     Node first, second;
     int64_t num, num1, num2;
@@ -103,6 +102,5 @@ void mul_(pEnv env)
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

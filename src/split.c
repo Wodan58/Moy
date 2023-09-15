@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -12,7 +12,6 @@ Uses test B to split aggregate A into sametype aggregates A1 and A2.
 */
 void split_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     unsigned size;
     Node aggr, list, node, temp;
@@ -65,6 +64,7 @@ void split_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	temp.u.str = GC_strdup(aggr.u.str);
 	temp.u.str[0] = 0;
 	lst_push(env->prog, temp);
@@ -134,9 +134,10 @@ void split_(pEnv env)
 		*/
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

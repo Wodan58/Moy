@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef WHILE_C
 #define WHILE_C
@@ -12,7 +12,6 @@ While executing B yields true executes D.
 */
 void while_(pEnv env)
 {
-#ifndef COMPILER
     int size;
     Node test, body;
 
@@ -47,6 +46,5 @@ void while_(pEnv env)
 	push the test of the while
     */
     prog(env, test.u.lis);
-#endif
 }
 #endif

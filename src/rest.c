@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef REST_C
 #define REST_C
@@ -12,7 +12,6 @@ R is the non-empty aggregate A with its first member removed.
 */
 void rest_(pEnv env)
 {
-#ifndef COMPILER
     int i = 0;
     Node node, temp;
 
@@ -29,6 +28,7 @@ void rest_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.u.str = GC_strdup(++node.u.str);  
 	lst_push(env->stck, node);
 	break;
@@ -38,9 +38,10 @@ void rest_(pEnv env)
 	    i++;
 	node.u.set &= ~((int64_t)1 << i);
 	lst_push(env->stck, node);
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

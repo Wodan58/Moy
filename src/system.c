@@ -1,7 +1,7 @@
 /*
     module  : system.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef SYSTEM_C
 #define SYSTEM_C
@@ -14,12 +14,10 @@ When that has finished, the process returns to Joy.
 */
 void system_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, STRTOD);
     node = lst_pop(env->stck);
     system(node.u.str);
-#endif
 }
 #endif

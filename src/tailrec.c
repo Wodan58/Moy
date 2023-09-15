@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef TAILREC_C
 #define TAILREC_C
@@ -13,7 +13,6 @@ Else executes R1, recurses.
 */
 void tailrec_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size1, size2;
     Node first, second, third;
 
@@ -66,6 +65,5 @@ void tailrec_(pEnv env)
 	push the test of the tailrec
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

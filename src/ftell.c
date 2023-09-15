@@ -1,7 +1,7 @@
 /*
     module  : ftell.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef FTELL_C
 #define FTELL_C
@@ -12,7 +12,6 @@ I is the current position of stream S.
 */
 void ftell_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, FGET);
@@ -20,6 +19,5 @@ void ftell_(pEnv env)
     node.u.num = ftell(node.u.fil);
     node.op = INTEGER_;
     lst_push(env->stck, node);    
-#endif
 }
 #endif

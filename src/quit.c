@@ -1,7 +1,7 @@
 /*
     module  : quit.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef QUIT_C
 #define QUIT_C

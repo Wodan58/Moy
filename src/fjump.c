@@ -1,7 +1,7 @@
 /*
     module  : fjump.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef FJUMP_C
 #define FJUMP_C
@@ -13,7 +13,6 @@ If the top of the stack was false, jump to the location in the program stack.
 */
 void fjump_(pEnv env)
 {
-#ifndef COMPILER
     Node test, jump;
 
     PARM(1, ANYTYPE);
@@ -21,6 +20,5 @@ void fjump_(pEnv env)
     jump = lst_pop(env->prog);
     if (!test.u.num)
 	lst_resize(env->prog, jump.u.num);
-#endif
 }
 #endif

@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.7
-    date    : 08/26/23
+    version : 1.9
+    date    : 09/15/23
 */
 #include "globals.h"
 %}
@@ -25,6 +25,7 @@
 %token <str> BIGNUM_		12
 %token <str> USR_PRIME_		13
 %token <proc> ANON_PRIME_	14
+%token <str> USR_STRING_	15
 
 %type <num> char_or_int
 %type <set> opt_set set
@@ -118,7 +119,10 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 				node.u.ent = env->location;
 				node.op = USR_;
 			    } else {
-				node.u.proc = ent.u.proc;
+				if (env->compiling)
+				    node.u.str = ent.name;
+				else
+				    node.u.proc = ent.u.proc;
 				node.op = ANON_FUNCT_;
 			    }
 			    lst_init(list);

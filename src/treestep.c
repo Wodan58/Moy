@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef TREESTEP_C
 #define TREESTEP_C
@@ -12,7 +12,6 @@ Recursively traverses leaves of tree T, executes P for each leaf.
 */
 void treestep_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     NodeList *tree = 0;
     Node list, node, temp;
@@ -37,6 +36,5 @@ void treestep_(pEnv env)
 	    }
 	}
     }
-#endif
 }
 #endif

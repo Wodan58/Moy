@@ -1,7 +1,7 @@
 /*
     module  : swapd.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef SWAPD_C
 #define SWAPD_C
@@ -12,7 +12,6 @@ As if defined by:   swapd  ==  [swap] dip
 */
 void swapd_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third;
 
     PARM(3, ANYTYPE);
@@ -22,6 +21,5 @@ void swapd_(pEnv env)
     lst_push(env->stck, second);
     lst_push(env->stck, first);
     lst_push(env->stck, third);
-#endif
 }
 #endif

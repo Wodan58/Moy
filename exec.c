@@ -1,7 +1,7 @@
 /*
  *  module  : exec.c
- *  version : 1.1
- *  date    : 09/11/23
+ *  version : 1.2
+ *  date    : 09/15/23
  */
 #include "globals.h"
 
@@ -13,6 +13,12 @@ PUBLIC void execute(pEnv env, NodeList *list)
 {
     Node node;
 
+#ifdef COMPILING
+    if (env->compiling) {
+	compileprog(env, list);
+	return;
+    }
+#endif
     exeterm(env, list);
     if (lst_size(env->stck)) {
 	if (env->autoput == 2)

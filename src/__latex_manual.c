@@ -1,7 +1,7 @@
 /*
     module  : __latex_manual.c
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef __LATEX_MANUAL_C
 #define __LATEX_MANUAL_C
@@ -15,10 +15,7 @@ but without the head and tail.
 */
 void __latex_manual_(pEnv env)
 {
-#ifndef COMPILER
-#ifndef RUNTIME
     make_manual(2);
-#endif
-#endif
+    /* nothing */
 }
 #endif

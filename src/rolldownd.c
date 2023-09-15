@@ -1,6 +1,6 @@
 /*
     module  : rolldownd.c
-    version : 1.4
+    version : 1.5
     date    : 
 */
 #ifndef ROLLDOWND_C
@@ -12,7 +12,6 @@ As if defined by:   rolldownd  ==  [rolldown] dip
 */
 void rolldownd_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third, fourth;
 
     PARM(4, ANYTYPE);
@@ -24,6 +23,5 @@ void rolldownd_(pEnv env)
     lst_push(env->stck, third);
     lst_push(env->stck, first);
     lst_push(env->stck, fourth);
-#endif
 }
 #endif

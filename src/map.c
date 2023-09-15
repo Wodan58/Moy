@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef MAP_C
 #define MAP_C
@@ -13,7 +13,6 @@ collects results in sametype aggregate B.
 */
 void map_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     unsigned size;
     Node aggr, list, node, temp;
@@ -60,6 +59,7 @@ void map_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	temp.u.str = GC_strdup(aggr.u.str);
 	temp.u.str[0] = 0;
 	lst_push(env->prog, temp);
@@ -117,9 +117,10 @@ void map_(pEnv env)
 		node.u.num = i;
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

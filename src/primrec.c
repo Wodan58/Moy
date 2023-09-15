@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -14,7 +14,6 @@ For aggregate X uses successive members and combines by C for new R.
 */
 void primrec_(pEnv env)
 {
-#ifndef COMPILER
     char *str;
     int i, j = 0;
     Node first, second, third, node;
@@ -34,6 +33,7 @@ void primrec_(pEnv env)
  
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.op = CHAR_;
 	j = strlen(first.u.str);
 	for (str = first.u.str; *str; str++) {
@@ -58,12 +58,13 @@ void primrec_(pEnv env)
 	    node.u.num = i;
 	    lst_push(env->stck, node);
 	}
+	break;
+
     default:
 	break;
     }
     for (i = 0; i < j; i++)
 	prog(env, third.u.lis);
     prog(env, second.u.lis);
-#endif
 }
 #endif

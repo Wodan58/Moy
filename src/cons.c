@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef CONS_C
 #define CONS_C
@@ -12,7 +12,6 @@ Aggregate B is A with a new member X (first member for sequences).
 */
 void cons_(pEnv env)
 {
-#ifndef COMPILER
     Node elem, aggr, node;
 
     PARM(2, CONS);
@@ -28,6 +27,7 @@ void cons_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.u.str = GC_malloc_atomic(strlen(aggr.u.str) + 2);
 	node.u.str[0] = elem.u.num;
 	strcpy(&node.u.str[1], aggr.u.str);
@@ -38,11 +38,10 @@ void cons_(pEnv env)
 	break;
 
     default:
-	node.u.lis = 0;
+	node = aggr;
 	break;
     }
     node.op = aggr.op;
     lst_push(env->stck, node);
-#endif
 }
 #endif

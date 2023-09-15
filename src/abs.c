@@ -1,7 +1,7 @@
 /*
     module  : abs.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef ABS_C
 #define ABS_C
@@ -13,7 +13,6 @@ or float N2 is the absolute value (0.0 ..) of float N1.
 */
 void abs_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -23,6 +22,5 @@ void abs_(pEnv env)
     else
 	node.u.num = llabs(node.u.num);
     lst_push(env->stck, node);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : frexp.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef FREXP_C
 #define FREXP_C
@@ -13,7 +13,6 @@ Unless F = 0, 0.5 <= abs(G) < 1.0.
 */
 PRIVATE void frexp_(pEnv env)
 {
-#ifndef COMPILER
     int exp;
     Node node;
 
@@ -28,6 +27,5 @@ PRIVATE void frexp_(pEnv env)
     node.u.num = exp;
     node.op = INTEGER_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : rem.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef REM_C
 #define REM_C
@@ -12,7 +12,6 @@ Integer K is the remainder of dividing I by J.  Also supports float.
 */
 void rem_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, REM);
@@ -45,6 +44,5 @@ void rem_(pEnv env)
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

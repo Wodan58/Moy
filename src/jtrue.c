@@ -1,7 +1,7 @@
 /*
     module  : jtrue.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef JTRUE_C
 #define JTRUE_C
@@ -13,7 +13,6 @@ is true, jump to that location.
 */
 void jtrue_(pEnv env)
 {
-#ifndef COMPILER
     Node test, jump;
 
     PARM(1, ANYTYPE);
@@ -23,6 +22,5 @@ void jtrue_(pEnv env)
 	lst_resize(env->prog, jump.u.num);
 	code(env, true_);
     }
-#endif
 }
 #endif

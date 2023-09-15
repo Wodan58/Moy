@@ -1,7 +1,7 @@
 /*
     module  : at.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef AT_C
 #define AT_C
@@ -12,7 +12,6 @@ X (= A[I]) is the member of A at position I.
 */
 void at_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node elem, aggr, node;
 
@@ -27,6 +26,7 @@ void at_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.u.num = aggr.u.str[elem.u.num];
 	node.op = CHAR_;
 	lst_push(env->stck, node);
@@ -43,9 +43,10 @@ void at_(pEnv env)
 		}
 		j--;
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : and.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef AND_C
 #define AND_C
@@ -12,7 +12,6 @@ Z is the intersection of sets X and Y, logical conjunction for truth values.
 */
 void and_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANDORXOR);
@@ -27,10 +26,10 @@ void and_(pEnv env)
     case INTEGER_:
 	first.u.num = first.u.num && second.u.num;
 	first.op = BOOLEAN_;
+	break;
     default:
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

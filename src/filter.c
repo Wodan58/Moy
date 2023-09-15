@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef FILTER_C
 #define FILTER_C
@@ -12,7 +12,6 @@ Uses test B to filter aggregate A producing sametype aggregate A1.
 */
 void filter_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     unsigned size;
     Node aggr, list, node;
@@ -63,6 +62,7 @@ void filter_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.u.str = GC_strdup(aggr.u.str);
 	node.u.str[0] = 0;
 	lst_push(env->prog, node);
@@ -128,9 +128,10 @@ void filter_(pEnv env)
 		*/
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

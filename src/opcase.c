@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef OPCASE_C
 #define OPCASE_C
@@ -12,7 +12,6 @@ Indexing on type of X, returns the list [Xs].
 */
 void opcase_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     Node node, aggr, elem, temp;
 
@@ -39,6 +38,5 @@ void opcase_(pEnv env)
 	}
     }
     lst_push(env->stck, node);
-#endif
 }
 #endif

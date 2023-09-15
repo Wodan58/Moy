@@ -1,7 +1,7 @@
 /*
     module  : fgets.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef FGETS_C
 #define FGETS_C
@@ -12,7 +12,6 @@ L is the next available line (as a string) from stream S.
 */
 void fgets_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
     char *buf;
     size_t leng, size = INPLINEMAX;
@@ -29,6 +28,5 @@ void fgets_(pEnv env)
     node.u.str = buf;
     node.op = STRING_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef DROP_C
 #define DROP_C
@@ -12,7 +12,6 @@ Aggregate B is the result of deleting the first N elements of A.
 */
 void drop_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node aggr, elem, node;
 
@@ -33,6 +32,7 @@ void drop_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	j = strlen(aggr.u.str);
 	if (elem.u.num >= j)
 	    node.u.str = "";
@@ -52,11 +52,13 @@ void drop_(pEnv env)
 		else
 		    j--;
 	    }
+	break;
+
     default:
+	node = aggr;
 	break;
     }
     node.op = aggr.op;
     lst_push(env->stck, node);
-#endif
 }
 #endif

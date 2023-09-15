@@ -1,7 +1,7 @@
 /*
     module  : condlinrec.c
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef CONDLINREC_C
 #define CONDLINREC_C
@@ -17,9 +17,7 @@ For the latter executes R1, recurses, executes R2.
 */
 void condlinrec_(pEnv env)
 {
-#ifndef COMPILER
     PARM(1, CASE);
     condnestrec_(env);
-#endif
 }
 #endif

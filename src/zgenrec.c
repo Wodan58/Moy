@@ -1,7 +1,7 @@
 /*
     module  : zgenrec.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef ZGENREC_C
 #define ZGENREC_C
@@ -13,7 +13,6 @@ Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */
 void zgenrec_(pEnv env)
 {
-#ifndef COMPILER
     int i, j, size;
     unsigned size1, size2;
     Node first, second, third, aggr, node;
@@ -85,6 +84,5 @@ void zgenrec_(pEnv env)
 	push the test of genrec
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

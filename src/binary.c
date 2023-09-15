@@ -1,7 +1,7 @@
 /*
     module  : binary.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef BINARY_C
 #define BINARY_C
@@ -14,7 +14,6 @@ exactly two are removed from the stack.
 */
 void binary_(pEnv env)
 {
-#ifndef COMPILER
     Node node, temp;
 
     PARM(3, DIP);
@@ -30,6 +29,5 @@ void binary_(pEnv env)
     lst_push(env->prog, temp);
 
     prog(env, node.u.lis);
-#endif
 }
 #endif

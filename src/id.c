@@ -1,7 +1,7 @@
 /*
     module  : id.c
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef ID_C
 #define ID_C
@@ -13,8 +13,6 @@ Any program of the form  P id Q  is equivalent to just  P Q.
 */
 void id_(pEnv env)
 {
-#ifndef COMPILER
-/* do nothing */
-#endif
+/* nothing */
 }
 #endif

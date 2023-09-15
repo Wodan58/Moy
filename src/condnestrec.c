@@ -1,7 +1,7 @@
 /*
     module  : condnestrec.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef CONDNESTREC_C
 #define CONDNESTREC_C
@@ -16,7 +16,6 @@ consecutive [Ri] (n > 3 would be exceptional.)
 */
 void condnestrec_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size, size2;
     int i, j, k, l, limit;
     Node aggr, elem, node;
@@ -72,6 +71,5 @@ void condnestrec_(pEnv env)
 	    prog(env, node.u.lis);
 	}
     }
-#endif
 }
 #endif

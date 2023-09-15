@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -12,7 +12,6 @@
 OK 2280  equal  :  DDA	T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
-#ifndef COMPILER
 PRIVATE int compatible(int first, int second)
 {
     switch (first) {
@@ -38,11 +37,13 @@ PRIVATE int compatible(int first, int second)
     case USR_:
     case ANON_FUNCT_:
     case STRING_:
+    case USR_STRING_:
 	switch (second) {
 	case USR_:
 	case ANON_FUNCT_:
 	case STRING_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    return 1;
 
 	default:
@@ -61,11 +62,14 @@ PRIVATE int compatible(int first, int second)
 	case STRING_:
 	case FLOAT_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    return 1;
 
 	default:
 	    return 0;
 	}
+	break;
+
     default:
 	break;
     }
@@ -115,11 +119,9 @@ PRIVATE int is_equal(pEnv env, Node first, Node second)
     }
     return 1; /* equal */
 }
-#endif
 
 void equal_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANYTYPE);
@@ -128,6 +130,5 @@ void equal_(pEnv env)
     first.u.num = is_equal(env, first, second);
     first.op = BOOLEAN_;
     lst_push(env->stck, first);
-#endif
 }
 #endif

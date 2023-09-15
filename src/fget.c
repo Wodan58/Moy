@@ -1,7 +1,7 @@
 /*
     module  : fget.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef FGET_C
 #define FGET_C
@@ -12,8 +12,6 @@ OK 3180  fget  :  A	S  ->  S F
 */
 void fget_(pEnv env)
 {
-#ifndef COMPILER
-#ifndef RUNTIME
     Node node;
 
     PARM(1, FGET);
@@ -39,7 +37,5 @@ void fget_(pEnv env)
 	lst_push(env->stck, node);
 	break;
     }
-#endif
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : ldexp.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef LDEXP_C
 #define LDEXP_C
@@ -12,7 +12,6 @@ G is F times 2 to the Ith power.
 */
 void ldexp_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, LDEXP);
@@ -22,6 +21,5 @@ void ldexp_(pEnv env)
 			second.u.num);
     first.op = FLOAT_;
     lst_push(env->stck, first);
-#endif
 }
 #endif

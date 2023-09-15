@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef UNARY2_C
 #define UNARY2_C
@@ -12,8 +12,7 @@ Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.
 */
 void unary2_(pEnv env)
-{
-#ifndef COMPILER /*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
+{	/*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
     unsigned size;
     Node node, temp;
 
@@ -49,6 +48,5 @@ void unary2_(pEnv env)
 	Calculate Y' on top of the stack
     */
     prog(env, node.u.lis);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef FOPEN_C
 #define FOPEN_C
@@ -13,7 +13,6 @@ and stream object S is pushed; if the open fails, file:NULL is pushed.
 */
 void fopen_(pEnv env)
 {
-#ifndef COMPILER
     Node path, mode, node;
 
     PARM(2, FOPEN);
@@ -22,6 +21,5 @@ void fopen_(pEnv env)
     node.u.fil = fopen(path.u.str, mode.u.str);
     node.op = FILE_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

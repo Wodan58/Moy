@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
@@ -12,7 +12,6 @@ R and F are the rest and the first of non-empty aggregate A.
 */
 void unswons_(pEnv env)
 {
-#ifndef COMPILER
     int i = 0;
     Node node, temp;
 
@@ -30,6 +29,7 @@ void unswons_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	temp.u.num = *node.u.str++;
 	node.u.str = GC_strdup(node.u.str);  
 	lst_push(env->stck, node);
@@ -45,9 +45,10 @@ void unswons_(pEnv env)
 	lst_push(env->stck, node);
 	temp.op = INTEGER_;
 	lst_push(env->stck, temp);
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

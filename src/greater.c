@@ -1,7 +1,7 @@
 /*
     module  : greater.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef GREATER_C
 #define GREATER_C
@@ -15,7 +15,6 @@ Tests whether X greater than Y.  Also supports float.
 */
 void greater_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, node;
 
     PARM(2, ANYTYPE);
@@ -28,6 +27,5 @@ void greater_(pEnv env)
 	node.u.num = Compare(env, first, second) > 0;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

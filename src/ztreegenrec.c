@@ -1,7 +1,7 @@
 /*
     module  : ztreegenrec.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef ZTREEGENREC_C
 #define ZTREEGENREC_C
@@ -13,7 +13,6 @@ Else executes O2 and then [[[O1] [O2] C] treegenrec] C.
 */
 void ztreegenrec_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size;
     Node list, node;
 
@@ -45,6 +44,5 @@ void ztreegenrec_(pEnv env)
 	list = lst_back(list.u.lis);	/* list = [O1] */
 	prog(env, list.u.lis);
     }
-#endif
 }
 #endif

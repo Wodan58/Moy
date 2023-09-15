@@ -1,7 +1,7 @@
 /*
     module  : manual.h
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef MANUAL_H
 #define MANUAL_H
@@ -24,8 +24,6 @@
 	printf("\n\n");							\
     }
 
-#ifndef COMPILER
-#ifndef RUNTIME
 PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 {
     int i;
@@ -79,6 +77,4 @@ PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
     if (HTML)
 	printf("\n</DL>\n</HTML>\n");
 }
-#endif
-#endif
 #endif

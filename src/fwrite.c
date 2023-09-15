@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef FWRITE_C
 #define FWRITE_C
@@ -12,7 +12,6 @@ A list of integers are written as bytes to the current position of stream S.
 */
 void fwrite_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     unsigned char *buf;
     Node node, elem, temp;
@@ -26,6 +25,5 @@ void fwrite_(pEnv env)
 	buf[i] = temp.u.num;
     }
     fwrite(buf, 1, lst_size(elem.u.lis), node.u.fil);
-#endif
 }
 #endif

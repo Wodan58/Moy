@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef INTERN_C
 #define INTERN_C
@@ -12,8 +12,6 @@ Pushes the item whose name is "sym".
 */
 PRIVATE void intern_(pEnv env)
 {
-#ifndef COMPILER
-#ifndef RUNTIME
     Node node;
     Entry ent;
 
@@ -29,7 +27,5 @@ PRIVATE void intern_(pEnv env)
 	node.u.proc = ent.u.proc;
     }
     lst_push(env->stck, node);
-#endif
-#endif
 }
 #endif

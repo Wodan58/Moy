@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef NULL_C
 #define NULL_C
@@ -12,7 +12,6 @@ Tests for empty aggregate X or zero numeric.
 */
 void null_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -35,6 +34,7 @@ void null_(pEnv env)
 	node.u.num = !node.u.set;
 	break;
     case STRING_:
+    case USR_STRING_:
 	node.u.num = !*node.u.str;
 	break;
     case LIST_:
@@ -52,6 +52,5 @@ void null_(pEnv env)
     }
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

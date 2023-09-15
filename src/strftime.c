@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
@@ -15,7 +15,6 @@ using string S1 and pushes the result S2.
 */
 void strftime_(pEnv env)
 {
-#ifndef COMPILER
     struct tm t;
     Node first, second, node;
 
@@ -27,6 +26,5 @@ void strftime_(pEnv env)
     strftime(node.u.str, INPLINEMAX, second.u.str, &t);
     node.op = STRING_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

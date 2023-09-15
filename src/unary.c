@@ -1,7 +1,7 @@
 /*
     module  : unary.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef UNARY_C
 #define UNARY_C
@@ -14,7 +14,6 @@ exactly one is removed from the stack.
 */
 void unary_(pEnv env)
 {
-#ifndef COMPILER
     Node node, temp;
 
     PARM(2, DIP);
@@ -42,6 +41,5 @@ void unary_(pEnv env)
 	the list parameter is installed as the stack
     */
     prog(env, node.u.lis);
-#endif
 }
 #endif

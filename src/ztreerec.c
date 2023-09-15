@@ -1,7 +1,7 @@
 /*
     module  : ztreerec.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef ZTREEREC_C
 #define ZTREEREC_C
@@ -12,7 +12,6 @@ T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
 void ztreerec_(pEnv env)
 {
-#ifndef COMPILER
     Node list, node;
 
     PARM(2, DIP);
@@ -39,6 +38,5 @@ void ztreerec_(pEnv env)
 	list = lst_back(list.u.lis);	/* list = [O] */
 	prog(env, list.u.lis);
     }
-#endif
 }
 #endif

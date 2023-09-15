@@ -1,7 +1,7 @@
 /*
     module  : _help.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef _HELP_C
 #define _HELP_C
@@ -12,7 +12,6 @@ Lists all hidden symbols in library and then all hidden builtin symbols.
 */
 void _help_(pEnv env)
 {
-#ifndef COMPILER
     Entry ent;
     int name_length, column = 0, i = vec_size(env->symtab);
 
@@ -29,6 +28,5 @@ void _help_(pEnv env)
 	}
     }
     putchar('\n');
-#endif
 }
 #endif

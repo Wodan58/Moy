@@ -1,7 +1,7 @@
 /*
     module  : linrec.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef LINREC_C
 #define LINREC_C
@@ -13,7 +13,6 @@ Else executes R1, recurses, executes R2.
 */
 void linrec_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size1, size2;
     Node first, second, third, fourth;
 
@@ -75,6 +74,5 @@ void linrec_(pEnv env)
 	push the test of linrec
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

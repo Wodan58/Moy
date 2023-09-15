@@ -1,7 +1,7 @@
 /*
     module  : stack.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef STACK_C
 #define STACK_C
@@ -12,13 +12,11 @@ Pushes the stack as a list.
 */
 PRIVATE void stack_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     lst_init(node.u.lis);
     lst_copy(node.u.lis, env->stck);
     node.op = LIST_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

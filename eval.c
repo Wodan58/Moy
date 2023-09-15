@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.10
- *  date    : 09/12/23
+ *  version : 1.11
+ *  date    : 09/14/23
  */
 #include "globals.h"
 
@@ -94,6 +94,7 @@ next:
 	case FLOAT_:
 	case FILE_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    lst_push(env->stck, node);
 	    break;
 #if 0

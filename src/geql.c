@@ -1,7 +1,7 @@
 /*
     module  : geql.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef GEQL_C
 #define GEQL_C
@@ -15,7 +15,6 @@ Tests whether X greater than or equal to Y.  Also supports float.
 */
 void geql_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, node;
 
     PARM(2, ANYTYPE);
@@ -27,6 +26,5 @@ void geql_(pEnv env)
 	node.u.num = Compare(env, first, second) >= 0;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

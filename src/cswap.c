@@ -1,7 +1,7 @@
 /*
     module  : cswap.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef CSWAP_C
 #define CSWAP_C
@@ -13,7 +13,6 @@ Swap that element with the top of the data stack.
 */
 void cswap_(pEnv env)
 {
-#ifndef COMPILER
     Node elem, jump, node;
 
     PARM(1, ANYTYPE);
@@ -22,6 +21,5 @@ void cswap_(pEnv env)
     elem = lst_at(env->prog, jump.u.num);
     lst_assign(env->prog, jump.u.num, node); /* write node */
     lst_push(env->stck, elem);
-#endif
 }
 #endif

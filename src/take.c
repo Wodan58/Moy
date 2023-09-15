@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef TAKE_C
 #define TAKE_C
@@ -12,7 +12,6 @@ Aggregate B is the result of retaining just the first N elements of A.
 */
 void take_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node elem, aggr, node;
 
@@ -34,6 +33,7 @@ void take_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	j = strlen(aggr.u.str);
 	if (elem.u.num >= j)
 	    node = aggr;
@@ -53,10 +53,12 @@ void take_(pEnv env)
 		elem.u.num--;
 	    }
 	node.op = SET_;
+	break;
+
     default:
+	node = aggr;
 	break;
     }
     lst_push(env->stck, node);
-#endif
 }
 #endif

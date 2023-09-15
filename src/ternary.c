@@ -1,7 +1,7 @@
 /*
     module  : ternary.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef TERNARY_C
 #define TERNARY_C
@@ -14,7 +14,6 @@ exactly three are removed from the stack.
 */
 void ternary_(pEnv env)
 {
-#ifndef COMPILER
     Node list, temp;
 
     PARM(4, DIP);
@@ -44,6 +43,5 @@ void ternary_(pEnv env)
 	execute program
     */
     prog(env, list.u.lis);
-#endif
 }
 #endif

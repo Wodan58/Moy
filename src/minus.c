@@ -1,7 +1,7 @@
 /*
     module  : minus.c
-    version : 1.5
-    date    : 09/14/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef MINUS_C
 #define MINUS_C
@@ -13,7 +13,6 @@ Also supports float.
 */
 void minus_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 #ifdef USE_BIGNUM_ARITHMETIC
     int sign1, sign2;
@@ -93,6 +92,5 @@ void minus_(pEnv env)
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

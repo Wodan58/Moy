@@ -1,7 +1,7 @@
 /*
     module  : put.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef PUT_C
 #define PUT_C
@@ -12,7 +12,6 @@ Writes X to output, pops X off stack.
 */
 void put_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -24,6 +23,5 @@ void put_(pEnv env)
     } else
 	writefactor(env, node, stdout);
     putchar(' ');
-#endif
 }
 #endif

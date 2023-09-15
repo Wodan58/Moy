@@ -1,7 +1,7 @@
 /*
     module  : binrec.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef BINREC_C
 #define BINREC_C
@@ -14,7 +14,6 @@ then executes R2 to combine their results.
 */
 void binrec_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size1, size2, size3;
     Node first, second, third, fourth;
 
@@ -97,6 +96,5 @@ void binrec_(pEnv env)
 	push the test of binrec
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

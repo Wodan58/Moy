@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.9
- *  date    : 09/11/23
+ *  version : 1.10
+ *  date    : 09/14/23
  */
 #include "globals.h"
 
@@ -94,6 +94,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	    fprintf(fp, "file:%p", node.u.fil);
 	break;
     case BIGNUM_:
+    case USR_STRING_:
 	fprintf(fp, "%s", node.u.str);
 	break;
 #if 0

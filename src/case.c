@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef CASE_C
 #define CASE_C
@@ -14,7 +14,6 @@ Indexing on the value of X, execute the matching Y.
 */
 void case_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     Node node, aggr, elem;
 
@@ -36,6 +35,5 @@ void case_(pEnv env)
 	}
     }
     prog(env, node.u.lis);
-#endif
 }
 #endif

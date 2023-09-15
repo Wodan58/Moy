@@ -1,7 +1,7 @@
 /*
     module  : name.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef NAME_C
 #define NAME_C
@@ -13,8 +13,6 @@ for literals sym the result string is its type.
 */
 void name_(pEnv env)
 {
-#ifndef COMPILER
-#ifndef RUNTIME
     Node node;
 
     PARM(1, ANYTYPE);
@@ -27,7 +25,5 @@ void name_(pEnv env)
 	node.u.str = showname(node.op);
     node.op = STRING_;
     lst_push(env->stck, node);
-#endif
-#endif
 }
 #endif

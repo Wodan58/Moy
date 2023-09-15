@@ -1,7 +1,7 @@
 #
 #   module  : prim.sh
-#   version : 1.2
-#   date    : 09/11/23
+#   version : 1.3
+#   date    : 09/14/23
 #
 #   Generate prim.c and prim.h
 #   The directory needs to be given as parameter.
@@ -29,5 +29,8 @@ then
   rm -f $1/prim.c $1/prim.h
   mv prim.tmp $1/prim.c
   sed 's/.*\//void /;s/\..*/_(pEnv env);/' <$1/prim.c >$1/prim.h
-  touch $1/otab.c
+  if [ -f $1/otab.c ]
+  then
+    touch $1/otab.c
+  fi
 fi

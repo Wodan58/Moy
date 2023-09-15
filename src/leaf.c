@@ -1,7 +1,7 @@
 /*
     module  : leaf.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef LEAF_C
 #define LEAF_C
@@ -12,7 +12,6 @@ Tests whether X is not a list.
 */
 void leaf_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -20,6 +19,5 @@ void leaf_(pEnv env)
     node.u.num = node.op != LIST_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

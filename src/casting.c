@@ -1,7 +1,7 @@
 /*
     module  : casting.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef CASTING_C
 #define CASTING_C
@@ -12,7 +12,6 @@ OK 3170  casting  :  DDA 	X Y  ->  Z
 */
 void casting_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANYTYPE);
@@ -20,6 +19,5 @@ void casting_(pEnv env)
     first = lst_pop(env->stck);
     first.op = second.op;
     lst_push(env->stck, first);
-#endif
 }
 #endif

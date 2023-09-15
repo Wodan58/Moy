@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -12,7 +12,6 @@ Sequence U is the concatenation of sequences S and T.
 */
 void concat_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node first, second, result;
 
@@ -35,6 +34,7 @@ void concat_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	i = strlen(first.u.str);
 	j = strlen(second.u.str);
 	result.u.str = GC_malloc_atomic(i + j + 1);
@@ -44,11 +44,13 @@ void concat_(pEnv env)
 
     case SET_:
 	result.u.set = first.u.set | second.u.set;
+	break;
+
     default:
+	result = first;
 	break;
     }
     result.op = first.op;
     lst_push(env->stck, result);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -12,7 +12,6 @@ Tests whether aggregate X has 0 or 1 members, or numeric 0 or 1.
 */
 void small_(pEnv env)
 {
-#ifndef COMPILER
     int i = 0;
     Node node;
 
@@ -43,6 +42,7 @@ void small_(pEnv env)
 	    node.u.num = 1;
 	break;
     case STRING_:
+    case USR_STRING_:
 	node.u.num = strlen(node.u.str) < 2;
 	break;
     case LIST_:
@@ -62,6 +62,5 @@ void small_(pEnv env)
     }
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : help.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef HELP_C
 #define HELP_C
@@ -14,7 +14,6 @@ Then lists all primitives of raw Joy.
 */
 void help_(pEnv env)
 {
-#ifndef COMPILER
     Entry ent;
     int name_length, column = 0, i = vec_size(env->symtab);
 
@@ -31,6 +30,5 @@ void help_(pEnv env)
 	}
     }
     putchar('\n');
-#endif
 }
 #endif

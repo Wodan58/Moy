@@ -1,7 +1,7 @@
 /*
     module  : of.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef OF_C
 #define OF_C
@@ -12,7 +12,6 @@ X (= A[I]) is the I-th member of aggregate A.
 */
 void of_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node elem, aggr, node;
 
@@ -27,6 +26,7 @@ void of_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.u.num = aggr.u.str[elem.u.num];
 	node.op = CHAR_;
 	lst_push(env->stck, node);
@@ -43,9 +43,10 @@ void of_(pEnv env)
 		}
 		j--;
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

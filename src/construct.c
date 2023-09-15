@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
@@ -12,8 +12,7 @@ Saves state of stack and then executes [P].
 Then executes each [Pi] to give Ri pushed onto saved stack.
 */
 PRIVATE void construct_(pEnv env)
-{
-#ifndef COMPILER /* [P] [[P1] [P2] ..] -> X1 X2 ..	*/
+{	/* [P] [[P1] [P2] ..] -> X1 X2 ..	*/
     int i, j;
     unsigned size1, size2;
     Node first, second, node;
@@ -79,6 +78,5 @@ PRIVATE void construct_(pEnv env)
 	the first program is executed
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

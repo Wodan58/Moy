@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -14,7 +14,6 @@ OK 3190  filetime  :  DA 	F  ->  T
 */
 void filetime_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
     struct stat buf;
 
@@ -26,6 +25,5 @@ void filetime_(pEnv env)
 	node.u.num = buf.st_mtime;
     node.op = INTEGER_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

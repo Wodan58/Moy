@@ -1,7 +1,7 @@
 /*
     module  : cleave.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef CLEAVE_C
 #define CLEAVE_C
@@ -11,8 +11,7 @@ OK 2580  cleave  :  DDDAA	X [P1] [P2]  ->  R1 R2
 Executes P1 and P2, each with X on top, producing two results.
 */
 PRIVATE void cleave_(pEnv env)
-{
-#ifndef COMPILER /*  X [P1] [P2] cleave ==>  X1 X2	*/
+{	/*  X [P1] [P2] cleave ==>  X1 X2	*/
     unsigned size;
     Node first, second;
 
@@ -52,6 +51,5 @@ PRIVATE void cleave_(pEnv env)
 	push the first program, producing X1
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -12,8 +12,6 @@ Gives brief help on each symbol S in the list.
 */
 void helpdetail_(pEnv env)
 {
-#ifndef COMPILER
-#ifndef RUNTIME
     Entry ent;
     OpTable *tab;
     int i, opcode;
@@ -42,7 +40,5 @@ void helpdetail_(pEnv env)
 		printf("\n");
 	}
     }
-#endif
-#endif
 }
 #endif

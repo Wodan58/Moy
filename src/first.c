@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef FIRST_C
 #define FIRST_C
@@ -12,7 +12,6 @@ F is the first member of the non-empty aggregate A.
 */
 void first_(pEnv env)
 {
-#ifndef COMPILER
     int i = 0;
     Node node, temp;
 
@@ -26,6 +25,7 @@ void first_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	temp.u.num = *node.u.str;
 	temp.op = CHAR_;
 	lst_push(env->stck, temp);
@@ -37,9 +37,10 @@ void first_(pEnv env)
 	temp.u.num = i;
 	temp.op = INTEGER_;
 	lst_push(env->stck, temp);
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

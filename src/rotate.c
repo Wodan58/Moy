@@ -1,7 +1,7 @@
 /*
     module  : rotate.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef ROTATE_C
 #define ROTATE_C
@@ -12,7 +12,6 @@ Interchanges X and Z.
 */
 void rotate_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third;
 
     PARM(3, ANYTYPE);
@@ -22,6 +21,5 @@ void rotate_(pEnv env)
     lst_push(env->stck, third);
     lst_push(env->stck, second);
     lst_push(env->stck, first);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : nullary.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef NULLARY_C
 #define NULLARY_C
@@ -13,7 +13,6 @@ No matter how many parameters this consumes, none are removed from the stack.
 */
 void nullary_(pEnv env)
 {
-#ifndef COMPILER
     Node list, node;
 
     PARM(1, DIP);
@@ -40,6 +39,5 @@ void nullary_(pEnv env)
 	execute program
     */
     prog(env, list.u.lis);
-#endif
 }
 #endif

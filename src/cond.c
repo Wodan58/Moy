@@ -1,7 +1,7 @@
 /*
     module  : cond.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef COND_C
 #define COND_C
@@ -13,7 +13,6 @@ If no Bi yields true, executes default D.
 */
 void cond_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     unsigned size1, size2;
     Node aggr, elem, node;
@@ -69,6 +68,5 @@ void cond_(pEnv env)
 	*/
 	prog(env, node.u.lis);
     }
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : dupd.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef DUPD_C
 #define DUPD_C
@@ -12,7 +12,6 @@ As if defined by:   dupd  ==  [dup] dip
 */
 void dupd_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANYTYPE);
@@ -21,6 +20,5 @@ void dupd_(pEnv env)
     lst_push(env->stck, first);
     lst_push(env->stck, first);
     lst_push(env->stck, second);
-#endif
 }
 #endif

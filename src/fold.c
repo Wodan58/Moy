@@ -1,7 +1,7 @@
 /*
     module  : fold.c
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef FOLD_C
 #define FOLD_C
@@ -13,10 +13,8 @@ and combines with binary operator P to produce value V.
 */
 void fold_(pEnv env)
 {
-#ifndef COMPILER
     PARM(3, DIP);
     swapd_(env);
     step_(env);
-#endif
 }
 #endif

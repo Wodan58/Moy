@@ -1,7 +1,7 @@
 /*
     module  : log10.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef LOG10_C
 #define LOG10_C
@@ -12,7 +12,6 @@ G is the common logarithm of F.
 */
 void log10_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, UFLOAT);
@@ -20,6 +19,5 @@ void log10_(pEnv env)
     node.u.dbl = log10(node.op == FLOAT_ ? node.u.dbl : (double)node.u.num);
     node.op = FLOAT_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

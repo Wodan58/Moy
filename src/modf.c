@@ -1,7 +1,7 @@
 /*
     module  : modf.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef MODF_C
 #define MODF_C
@@ -13,7 +13,6 @@ G is the fractional part and H is the integer part
 */
 void modf_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
     double exp;
 
@@ -25,6 +24,5 @@ void modf_(pEnv env)
     node.u.dbl = exp;
     node.op = FLOAT_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

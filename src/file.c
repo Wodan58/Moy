@@ -1,7 +1,7 @@
 /*
     module  : file.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef FILE_C
 #define FILE_C
@@ -12,7 +12,6 @@ Tests whether F is a file.
 */
 void file_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
@@ -20,6 +19,5 @@ void file_(pEnv env)
     node.u.num = node.op == FILE_;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

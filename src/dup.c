@@ -1,7 +1,7 @@
 /*
     module  : dup.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef DUP_C
 #define DUP_C
@@ -12,12 +12,10 @@ Pushes an extra copy of X onto stack.
 */
 void dup_(pEnv env)
 {
-#ifndef COMPILER
     Node node;
 
     PARM(1, ANYTYPE);
     node = lst_back(env->stck);
     lst_push(env->stck, node);
-#endif
 }
 #endif

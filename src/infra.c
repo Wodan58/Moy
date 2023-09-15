@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef INFRA_C
 #define INFRA_C
@@ -14,7 +14,6 @@ and after execution of P the top of stack becomes the first element of L2.
 */
 void infra_(pEnv env)
 {
-#ifndef COMPILER
     Node aggr, list, node;
 
     PARM(2, INFRA);
@@ -47,6 +46,5 @@ void infra_(pEnv env)
 	the list parameter is installed as the stack
     */
     lst_copy(env->stck, aggr.u.lis);
-#endif
 }
 #endif

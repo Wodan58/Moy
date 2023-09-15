@@ -1,7 +1,7 @@
 /*
     module  : pick.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef PICK_C
 #define PICK_C
@@ -12,7 +12,6 @@ OK 3220  pick  :  DA	X Y Z 2  ->  X Y Z X
 */
 void pick_(pEnv env)
 {
-#ifndef COMPILER
     int size;
     Node node, temp;
 
@@ -23,6 +22,5 @@ void pick_(pEnv env)
 	temp = lst_at(env->stck, size - node.u.num - 1);
 	lst_push(env->stck, temp);
     }
-#endif
 }
 #endif

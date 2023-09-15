@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef UNARY4_C
 #define UNARY4_C
@@ -11,8 +11,7 @@ OK 2520  unary4  :  DDDDDAAAA	X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
 Executes P four times, with Xi, returns Ri (i = 1..4).
 */
 PRIVATE void unary4_(pEnv env)
-{
-#ifndef COMPILER /*  X Y Z W [P]  unary4    ==>  X' Y' Z' W'	*/
+{	/*  X Y Z W [P]  unary4    ==>  X' Y' Z' W'	*/
     unsigned size1, size2, size3;
     Node param1, param2, param3, node;
 
@@ -94,6 +93,5 @@ PRIVATE void unary4_(pEnv env)
 	Calculate X' on top of the stack
     */
     prog(env, node.u.lis);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : branch.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef BRANCH_C
 #define BRANCH_C
@@ -12,7 +12,6 @@ If B is true, then executes T else executes F.
 */
 void branch_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third;
 
     PARM(3, WHILE);
@@ -21,6 +20,5 @@ void branch_(pEnv env)
     first = lst_pop(env->stck);
     first = first.u.num ? second : third;
     prog(env, first.u.lis);
-#endif
 }
 #endif

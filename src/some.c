@@ -1,7 +1,7 @@
 /*
     module  : some.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef SOME_C
 #define SOME_C
@@ -12,7 +12,6 @@ Applies test B to members of aggregate A, X = true if some pass.
 */
 void some_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     unsigned size;
     Node aggr, list, node;
@@ -54,6 +53,7 @@ void some_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.op = CHAR_;
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    /*
@@ -106,9 +106,10 @@ void some_(pEnv env)
 		node.u.num = i;
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

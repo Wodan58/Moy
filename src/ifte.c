@@ -1,7 +1,7 @@
 /*
     module  : ifte.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef IFTE_C
 #define IFTE_C
@@ -12,7 +12,6 @@ Executes B. If that yields true, then executes T else executes F.
 */
 void ifte_(pEnv env)
 {
-#ifndef COMPILER
     unsigned size1, size2;
     Node first, second, third;
 
@@ -61,6 +60,5 @@ void ifte_(pEnv env)
 	push the test of the ifte
     */
     prog(env, first.u.lis);
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : gmtime.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef GMTIME_C
 #define GMTIME_C
@@ -15,7 +15,6 @@ isdst is false; weekday is 1 = Monday ... 7 = Sunday.
 */
 void gmtime_(pEnv env)
 {
-#ifndef COMPILER
     static int daynums[] = { 7, 1, 2, 3, 4, 5, 6 };
     struct tm *t;
     time_t timval;
@@ -49,6 +48,5 @@ void gmtime_(pEnv env)
     lst_push(temp.u.lis, node);
     temp.op = LIST_;
     lst_push(env->stck, temp);
-#endif
 }
 #endif

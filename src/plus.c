@@ -1,7 +1,7 @@
 /*
     module  : plus.c
-    version : 1.7
-    date    : 09/14/23
+    version : 1.8
+    date    : 09/15/23
 */
 #ifndef PLUS_C
 #define PLUS_C
@@ -13,7 +13,6 @@ Also supports float.
 */
 void plus_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 #ifdef USE_BIGNUM_ARITHMETIC
     int sign1, sign2;
@@ -109,6 +108,5 @@ void plus_(pEnv env)
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

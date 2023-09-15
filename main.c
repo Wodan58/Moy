@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.16
- *  date    : 09/14/23
+ *  version : 1.17
+ *  date    : 09/15/23
  */
 #include "globals.h"
 
@@ -125,6 +125,9 @@ PRIVATE void options(void)
     printf("the filename parameter cannot start with '-' or a digit\n");
     printf("Options:\n");
     printf("  -h : print this help text and exit\n");
+#ifdef COMPILING
+    printf("  -c : compile joy source into C source\n");
+#endif
 #ifdef TRACING
     printf("  -d : print a trace of program execution\n");
 #endif
@@ -194,6 +197,9 @@ PRIVATE int my_main(int argc, char **argv)
 	    for (j = 1; argv[i][j]; j++)
 		switch (argv[i][j]) {
 		case 'h' : helping = 1; break;
+#ifdef COMPILING
+		case 'c' : env.compiling = 1; break;
+#endif
 #ifdef TRACING
 		case 'd' : env.debugging = 1; break;
 #endif
@@ -259,6 +265,9 @@ PRIVATE int my_main(int argc, char **argv)
     env.undeferror = INIUNDEFERROR;
     inilinebuffer(env.filename);
     inisymboltable(&env);
+#ifdef COMPILING
+    initcompile(&env);
+#endif
     setjmp(begin); /* return here after error or abort */
     lst_resize(env.prog, 0);
     if (mustinclude) {

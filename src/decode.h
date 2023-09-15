@@ -1,7 +1,7 @@
 /*
     module  : decode.h
-    version : 1.3
-    date    : 09/11/23
+    version : 1.4
+    date    : 09/15/23
 */
 #ifndef DECODE_H
 #define DECODE_H

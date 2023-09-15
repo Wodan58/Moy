@@ -1,7 +1,7 @@
 /*
     module  : or.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef OR_C
 #define OR_C
@@ -12,7 +12,6 @@ Z is the union of sets X and Y, logical disjunction for truth values.
 */
 void or_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, ANDORXOR);
@@ -27,10 +26,10 @@ void or_(pEnv env)
     case INTEGER_:
 	first.u.num = first.u.num || second.u.num;
 	first.op = BOOLEAN_;
+	break;
     default:
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

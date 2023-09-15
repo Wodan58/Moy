@@ -1,7 +1,7 @@
 /*
     module  : ifstring.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef IFSTRING_C
 #define IFSTRING_C
@@ -12,7 +12,6 @@ If X is a string, executes T else executes E.
 */
 void ifstring_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, node;
 
     PARM(3, WHILE);
@@ -21,6 +20,5 @@ void ifstring_(pEnv env)
     node = lst_back(env->stck);
     node = node.op == STRING_ ? first : second;
     prog(env, node.u.lis);
-#endif
 }
 #endif

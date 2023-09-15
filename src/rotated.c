@@ -1,7 +1,7 @@
 /*
     module  : rotated.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef ROTATED_C
 #define ROTATED_C
@@ -12,7 +12,6 @@ As if defined by:   rotated  ==  [rotate] dip
 */
 void rotated_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, third, fourth;
 
     PARM(4, ANYTYPE);
@@ -24,6 +23,5 @@ void rotated_(pEnv env)
     lst_push(env->stck, second);
     lst_push(env->stck, first);
     lst_push(env->stck, fourth);
-#endif
 }
 #endif

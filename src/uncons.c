@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef UNCONS_C
 #define UNCONS_C
@@ -12,7 +12,6 @@ F and R are the first and the rest of non-empty aggregate A.
 */
 void uncons_(pEnv env)
 {
-#ifndef COMPILER
     int i = 0;
     Node node, temp;
 
@@ -30,6 +29,7 @@ void uncons_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	temp.u.num = *node.u.str++;
 	temp.op = CHAR_;
 	lst_push(env->stck, temp);
@@ -45,9 +45,10 @@ void uncons_(pEnv env)
 	lst_push(env->stck, temp);
 	node.u.set &= ~((int64_t)1 << i);
 	lst_push(env->stck, node);
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

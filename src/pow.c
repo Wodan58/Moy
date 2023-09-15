@@ -1,7 +1,7 @@
 /*
     module  : pow.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef POW_C
 #define POW_C
@@ -12,7 +12,6 @@ H is F raised to the Gth power.
 */
 void pow_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, BFLOAT);
@@ -22,6 +21,5 @@ void pow_(pEnv env)
 		    second.op == FLOAT_ ? second.u.dbl : (double)second.u.num);
     first.op = FLOAT_;
     lst_push(env->stck, first);
-#endif
 }
 #endif

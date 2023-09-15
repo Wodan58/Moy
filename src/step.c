@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef STEP_C
 #define STEP_C
@@ -13,7 +13,6 @@ executes P for each member of A.
 */
 void step_(pEnv env)
 {
-#ifndef COMPILER
     int i, j;
     Node aggr, list, node;
 
@@ -31,6 +30,7 @@ void step_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.op = CHAR_;
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    prog(env, list.u.lis);
@@ -47,9 +47,10 @@ void step_(pEnv env)
 		node.u.num = i;
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

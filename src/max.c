@@ -1,7 +1,7 @@
 /*
     module  : max.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef MAX_C
 #define MAX_C
@@ -12,7 +12,6 @@ N is the maximum of numeric values N1 and N2.  Also supports float.
 */
 void max_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second;
 
     PARM(2, MAXMIN);
@@ -49,6 +48,5 @@ void max_(pEnv env)
 	break;
     }
     lst_push(env->stck, first);
-#endif
 }
 #endif

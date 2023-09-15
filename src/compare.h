@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.9
-    date    : 09/11/23
+    version : 1.11
+    date    : 09/15/23
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -12,7 +12,6 @@
     allowing string compare; FILE can only be compared with FILE; LIST cannot
     be compared with anything.
 */
-#ifndef COMPILER
 PUBLIC int Compare(pEnv env, Node first, Node second)
 {
     FILE *fp1, *fp2;
@@ -45,6 +44,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
 	}
@@ -69,6 +69,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
 	}
@@ -151,6 +152,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	num2 = second.u.num;
 	goto cmpnum;
     case STRING_:
+    case USR_STRING_:
 	name1 = first.u.str;
 	switch (second.op) {
 	case USR_:
@@ -170,6 +172,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
+	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
 	}
@@ -237,15 +240,13 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    num2 = second.u.num;
 	    goto cmpnum;
 	case STRING_:
+	case BIGNUM_:
+	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpbig;
 	case FLOAT_:
 	    name2 = dbl2big(second.u.dbl);
 	    goto cmpbig;
-	case BIGNUM_:
-	    name2 = second.u.str;
-	    goto cmpbig;
-	    break;
 	default:
 	    return 1; /* unequal */
 	}
@@ -265,5 +266,4 @@ cmpbig:
     return num1 < 0 ? -1 : num1 > 0;
 #endif
 }
-#endif
 #endif

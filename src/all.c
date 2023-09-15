@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 09/15/23
 */
 #ifndef ALL_C
 #define ALL_C
@@ -12,7 +12,6 @@ Applies test B to members of aggregate A, X = true if all pass.
 */
 void all_(pEnv env)
 {
-#ifndef COMPILER
     int i;
     unsigned size;
     Node aggr, list, node;
@@ -54,6 +53,7 @@ void all_(pEnv env)
 
     case STRING_:
     case BIGNUM_:
+    case USR_STRING_:
 	node.op = CHAR_;
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    /*
@@ -106,9 +106,10 @@ void all_(pEnv env)
 		node.u.num = i;
 		lst_push(env->prog, node);
 	    }
+	break;
+
     default:
 	break;
     }
-#endif
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : sametype.c
-    version : 1.4
-    date    : 09/11/23
+    version : 1.5
+    date    : 09/15/23
 */
 #ifndef SAMETYPE_C
 #define SAMETYPE_C
@@ -12,7 +12,6 @@ OK 3240  sametype  :  DDA	X Y  ->  B
 */
 void sametype_(pEnv env)
 {
-#ifndef COMPILER
     Node first, second, node;
 
     PARM(2, ANYTYPE);
@@ -24,6 +23,5 @@ void sametype_(pEnv env)
 	node.u.num = first.op == second.op;
     node.op = BOOLEAN_;
     lst_push(env->stck, node);
-#endif
 }
 #endif

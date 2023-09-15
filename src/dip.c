@@ -1,7 +1,7 @@
 /*
     module  : dip.c
-    version : 1.5
-    date    : 09/11/23
+    version : 1.6
+    date    : 09/15/23
 */
 #ifndef DIP_C
 #define DIP_C
@@ -12,7 +12,6 @@ Saves X, executes P, pushes X back.
 */
 PRIVATE void dip_(pEnv env)
 {
-#ifndef COMPILER
     Node list, node;
 
     PARM(2, DIP);
@@ -20,6 +19,5 @@ PRIVATE void dip_(pEnv env)
     node = lst_pop(env->stck);
     prime(env, node);
     prog(env, list.u.lis);
-#endif
 }
 #endif
