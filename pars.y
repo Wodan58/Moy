@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.9
-    date    : 09/15/23
+    version : 1.10
+    date    : 09/18/23
 */
 #include "globals.h"
 %}
@@ -12,6 +12,7 @@
 
 %token MODULE JPRIVATE JPUBLIC EQDEF END
 
+%token <num> UNKNOWN_		1
 %token <str> USR_		2
 %token <proc> ANON_FUNCT_	3
 %token <num> BOOLEAN_		4
@@ -26,6 +27,7 @@
 %token <str> USR_PRIME_		13
 %token <proc> ANON_PRIME_	14
 %token <str> USR_STRING_	15
+%token <lis> USR_LIST_		16
 
 %type <num> char_or_int
 %type <set> opt_set set

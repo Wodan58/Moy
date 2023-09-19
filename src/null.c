@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 09/18/23
 */
 #ifndef NULL_C
 #define NULL_C
@@ -17,12 +17,12 @@ void null_(pEnv env)
     PARM(1, ANYTYPE);
     node = lst_pop(env->stck);
     switch (node.op) {
-    case USR_PRIME_:
     case USR_:
+    case USR_PRIME_:
 	node.u.num = !node.u.ent;
 	break;
-    case ANON_PRIME_:
     case ANON_FUNCT_:
+    case ANON_PRIME_:
 	node.u.num = !node.u.proc;
 	break;
     case BOOLEAN_:
@@ -38,6 +38,7 @@ void null_(pEnv env)
 	node.u.num = !*node.u.str;
 	break;
     case LIST_:
+    case USR_LIST_:
 	node.u.num = !lst_size(node.u.lis);
 	break;
     case FLOAT_:

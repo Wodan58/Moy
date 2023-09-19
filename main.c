@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.17
- *  date    : 09/15/23
+ *  version : 1.19
+ *  date    : 09/19/23
  */
 #include "globals.h"
 
@@ -165,7 +165,6 @@ PRIVATE int my_main(int argc, char **argv)
      *  scan.c after reading EOF on the first input file.
      */
     env.startclock = clock();
-    env.overwrite = INIWARNING;
 #ifdef STATS
     my_atexit(report_clock);
 #endif
@@ -181,13 +180,15 @@ PRIVATE int my_main(int argc, char **argv)
      *  Initialize yyin and other environmental parameters.
      */
     yyin = stdin;
-    env.pathname = argv[0];
     env.filename = "stdin";
-    if ((ptr = strrchr(env.pathname, '/')) != 0)
-	*ptr = 0;
-    else if ((ptr = strrchr(env.pathname, '\\')) != 0)
-	*ptr = 0;
-    else
+    env.overwrite = INIWARNING;
+    if ((ptr = strrchr(env.pathname = argv[0], '/')) != 0) {
+	*ptr++ = 0;
+	argv[0] = ptr;
+    } else if ((ptr = strrchr(env.pathname, '\\')) != 0) {
+	*ptr++ = 0;
+	argv[0] = ptr;
+    } else
 	env.pathname = ".";
     /*
      *  First look for options. They start with -.
@@ -266,7 +267,8 @@ PRIVATE int my_main(int argc, char **argv)
     inilinebuffer(env.filename);
     inisymboltable(&env);
 #ifdef COMPILING
-    initcompile(&env);
+    if (env.compiling)
+	initcompile(&env);
 #endif
     setjmp(begin); /* return here after error or abort */
     lst_resize(env.prog, 0);

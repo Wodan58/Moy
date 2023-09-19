@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.11
-    date    : 09/15/23
+    version : 1.13
+    date    : 09/19/23
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -149,8 +149,32 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	break;
     case SET_:
 	num1 = first.u.num;
-	num2 = second.u.num;
-	goto cmpnum;
+	switch (second.op) {
+	case BOOLEAN_:
+	case CHAR_:
+	case INTEGER_:
+	case SET_:
+	case FLOAT_:
+	    num2 = second.u.num;
+	    goto cmpnum;
+	    break;
+#ifdef USE_BIGNUM_ARITHMETIC
+	case BIGNUM_:
+	    name1 = num2big(num1);
+	    name2 = second.u.str;
+	    goto cmpbig;
+	    break;
+#endif
+	case USR_:
+	case ANON_FUNCT_:
+	case STRING_:
+	case USR_STRING_:
+	case LIST_:
+	case USR_LIST_:
+	default:
+	    return 1; /* unequal */
+	}
+	break;
     case STRING_:
     case USR_STRING_:
 	name1 = first.u.str;
@@ -178,11 +202,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	}
 	break;
     case LIST_:
-	if (second.op == SET_) {
-	    num1 = first.u.num;
-	    num2 = second.u.num;
-	    goto cmpnum;
-	}
+    case USR_LIST_:
 	return 1; /* unequal */
 	break;
     case FLOAT_:
@@ -233,12 +253,9 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    name2 = str;
 	    goto cmpbig;
 	case INTEGER_:
+	case SET_:
 	    name2 = num2big(second.u.num);
 	    goto cmpbig;
-	case SET_:
-	    num1 = first.u.num;
-	    num2 = second.u.num;
-	    goto cmpnum;
 	case STRING_:
 	case BIGNUM_:
 	case USR_STRING_:
@@ -250,8 +267,10 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	default:
 	    return 1; /* unequal */
 	}
-#endif
 	break;
+#endif
+    default:
+	return 1; /* unequal */
     }
 cmpnum:
     return num1 < num2 ? -1 : num1 > num2;

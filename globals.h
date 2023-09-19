@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.17
-    date    : 09/15/23
+    version : 1.18
+    date    : 09/18/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -38,7 +38,6 @@
 #endif
 
 /* configure		     */
-#define UNKNOWN_ 1	     /* extra datatype, unknown to parser */
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
@@ -215,6 +214,11 @@ typedef struct OpTable {
     proc_t proc;
     char *arity, *messg1, *messg2;
 } OpTable;
+
+typedef struct table_t {
+    proc_t proc;
+    char *name;
+} table_t;
 
 /* Public procedures: */
 /* arty.c */

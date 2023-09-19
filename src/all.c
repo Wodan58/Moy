@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 09/19/23
 */
 #ifndef ALL_C
 #define ALL_C
@@ -12,7 +12,7 @@ Applies test B to members of aggregate A, X = true if all pass.
 */
 void all_(pEnv env)
 {
-    int i;
+    int64_t i, j;
     unsigned size;
     Node aggr, list, node;
 
@@ -26,7 +26,7 @@ void all_(pEnv env)
     aggr = lst_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
+	for (i = 0, j = lst_size(aggr.u.lis); i < j; i++) {
 	    /*
 		push the location of the result type
 	    */
@@ -82,8 +82,8 @@ void all_(pEnv env)
 
     case SET_:
 	node.op = INTEGER_;
-	for (i = 0; i < SETSIZE; i++)
-	    if (aggr.u.set & ((int64_t)1 << i)) {
+	for (i = 0, j = 1; i < SETSIZE; i++, j <<= 1)
+	    if (aggr.u.set & j) {
 		/*
 		    push the location of the result type
 		*/

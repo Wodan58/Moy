@@ -1,7 +1,7 @@
 /*
     module  : typeof.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 09/19/23
 */
 #ifndef TYPEOF_C
 #define TYPEOF_C
@@ -16,6 +16,8 @@ void typeof_(pEnv env)
 
     PARM(1, ANYTYPE);
     node = lst_pop(env->stck);
+    if (node.op == USR_STRING_ || node.op == USR_LIST_)
+	node.op = USR_;
     node.u.num = node.op;
     node.op = INTEGER_;
     lst_push(env->stck, node);    

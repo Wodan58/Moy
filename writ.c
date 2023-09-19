@@ -1,9 +1,11 @@
 /*
  *  module  : writ.c
- *  version : 1.10
- *  date    : 09/14/23
+ *  version : 1.12
+ *  date    : 09/19/23
  */
 #include "globals.h"
+
+static int spacechar = ' ';
 
 /*
     writefactor - print a factor in readable format to stdout.
@@ -31,7 +33,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	fprintf(fp, "%s", opername(node.u.proc));
+	fprintf(fp, "%s", cmpname(node.u.proc));
 	if (node.op == ANON_PRIME_)
 	    putc('\'', fp);
 	break;
@@ -57,7 +59,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 		fprintf(fp, "%d", i);
 		node.u.set &= ~((int64_t)1 << i);
 		if (node.u.set)
-		    putc(' ', fp);
+		    putc(spacechar, fp);
 	    }
 	putc('}', fp);
 	break;
@@ -97,6 +99,18 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     case USR_STRING_:
 	fprintf(fp, "%s", node.u.str);
 	break;
+/*
+    The symbol table is not present in compiled code, but the body of
+    a quotation is. The body can be printed in a special way so as to
+    distinguish it from a normal list.
+*/
+    case USR_LIST_:
+	if (spacechar == ' ') {
+	    spacechar = ',';
+	    writeterm(env, node.u.lis, fp);
+	    spacechar = ' ';
+	}
+	break;
 #if 0
     default:
 	yyerror(env, "a factor cannot begin with this symbol");
@@ -116,7 +130,7 @@ PRIVATE void spacing(NodeList *stack, Node node, FILE *fp)
 	if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 	    ;
 	else
-	    putc(' ', fp);
+	    putc(spacechar, fp);
     }
 }
 
@@ -143,7 +157,7 @@ PRIVATE void writing(pEnv env, NodeList *stack, FILE *fp)
 	    for (i = 0, j = lst_size(node.u.lis); i < j; i++) {
 		temp = lst_at(node.u.lis, i);
 		lst_push(stack, temp);
-	    }	    
+	    }
 	    temp.u.num = '[';
 	    temp.op = CHAR_;
 	    lst_push(stack, temp);
