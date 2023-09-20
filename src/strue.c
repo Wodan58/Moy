@@ -1,17 +1,17 @@
 /*
-    module  : jtrue.c
-    version : 1.5
-    date    : 09/15/23
+    module  : strue.c
+    version : 1.6
+    date    : 09/19/23
 */
-#ifndef JTRUE_C
-#define JTRUE_C
+#ifndef STRUE_C
+#define STRUE_C
 
 /**
-OK 3410  (jtrue)  :  N	->
+OK 3410  (strue)  :  N	->
 Pop the jump location from the program stack. If the top of the data stack
 is true, jump to that location.
 */
-void jtrue_(pEnv env)
+void strue_(pEnv env)
 {
     Node test, jump;
 

@@ -1,6 +1,6 @@
 /*
     module  : some.c
-    version : 1.8
+    version : 1.9
     date    : 09/19/23
 */
 #ifndef SOME_C
@@ -34,7 +34,7 @@ void some_(pEnv env)
 	    /*
 		add an instruction that builds the result type
 	    */
-	    code(env, jtrue_);
+	    code(env, strue_);
 	    /*
 		save and restore the stack, if needed
 	    */
@@ -63,7 +63,7 @@ void some_(pEnv env)
 	    /*
 		add an instruction that builds the result type
 	    */
-	    code(env, jtrue_);
+	    code(env, strue_);
 	    /*
 		save and restore the stack, if needed
 	    */
@@ -91,7 +91,7 @@ void some_(pEnv env)
 		/*
 		    add an instruction that builds the result type
 		*/
-		code(env, jtrue_);
+		code(env, strue_);
 		/*
 		    save and restore the stack, if needed
 		*/
