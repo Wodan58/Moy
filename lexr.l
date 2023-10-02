@@ -1,7 +1,7 @@
 %{
 /*
     module  : lexr.l
-    version : 1.12
+    version : 1.13
     date    : 10/02/23
 */
 #include "globals.h"
@@ -141,7 +141,7 @@ MODULE[ \t]*	return MODULE;
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
-^\$.*		system(yytext + 1);
+^\$.*		(void)system(yytext + 1);
 ^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
 ^\%PUT.*	{ fflush(stdout); fprintf(stderr, "%s\n", yytext + 4); }
 ^\%LISTING.*	env->echoflag = atoi(yytext + 8);

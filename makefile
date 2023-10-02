@@ -1,6 +1,6 @@
 #
 #   module  : makefile
-#   version : 1.2
+#   version : 1.3
 #   date    : 10/02/23
 #
 .POSIX:
