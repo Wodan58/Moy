@@ -13,7 +13,7 @@ Changes
 -------
 
 Directives borrowed from [42minjoy](https://github.com/Wodan58/42minjoy) are:
-`%INCLUDE`, `%PUT`, and `%LISTING`.
+`%INCLUDE`, `%LISTING`, `%PUT`, and `%TRACE`.
 The build system requires new builtins in only one location: as a .c file in
 the src-directory.
 

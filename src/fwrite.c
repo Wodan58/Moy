@@ -1,7 +1,7 @@
 /*
     module  : fwrite.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef FWRITE_C
 #define FWRITE_C
@@ -17,13 +17,14 @@ void fwrite_(pEnv env)
     Node node, elem, temp;
 
     PARM(2, FWRITE);
-    elem = lst_pop(env->stck);
-    node = lst_back(env->stck);
-    buf = GC_malloc_atomic(lst_size(elem.u.lis));
-    for (i = 0, j = lst_size(elem.u.lis); i < j; i++) {
-	temp = lst_at(elem.u.lis, j - i - 1);
+    env->stck = pvec_pop(env->stck, &elem);
+    node = pvec_lst(env->stck);
+    j = pvec_cnt(elem.u.lis);
+    buf = GC_malloc_atomic(j);
+    for (i = 0; i < j; i++) {
+	temp = pvec_nth(elem.u.lis, j - i - 1);
 	buf[i] = temp.u.num;
     }
-    fwrite(buf, 1, lst_size(elem.u.lis), node.u.fil);
+    fwrite(buf, 1, j, node.u.fil);
 }
 #endif

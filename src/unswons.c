@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
@@ -16,15 +16,15 @@ void unswons_(pEnv env)
     Node node, temp;
 
     PARM(1, FIRST);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     switch (node.op) {
     case LIST_:
-	lst_init(temp.u.lis);
-	lst_shallow_copy(temp.u.lis, node.u.lis);
-	node = lst_pop(temp.u.lis);
+	temp.u.lis = pvec_init();
+	pvec_shallow_copy(temp.u.lis, node.u.lis);
+	temp.u.lis = pvec_pop(temp.u.lis, &node);
 	temp.op = LIST_;
-	lst_push(env->stck, temp);
-	lst_push(env->stck, node);
+	env->stck = pvec_add(env->stck, temp);	/* push remainder */
+	env->stck = pvec_add(env->stck, node);	/* push element */
 	break;
 
     case STRING_:
@@ -32,9 +32,9 @@ void unswons_(pEnv env)
     case USR_STRING_:
 	temp.u.num = *node.u.str++;
 	node.u.str = GC_strdup(node.u.str);  
-	lst_push(env->stck, node);
+	env->stck = pvec_add(env->stck, node);
 	temp.op = CHAR_;
-	lst_push(env->stck, temp);
+	env->stck = pvec_add(env->stck, temp);
 	break;
 
     case SET_:
@@ -42,9 +42,9 @@ void unswons_(pEnv env)
 	    i++;
 	temp.u.num = i;
 	node.u.set &= ~((int64_t)1 << i);
-	lst_push(env->stck, node);
+	env->stck = pvec_add(env->stck, node);
 	temp.op = INTEGER_;
-	lst_push(env->stck, temp);
+	env->stck = pvec_add(env->stck, temp);
 	break;
 
     default:

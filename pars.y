@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.10
-    date    : 09/18/23
+    version : 1.11
+    date    : 10/02/23
 */
 #include "globals.h"
 %}
@@ -12,7 +12,7 @@
 
 %token MODULE JPRIVATE JPUBLIC EQDEF END
 
-%token <num> UNKNOWN_		1
+%token <num> KEYWORD_		1
 %token <str> USR_		2
 %token <proc> ANON_FUNCT_	3
 %token <num> BOOLEAN_		4
@@ -100,14 +100,14 @@ opt_term : term | /* empty */ { $$ = 0; } ;
 /*
     A term is one or more factors.
 */
-term : term factor { int i, j; for (i = 0, j = lst_size($1); i < j; i++)
-		     lst_push($2, lst_at($1, i)); $$ = $2; }
+term : term factor { int i, j; for (i = 0, j = pvec_cnt($1); i < j; i++)
+		     $2 = pvec_add($2, pvec_nth($1, i)); $$ = $2; }
      | factor ;
 
 /*
     A factor is a constant, or a list, or a set.
 */
-factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
+factor  : USR_      {   Entry ent; Node node;
 			lookup(env, $1);
 			if (!env->location && strchr($1, '.'))
 			    my_error("no such field in module", &@1);
@@ -116,7 +116,7 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 			    /* execute immediate functions at compile time */
 			    if (ent.flags == IMMEDIATE) {
 				(*ent.u.proc)(env);
-				node = lst_pop(env->stck);
+				env->stck = pvec_pop(env->stck, &node);
 			    } else if (ent.is_user) {
 				node.u.ent = env->location;
 				node.op = USR_;
@@ -127,10 +127,8 @@ factor  : USR_      {   NodeList *list = 0; Node node; Entry ent;
 				    node.u.proc = ent.u.proc;
 				node.op = ANON_FUNCT_;
 			    }
-			    lst_init(list);
-			    lst_push(list, node);
+			    $$ = pvec_add(pvec_init(), node);
 			}
-			$$ = list;
 		    }
 	| CHAR_     { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u); }
 	| INTEGER_  { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u); }

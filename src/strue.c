@@ -1,7 +1,7 @@
 /*
     module  : strue.c
-    version : 1.6
-    date    : 09/19/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef STRUE_C
 #define STRUE_C
@@ -16,10 +16,10 @@ void strue_(pEnv env)
     Node test, jump;
 
     PARM(1, ANYTYPE);
-    test = lst_pop(env->stck);
-    jump = lst_pop(env->prog);
-    if (test.u.num != 0) {
-	lst_resize(env->prog, jump.u.num);
+    env->stck = pvec_pop(env->stck, &test);
+    env->prog = pvec_pop(env->prog, &jump);
+    if (test.u.num) {
+	env->prog = pvec_cut(env->prog, jump.u.num);
 	code(env, true_);
     }
 }

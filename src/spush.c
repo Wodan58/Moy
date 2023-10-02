@@ -1,7 +1,7 @@
 /*
     module  : spush.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef SPUSH_C
 #define SPUSH_C
@@ -15,8 +15,8 @@ void spush_(pEnv env)
 {
     Node jump, node;
 
-    jump = lst_pop(env->prog);
-    node = lst_at(env->prog, jump.u.num);
-    lst_push(env->stck, node);
+    env->prog = pvec_pop(env->prog, &jump);
+    node = pvec_nth(env->prog, jump.u.num);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

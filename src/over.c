@@ -1,7 +1,7 @@
 /*
     module  : over.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef OVER_C
 #define OVER_C
@@ -15,7 +15,7 @@ void over_(pEnv env)
     Node node;
 
     PARM(2, ANYTYPE);
-    node = lst_at(env->stck, lst_size(env->stck) - 2);
-    lst_push(env->stck, node);
+    node = pvec_nth(env->stck, pvec_cnt(env->stck) - 2);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

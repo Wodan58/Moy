@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -14,56 +14,53 @@ For aggregate X uses successive members and combines by C for new R.
 */
 void primrec_(pEnv env)
 {
-    char *str;
-    int i, j = 0;
+    int64_t i, j, k = 0;
     Node first, second, third, node;
 
     PARM(3, PRIMREC);
-    third = lst_pop(env->stck);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &third);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     switch (first.op) {
     case LIST_:
-	j = lst_size(first.u.lis);
-	for (i = j - 1; i >= 0; i--) {
-	    node = lst_at(first.u.lis, i);
-	    lst_push(env->stck, node);
-	}
+	k = pvec_cnt(first.u.lis);
+	for (i = k - 1; i >= 0; i--)
+	    env->stck = pvec_add(env->stck, pvec_nth(first.u.lis, i));
 	break;
  
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
 	node.op = CHAR_;
-	j = strlen(first.u.str);
-	for (str = first.u.str; *str; str++) {
-	    node.u.num = *str;
-	    lst_push(env->stck, node);
+	k = strlen(first.u.str);
+	for (i = 0; i < k; i++) {
+	    node.u.num = first.u.str[i];
+	    env->stck = pvec_add(env->stck, node);
 	}
 	break;
 
     case SET_:
 	node.op = INTEGER_;
-	for (j = i = 0; i < SETSIZE; i++)
-	    if (first.u.set & ((int64_t)1 << i)) {
+	for (k = 0, j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
+	    if (first.u.set & j) {
 		node.u.num = i;
-		lst_push(env->stck, node);
-		j++;
+		env->stck = pvec_add(env->stck, node);
+		k++;
 	    }
 	break;
  
     case INTEGER_:
 	node.op = INTEGER_;
-	for (j = i = first.u.num; i > 0; i--) {
+	for (k = i = first.u.num; i > 0; i--) {
 	    node.u.num = i;
-	    lst_push(env->stck, node);
+	    env->stck = pvec_add(env->stck, node);
 	}
 	break;
 
     default:
 	break;
     }
-    for (i = 0; i < j; i++)
+    for (i = 0; i < k; i++)
 	prog(env, third.u.lis);
     prog(env, second.u.lis);
 }

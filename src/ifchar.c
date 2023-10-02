@@ -1,7 +1,7 @@
 /*
     module  : ifchar.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef IFCHAR_C
 #define IFCHAR_C
@@ -15,9 +15,9 @@ void ifchar_(pEnv env)
     Node first, second, node;
 
     PARM(3, WHILE);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
-    node = lst_back(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
+    node = pvec_lst(env->stck);
     node = node.op == CHAR_ ? first : second;
     prog(env, node.u.lis);
 }

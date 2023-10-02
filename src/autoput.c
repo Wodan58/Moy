@@ -1,7 +1,7 @@
 /*
     module  : autoput.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef AUTOPUT_C
 #define AUTOPUT_C
@@ -16,6 +16,6 @@ void autoput_(pEnv env)
 
     node.u.num = env->autoput;
     node.op = INTEGER_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

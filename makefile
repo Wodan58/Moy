@@ -1,19 +1,21 @@
 #
 #   module  : makefile
-#   version : 1.1
-#   date    : 09/11/23
+#   version : 1.2
+#   date    : 10/02/23
 #
 .POSIX:
 .SUFFIXES:
-.PRECIOUS: lexr.c
+.PRECIOUS: pars.c lexr.c
 
 CC = gcc
-CFLAGS = -DNCHECK -DCOPYRIGHT -DJVERSION="\"Release 1.0\"" -O3 -Wall -Wextra -Werror -Wno-unused-parameter
-OBJECTS = arty.o eval.o exec.o lexr.o main.o modl.o otab.o parm.o pars.o \
-	  prog.o read.o repl.o save.o scan.o undo.o util.o writ.o xerr.o ylex.o
+CF = -DNCHECK -DCOPYRIGHT -O3 -Wall -Wextra -Werror -Wno-unused-parameter
+LF = -lm -lgc
+CFLAGS = $(CF) -DCOMP="\"$(CF)\"" -DLINK="\"$(LF)\"" -DVERS="\"Release 1.0\""
+OBJECTS = main.o pars.o lexr.o scan.o repl.o modl.o ylex.o util.o exec.o \
+	  eval.o xerr.o otab.o prog.o writ.o read.o save.o parm.o arty.o
 
 joy: prep $(OBJECTS)
-	$(CC) -o$@ $(OBJECTS) -lm -lgc
+	$(CC) -o$@ $(OBJECTS) $(LF)
 
 $(OBJECTS): globals.h
 

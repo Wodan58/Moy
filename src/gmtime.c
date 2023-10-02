@@ -1,7 +1,7 @@
 /*
     module  : gmtime.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef GMTIME_C
 #define GMTIME_C
@@ -21,32 +21,32 @@ void gmtime_(pEnv env)
     Node node, temp;
 
     PARM(1, UNMKTIME);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     timval = node.u.num;
     t = gmtime(&timval);
-    lst_init(temp.u.lis);
+    temp.u.lis = pvec_init();
     node.u.num = daynums[t->tm_wday];
     node.op = INTEGER_;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_yday;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_isdst;
     node.op = BOOLEAN_;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_sec;
     node.op = INTEGER_;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_min;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_hour;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_mday;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_mon + 1;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     node.u.num = t->tm_year + 1900;
-    lst_push(temp.u.lis, node);
+    temp.u.lis = pvec_add(temp.u.lis, node);
     temp.op = LIST_;
-    lst_push(env->stck, temp);
+    env->stck = pvec_add(env->stck, temp);
 }
 #endif

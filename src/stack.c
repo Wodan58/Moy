@@ -1,7 +1,7 @@
 /*
     module  : stack.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef STACK_C
 #define STACK_C
@@ -14,9 +14,9 @@ PRIVATE void stack_(pEnv env)
 {
     Node node;
 
-    lst_init(node.u.lis);
-    lst_copy(node.u.lis, env->stck);
+    node.u.lis = pvec_init();
+    pvec_copy(node.u.lis, env->stck);
     node.op = LIST_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

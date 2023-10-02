@@ -1,7 +1,7 @@
 /*
     module  : pick.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef PICK_C
 #define PICK_C
@@ -13,14 +13,14 @@ OK 3220  pick  :  DA	X Y Z 2  ->  X Y Z X
 void pick_(pEnv env)
 {
     int size;
-    Node node, temp;
+    Node node;
 
     PARM(1, UNMKTIME);
-    node = lst_pop(env->stck);
-    size = lst_size(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
+    size = pvec_cnt(env->stck);
     if (node.u.num < size) {
-	temp = lst_at(env->stck, size - node.u.num - 1);
-	lst_push(env->stck, temp);
+	node = pvec_nth(env->stck, size - node.u.num - 1);
+	env->stck = pvec_add(env->stck, node);
     }
 }
 #endif

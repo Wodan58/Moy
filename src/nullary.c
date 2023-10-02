@@ -1,7 +1,7 @@
 /*
     module  : nullary.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef NULLARY_C
 #define NULLARY_C
@@ -13,28 +13,17 @@ No matter how many parameters this consumes, none are removed from the stack.
 */
 void nullary_(pEnv env)
 {
-    Node list, node;
+    Node list;
 
     PARM(1, DIP);
     /*
-	replace the new stack with the old stack
-    */
-    code(env, unstack_);
-    /*
-	include the test result in the old stack
-    */
-    code(env, cons_);
-    /*
 	read the program from the stack
     */
-    list = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
     /*
-	restore the old stack after the test
+	the old stack is saved and restored with the new top.
     */
-    lst_init(node.u.lis);
-    lst_copy(node.u.lis, env->stck);
-    node.op = LIST_;
-    lst_push(env->prog, node);
+    save(env, 0, 0, 0);
     /*
 	execute program
     */

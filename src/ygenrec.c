@@ -1,52 +1,52 @@
 /*
-    module  : zgenrec.c
-    version : 1.5
-    date    : 09/15/23
+    module  : ygenrec.c
+    version : 1.7
+    date    : 10/02/23
 */
-#ifndef ZGENREC_C
-#define ZGENREC_C
+#ifndef YGENREC_C
+#define YGENREC_C
 
 /**
 OK 3140  (genrec)  :  DDDDU	[B] [T] [R1] [R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */
-void zgenrec_(pEnv env)
+void ygenrec_(pEnv env)
 {
     int i, j, size;
     unsigned size1, size2;
     Node first, second, third, aggr, node;
 
     PARM(1, DIP);
-    aggr = lst_pop(env->stck); /* item on top of the stack */
-    first = lst_back(aggr.u.lis);
-    size = lst_size(aggr.u.lis);
-    second = lst_at(aggr.u.lis, size - 2);
-    third = lst_at(aggr.u.lis, size - 3);
+    env->stck = pvec_pop(env->stck, &aggr);	/* item on top of the stack */
+    first = pvec_lst(aggr.u.lis);
+    size = pvec_cnt(aggr.u.lis);
+    second = pvec_nth(aggr.u.lis, size - 2);
+    third = pvec_nth(aggr.u.lis, size - 3);
     /*
 	record the jump location after the false branch
     */
-    size2 = lst_size(env->prog);
+    size2 = pvec_cnt(env->prog);
     /*
 	push R2, excluding [B], [T], [R1]
     */
-    for (i = 0, j = lst_size(aggr.u.lis) - 3; i < j; i++)
-	lst_push(env->prog, lst_at(aggr.u.lis, i));
+    for (i = 0, j = pvec_cnt(aggr.u.lis) - 3; i < j; i++)
+	env->prog = pvec_add(env->prog, pvec_nth(aggr.u.lis, i));
 
-    code(env, cons_);
-    code(env, cons_);
+    code(env, cons_);		/* build [[[B] [T] [R1] R2] ygenrec_] */
+    code(env, cons_);		/* build [ygenrec_] */
 
     node.u.lis = 0;
     node.op = LIST_;
-    lst_push(env->prog, node);
+    prime(env, node);
 
-    node.u.proc = zgenrec_;
+    node.u.proc = ygenrec_;
     node.op = ANON_PRIME_;
-    lst_push(env->prog, node);
-
-    node.u.lis = aggr.u.lis;
-    node.op = LIST_;
-    lst_push(env->prog, node);
+    prime(env, node);
+    /*
+	push the item that was on top of the stack
+    */
+    prime(env, aggr);
     /*
 	push R1
     */
@@ -54,7 +54,7 @@ void zgenrec_(pEnv env)
     /*
 	record the jump location before the false branch
     */
-    size1 = lst_size(env->prog);
+    size1 = pvec_cnt(env->prog);
     /*
 	push the jump address onto the program stack
     */
@@ -79,7 +79,7 @@ void zgenrec_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    save(env, first.u.lis, 0);
+    save(env, first.u.lis, 0, 0);
     /*
 	push the test of genrec
     */

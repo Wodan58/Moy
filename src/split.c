@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -12,32 +12,32 @@ Uses test B to split aggregate A into sametype aggregates A1 and A2.
 */
 void split_(pEnv env)
 {
-    int i;
+    int64_t i, j;
     unsigned size;
     Node aggr, list, node, temp;
 
     PARM(2, STEP);
-    list = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &aggr);
     /*
 	register the location of the result aggregate
     */
-    size = lst_size(env->prog);
+    size = pvec_cnt(env->prog);
     /*
 	build a result aggregate of the correct type
     */
     temp.op = aggr.op;
     switch (aggr.op) {
     case LIST_:
-	lst_init(temp.u.lis);
-	lst_push(env->prog, temp);
-	lst_init(temp.u.lis);
-	lst_push(env->prog, temp);
-	for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
+	temp.u.lis = pvec_init();
+	prime(env, temp);
+	temp.u.lis = pvec_init();
+	prime(env, temp);
+	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
 	    /*
 		push the element to be split
 	    */
-	    node = lst_at(aggr.u.lis, i);
+	    node = pvec_nth(aggr.u.lis, i);
 	    prime(env, node);
 	    /*
 		push the location of the result types
@@ -50,7 +50,7 @@ void split_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -67,17 +67,17 @@ void split_(pEnv env)
     case USR_STRING_:
 	temp.u.str = GC_strdup(aggr.u.str);
 	temp.u.str[0] = 0;
-	lst_push(env->prog, temp);
+	prime(env, temp);
 	temp.u.str = GC_strdup(aggr.u.str);
 	temp.u.str[0] = 0;
-	lst_push(env->prog, temp);
+	prime(env, temp);
 	node.op = CHAR_;
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    /*
 		push the element that may be added to the result
 	    */
 	    node.u.num = aggr.u.str[i];
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	    /*
 		push the location of the result types
 	    */
@@ -89,7 +89,7 @@ void split_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -97,22 +97,22 @@ void split_(pEnv env)
 	    /*
 		push the element that may be added to the result
 	    */
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	}
 	break;
 
     case SET_:
 	temp.u.set = 0;
-	lst_push(env->prog, temp);
-	lst_push(env->prog, temp);
+	prime(env, temp);
+	prime(env, temp);
 	node.op = INTEGER_;
-	for (i = 0; i < SETSIZE; i++)
-	    if (aggr.u.set & ((int64_t)1 << i)) {
+	for (j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
+	    if (aggr.u.set & j) {
 		/*
 		    push the element that may be added to the result
 		*/
 		node.u.num = i;
-		lst_push(env->prog, node);
+		prime(env, node);
 		/*
 		    push the location of the result types
 		*/
@@ -124,7 +124,7 @@ void split_(pEnv env)
 		/*
 		    save and restore the stack, if needed
 		*/
-		save(env, list.u.lis, 1);
+		save(env, list.u.lis, 1, 0);
 		/*
 		    push the program to be executed for each element
 		*/
@@ -132,7 +132,7 @@ void split_(pEnv env)
 		/*
 		    push the element that may be added to the result
 		*/
-		lst_push(env->prog, node);
+		prime(env, node);
 	    }
 	break;
 

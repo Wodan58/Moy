@@ -1,7 +1,7 @@
 /*
     module  : binary.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef BINARY_C
 #define BINARY_C
@@ -14,20 +14,18 @@ exactly two are removed from the stack.
 */
 void binary_(pEnv env)
 {
-    Node node, temp;
+    Node node;
 
     PARM(3, DIP);
-    code(env, unstack_);
-    code(env, cons_);
-    node = lst_pop(env->stck);
-
-    lst_init(temp.u.lis);
-    lst_copy(temp.u.lis, env->stck);
-    (void)lst_pop(temp.u.lis);
-    (void)lst_pop(temp.u.lis);
-    temp.op = LIST_;
-    lst_push(env->prog, temp);
-
+    env->stck = pvec_pop(env->stck, &node);
+    /*
+	the old stack is saved without the former top and restored with the new
+	top.
+    */
+    save(env, 0, 0, 2);
+    /*
+	the program on top of the stack is executed
+    */
     prog(env, node.u.lis);
 }
 #endif

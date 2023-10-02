@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 10/02/23
 */
 #include "globals.h"
 
@@ -106,11 +106,8 @@ PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
 {
     Node node;
-    NodeList *list;
 
-    lst_init(list);
     node.u = u;
     node.op = op;
-    lst_push(list, node);
-    return list;
+    return pvec_add(pvec_init(), node);
 }

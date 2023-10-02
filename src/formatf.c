@@ -1,7 +1,7 @@
 /*
     module  : formatf.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef FORMATF_C
 #define FORMATF_C
@@ -15,15 +15,15 @@ with maximum width I and precision J.
 */
 PRIVATE void formatf_(pEnv env)
 {
-    Node first, second, third, fourth;
-    char format[6], *result;
     int leng;
+    char format[6], *result;
+    Node first, second, third, fourth;
 
     PARM(4, FORMATF);
-    fourth = lst_pop(env->stck); /* min width */
-    third = lst_pop(env->stck);  /* max width */
-    second = lst_pop(env->stck); /* mode */
-    first = lst_pop(env->stck);  /* number */
+    env->stck = pvec_pop(env->stck, &fourth);	/* min width */
+    env->stck = pvec_pop(env->stck, &third);	/* max width */
+    env->stck = pvec_pop(env->stck, &second);	/* mode */
+    env->stck = pvec_pop(env->stck, &first);	/* number */
     strcpy(format, "%*.*g");
     format[4] = second.u.num;
     leng = snprintf(0, 0, format, third.u.num, fourth.u.num, first.u.dbl) + 1;
@@ -31,6 +31,6 @@ PRIVATE void formatf_(pEnv env)
     snprintf(result, leng, format, third.u.num, fourth.u.num, first.u.dbl);
     first.u.str = result;
     first.op = STRING_;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

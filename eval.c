@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.11
- *  date    : 09/14/23
+ *  version : 1.12
+ *  date    : 10/02/23
  */
 #include "globals.h"
 
@@ -11,6 +11,26 @@ static volatile sig_atomic_t time_out;
 PRIVATE void catch_alarm(__attribute__((unused)) int sig) 
 {
     time_out = 1;
+}
+
+PRIVATE void set_alarm(pEnv env)
+{
+    static int init;
+
+    if (!env->alarming)
+	return;
+    if (!init) {
+	init = 1;
+	signal(SIGALRM, catch_alarm); /* install alarm clock */
+    }
+    alarm(ALARM); /* set alarm to trigger after ALARM seconds */
+}
+
+PRIVATE void alarm_off(pEnv env)
+{
+    if (!env->alarming)
+	return;
+    alarm(0); /* set alarm off */
 }
 #endif
 
@@ -25,6 +45,19 @@ PRIVATE void report_stats(void)
 }
 #endif
 
+#ifdef TRACING
+void trace(pEnv env, FILE *fp)
+{
+    if (!env->debugging)
+	return;
+    writestack(env, env->stck, fp);
+    fprintf(fp, " : ");
+    writeterm(env, env->prog, fp);
+    fputc('\n', fp);
+    fflush(fp);
+}
+#endif
+
 /*
     Execute program, as long as it is not empty.
 */
@@ -34,20 +67,14 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
     Entry ent;
 
 #if ALARM
-    static int init;
-
-    if (!init) {
-	init = 1;
-	signal(SIGALRM, catch_alarm); /* install alarm clock */
-    }
-    alarm(ALARM); /* set alarm to trigger after ALARM seconds */
+    set_alarm(env); /* set alarm to trigger after ALARM seconds */
 #endif
 #ifdef STATS
-    if (++calls == 1)
+    if (++calls == 1) /* install only once */
 	atexit(report_stats);
 #endif
-    lst_copy(env->prog, list);
-    while (lst_size(env->prog)) {
+    prog(env, list);
+    while (pvec_cnt(env->prog)) {
 #if ALARM
 	if (time_out) {
 	    time_out = 0;
@@ -55,18 +82,12 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
 	}
 #endif
 #ifdef STATS
-	++opers;
+	opers++;
 #endif
 #ifdef TRACING
-	if (env->debugging) {
-	    writestack(env, env->stck, stdout);
-	    printf(" : ");
-	    writeterm(env, env->prog, stdout);
-	    putchar('\n');
-	    fflush(stdout);
-	}
+	trace(env, stdout);
 #endif
-	node = lst_pop(env->prog);
+	env->prog = pvec_pop(env->prog, &node);
 	switch (node.op) {
 	case USR_:
 	    ent = vec_at(env->symtab, node.u.ent);
@@ -95,7 +116,7 @@ next:
 	case FILE_:
 	case BIGNUM_:
 	case USR_STRING_:
-	    lst_push(env->stck, node);
+	    env->stck = pvec_add(env->stck, node);
 	    break;
 #if 0
 	default:
@@ -105,7 +126,10 @@ next:
 	}
     }
 #if ALARM
-    alarm(0); /* set alarm off */
+    alarm_off(env); /* set alarm off */
+#endif
+#ifdef TRACING
+    trace(env, stdout); /* final stack */
 #endif
 }
 

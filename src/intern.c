@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef INTERN_C
 #define INTERN_C
@@ -16,7 +16,7 @@ PRIVATE void intern_(pEnv env)
     Entry ent;
 
     PARM(1, INTERN);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     lookup(env, node.u.str);
     ent = vec_at(env->symtab, env->location);
     if (ent.is_user) {
@@ -26,6 +26,6 @@ PRIVATE void intern_(pEnv env)
 	node.op = ANON_FUNCT_;
 	node.u.proc = ent.u.proc;
     }
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

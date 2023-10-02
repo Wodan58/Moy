@@ -1,7 +1,7 @@
 /*
     module  : linrec.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef LINREC_C
 #define LINREC_C
@@ -17,14 +17,14 @@ void linrec_(pEnv env)
     Node first, second, third, fourth;
 
     PARM(4, LINREC);
-    fourth = lst_pop(env->stck);
-    third = lst_pop(env->stck);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &fourth);
+    env->stck = pvec_pop(env->stck, &third);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     /*
 	register the return address
     */
-    size2 = lst_size(env->prog);
+    size2 = pvec_cnt(env->prog);
     /*
 	execute R2 after returning from the recursion
     */
@@ -33,10 +33,10 @@ void linrec_(pEnv env)
 	setup the continuation
     */
     code(env, linrec_);
-    lst_push(env->prog, fourth);
-    lst_push(env->prog, third);
-    lst_push(env->prog, second);
-    lst_push(env->prog, first);
+    prime(env, fourth);
+    prime(env, third);
+    prime(env, second);
+    prime(env, first);
     /*
 	push the R1 branch of linrec
     */
@@ -44,7 +44,7 @@ void linrec_(pEnv env)
     /*
 	register the target location for the false branch
     */
-    size1 = lst_size(env->prog);
+    size1 = pvec_cnt(env->prog);
     /*
 	push the jump address onto the program stack
     */
@@ -69,7 +69,7 @@ void linrec_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    save(env, first.u.lis, 0);
+    save(env, first.u.lis, 0, 0);
     /*
 	push the test of linrec
     */

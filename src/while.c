@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef WHILE_C
 #define WHILE_C
@@ -16,15 +16,15 @@ void while_(pEnv env)
     Node test, body;
 
     PARM(2, WHILE);
-    body = lst_pop(env->stck);
-    test = lst_pop(env->stck);
-    size = lst_size(env->prog);
+    env->stck = pvec_pop(env->stck, &body);
+    env->stck = pvec_pop(env->stck, &test);
+    size = pvec_cnt(env->prog);
     /*
 	setup the continuation
     */
     code(env, while_);
-    lst_push(env->prog, body);
-    lst_push(env->prog, test);
+    prime(env, body);
+    prime(env, test);
     /*
 	push the body of the while
     */
@@ -41,7 +41,7 @@ void while_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    save(env, test.u.lis, 0);
+    save(env, test.u.lis, 0, 0);
     /*
 	push the test of the while
     */

@@ -1,7 +1,7 @@
 /*
     module  : file.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef FILE_C
 #define FILE_C
@@ -15,9 +15,9 @@ void file_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.num = node.op == FILE_;
     node.op = BOOLEAN_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

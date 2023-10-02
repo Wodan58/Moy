@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -79,41 +79,36 @@ PRIVATE int compatible(int first, int second)
 PRIVATE int is_equal(pEnv env, Node first, Node second)
 {
     int i, j;
-    Node temp;
-    NodeList *stackf = 0, *stacks = 0;
+    vector(Node) *stackf = 0, *stacks = 0;
 
     if (!compatible(first.op, second.op))
 	return 0; /* unequal */
     if (first.op != LIST_)
 	return Compare(env, first, second) == 0;
-    if ((j = lst_size(first.u.lis)) != lst_size(second.u.lis))
+    if ((j = pvec_cnt(first.u.lis)) != pvec_cnt(second.u.lis))
 	return 0; /* unequal */
     if (j) {
-	lst_init(stackf);
-	lst_init(stacks);
+	vec_init(stackf);	/* collect nodes in a vector */
+	vec_init(stacks);
     }
     for (i = 0; i < j; i++) {
-	temp = lst_at(first.u.lis, i);
-	lst_push(stackf, temp);
-	temp = lst_at(second.u.lis, i);
-	lst_push(stacks, temp);
+	vec_push(stackf, pvec_nth(first.u.lis, i));
+	vec_push(stacks, pvec_nth(second.u.lis, i));
     }
-    while (lst_size(stackf)) {
-	first = lst_pop(stackf);
-	second = lst_pop(stacks);
+    while (vec_size(stackf)) {
+	first = vec_pop(stackf);
+	second = vec_pop(stacks);
 	if (!compatible(first.op, second.op))
 	    return 0; /* unequal */
 	if (first.op != LIST_) {
 	    if (Compare(env, first, second))
 		return 0; /* unequal */
 	} else {
-	    if ((j = lst_size(first.u.lis)) != lst_size(second.u.lis))
+	    if ((j = pvec_cnt(first.u.lis)) != pvec_cnt(second.u.lis))
 		return 0; /* unequal */
 	    for (i = 0; i < j; i++) {
-		temp = lst_at(first.u.lis, i);
-		lst_push(stackf, temp);
-		temp = lst_at(second.u.lis, i);
-		lst_push(stacks, temp);
+		vec_push(stackf, pvec_nth(first.u.lis, i));
+		vec_push(stacks, pvec_nth(second.u.lis, i));
 	    }	    
 	}
     }
@@ -125,10 +120,10 @@ void equal_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     first.u.num = is_equal(env, first, second);
     first.op = BOOLEAN_;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

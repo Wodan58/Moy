@@ -1,7 +1,7 @@
 /*
     module  : take.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef TAKE_C
 #define TAKE_C
@@ -12,21 +12,20 @@ Aggregate B is the result of retaining just the first N elements of A.
 */
 void take_(pEnv env)
 {
-    int i, j;
+    int64_t i, j;
     Node elem, aggr, node;
 
     PARM(2, TAKE);
-    elem = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &elem);
+    env->stck = pvec_pop(env->stck, &aggr);
     switch (aggr.op) {
     case LIST_:
-	j = lst_size(aggr.u.lis);
-	if (elem.u.num >= j)
+	if ((j = pvec_cnt(aggr.u.lis)) <= elem.u.num)
 	    node = aggr;
 	else {
-	    lst_init(node.u.lis);
+	    node.u.lis = pvec_init();
 	    for (i = j - elem.u.num; i < j; i++)
-		lst_push(node.u.lis, lst_at(aggr.u.lis, i));
+		node.u.lis = pvec_add(node.u.lis, pvec_nth(aggr.u.lis, i));
 	    node.op = LIST_;
 	}
 	break;
@@ -34,8 +33,7 @@ void take_(pEnv env)
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
-	j = strlen(aggr.u.str);
-	if (elem.u.num >= j)
+	if ((j = strlen(aggr.u.str)) <= elem.u.num)
 	    node = aggr;
 	else {
 	    node.u.str = GC_malloc_atomic(elem.u.num + 1);
@@ -47,7 +45,7 @@ void take_(pEnv env)
 
     case SET_:
 	node.u.set = 0;
-	for (i = 0, j = 1; i < SETSIZE && elem.u.num; i++, j <<= 1)
+	for (j = 1, i = 0; i < SETSIZE && elem.u.num; i++, j <<= 1)
 	    if (aggr.u.set & j) {
 		node.u.set |= j;
 		elem.u.num--;
@@ -59,6 +57,6 @@ void take_(pEnv env)
 	node = aggr;
 	break;
     }
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

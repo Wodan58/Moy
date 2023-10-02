@@ -1,7 +1,7 @@
 /*
     module  : min.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef MIN_C
 #define MIN_C
@@ -15,8 +15,8 @@ void min_(pEnv env)
     Node first, second;
 
     PARM(2, MAXMIN);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     switch (first.op) {
     case FLOAT_:
 	switch (second.op) {
@@ -37,7 +37,7 @@ void min_(pEnv env)
 	case FLOAT_:
 	    if (first.u.num < second.u.dbl)
 		second.u.dbl = first.u.num;
-	    lst_push(env->stck, second);
+	    env->stck = pvec_add(env->stck, second);
 	    return;
 
 	default:
@@ -47,6 +47,6 @@ void min_(pEnv env)
 	}
 	break;
     }
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

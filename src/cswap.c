@@ -1,7 +1,7 @@
 /*
     module  : cswap.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef CSWAP_C
 #define CSWAP_C
@@ -16,10 +16,10 @@ void cswap_(pEnv env)
     Node elem, jump, node;
 
     PARM(1, ANYTYPE);
-    node = lst_pop(env->stck);
-    jump = lst_pop(env->prog);
-    elem = lst_at(env->prog, jump.u.num);
-    lst_assign(env->prog, jump.u.num, node); /* write node */
-    lst_push(env->stck, elem);
+    env->stck = pvec_pop(env->stck, &node);
+    env->prog = pvec_pop(env->prog, &jump);
+    elem = pvec_nth(env->prog, jump.u.num);
+    env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
+    env->stck = pvec_add(env->stck, elem);
 }
 #endif

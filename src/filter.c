@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef FILTER_C
 #define FILTER_C
@@ -12,30 +12,30 @@ Uses test B to filter aggregate A producing sametype aggregate A1.
 */
 void filter_(pEnv env)
 {
-    int i;
+    int64_t i, j;
     unsigned size;
-    Node aggr, list, node;
+    Node list, aggr, node;
 
     PARM(2, STEP);
-    list = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &aggr);
     /*
 	register the location of the result aggregate
     */
-    size = lst_size(env->prog);
+    size = pvec_cnt(env->prog);
     /*
 	build a result aggregate of the correct type
     */
     node.op = aggr.op;
     switch (aggr.op) {
     case LIST_:
-	lst_init(node.u.lis);
-	lst_push(env->prog, node);
-	for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
+	node.u.lis = pvec_init();
+	prime(env, node);
+	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
 	    /*
 		push the element that may be added to the result
 	    */
-	    node = lst_at(aggr.u.lis, i);
+	    node = pvec_nth(aggr.u.lis, i);
 	    prime(env, node);
 	    /*
 		push the location of the result types
@@ -48,7 +48,7 @@ void filter_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -65,14 +65,14 @@ void filter_(pEnv env)
     case USR_STRING_:
 	node.u.str = GC_strdup(aggr.u.str);
 	node.u.str[0] = 0;
-	lst_push(env->prog, node);
+	prime(env, node);
 	node.op = CHAR_;
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    /*
 		push the element that may be added to the result
 	    */
 	    node.u.num = aggr.u.str[i];
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	    /*
 		push the location of the result types
 	    */
@@ -84,7 +84,7 @@ void filter_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -92,21 +92,21 @@ void filter_(pEnv env)
 	    /*
 		push the element to be split
 	    */
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	}
 	break;
 
     case SET_:
 	node.u.set = 0;
-	lst_push(env->prog, node);
+	prime(env, node);
 	node.op = INTEGER_;
-	for (i = 0; i < SETSIZE; i++)
-	    if (aggr.u.set & ((int64_t)1 << i)) {
+	for (j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
+	    if (aggr.u.set & j) {
 		/*
 		    push the element that may be added to the result
 		*/
 		node.u.num = i;
-		lst_push(env->prog, node);
+		prime(env, node);
 		/*
 		    push the location of the result types
 		*/
@@ -118,7 +118,7 @@ void filter_(pEnv env)
 		/*
 		    save and restore the stack, if needed
 		*/
-		save(env, list.u.lis, 1);
+		save(env, list.u.lis, 1, 0);
 		/*
 		    push the program to be executed for each element
 		*/
@@ -126,7 +126,7 @@ void filter_(pEnv env)
 		/*
 		    push the element to be split
 		*/
-		lst_push(env->prog, node);
+		prime(env, node);
 	    }
 	break;
 

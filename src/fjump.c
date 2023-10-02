@@ -1,7 +1,7 @@
 /*
     module  : fjump.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef FJUMP_C
 #define FJUMP_C
@@ -16,9 +16,9 @@ void fjump_(pEnv env)
     Node test, jump;
 
     PARM(1, ANYTYPE);
-    test = lst_pop(env->stck);
-    jump = lst_pop(env->prog);
+    env->stck = pvec_pop(env->stck, &test);
+    env->prog = pvec_pop(env->prog, &jump);
     if (!test.u.num)
-	lst_resize(env->prog, jump.u.num);
+	env->prog = pvec_cut(env->prog, jump.u.num);
 }
 #endif

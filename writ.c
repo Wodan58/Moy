@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.12
- *  date    : 09/19/23
+ *  version : 1.13
+ *  date    : 10/02/23
  */
 #include "globals.h"
 
@@ -21,7 +21,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     only serves as a reminder for future customers.
 */
 #if 0
-    if (!n)
+    if (!env->stck)
 	execerror(env->filename, "non-empty stack", "print");
 #endif
     switch (node.op) {
@@ -33,7 +33,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	fprintf(fp, "%s", cmpname(node.u.proc));
+	fprintf(fp, "%s", opername(node.u.proc));
 	if (node.op == ANON_PRIME_)
 	    putc('\'', fp);
 	break;
@@ -46,11 +46,11 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	else
 	    fprintf(fp, "'%c", (int)node.u.num);
 	break;
-    case UNKNOWN_:
     case INTEGER_:
+    case KEYWORD_:
 	fprintf(fp, "%" PRId64, node.u.num);
-	if (node.op == UNKNOWN_)
-	    fputc('\\', fp);
+	if (node.op == KEYWORD_)
+	    fputc('\'', fp);
 	break;
     case SET_:
 	putc('{', fp);
@@ -121,12 +121,14 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 /*
     spacing - write a space character, except after [ or before ].
 */
-PRIVATE void spacing(NodeList *stack, Node node, FILE *fp)
+PRIVATE void spacing(void *parm, Node node, FILE *fp)
 {
-    if (node.op == CHAR_ && node.u.num == '[') /* inspect preceding node */
+    vector(Node) *array = parm;
+
+    if (node.op == CHAR_ && node.u.num == '[')	/* inspect preceding node */
 	;
-    else if (lst_size(stack)) { /* inspect following node */
-	node = lst_back(stack);
+    else if (vec_size(array)) {			/* inspect following node */
+	node = vec_back(array);
 	if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 	    ;
 	else
@@ -137,30 +139,28 @@ PRIVATE void spacing(NodeList *stack, Node node, FILE *fp)
 /*
     writing - print from a stack, used by writeterm and writestack.
 */
-PRIVATE void writing(pEnv env, NodeList *stack, FILE *fp)
+PRIVATE void writing(pEnv env, void *parm, FILE *fp)
 {
     int i, j;
     Node node, temp;
+    vector(Node) *array = parm;
 
-    while (lst_size(stack)) {
-	node = lst_pop(stack);
+    while (vec_size(array)) {
+	node = vec_pop(array);
 	if (node.op != LIST_) {
 	    if (node.op == CHAR_ && (node.u.num == '[' || node.u.num == ']'))
 		putc((int)node.u.num, fp);
 	    else 
 		writefactor(env, node, fp);
-	    spacing(stack, node, fp);
+	    spacing(array, node, fp);
 	} else {
 	    temp.u.num = ']';
 	    temp.op = CHAR_;
-	    lst_push(stack, temp);
-	    for (i = 0, j = lst_size(node.u.lis); i < j; i++) {
-		temp = lst_at(node.u.lis, i);
-		lst_push(stack, temp);
-	    }
+	    vec_push(array, temp);
+	    for (i = 0, j = pvec_cnt(node.u.lis); i < j; i++)
+		vec_push(array, pvec_nth(node.u.lis, i));
 	    temp.u.num = '[';
-	    temp.op = CHAR_;
-	    lst_push(stack, temp);
+	    vec_push(array, temp);
 	}
     }
 }
@@ -170,17 +170,15 @@ PRIVATE void writing(pEnv env, NodeList *stack, FILE *fp)
 */
 PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
 {
-    Node node;
-    NodeList *stack = 0;
-    int i, j = lst_size(list);
+    int i, j;
+    vector(Node) *array;
 
-    if (j)
-	lst_init(stack);
-    for (i = 0; i < j; i++) {
-	node = lst_at(list, i);
-	lst_push(stack, node);
-    }
-    writing(env, stack, fp);
+    if ((j = pvec_cnt(list)) == 0)
+	return;
+    vec_init(array);				/* collect nodes in a vector */
+    for (i = 0; i < j; i++)
+	vec_push(array, pvec_nth(list, i));
+    writing(env, (void *)array, fp);
 }
 
 /*
@@ -189,16 +187,14 @@ PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
 #ifdef TRACING
 PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp)
 {
-    Node node;
-    NodeList *stack = 0;
-    int i, j = lst_size(list);
+    int i, j;
+    vector(Node) *array;
 
-    if (j)
-	lst_init(stack);
-    for (i = j - 1; i >= 0; i--) {
-	node = lst_at(list, i);
-	lst_push(stack, node);
-    }
-    writing(env, stack, fp);
+    if ((j = pvec_cnt(list)) == 0)
+	return;
+    vec_init(array);				/* collect nodes in a vector */
+    for (i = j - 1; i >= 0; i--)
+	vec_push(array, pvec_nth(list, i));
+    writing(env, (void *)array, fp);
 }
 #endif

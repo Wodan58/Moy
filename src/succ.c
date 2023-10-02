@@ -1,7 +1,7 @@
 /*
     module  : succ.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef SUCC_C
 #define SUCC_C
@@ -15,8 +15,8 @@ void succ_(pEnv env)
     Node node;
 
     PARM(1, PREDSUCC);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.num++;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

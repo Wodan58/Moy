@@ -1,7 +1,7 @@
 /*
     module  : cpush.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef CPUSH_C
 #define CPUSH_C
@@ -16,8 +16,8 @@ void cpush_(pEnv env)
     Node jump, node;
 
     PARM(1, ANYTYPE);
-    jump = lst_pop(env->prog);
-    node = lst_pop(env->stck);
-    lst_assign(env->prog, jump.u.num, node); /* write node */
+    env->prog = pvec_pop(env->prog, &jump);
+    env->stck = pvec_pop(env->stck, &node);
+    env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
 }
 #endif

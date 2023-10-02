@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -16,22 +16,22 @@ void __manual_list_(pEnv env)
     OpTable *tab;
     Node node, temp, elem;
 
-    lst_init(node.u.lis);
+    node.u.lis = pvec_init();
     node.op = temp.op = LIST_;
     elem.op = STRING_;
     for (i = 0; (tab = readtable(i)) != 0; i++) /* find end */
 	;
     while (--i) {
 	tab = readtable(i);
-	lst_init(temp.u.lis);
+	temp.u.lis = pvec_init();
 	elem.u.str = tab->messg2;
-	lst_push(temp.u.lis, elem);
+	temp.u.lis = pvec_add(temp.u.lis, elem);
 	elem.u.str = tab->messg1;
-	lst_push(temp.u.lis, elem);
+	temp.u.lis = pvec_add(temp.u.lis, elem);
 	elem.u.str = tab->name;
-	lst_push(temp.u.lis, elem);
-	lst_push(node.u.lis, temp);
+	temp.u.lis = pvec_add(temp.u.lis, elem);
+	node.u.lis = pvec_add(node.u.lis, temp);
     }
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

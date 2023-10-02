@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef STEP_C
 #define STEP_C
@@ -13,18 +13,17 @@ executes P for each member of A.
 */
 void step_(pEnv env)
 {
-    int i, j;
+    int64_t i, j;
     Node aggr, list, node;
 
     PARM(2, STEP);
-    list = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &aggr);
     switch (aggr.op) {
     case LIST_:
-	for (i = 0, j = lst_size(aggr.u.lis); i < j; i++) {
+	for (i = 0, j = pvec_cnt(aggr.u.lis); i < j; i++) {
 	    prog(env, list.u.lis);
-	    node = lst_at(aggr.u.lis, i);
-	    prime(env, node);
+	    prime(env, pvec_nth(aggr.u.lis, i));
 	}
 	break;
 
@@ -35,17 +34,17 @@ void step_(pEnv env)
 	for (i = strlen(aggr.u.str) - 1; i >= 0; i--) {
 	    prog(env, list.u.lis);
 	    node.u.num = aggr.u.str[i];
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	}
 	break;
 
     case SET_:
 	node.op = INTEGER_;
-	for (i = SETSIZE - 1; i >= 0; i--)
-	    if (aggr.u.set & ((int64_t)1 << i)) {
+	for (j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
+	    if (aggr.u.set & j) {
 		prog(env, list.u.lis);
 		node.u.num = i;
-		lst_push(env->prog, node);
+		prime(env, node);
 	    }
 	break;
 

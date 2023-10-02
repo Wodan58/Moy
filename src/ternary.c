@@ -1,7 +1,7 @@
 /*
     module  : ternary.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef TERNARY_C
 #define TERNARY_C
@@ -14,33 +14,20 @@ exactly three are removed from the stack.
 */
 void ternary_(pEnv env)
 {
-    Node list, temp;
+    Node list;
 
     PARM(4, DIP);
     /*
-	replace the new stack with the old stack
-    */
-    code(env, unstack_);
-    /*
-	include the test result in the old stack
-    */
-    code(env, cons_);
-    /*
 	read the program from the stack
     */
-    list = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
     /*
-	restore the old stack after the test
+	the old stack is saved without the former top and restored with the new
+	top.
     */
-    lst_init(temp.u.lis);
-    lst_copy(temp.u.lis, env->stck);
-    (void)lst_pop(temp.u.lis);
-    (void)lst_pop(temp.u.lis);
-    (void)lst_pop(temp.u.lis);
-    temp.op = LIST_;
-    lst_push(env->prog, temp);
+    save(env, 0, 0, 3);
     /*
-	execute program
+	the program on top of the stack is executed
     */
     prog(env, list.u.lis);
 }

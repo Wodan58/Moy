@@ -1,7 +1,7 @@
 /*
     module  : user.c
-    version : 1.6
-    date    : 09/19/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef USER_C
 #define USER_C
@@ -15,10 +15,10 @@ void user_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.num = node.op == USR_ ||
 		 node.op == USR_STRING_ || node.op == USR_LIST_;
     node.op = BOOLEAN_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

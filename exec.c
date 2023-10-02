@@ -1,7 +1,7 @@
 /*
  *  module  : exec.c
- *  version : 1.2
- *  date    : 09/15/23
+ *  version : 1.3
+ *  date    : 10/02/23
  */
 #include "globals.h"
 
@@ -20,11 +20,11 @@ PUBLIC void execute(pEnv env, NodeList *list)
     }
 #endif
     exeterm(env, list);
-    if (lst_size(env->stck)) {
+    if (pvec_cnt(env->stck)) {
 	if (env->autoput == 2)
 	    writeterm(env, env->stck, stdout);
 	else if (env->autoput == 1) {
-	    node = lst_pop(env->stck);
+	    env->stck = pvec_pop(env->stck, &node);
 	    if (node.op == LIST_) {
 		putchar('[');
 		writeterm(env, node.u.lis, stdout);

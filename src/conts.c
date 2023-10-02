@@ -1,7 +1,7 @@
 /*
     module  : conts.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef CONTS_C
 #define CONTS_C
@@ -14,9 +14,9 @@ void conts_(pEnv env)
 {
     Node node;
 
-    lst_init(node.u.lis);
-    lst_copy(node.u.lis, env->prog);
+    node.u.lis = pvec_init();
+    pvec_copy(node.u.lis, env->prog);
     node.op = LIST_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

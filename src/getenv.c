@@ -1,7 +1,7 @@
 /*
     module  : getenv.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef GETENV_C
 #define GETENV_C
@@ -15,9 +15,9 @@ void getenv_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     if ((node.u.str = getenv(node.u.str)) == 0)
 	node.u.str = "";
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

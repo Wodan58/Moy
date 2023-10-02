@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.6
-    date    : 09/04/23
+    version : 1.7
+    date    : 10/02/23
 */
 #include "globals.h"
 
@@ -11,12 +11,9 @@
 PUBLIC void prog(pEnv env, NodeList *list)
 {
     int i, j;
-    Node node;
 
-    for (i = 0, j = lst_size(list); i < j; i++) {
-	node = lst_at(list, i);
-	lst_push(env->prog, node);
-    }
+    for (i = 0, j = pvec_cnt(list); i < j; i++)
+	env->prog = pvec_add(env->prog, pvec_nth(list, i));
 }
 
 /*
@@ -28,7 +25,7 @@ PUBLIC void code(pEnv env, proc_t proc)
 
     node.u.proc = proc;
     node.op = ANON_FUNCT_;
-    lst_push(env->prog, node);
+    env->prog = pvec_add(env->prog, node);
 }
 
 /*
@@ -40,7 +37,7 @@ PUBLIC void push(pEnv env, int64_t num)
 
     node.u.num = num;
     node.op = INTEGER_;
-    lst_push(env->prog, node);
+    env->prog = pvec_add(env->prog, node);
 }
 
 /*
@@ -52,7 +49,7 @@ PUBLIC void prime(pEnv env, Node node)
 	node.op = USR_PRIME_;
     if (node.op == ANON_FUNCT_)
 	node.op = ANON_PRIME_;
-    lst_push(env->prog, node);
+    env->prog = pvec_add(env->prog, node);
 }
 
 /*
@@ -60,5 +57,8 @@ PUBLIC void prime(pEnv env, Node node)
 */
 PUBLIC Node pop(pEnv env)
 {
-    return lst_pop(env->prog);
+    Node node;
+
+    env->prog = pvec_pop(env->prog, &node);
+    return node;
 }

@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef REST_C
 #define REST_C
@@ -16,32 +16,29 @@ void rest_(pEnv env)
     Node node, temp;
 
     PARM(1, FIRST);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     switch (node.op) {
     case LIST_:
-	lst_init(temp.u.lis);
-	lst_shallow_copy(temp.u.lis, node.u.lis);
-	(void)lst_pop(temp.u.lis);
-	temp.op = LIST_;
-	lst_push(env->stck, temp);
+	temp.u.lis = pvec_init();
+	pvec_shallow_copy(temp.u.lis, node.u.lis);
+	node.u.lis = pvec_del(temp.u.lis);	/* remove first */
 	break;
 
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
 	node.u.str = GC_strdup(++node.u.str);  
-	lst_push(env->stck, node);
 	break;
 
     case SET_:
 	while (!(node.u.set & ((int64_t)1 << i)))
 	    i++;
 	node.u.set &= ~((int64_t)1 << i);
-	lst_push(env->stck, node);
 	break;
 
     default:
 	break;
     }
+    env->stck = pvec_add(env->stck, node);	/* push remainder */
 }
 #endif

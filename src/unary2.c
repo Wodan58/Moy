@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef UNARY2_C
 #define UNARY2_C
@@ -14,23 +14,23 @@ Returns the two values R1 and R2.
 void unary2_(pEnv env)
 {	/*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
     unsigned size;
-    Node node, temp;
+    Node list, node;
 
     PARM(3, DIP);
-    node = lst_pop(env->stck);
-    temp = lst_pop(env->stck);  /* Z */
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &node);	/* Z */
     code(env, swap_);
-    size = lst_size(env->prog); /* location of first Z, then Y' */
-    lst_push(env->prog, temp);  /* first Z, then Y' */
+    size = pvec_cnt(env->prog); /* location of first Z, then Y' */
+    prime(env, node);		/* first Z, then Y' */
     /*
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    undo(env, node.u.lis, 1);
+    save(env, list.u.lis, 1, 1);
     /*
 	Calculate Z' on top of the stack
     */
-    prog(env, node.u.lis);
+    prog(env, list.u.lis);
     /*
 	Push the address of Z
     */
@@ -43,10 +43,10 @@ void unary2_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    undo(env, node.u.lis, 1);
+    save(env, list.u.lis, 1, 1);
     /*
 	Calculate Y' on top of the stack
     */
-    prog(env, node.u.lis);
+    prog(env, list.u.lis);
 }
 #endif

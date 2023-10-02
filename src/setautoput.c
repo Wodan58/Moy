@@ -1,7 +1,7 @@
 /*
     module  : setautoput.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef SETAUTOPUT_C
 #define SETAUTOPUT_C
@@ -16,7 +16,7 @@ void setautoput_(pEnv env)
     Node node;
 
     PARM(1, PREDSUCC);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     env->autoput = node.u.num;
 }
 #endif

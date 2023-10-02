@@ -1,7 +1,7 @@
 /*
     module  : logical.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef LOGICAL_C
 #define LOGICAL_C
@@ -15,9 +15,9 @@ void logical_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.num = node.op == BOOLEAN_;
     node.op = BOOLEAN_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

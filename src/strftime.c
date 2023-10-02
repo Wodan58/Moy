@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
@@ -16,15 +16,15 @@ using string S1 and pushes the result S2.
 void strftime_(pEnv env)
 {
     struct tm t;
-    Node first, second, node;
+    Node first, second;
 
     PARM(2, STRFTIME);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     decode(first, &t);
-    node.u.str = GC_malloc_atomic(INPLINEMAX);
-    strftime(node.u.str, INPLINEMAX, second.u.str, &t);
-    node.op = STRING_;
-    lst_push(env->stck, node);
+    first.u.str = GC_malloc_atomic(INPLINEMAX);
+    strftime(first.u.str, INPLINEMAX, second.u.str, &t);
+    first.op = STRING_;
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

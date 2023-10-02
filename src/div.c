@@ -1,7 +1,7 @@
 /*
     module  : div.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef DIV_C
 #define DIV_C
@@ -16,12 +16,12 @@ void div_(pEnv env)
     Node first, second;
 
     PARM(2, DIV);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     result = lldiv(first.u.num, second.u.num);
     first.u.num = result.quot;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
     first.u.num = result.rem;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

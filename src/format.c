@@ -1,7 +1,7 @@
 /*
     module  : format.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef FORMAT_C
 #define FORMAT_C
@@ -15,15 +15,15 @@ with maximum width I and minimum width J.
 */
 PRIVATE void format_(pEnv env)
 {
-    Node first, second, third, fourth;
-    char format[7], *result;
     int leng;
+    char format[7], *result;
+    Node first, second, third, fourth;
 
     PARM(4, FORMAT);
-    fourth = lst_pop(env->stck); /* min width */
-    third = lst_pop(env->stck);  /* max width */
-    second = lst_pop(env->stck); /* mode */
-    first = lst_pop(env->stck);  /* number */
+    env->stck = pvec_pop(env->stck, &fourth);	/* min width */
+    env->stck = pvec_pop(env->stck, &third);	/* max width */
+    env->stck = pvec_pop(env->stck, &second);	/* mode */
+    env->stck = pvec_pop(env->stck, &first);	/* number */
     strcpy(format, "%*.*ld");
     format[5] = second.u.num;
     leng = snprintf(0, 0, format, third.u.num, fourth.u.num, first.u.num) + 1;
@@ -31,6 +31,6 @@ PRIVATE void format_(pEnv env)
     snprintf(result, leng, format, third.u.num, fourth.u.num, first.u.num);
     first.u.str = result;
     first.op = STRING_;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

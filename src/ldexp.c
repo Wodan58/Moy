@@ -1,7 +1,7 @@
 /*
     module  : ldexp.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef LDEXP_C
 #define LDEXP_C
@@ -15,11 +15,11 @@ void ldexp_(pEnv env)
     Node first, second;
 
     PARM(2, LDEXP);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     first.u.dbl = ldexp(first.op == FLOAT_ ? first.u.dbl : first.u.num,
 			second.u.num);
     first.op = FLOAT_;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

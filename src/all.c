@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.8
-    date    : 09/19/23
+    version : 1.9
+    date    : 10/02/23
 */
 #ifndef ALL_C
 #define ALL_C
@@ -17,16 +17,16 @@ void all_(pEnv env)
     Node aggr, list, node;
 
     PARM(2, STEP);
-    size = lst_size(env->prog);
+    size = pvec_cnt(env->prog);
     /*
 	if all tests pass, the result will be true.
     */
     code(env, true_);
-    list = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &aggr);
     switch (aggr.op) {
     case LIST_:
-	for (i = 0, j = lst_size(aggr.u.lis); i < j; i++) {
+	for (i = 0, j = pvec_cnt(aggr.u.lis); i < j; i++) {
 	    /*
 		push the location of the result type
 	    */
@@ -38,7 +38,7 @@ void all_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -46,8 +46,7 @@ void all_(pEnv env)
 	    /*
 		push the element to be mapped
 	    */
-	    node = lst_at(aggr.u.lis, i);
-	    prime(env, node);
+	    prime(env, pvec_nth(aggr.u.lis, i));
 	}
 	break;
 
@@ -67,7 +66,7 @@ void all_(pEnv env)
 	    /*
 		save and restore the stack, if needed
 	    */
-	    save(env, list.u.lis, 1);
+	    save(env, list.u.lis, 1, 0);
 	    /*
 		push the program to be executed for each element
 	    */
@@ -76,13 +75,13 @@ void all_(pEnv env)
 		push the element to be mapped
 	    */
 	    node.u.num = aggr.u.str[i];
-	    lst_push(env->prog, node);
+	    prime(env, node);
 	}
 	break;
 
     case SET_:
 	node.op = INTEGER_;
-	for (i = 0, j = 1; i < SETSIZE; i++, j <<= 1)
+	for (j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
 	    if (aggr.u.set & j) {
 		/*
 		    push the location of the result type
@@ -95,7 +94,7 @@ void all_(pEnv env)
 		/*
 		    save and restore the stack, if needed
 		*/
-		save(env, list.u.lis, 1);
+		save(env, list.u.lis, 1, 0);
 		/*
 		    push the program to be executed for each element
 		*/
@@ -104,7 +103,7 @@ void all_(pEnv env)
 		    push the element to be mapped
 		*/
 		node.u.num = i;
-		lst_push(env->prog, node);
+		prime(env, node);
 	    }
 	break;
 

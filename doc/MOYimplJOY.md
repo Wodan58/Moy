@@ -148,12 +148,12 @@ fail. There is also a downside: function calling is slower.
 Benchmark
 ---------
 
-Implementation|fib (time)|lst (size)
----|---|---
-42minjoy|1m12|
-joy0|38|13395
-Joy|1m25|43052
-joy1|3m37|72883
-Moy|2m3|10000000
+Implementation|fib(40)|lst(10000)|sieve(3000)
+--------------|-------|----------|-----------
+      42minjoy|    1m8|          |
+          joy0|     44|      0.06|        0.4
+           Joy|   1m12|      0.07|        1.0
+          joy1|   3m57|      0.07|        2.1
+           Moy|     2m|      0.08|        1.5
 
 Moy is after all not the slowest implementation.

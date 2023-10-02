@@ -1,7 +1,7 @@
 /*
     module  : plus.c
-    version : 1.8
-    date    : 09/15/23
+    version : 1.9
+    date    : 10/02/23
 */
 #ifndef PLUS_C
 #define PLUS_C
@@ -20,8 +20,8 @@ void plus_(pEnv env)
 #endif
 
     PARM(2, PLUSMINUS);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     switch (first.op) {
 #ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
@@ -107,6 +107,6 @@ void plus_(pEnv env)
 	}
 	break;
     }
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

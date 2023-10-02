@@ -1,7 +1,7 @@
 /*
     module  : round.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef ROUND_C
 #define ROUND_C
@@ -22,9 +22,9 @@ void round_(pEnv env)
     Node node;
 
     PARM(1, UFLOAT);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.dbl = round2(node.op == FLOAT_ ? node.u.dbl : node.u.num);
     node.op = FLOAT_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

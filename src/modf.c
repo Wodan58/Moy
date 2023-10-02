@@ -1,7 +1,7 @@
 /*
     module  : modf.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef MODF_C
 #define MODF_C
@@ -17,12 +17,12 @@ void modf_(pEnv env)
     double exp;
 
     PARM(1, UFLOAT);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     node.u.dbl = modf(node.op == FLOAT_ ? node.u.dbl : node.u.num, &exp);
     node.op = FLOAT_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
     node.u.dbl = exp;
     node.op = FLOAT_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef FIRST_C
 #define FIRST_C
@@ -13,34 +13,32 @@ F is the first member of the non-empty aggregate A.
 void first_(pEnv env)
 {
     int i = 0;
-    Node node, temp;
+    Node node;
 
     PARM(1, FIRST);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     switch (node.op) {
     case LIST_:
-	temp = lst_back(node.u.lis);
-	lst_push(env->stck, temp);
+	node = pvec_lst(node.u.lis);
 	break;
 
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
-	temp.u.num = *node.u.str;
-	temp.op = CHAR_;
-	lst_push(env->stck, temp);
+	node.u.num = *node.u.str;
+	node.op = CHAR_;
 	break;
 
     case SET_:
 	while (!(node.u.set & ((int64_t)1 << i)))
 	    i++;
-	temp.u.num = i;
-	temp.op = INTEGER_;
-	lst_push(env->stck, temp);
+	node.u.num = i;
+	node.op = INTEGER_;
 	break;
 
     default:
 	break;
     }
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

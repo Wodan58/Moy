@@ -1,7 +1,7 @@
 /*
     module  : in.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef IN_C
 #define IN_C
@@ -18,12 +18,12 @@ void in_(pEnv env)
     Node aggr, elem, node;
 
     PARM(2, CONS);
-    aggr = lst_pop(env->stck);
-    elem = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &aggr);
+    env->stck = pvec_pop(env->stck, &elem);
     switch (aggr.op) {
     case LIST_:
-	for (i = lst_size(aggr.u.lis) - 1; i >= 0; i--) {
-	    node = lst_at(aggr.u.lis, i);
+	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
+	    node = pvec_nth(aggr.u.lis, i);
 	    if (!Compare(env, node, elem)) {
 		found = 1;
 		break;
@@ -47,6 +47,6 @@ void in_(pEnv env)
     }
     node.u.num = found;
     node.op = BOOLEAN_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

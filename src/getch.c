@@ -1,7 +1,7 @@
 /*
     module  : getch.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef GETCH_C
 #define GETCH_C
@@ -16,6 +16,6 @@ void getch_(pEnv env)
 
     node.u.num = get_char();
     node.op = CHAR_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

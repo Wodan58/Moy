@@ -1,7 +1,7 @@
 #
 #   module  : prim.sh
-#   version : 1.3
-#   date    : 09/14/23
+#   version : 1.4
+#   date    : 10/02/23
 #
 #   Generate prim.c and prim.h
 #   The directory needs to be given as parameter.
@@ -14,7 +14,7 @@ then
   echo creating prim.c and prim.h
   todo=1
 else
-  diff prim.tmp $1/prim.c
+  diff $1/prim.c prim.tmp
   if [ $? -eq 0 ]
   then
     echo prim.c and prim.h are up-to-date

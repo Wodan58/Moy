@@ -1,7 +1,7 @@
 /*
     module  : push.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef PUSH_C
 #define PUSH_C
@@ -17,12 +17,12 @@ void push_(pEnv env)
     Node jump, elem, node;
 
     PARM(1, ANYTYPE);
-    elem = lst_pop(env->stck);
-    jump = lst_pop(env->prog);
-    node = lst_at(env->prog, jump.u.num); /* read node */
+    env->stck = pvec_pop(env->stck, &elem);
+    env->prog = pvec_pop(env->prog, &jump);
+    node = pvec_nth(env->prog, jump.u.num); /* read node */
     switch (node.op) {
     case LIST_:
-	lst_push(node.u.lis, elem);
+	node.u.lis = pvec_add(node.u.lis, elem);
 	break;
 
     case STRING_:
@@ -40,6 +40,6 @@ void push_(pEnv env)
     default:
 	break;
     }
-    lst_assign(env->prog, jump.u.num, node); /* write node */
+    env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
 }
 #endif

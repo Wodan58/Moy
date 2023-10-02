@@ -1,7 +1,7 @@
 /*
     module  : ferror.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef FERROR_C
 #define FERROR_C
@@ -15,9 +15,9 @@ void ferror_(pEnv env)
     Node node;
 
     PARM(1, FGET);
-    node = lst_back(env->stck);
+    node = pvec_lst(env->stck);
     node.u.num = ferror(node.u.fil);
     node.op = BOOLEAN_;
-    lst_push(env->stck, node);    
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

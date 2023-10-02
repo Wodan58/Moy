@@ -1,7 +1,7 @@
 /*
     module  : unary.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef UNARY_C
 #define UNARY_C
@@ -14,32 +14,21 @@ exactly one is removed from the stack.
 */
 void unary_(pEnv env)
 {
-    Node node, temp;
+    Node list;
 
     PARM(2, DIP);
     /*
-	restore the old stack
-    */
-    code(env, unstack_);
-    /*
-	include the result of the program in the old stack
-    */
-    code(env, cons_);
-    /*
 	remove the program from the stack
     */
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &list);
     /*
-	restore the old stack after the program, except the former top
+	the old stack is saved without the former top and restored with the new
+	top.
     */
-    lst_init(temp.u.lis);
-    lst_copy(temp.u.lis, env->stck);
-    (void)lst_pop(temp.u.lis);
-    temp.op = LIST_;
-    lst_push(env->prog, temp);
+    save(env, 0, 0, 1);
     /*
-	the list parameter is installed as the stack
+	the program on top of the stack is executed
     */
-    prog(env, node.u.lis);
+    prog(env, list.u.lis);
 }
 #endif

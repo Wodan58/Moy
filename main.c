@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.19
- *  date    : 09/19/23
+ *  version : 1.20
+ *  date    : 10/02/23
  */
 #include "globals.h"
 
@@ -11,6 +11,8 @@ extern FILE *yyin;			/* lexr.c */
 extern unsigned char mustinclude;	/* scan.c */
 
 static jmp_buf begin;			/* restart with empty program */
+
+char *bottom_of_stack;			/* used in gc.c */
 
 /*
     abort execution and restart reading from yyin. In the NOBDW version the
@@ -37,7 +39,7 @@ PRIVATE void report_clock(pEnv env)
  *  copyright - Print all copyright notices, even historical ones.
  *
  *  The version must be set on the commandline when compiling:
- *  -DJVERSION="\"alpha\"" or whatever.
+ *  -DVERS="\"alpha\"" or whatever.
  */
 #ifdef COPYRIGHT
 PRIVATE void copyright(char *file)
@@ -78,8 +80,8 @@ PRIVATE void copyright(char *file)
 	}
     } else {
 	printf("JOY  -  compiled at %s on %s", __TIME__, __DATE__);
-#ifdef JVERSION
-	printf(" (%s)", JVERSION);
+#ifdef VERS
+	printf(" (%s)", VERS);
 #endif
 	putchar('\n');
 	j = 1;
@@ -118,11 +120,116 @@ PRIVATE void dump_table(pEnv env)
 */
 PRIVATE void options(void)
 {
+    char str[BUFFERMAX];
+
     printf("Usage: joy [options] [filename] [parameters]\n");
     printf("options, filename, parameters can be given in any order\n");
     printf("options start with '-' and are all given together\n");
     printf("parameters start with a digit\n");
     printf("the filename parameter cannot start with '-' or a digit\n");
+    printf("Features included (+) or not (-):\n");
+    sprintf(str, " symbols  overwrite  copyright  arity  alarm  yydebug");
+#ifdef SYMBOLS
+    str[0] = '+';
+#else
+    str[0] = '-';
+#endif
+#ifdef OVERWRITE
+    str[9] = '+';
+#else
+    str[9] = '-';
+#endif
+#ifdef COPYRIGHT
+    str[20] = '+';
+#else
+    str[20] = '-';
+#endif
+#ifdef ARITY
+    str[31] = '+';
+#else
+    str[31] = '-';
+#endif
+#if ALARM
+    str[38] = '+';
+#else
+    str[38] = '-';
+#endif
+#if YYDEBUG
+    str[45] = '+';
+#else
+    str[45] = '-';
+#endif
+    printf("%s\n", str);
+    sprintf(str, " jversion  tracing  stats  ncheck  multitask  bignums");
+#ifdef VERS
+    str[0] = '+';
+#else
+    str[0] = '-';
+#endif
+#ifdef TRACING
+    str[10] = '+';
+#else
+    str[10] = '-';
+#endif
+#ifdef STATS
+    str[19] = '+';
+#else
+    str[19] = '-';
+#endif
+#ifdef NCHECK
+    str[26] = '+';
+#else
+    str[26] = '-';
+#endif
+#ifdef MULTI_TASK_THREAD_JOY
+    str[34] = '+';
+#else
+    str[34] = '-';
+#endif
+#ifdef USE_BIGNUM_ARITHMETIC
+    str[45] = '+';
+#else
+    str[45] = '-';
+#endif
+    printf("%s\n", str);
+    sprintf(str, " compiler  tokens  ndebug  debug  nobdw  tracegc");
+#ifdef COMPILING
+    str[0] = '+';
+#else
+    str[0] = '-';
+#endif
+#ifdef DUMP_TOKENS
+    str[10] = '+';
+#else
+    str[10] = '-';
+#endif
+#ifdef NDEBUG
+    str[18] = '+';
+#else
+    str[18] = '-';
+#endif
+#ifdef DEBUG
+    str[26] = '+';
+#else
+    str[26] = '-';
+#endif
+#ifdef NOBDW
+    str[33] = '+';
+#else
+    str[33] = '-';
+#endif
+#ifdef ENABLE_TRACEGC
+    str[40] = '+';
+#else
+    str[40] = '-';
+#endif
+    printf("%s\n", str);
+#ifdef COMP
+    printf("Compile flags: %s\n", COMP);
+#endif
+#ifdef LINK
+    printf("Linker flags: %s\n", LINK);
+#endif
     printf("Options:\n");
     printf("  -h : print this help text and exit\n");
 #ifdef COMPILING
@@ -168,8 +275,6 @@ PRIVATE int my_main(int argc, char **argv)
 #ifdef STATS
     my_atexit(report_clock);
 #endif
-    lst_init(env.stck);
-    lst_init(env.prog);
     vec_init(env.tokens);
     vec_init(env.symtab);
 #ifdef MULTI_TASK_THREAD_JOY
@@ -238,7 +343,7 @@ PRIVATE int my_main(int argc, char **argv)
 	    }
 	    /*
 	     *  Overwrite argv[0] with the filename and shift subsequent
-	     *  parameters. Also change directory to that filename.
+	     *  parameters.
 	     */
 	    if ((ptr = strrchr(argv[0] = env.filename, '/')) != 0) {
 		*ptr++ = 0;
@@ -270,11 +375,12 @@ PRIVATE int my_main(int argc, char **argv)
     if (env.compiling)
 	initcompile(&env);
 #endif
-    setjmp(begin); /* return here after error or abort */
-    lst_resize(env.prog, 0);
+    env.stck = pvec_init();	/* start with an empty stack */
+    setjmp(begin);		/* return here after error or abort */
+    env.prog = pvec_init();	/* restart with an empty program */
     if (mustinclude) {
 	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
-	fflush(stdout); /* flush include messages */
+	fflush(stdout);		/* flush include messages */
     }
     return yyparse(&env);
 }
@@ -283,6 +389,7 @@ int main(int argc, char **argv)
 {
     int (*volatile m)(int, char **) = my_main;
 
+    bottom_of_stack = (char *)&argc;
     GC_INIT();
     return (*m)(argc, argv);
 }

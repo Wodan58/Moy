@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef TREESTEP_C
 #define TREESTEP_C
@@ -13,27 +13,23 @@ Recursively traverses leaves of tree T, executes P for each leaf.
 void treestep_(pEnv env)
 {
     int i;
-    NodeList *tree = 0;
-    Node list, node, temp;
+    Node list, node;
+    vector(Node) *tree;
 
     PARM(2, DIP);
-    list = lst_pop(env->stck);
-    node = lst_pop(env->stck);
-    lst_init(tree);
-    for (i = lst_size(node.u.lis) - 1; i >= 0; i--) {
-	temp = lst_at(node.u.lis, i);
-	lst_push(tree, temp);
-    }
-    while (lst_size(tree)) {
-	node = lst_pop(tree);
-	if (node.op != LIST_) {
+    env->stck = pvec_pop(env->stck, &list);
+    env->stck = pvec_pop(env->stck, &node);
+    vec_init(tree);
+    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--)
+	vec_push(tree, pvec_nth(node.u.lis, i));
+    while (vec_size(tree)) {
+	node = vec_pop(tree);
+	if (node.op == LIST_)
+	    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--)
+		vec_push(tree, pvec_nth(node.u.lis, i));
+	else {
 	    prog(env, list.u.lis);
 	    prime(env, node);
-	} else {
-	    for (i = lst_size(node.u.lis) - 1; i >= 0; i--) {
-		temp = lst_at(node.u.lis, i);
-		lst_push(tree, temp);
-	    }
 	}
     }
 }

@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef UNCONS_C
 #define UNCONS_C
@@ -13,42 +13,39 @@ F and R are the first and the rest of non-empty aggregate A.
 void uncons_(pEnv env)
 {
     int i = 0;
-    Node node, temp;
+    Node aggr, elem, temp;
 
     PARM(1, FIRST);
-    node = lst_pop(env->stck);
-    switch (node.op) {
+    env->stck = pvec_pop(env->stck, &aggr);
+    switch (aggr.op) {
     case LIST_:
-	lst_init(temp.u.lis);
-	lst_shallow_copy(temp.u.lis, node.u.lis);
-	node = lst_pop(temp.u.lis);
-	lst_push(env->stck, node);
-	temp.op = LIST_;
-	lst_push(env->stck, temp);
+	temp.u.lis = pvec_init();
+	pvec_shallow_copy(temp.u.lis, aggr.u.lis);
+	aggr.u.lis = pvec_pop(temp.u.lis, &elem);
+	env->stck = pvec_add(env->stck, elem);	/* push element */
 	break;
 
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
-	temp.u.num = *node.u.str++;
-	temp.op = CHAR_;
-	lst_push(env->stck, temp);
-	node.u.str = GC_strdup(node.u.str);  
-	lst_push(env->stck, node);
+	elem.u.num = *aggr.u.str++;
+	elem.op = CHAR_;
+	env->stck = pvec_add(env->stck, elem);	/* push element */
+	aggr.u.str = GC_strdup(aggr.u.str);
 	break;
 
     case SET_:
-	while (!(node.u.set & ((int64_t)1 << i)))
+	while (!(aggr.u.set & ((int64_t)1 << i)))
 	    i++;
-	temp.u.num = i;
-	temp.op = INTEGER_;
-	lst_push(env->stck, temp);
-	node.u.set &= ~((int64_t)1 << i);
-	lst_push(env->stck, node);
+	elem.u.num = i;
+	elem.op = INTEGER_;
+	env->stck = pvec_add(env->stck, elem);	/* push element */
+	aggr.u.set &= ~((int64_t)1 << i);
 	break;
 
     default:
 	break;
     }
+    env->stck = pvec_add(env->stck, aggr);	/* push remainder */
 }
 #endif

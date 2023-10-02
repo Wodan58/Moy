@@ -1,7 +1,7 @@
 /*
     module  : sametype.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef SAMETYPE_C
 #define SAMETYPE_C
@@ -12,16 +12,16 @@ OK 3240  sametype  :  DDA	X Y  ->  B
 */
 void sametype_(pEnv env)
 {
-    Node first, second, node;
+    Node first, second;
 
     PARM(2, ANYTYPE);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     if (first.op == ANON_FUNCT_)
-	node.u.num = first.u.proc == second.u.proc;
+	first.u.num = first.u.proc == second.u.proc;
     else
-	node.u.num = first.op == second.op;
-    node.op = BOOLEAN_;
-    lst_push(env->stck, node);
+	first.u.num = first.op == second.op;
+    first.op = BOOLEAN_;
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

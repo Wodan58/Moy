@@ -1,7 +1,7 @@
 /*
     module  : treegenrec.c
-    version : 1.4
-    date    : 09/15/23
+    version : 1.5
+    date    : 10/02/23
 */
 #ifndef TREEGENREC_C
 #define TREEGENREC_C
@@ -16,6 +16,6 @@ void treegenrec_(pEnv env)
     PARM(4, IFTE);
     cons_(env);
     cons_(env);
-    ztreegenrec_(env);
+    ytreegenrec_(env);
 }
 #endif

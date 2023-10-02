@@ -1,7 +1,7 @@
 /*
     module  : fpush.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef FPUSH_C
 #define FPUSH_C
@@ -17,14 +17,14 @@ void fpush_(pEnv env)
     Node test, jump, elem, node;
 
     PARM(1, ANYTYPE);
-    test = lst_pop(env->stck);
-    jump = lst_pop(env->prog);
-    elem = lst_pop(env->prog);
+    env->stck = pvec_pop(env->stck, &test);
+    env->prog = pvec_pop(env->prog, &jump);
+    env->prog = pvec_pop(env->prog, &elem);
     if (test.u.num) {
-	node = lst_at(env->prog, jump.u.num);
+	node = pvec_nth(env->prog, jump.u.num);
 	switch (node.op) {
 	case LIST_:
-	    lst_push(node.u.lis, elem);
+	    node.u.lis = pvec_add(node.u.lis, elem);
 	    break;
 
 	case STRING_:
@@ -42,7 +42,7 @@ void fpush_(pEnv env)
 	default:
 	    break;
 	}
-	lst_assign(env->prog, jump.u.num, node); /* write node */
+	env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
     }
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : fputch.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef FPUTCH_C
 #define FPUTCH_C
@@ -15,8 +15,8 @@ void fputch_(pEnv env)
     Node node, elem;
 
     PARM(2, FREAD);
-    elem = lst_pop(env->stck);
-    node = lst_back(env->stck);
+    env->stck = pvec_pop(env->stck, &elem);
+    node = pvec_lst(env->stck);
     putc(elem.u.num, node.u.fil);
 }
 #endif

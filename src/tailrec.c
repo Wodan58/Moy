@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef TAILREC_C
 #define TAILREC_C
@@ -17,17 +17,17 @@ void tailrec_(pEnv env)
     Node first, second, third;
 
     PARM(3, IFTE);
-    third = lst_pop(env->stck);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
-    size2 = lst_size(env->prog);
+    env->stck = pvec_pop(env->stck, &third);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
+    size2 = pvec_cnt(env->prog);
     /*
 	setup the continuation
     */
     code(env, tailrec_);
-    lst_push(env->prog, third);
-    lst_push(env->prog, second);
-    lst_push(env->prog, first);
+    prime(env, third);
+    prime(env, second);
+    prime(env, first);
     /*
 	push the false branch of tailrec
     */
@@ -35,7 +35,7 @@ void tailrec_(pEnv env)
     /*
 	register the target location for the false branch
     */
-    size1 = lst_size(env->prog);
+    size1 = pvec_cnt(env->prog);
     /*
 	push the jump address onto the program stack
     */
@@ -60,7 +60,7 @@ void tailrec_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    save(env, first.u.lis, 0);
+    save(env, first.u.lis, 0, 0);
     /*
 	push the test of the tailrec
     */

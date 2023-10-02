@@ -1,7 +1,7 @@
 /*
     module  : swons.c
-    version : 1.7
-    date    : 09/15/23
+    version : 1.8
+    date    : 10/02/23
 */
 #ifndef SWONS_C
 #define SWONS_C
@@ -15,14 +15,14 @@ void swons_(pEnv env)
     Node elem, aggr, node;
 
     PARM(2, HAS);
-    elem = lst_pop(env->stck);
-    aggr = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &elem);
+    env->stck = pvec_pop(env->stck, &aggr);
     switch (aggr.op) {
     case LIST_:
-	lst_init(node.u.lis);
-	if (lst_size(aggr.u.lis))
-	    lst_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
-	lst_push(node.u.lis, elem);
+	node.u.lis = pvec_init();
+	if (pvec_cnt(aggr.u.lis))
+	    pvec_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
+	node.u.lis = pvec_add(node.u.lis, elem);
 	break;
 
     case STRING_:
@@ -42,6 +42,6 @@ void swons_(pEnv env)
 	break;
     }
     node.op = aggr.op;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : fclose.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef FCLOSE_C
 #define FCLOSE_C
@@ -15,7 +15,7 @@ void fclose_(pEnv env)
     Node node;
 
     PARM(1, FGET);
-    node = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &node);
     fclose(node.u.fil);
 }
 #endif

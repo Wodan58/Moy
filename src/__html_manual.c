@@ -1,7 +1,7 @@
 /*
     module  : __html_manual.c
-    version : 1.4
-    date    : 09/15/23
+    version : 1.5
+    date    : 10/02/23
 */
 #ifndef __HTML_MANUAL_C
 #define __HTML_MANUAL_C

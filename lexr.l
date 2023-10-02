@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.11
-    date    : 09/11/23
+    version : 1.12
+    date    : 10/02/23
 */
 #include "globals.h"
 
@@ -145,6 +145,7 @@ MODULE[ \t]*	return MODULE;
 ^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
 ^\%PUT.*	{ fflush(stdout); fprintf(stderr, "%s\n", yytext + 4); }
 ^\%LISTING.*	env->echoflag = atoi(yytext + 8);
+^\%TRACE.*	env->debugging = atoi(yytext + 6);
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];

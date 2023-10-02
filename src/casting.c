@@ -1,7 +1,7 @@
 /*
     module  : casting.c
-    version : 1.6
-    date    : 09/15/23
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef CASTING_C
 #define CASTING_C
@@ -15,9 +15,9 @@ void casting_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     first.op = second.op;
-    lst_push(env->stck, first);
+    env->stck = pvec_add(env->stck, first);
 }
 #endif

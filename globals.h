@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.18
-    date    : 09/18/23
+    version : 1.19
+    date    : 10/02/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -30,7 +30,7 @@
 #define MULTI_TASK_THREAD_JOY
 #endif
 
-#include <gc.h>		     /* system installed BDW or local gc.h */
+#include <gc.h>			/* system installed BDW or local gc.h */
 #include "khash.h"
 #include "kvec.h"
 #ifdef USE_BIGNUM_ARITHMETIC
@@ -41,7 +41,7 @@
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
-#define DISPLAYMAX 10	     /* nesting in HIDE & MODULE */
+#define DISPLAYMAX 10		/* nesting in HIDE & MODULE */
 #define INIECHOFLAG 0
 #define INIAUTOPUT 1
 #define INIUNDEFERROR 0
@@ -119,22 +119,22 @@ typedef enum {
 #define PUBLIC
 
 /* types		     */
-typedef int Symbol;	     	/* symbol created by scanner */
+typedef int Symbol;			/* symbol created by scanner */
 
-typedef struct Env *pEnv;    	/* pointer to global variables */
+typedef struct Env *pEnv;		/* pointer to global variables */
 
-typedef void (*proc_t)(pEnv); 	/* procedure */
+typedef void (*proc_t)(pEnv);		/* procedure */
 
-typedef struct NodeList NodeList; /* forward */
+typedef struct NodeList NodeList;	/* forward */
 
-typedef int pEntry;	     	/* index in symbol table */
+typedef int pEntry;			/* index in symbol table */
 
-typedef unsigned char Operator; /* opcode / datatype */
+typedef unsigned char Operator;		/* opcode / datatype */
 
 /*
     Lists are stored in vectors of type Node.
 */
-#include "pars.h"
+#include "pars.h"	/* YYSTYPE */
 
 /*
     Nodes are in consecutive memory locations. No next pointer needed.
@@ -143,6 +143,8 @@ typedef struct Node {
     YYSTYPE u;
     Operator op;
 } Node;
+
+#include "pvec.h"	/* struct NodeList */
 
 /*
     The symbol table has a name/value pair. Type of value depends on is_user.
@@ -166,31 +168,29 @@ typedef struct Token {
 */
 KHASH_MAP_INIT_STR(Symtab, pEntry)
 
-#include "list.h"	   /* nodelist */
-
 #ifdef MULTI_TASK_THREAD_JOY
-#include "task.h"	   /* context, channel */
+#include "task.h"		/* context, channel */
 #endif
 
 /*
     Global variables are stored locally in the main function.
 */
 typedef struct Env {
-    vector(Token) *tokens; /* read ahead table */
-    vector(Entry) *symtab; /* symbol table */
+    vector(Token) *tokens;	/* read ahead table */
+    vector(Entry) *symtab;	/* symbol table */
 #ifdef MULTI_TASK_THREAD_JOY
     vector(Context) *context;
     vector(Channel) *channel;
 #endif
     khash_t(Symtab) *hash;
-    NodeList *stck, *prog; /* stack, code, and quotations are vectors */
-    clock_t startclock;    /* main */
+    NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
+    clock_t startclock;		/* main */
     char *pathname;
     char *filename;
     char **g_argv;
     int g_argc;
-    int token;		   /* yylex */
-    pEntry location;       /* lookup */
+    int token;			/* yylex */
+    pEntry location;		/* lookup */
 #ifdef MULTI_TASK_THREAD_JOY
     int current;
 #endif
@@ -199,13 +199,14 @@ typedef struct Env {
 	char *name;
 	int hide;
     } module_stack[DISPLAYMAX];
-    unsigned char autoput; /* options */
+    unsigned char autoput;	/* options */
     unsigned char echoflag;
     unsigned char undeferror;
     unsigned char tracegc;
     unsigned char debugging;
     unsigned char overwrite;
     unsigned char compiling;
+    unsigned char alarming;
 } Env;
 
 typedef struct OpTable {
@@ -264,7 +265,6 @@ PUBLIC void prime(pEnv env, Node node);
 PUBLIC Node pop(pEnv env);
 /* read.c */
 PUBLIC void readfactor(pEnv env) /* read a JOY factor */;
-PUBLIC void reverse(NodeList *list);
 PUBLIC void readterm(pEnv env);
 /* repl.c */
 PUBLIC void inisymboltable(pEnv env) /* initialise */;
@@ -272,7 +272,7 @@ PUBLIC void lookup(pEnv env, char *name);
 PUBLIC void enteratom(pEnv env, char *name, NodeList *list);
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
 /* save.c */
-PUBLIC void save(pEnv env, NodeList *list, int num);
+PUBLIC void save(pEnv env, NodeList *list, int num, int remove);
 /* scan.c */
 PUBLIC void inilinebuffer(char *str);
 PUBLIC int redirect(char *file, char *name, FILE *fp);
@@ -280,8 +280,6 @@ PUBLIC int include(pEnv env, char *name, int error);
 PUBLIC int yywrap(void);
 PUBLIC void my_error(char *str, YYLTYPE *bloc);
 PUBLIC int yyerror(pEnv env, char *str);
-/* undo.c */
-PUBLIC void undo(pEnv env, NodeList *list, int num);
 /* util.c */
 PUBLIC int ChrVal(char *str);
 PUBLIC char *StrVal(char *str);

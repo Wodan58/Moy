@@ -1,7 +1,7 @@
 /*
     module  : __symtabindex.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef __SYMTABINDEX_C
 #define __SYMTABINDEX_C
@@ -16,6 +16,6 @@ void __symtabindex_(pEnv env)
 
     node.u.num = vec_size(env->symtab);
     node.op = INTEGER_;
-    lst_push(env->stck, node);
+    env->stck = pvec_add(env->stck, node);
 }
 #endif

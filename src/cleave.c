@@ -1,7 +1,7 @@
 /*
     module  : cleave.c
-    version : 1.5
-    date    : 09/15/23
+    version : 1.6
+    date    : 10/02/23
 */
 #ifndef CLEAVE_C
 #define CLEAVE_C
@@ -16,8 +16,8 @@ PRIVATE void cleave_(pEnv env)
     Node first, second;
 
     PARM(3, WHILE);
-    second = lst_pop(env->stck);
-    first = lst_pop(env->stck);
+    env->stck = pvec_pop(env->stck, &second);
+    env->stck = pvec_pop(env->stck, &first);
     /*
 	swap X1 and X2
     */
@@ -25,7 +25,7 @@ PRIVATE void cleave_(pEnv env)
     /*
 	push the location of X1 onto the code stack
     */
-    size = lst_size(env->prog);
+    size = pvec_cnt(env->prog);
     /*
 	push X1 that was saved at this location in the code
     */
@@ -46,7 +46,7 @@ PRIVATE void cleave_(pEnv env)
 	save the stack before the condition and restore it afterwards with
 	the condition code included.
     */
-    save(env, first.u.lis, 0);
+    save(env, first.u.lis, 0, 0);
     /*
 	push the first program, producing X1
     */
