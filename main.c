@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.20
- *  date    : 10/02/23
+ *  version : 1.23
+ *  date    : 10/15/23
  */
 #include "globals.h"
 
@@ -45,32 +45,30 @@ PRIVATE void report_clock(pEnv env)
 PRIVATE void copyright(char *file)
 {
     int i, j = 0;
-    char str[BUFFERMAX], *ptr;
+    char str[BUFFERMAX];
 
     static struct {
 	char *file;
 	time_t stamp;
 	char *gc;
     } table[] = {
-	{ "joytut.inp", 994075177, "NOBDW" },
-	{ "jp-joytst.joy", 994075177, "NOBDW" },
-	{ "laztst.joy", 1005579152, "BDW" },
-	{ "symtst.joy", 1012575285, "BDW" },
-	{ "plgtst.joy", 1012575285, "BDW" },
-	{ "lsptst.joy", 1012575285, "BDW" },
-	{ "mtrtst.joy", 1017847160, "BDW" },
-	{ "grmtst.joy", 1017847160, "BDW" },
-	{ "reptst.joy", 1047653638, "NOBDW" },
-	{ "jp-reprodtst.joy", 1047653638, "NOBDW" },
-	{ "flatjoy.joy", 1047653638, "NOBDW" },
-	{ "modtst.joy", 1047920271, "BDW" },
+	{ "joytut", 994075177, "NOBDW" },
+	{ "jp-joytst", 994075177, "NOBDW" },
+	{ "laztst", 1005579152, "BDW" },
+	{ "symtst", 1012575285, "BDW" },
+	{ "plgtst", 1012575285, "BDW" },
+	{ "lsptst", 1012575285, "BDW" },
+	{ "mtrtst", 1017847160, "BDW" },
+	{ "grmtst", 1017847160, "BDW" },
+	{ "reptst", 1047653638, "NOBDW" },
+	{ "jp-reprodtst", 1047653638, "NOBDW" },
+	{ "flatjoy", 1047653638, "NOBDW" },
+	{ "modtst", 1047920271, "BDW" },
 	{ 0, 1056113062, "NOBDW" } };
 
     if (strcmp(file, "stdin")) {
-	if ((ptr = strrchr(file, '/')) != 0)
-	    file = ptr + 1;
 	for (i = 0; table[i].file; i++) {
-	    if (!strcmp(file, table[i].file)) {
+	    if (!strncmp(file, table[i].file, strlen(table[i].file))) {
 		strftime(str, sizeof(str), "%H:%M:%S on %b %d %Y",
 		    gmtime(&table[i].stamp));
 		printf("JOY  -  compiled at %s (%s)\n", str, table[i].gc);
@@ -118,7 +116,7 @@ PRIVATE void dump_table(pEnv env)
     options - print help on startup options and exit: options are those that
 	      cannot be set from within the language itself.
 */
-PRIVATE void options(void)
+PRIVATE void options(pEnv env)
 {
     char str[BUFFERMAX];
 
@@ -181,7 +179,7 @@ PRIVATE void options(void)
 #else
     str[26] = '-';
 #endif
-#ifdef MULTI_TASK_THREAD_JOY
+#ifdef USE_MULTI_THREADS_JOY
     str[34] = '+';
 #else
     str[34] = '-';
@@ -193,12 +191,12 @@ PRIVATE void options(void)
 #endif
     printf("%s\n", str);
     sprintf(str, " compiler  tokens  ndebug  debug  nobdw  tracegc");
-#ifdef COMPILING
+#ifdef COMPILER
     str[0] = '+';
 #else
     str[0] = '-';
 #endif
-#ifdef DUMP_TOKENS
+#ifdef TOKENS
     str[10] = '+';
 #else
     str[10] = '-';
@@ -232,7 +230,7 @@ PRIVATE void options(void)
 #endif
     printf("Options:\n");
     printf("  -h : print this help text and exit\n");
-#ifdef COMPILING
+#ifdef COMPILER
     printf("  -c : compile joy source into C source\n");
 #endif
 #ifdef TRACING
@@ -250,7 +248,7 @@ PRIVATE void options(void)
 #if YYDEBUG
     printf("  -y : print a trace of parser execution\n");
 #endif
-    exit(EXIT_SUCCESS);
+    quit_(env);
 }
 
 PRIVATE int my_main(int argc, char **argv)
@@ -277,7 +275,7 @@ PRIVATE int my_main(int argc, char **argv)
 #endif
     vec_init(env.tokens);
     vec_init(env.symtab);
-#ifdef MULTI_TASK_THREAD_JOY
+#ifdef USE_MULTI_THREADS_JOY
     vec_init(env.context);
     vec_init(env.channel);
 #endif
@@ -303,7 +301,7 @@ PRIVATE int my_main(int argc, char **argv)
 	    for (j = 1; argv[i][j]; j++)
 		switch (argv[i][j]) {
 		case 'h' : helping = 1; break;
-#ifdef COMPILING
+#ifdef COMPILER
 		case 'c' : env.compiling = 1; break;
 #endif
 #ifdef TRACING
@@ -364,16 +362,16 @@ PRIVATE int my_main(int argc, char **argv)
     if (symdump)
 	my_atexit(dump_table);
 #endif
-    if (helping)
-	options();
     env.echoflag = INIECHOFLAG;
     env.autoput = INIAUTOPUT;
     env.undeferror = INIUNDEFERROR;
     inilinebuffer(env.filename);
     inisymboltable(&env);
-#ifdef COMPILING
+    if (helping)
+	options(&env);		/* might print symbol table */
+#ifdef COMPILER
     if (env.compiling)
-	initcompile(&env);
+	initcompile(&env);	/* uses symtab and filename */
 #endif
     env.stck = pvec_init();	/* start with an empty stack */
     setjmp(begin);		/* return here after error or abort */

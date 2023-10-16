@@ -1,7 +1,7 @@
 /*
  *  module  : exec.c
- *  version : 1.3
- *  date    : 10/02/23
+ *  version : 1.4
+ *  date    : 10/12/23
  */
 #include "globals.h"
 
@@ -13,7 +13,7 @@ PUBLIC void execute(pEnv env, NodeList *list)
 {
     Node node;
 
-#ifdef COMPILING
+#ifdef COMPILER
     if (env->compiling) {
 	compileprog(env, list);
 	return;

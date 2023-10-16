@@ -1,7 +1,7 @@
 /*
-    module  : %M%
-    version : %I%
-    date    : %G%
+    module  : system.c
+    version : 1.7
+    date    : 10/02/23
 */
 #ifndef SYSTEM_C
 #define SYSTEM_C

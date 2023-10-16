@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.15
-    date    : 10/02/23
+    version : 1.16
+    date    : 10/12/23
 */
 #include "globals.h"
 
@@ -142,7 +142,7 @@ MODULE[ \t]*	return MODULE;
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
 ^\$.*		{ int rv = system(yytext + 1); if (rv) { fflush(stdout);
-		  fprintf(stderr, "system: %d\n", rv); } }
+		  fprintf(stderr, "warning: system() returns %d\n", rv); } }
 ^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
 ^\%PUT.*	{ fflush(stdout); fprintf(stderr, "%s\n", yytext + 4); }
 ^\%LISTING.*	env->echoflag = atoi(yytext + 8);

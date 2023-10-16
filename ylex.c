@@ -1,11 +1,11 @@
 /*
     module  : ylex.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 10/12/23
 */
 #include "globals.h"
 
-#ifdef DUMP_TOKENS
+#ifdef TOKENS
 static void dumptok(Token tok, int num)
 {
     printf("(%d) ", num);
@@ -81,7 +81,7 @@ PUBLIC int yylex(pEnv env)
 */
     if (vec_size(env->tokens)) {
 	tok = vec_pop(env->tokens);
-#ifdef DUMP_TOKENS
+#ifdef TOKENS
 	dumptok(tok, 1); /* tokens from the first pop */
 #endif
 	symb = tok.symb;
@@ -152,13 +152,13 @@ done:	undomod(hide, modl, hcnt);
 */
     if (vec_size(env->tokens)) {
 	tok = vec_pop(env->tokens);
-#ifdef DUMP_TOKENS
+#ifdef TOKENS
 	dumptok(tok, 2); /* tokens from the second pop */
 #endif
 	symb = tok.symb;
 	yylval = tok.yylval;
     } else {
-#ifdef DUMP_TOKENS
+#ifdef TOKENS
 	tok.symb = symb;
 	tok.yylval = yylval;
 	dumptok(tok, 3); /* there was no value popped */

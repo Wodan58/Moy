@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.19
-    date    : 10/02/23
+    version : 1.22
+    date    : 10/15/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -15,19 +15,12 @@
 #include <time.h>
 #include <inttypes.h>
 
-#ifdef _MSC_VER
-#include <io.h>
-#pragma warning(disable : 4005 4244 4267 4996)
-#else
-#include <unistd.h>
-#endif
-
 /*
     The following #defines are present in the source code.
 */
 #if 0
 #define USE_BIGNUM_ARITHMETIC
-#define MULTI_TASK_THREAD_JOY
+#define USE_MULTI_THREADS_JOY
 #endif
 
 #include <gc.h>			/* system installed BDW or local gc.h */
@@ -168,7 +161,7 @@ typedef struct Token {
 */
 KHASH_MAP_INIT_STR(Symtab, pEntry)
 
-#ifdef MULTI_TASK_THREAD_JOY
+#ifdef USE_MULTI_THREADS_JOY
 #include "task.h"		/* context, channel */
 #endif
 
@@ -178,7 +171,7 @@ KHASH_MAP_INIT_STR(Symtab, pEntry)
 typedef struct Env {
     vector(Token) *tokens;	/* read ahead table */
     vector(Entry) *symtab;	/* symbol table */
-#ifdef MULTI_TASK_THREAD_JOY
+#ifdef USE_MULTI_THREADS_JOY
     vector(Context) *context;
     vector(Channel) *channel;
 #endif
@@ -191,7 +184,7 @@ typedef struct Env {
     int g_argc;
     int token;			/* yylex */
     pEntry location;		/* lookup */
-#ifdef MULTI_TASK_THREAD_JOY
+#ifdef USE_MULTI_THREADS_JOY
     int current;
 #endif
     int hide_stack[DISPLAYMAX];

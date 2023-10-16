@@ -1,14 +1,14 @@
 #
 #   module  : makefile
-#   version : 1.3
-#   date    : 10/02/23
+#   version : 1.4
+#   date    : 10/12/23
 #
 .POSIX:
 .SUFFIXES:
 .PRECIOUS: pars.c lexr.c
 
 CC = gcc
-CF = -DNCHECK -DCOPYRIGHT -O3 -Wall -Wextra -Werror -Wno-unused-parameter
+CF = -DCOPYRIGHT -O3 -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 LF = -lm -lgc
 CFLAGS = $(CF) -DCOMP="\"$(CF)\"" -DLINK="\"$(LF)\"" -DVERS="\"Release 1.0\""
 OBJECTS = main.o pars.o lexr.o scan.o repl.o modl.o ylex.o util.o exec.o \
