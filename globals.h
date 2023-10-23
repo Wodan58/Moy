@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.22
-    date    : 10/15/23
+    version : 1.23
+    date    : 10/23/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -160,10 +160,6 @@ typedef struct Token {
     The symbol table is accessed through a hash table.
 */
 KHASH_MAP_INIT_STR(Symtab, pEntry)
-
-#ifdef USE_MULTI_THREADS_JOY
-#include "task.h"		/* context, channel */
-#endif
 
 /*
     Global variables are stored locally in the main function.
