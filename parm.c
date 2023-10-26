@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.10
-    version : 10/02/23
+    date    : 1.11
+    version : 10/24/23
 */
 #include "globals.h"
 
@@ -699,11 +699,13 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    execerror(env->filename, "two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
-	if (first.op != FLOAT_ && first.op != INTEGER_)
+	if (first.op != BIGNUM_ && first.op != FLOAT_ && first.op != INTEGER_)
 	    execerror(env->filename, "float or integer", file);
-	if (second.op != FLOAT_ && second.op != INTEGER_)
+	if (second.op != BIGNUM_ && second.op != FLOAT_ &&
+	    second.op != INTEGER_)
 	    execerror(env->filename, "two floats or integers", file);
-	if ((first.op == FLOAT_ && !first.u.dbl) || !first.u.num)
+	if ((first.op == BIGNUM_ && first.u.str[1] == '0') ||
+	    (first.op == FLOAT_ && !first.u.dbl) || !first.u.num)
 	    execerror(env->filename, "non-zero divisor", file);
 	break;
 /*

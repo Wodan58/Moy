@@ -1,14 +1,14 @@
 #
 #   module  : prim.sh
-#   version : 1.4
-#   date    : 10/02/23
+#   version : 1.6
+#   date    : 10/26/23
 #
 #   Generate prim.c and prim.h
 #   The directory needs to be given as parameter.
 #
 echo checking prim.c and prim.h
 todo=0
-ls -1Q $1/src/*.c | sed 's/^/#include /' >prim.tmp
+ls $1/src/*.c | sed 's/^/#include "/;s/$/"/' >prim.tmp
 if [ ! -f $1/prim.c -o ! -f $1/prim.h ]
 then
   echo creating prim.c and prim.h

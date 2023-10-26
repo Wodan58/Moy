@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.16
-#   date    : 10/12/23
+#   version : 1.17
+#   date    : 10/26/23
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
@@ -30,13 +30,13 @@ add_custom_target(always
 		  COMMAND sh prim.sh .
 		 )
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(CF "-DNCHECK -DCOPYRIGHT -DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS")
+  set(CF "-DCOPYRIGHT -DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS")
   add_definitions(${CF} -DCOMP="${CMAKE_C_FLAGS_RELEASE} ${CF}" -DLINK="${CMAKE_EXE_LINKER_FLAGS}" -DVERS="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
   target_link_libraries(joy gc-lib)
   include_directories(bdwgc/include)
   add_subdirectory(bdwgc)
 else()
-  set(CF "-DNCHECK -DCOPYRIGHT -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
+	set(CF "-DCOPYRIGHT -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage

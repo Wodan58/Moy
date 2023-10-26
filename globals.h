@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.23
-    date    : 10/23/23
+    version : 1.25
+    date    : 10/26/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -139,6 +139,10 @@ typedef struct Node {
 
 #include "pvec.h"	/* struct NodeList */
 
+#ifdef USE_MULTI_THREADS_JOY
+#include "task.h"
+#endif
+
 /*
     The symbol table has a name/value pair. Type of value depends on is_user.
     The flags are used to distinguish between immediate and normal functions.
@@ -180,8 +184,11 @@ typedef struct Env {
     int g_argc;
     int token;			/* yylex */
     pEntry location;		/* lookup */
+#ifdef USE_BIGNUM_ARITHMETIC
+    int scale;			/* number of digits after the decimal point */
+#endif
 #ifdef USE_MULTI_THREADS_JOY
-    int current;
+    int current;		/* currently executing thread */
 #endif
     int hide_stack[DISPLAYMAX];
     struct module {
