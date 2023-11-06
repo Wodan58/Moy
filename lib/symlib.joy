@@ -42,11 +42,11 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 
 					      (* from Cambridge to .. *)
     C2T ==
-	[ dup list ]
+	[ list ]
 	[ unswons
-	  [ [ [dup unops in]
+	  [ [ [unops in]
 	      [first C2T [] cons] dip swons ]
-	    [ [dup [QUOTE] in]
+	    [ [[QUOTE] in]
 	      swons ]
 	    [ [uncons first [C2T] dip C2T [] cons cons]
 	      dip swons ] ]
@@ -54,11 +54,11 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 	[ [] cons ]
 	ifte;
     C2I ==
-	[ dup list ]
+	[ list ]
 	[ unswons
-	  [ [ [dup unops in]
+	  [ [ [unops in]
 	      [first C2I] dip swons ]
-	    [ [dup [QUOTE] in]
+	    [ [[QUOTE] in]
 	      swons ]
 	    [ [uncons first [C2I] dip C2I]
 	      dip swons concat [] cons ] ]
@@ -66,11 +66,11 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 	[ [] cons ]
 	ifte;
     C2P ==
-	[ dup list ]
+	[ list ]
 	[ unswons 
-	  [ [ [dup unops in]
+	  [ [ [unops in]
 	      [first C2P] dip ]
-	    [ [dup [QUOTE] in]
+	    [ [[QUOTE] in]
 	      pop first ]
 	    [ [uncons first swap [C2P] dip C2P]
 	      dip ] ]
@@ -78,11 +78,11 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 	[ ]
 	ifte;
     C2R ==
-	[ dup list ]
+	[ list ]
 	[ unswons 
-	  [ [ [dup unops in]
+	  [ [ [unops in]
 	      swap first C2R ]
-	    [ [dup [QUOTE] in]
+	    [ [[QUOTE] in]
 	      pop first ]
 	    [ swap uncons first swap
 	      [C2R] dip C2R ] ]
@@ -92,22 +92,22 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 						  (* from Infix to .. *)
     I2C ==
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [I2C [] cons] dip swons ]
-	  [ [dup [QUOTE] in]
+	  [ [[QUOTE] in]
 	    [unswons [] cons] dip swons ]
-	  [ [dup list] (* binary *)
+	  [ [list] (* binary *)
 	    I2C swap uncons swapd
 	    I2C swons cons cons ]
 	  [ ] ]
 	cond;
     I2T ==
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [I2T [] cons] dip swons ]
-	  [ [dup [QUOTE] in]
+	  [ [[QUOTE] in]
 	    [unswons [] cons] dip swons ]
-	  [ [dup list] (* binary *)
+	  [ [list] (* binary *)
 	    I2T swap uncons swapd
 	    I2T swons cons cons ]
 	  [ [] cons ] ]
@@ -115,64 +115,64 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 						 (* from Polish to .. *)
     P2C ==
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [P2C [] cons] dip swons ]
-	  [ [dup binops in]
+	  [ [binops in]
 	    [P2C [] cons [P2C [] cons] dip swoncat]
 	    dip swons ]
-	  [ [dup list]
+	  [ [list]
 	    [] cons [QUOTE] swoncat ]
 	  [ ] ]
 	cond;
     P2T ==
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [P2T [] cons] dip swons ]
-	  [ [dup binops in]
+	  [ [binops in]
 	    [P2T [] cons [P2T [] cons] dip swoncat]
 	    dip swons ]
-	  [ [dup list]
+	  [ [list]
 	    [] cons [QUOTE] swoncat ]
 	  [ [] cons ] ]
 	cond;
     P2I ==
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [P2I] dip swons ]
-	  [ [dup binops in]
+	  [ [binops in]
 	    [P2I [P2I] dip swap]
 	    dip swons concat [] cons ]
-	  [ [dup list]
+	  [ [list]
 	    [QUOTE] swoncat ]
 	  [ [] cons ] ]
 	cond;
 						(* from Reverse to .. *)
     R2C ==
-	[ [ [ [dup unops in]
+	[ [ [ [unops in]
 	      [[] cons] dip swons ]
-	    [ [dup binops in]
+	    [ [binops in]
 	      [[] cons cons] dip swons ]
-	    [ [dup list]
+	    [ [list]
 	      [] cons [QUOTE] swoncat ]
 	    [ ] ]
 	  cond ]
 	step;
     R2T ==
-	[ [ [ [dup unops in]
+	[ [ [ [unops in]
 	      [[] cons] dip swons ]
-	    [ [dup binops in]
+	    [ [binops in]
 	      [[] cons cons] dip swons ]
-	    [ [dup list]
+	    [ [list]
 	      [] cons [QUOTE] swoncat ]
 	    [ [] cons ] ]
 	  cond ]
 	step;
     R2I ==
-	[ [ [ [dup unops in]
+	[ [ [ [unops in]
 	      swons ]
-	    [ [dup binops in]
+	    [ [binops in]
 	      swons concat [] cons ]
-	    [ [dup list]
+	    [ [list]
 	      [] cons [QUOTE] swoncat ]
 	    [ [] cons ] ]
 	  cond ]
@@ -180,9 +180,9 @@ Note that operator classes u b b1 b2 b3 need to be user defined as lists
 
     X2Y ==			       (* used by Pol2Rev and Rev2Pol *)
 	unswons
-	[ [ [dup unops in]
+	[ [ [unops in]
 	    [X2Y] dip swap ]
-	  [ [dup binops in]
+	  [ [binops in]
 	    [X2Y X2Y] dip swap ]
 	  [ swap ] ]
 	cond;
@@ -217,11 +217,11 @@ IN
 	[ ]
 	ifte;
     M42T ==
-	[ [ [ dup unops in ]
+	[ [ [ unops in ]
 	    [ unswons M42T [] cons ] dip swons ]
-	  [ [ dup [QUOTE] in ]
+	  [ [ [QUOTE] in ]
 	    [ unswons [] cons ] dip swons ]
-	  [ [ dup list ]
+	  [ [ list]
 	    unswons M12T popd ]
 	  [ [] cons ] ]
 	  cond;
@@ -248,11 +248,11 @@ IN
 	[ ]
 	ifte;
     M42C ==
-	[ [ [ dup unops in ]
+	[ [ [ unops in ]
 	    [ unswons M42C [] cons ] dip swons ]
-	  [ [ dup [QUOTE] in ]
+	  [ [ [QUOTE] in ]
 	    [ unswons [] cons ] dip swons ]
-	  [ [ dup list ]
+	  [ [ list]
 	    unswons M12C popd ]
 	  [ ] ]
 	  cond;

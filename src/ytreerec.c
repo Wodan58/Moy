@@ -1,13 +1,13 @@
 /*
     module  : ytreerec.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 11/06/23
 */
 #ifndef YTREEREC_C
 #define YTREEREC_C
 
 /**
-OK 3160  (treerec)  :  DDDU	T [O] [C]  ->  ...
+OK 3160  (treerec)  :  DDDDA	T [O] [C]  ->  ...
 T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
 void ytreerec_(pEnv env)

@@ -1,13 +1,13 @@
 /*
     module  : unstack.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 11/06/23
 */
 #ifndef UNSTACK_C
 #define UNSTACK_C
 
 /**
-OK 2000  unstack  :  DU	[X Y ..]  ->  ..Y X
+OK 2000  unstack  :  DP	[X Y ..]  ->  ..Y X
 The list [X Y ..] becomes the new stack.
 */
 void unstack_(pEnv env)

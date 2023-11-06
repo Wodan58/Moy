@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.14
-    date    : 10/02/23
+    version : 1.15
+    date    : 11/06/23
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -25,12 +25,15 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 #endif
     switch (first.op) {
     case USR_:
+    case USR_PRIME_:
 	name1 = vec_at(env->symtab, first.u.ent).name;
 	switch (second.op) {
 	case USR_:
+	case USR_PRIME_:
 	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
+	case ANON_PRIME_:
 	    name2 = cmpname(second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:
@@ -50,12 +53,15 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	}
 	break;
     case ANON_FUNCT_:
+    case ANON_PRIME_:
 	name1 = cmpname(first.u.proc);
 	switch (second.op) {
 	case USR_:
+	case USR_PRIME_:
 	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
+	case ANON_PRIME_:
 	    name2 = cmpname(second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:
@@ -166,7 +172,9 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    break;
 #endif
 	case USR_:
+	case USR_PRIME_:
 	case ANON_FUNCT_:
+	case ANON_PRIME_:
 	case STRING_:
 	case USR_STRING_:
 	case LIST_:
@@ -180,9 +188,11 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	name1 = first.u.str;
 	switch (second.op) {
 	case USR_:
+	case USR_PRIME_:
 	    name2 = vec_at(env->symtab, second.u.ent).name;
 	    goto cmpstr;
 	case ANON_FUNCT_:
+	case ANON_PRIME_:
 	    name2 = cmpname(second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:

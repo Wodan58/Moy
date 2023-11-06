@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.12
- *  date    : 10/02/23
+ *  version : 1.13
+ *  date    : 11/06/23
  */
 #include "globals.h"
 
@@ -51,8 +51,10 @@ void trace(pEnv env, FILE *fp)
     if (!env->debugging)
 	return;
     writestack(env, env->stck, fp);
-    fprintf(fp, " : ");
-    writeterm(env, env->prog, fp);
+    if (env->debugging == 2) {
+	fprintf(fp, " : ");
+	writeterm(env, env->prog, fp);
+    }
     fputc('\n', fp);
     fflush(fp);
 }

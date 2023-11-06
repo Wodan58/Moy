@@ -1,13 +1,13 @@
 /*
     module  : binrec.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 11/06/23
 */
 #ifndef BINREC_C
 #define BINREC_C
 
 /**
-OK 2730  binrec  :  DDDDU	[P] [T] [R1] [R2]  ->  ...
+OK 2730  binrec  :  DDDDDA	[P] [T] [R1] [R2]  ->  ...
 Executes P. If that yields true, executes T.
 Else uses R1 to produce two intermediates, recurses on both,
 then executes R2 to combine their results.

@@ -1,7 +1,7 @@
 /*
     module  : pvec.h
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 11/06/23
 */
 struct NodeList {
     uint64_t m : 30,	/* capacity */
@@ -38,6 +38,23 @@ static inline NodeList *pvec_init(void)
     v->r = ARITY_UNKNOWN;
     v->u = 0;
     return v;
+}
+
+/* pvec_concat concatenates two existing vectors, and returns 1 result */
+static inline NodeList *pvec_concat(NodeList *v, NodeList *w)
+{
+    NodeList *r = GC_malloc(sizeof(NodeList));
+    r->m = r->n = v->n + w->n;
+    r->a = GC_malloc(r->m * sizeof(YYSTYPE));
+    r->b = GC_malloc(r->m);
+    memcpy(r->a, w->a, w->n * sizeof(YYSTYPE));
+    memcpy(r->b, w->b, w->n);
+    memcpy(r->a + w->n, v->a, v->n * sizeof(YYSTYPE));
+    memcpy(r->b + w->n, v->b, v->n);
+    r->o = OWNER;
+    r->r = ARITY_UNKNOWN;
+    r->u = 0;
+    return r;
 }
 
 /* pvec_add assumes that head has been initialized before it is called */
@@ -88,13 +105,14 @@ static inline void pvec_copy(NodeList *v, NodeList *w)
 static inline void pvec_shallow_copy(NodeList *v, NodeList *w)
 {
     memcpy(v, w, sizeof(NodeList));
+    v->o = NOT_OWNER;
 }
 
 /* pvec_shallow_copy_take_ownership makes a copy while taking ownership */
 static inline void pvec_shallow_copy_take_ownership(NodeList *v, NodeList *w)
 {
     if (w->o == OWNER) {
-	pvec_shallow_copy(v, w);
+	memcpy(v, w, sizeof(NodeList));
 	w->o = NOT_OWNER;
     } else
 	pvec_copy(v, w);

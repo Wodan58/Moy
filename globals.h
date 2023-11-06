@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.25
-    date    : 10/26/23
+    version : 1.26
+    date    : 11/06/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -21,6 +21,7 @@
 #if 0
 #define USE_BIGNUM_ARITHMETIC
 #define USE_MULTI_THREADS_JOY
+#define WRITE_USING_RECURSION
 #endif
 
 #include <gc.h>			/* system installed BDW or local gc.h */

@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.23
- *  date    : 10/15/23
+ *  version : 1.24
+ *  date    : 11/06/23
  */
 #include "globals.h"
 
@@ -52,7 +52,7 @@ PRIVATE void copyright(char *file)
 	time_t stamp;
 	char *gc;
     } table[] = {
-	{ "joytut", 994075177, "NOBDW" },
+	{ "tutinp", 994075177, "NOBDW" },
 	{ "jp-joytst", 994075177, "NOBDW" },
 	{ "laztst", 1005579152, "BDW" },
 	{ "symtst", 1012575285, "BDW" },
@@ -70,7 +70,7 @@ PRIVATE void copyright(char *file)
 	for (i = 0; table[i].file; i++) {
 	    if (!strncmp(file, table[i].file, strlen(table[i].file))) {
 		strftime(str, sizeof(str), "%H:%M:%S on %b %d %Y",
-		    gmtime(&table[i].stamp));
+			 gmtime(&table[i].stamp));
 		printf("JOY  -  compiled at %s (%s)\n", str, table[i].gc);
 		j = 1;
 		break;
@@ -234,10 +234,13 @@ PRIVATE void options(pEnv env)
     printf("  -c : compile joy source into C source\n");
 #endif
 #ifdef TRACING
-    printf("  -d : print a trace of program execution\n");
+    printf("  -d : print a trace of stack development\n");
 #endif
 #ifdef SYMBOLS
     printf("  -s : dump symbol table functions after execution\n");
+#endif
+#ifdef TRACING
+    printf("  -t : print a trace of program execution\n");
 #endif
 #ifdef COPYRIGHT
     printf("  -v : do not print a copyright notice\n");
@@ -309,6 +312,9 @@ PRIVATE int my_main(int argc, char **argv)
 #endif
 #ifdef SYMBOLS
 		case 's' : symdump = 1; break;
+#endif
+#ifdef TRACING
+		case 't' : env.debugging = 2; break;
 #endif
 #ifdef COPYRIGHT
 		case 'v' : verbose = 0; break;

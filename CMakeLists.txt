@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.17
-#   date    : 10/26/23
+#   version : 1.18
+#   date    : 11/06/23
 #
 cmake_minimum_required(VERSION 3.0)
 project(Moy VERSION 1.0)
@@ -36,7 +36,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   include_directories(bdwgc/include)
   add_subdirectory(bdwgc)
 else()
-	set(CF "-DCOPYRIGHT -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
+  set(CF "-DCOPYRIGHT -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage

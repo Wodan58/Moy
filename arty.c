@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 11/06/23
 */
 #include "globals.h"
 
@@ -14,15 +14,13 @@
 */
 PUBLIC int arity(pEnv env, NodeList *quot, int num)
 {
-    int i, j;
     char *str;
     Entry ent;
     NodeList *list;
     Node node, prev;
 
     list = pvec_init();
-    for (i = 0, j = pvec_cnt(quot); i < j; i++)
-	list = pvec_add(list, pvec_nth(quot, i));	/* make a copy */
+    pvec_copy(list, quot);			/* make a copy */
     prev.u.lis = 0;
     prev.op = 0;
     while (pvec_cnt(list)) {
@@ -31,8 +29,7 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
 	case USR_:
 	    ent = vec_at(env->symtab, node.u.ent);
 	    if (ent.u.body && !pvec_getused(ent.u.body)) {
-		for (i = 0, j = pvec_cnt(ent.u.body); i < j; i++)
-		    list = pvec_add(list, pvec_nth(ent.u.body, i));
+		list = pvec_concat(list, ent.u.body);
 		pvec_setused(ent.u.body);	/* prevent recursion */
 	    }
 	    break;
@@ -47,8 +44,7 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
 		} else if (*str == 'P') {	/* previous */
 		    if (prev.op != LIST_)
 			return -1;
-		    for (i = 0, j = pvec_cnt(prev.u.lis); i < j; i++)
-			list = pvec_add(list, pvec_nth(prev.u.lis, i));
+		    list = pvec_concat(list, prev.u.lis);
 		} else if (*str == 'U')		/* unknown */
 		    return -1;
 	    break;

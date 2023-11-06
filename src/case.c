@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 11/06/23
 */
 #ifndef CASE_C
 #define CASE_C
@@ -9,7 +9,7 @@
 #include "compare.h"
 
 /**
-OK 2100  case  :  DDU	X [..[X Y]..]  ->  Y i
+OK 2100  case  :  DP	X [..[X Y]..]  ->  Y i
 Indexing on the value of X, execute the matching Y.
 */
 void case_(pEnv env)
@@ -29,7 +29,7 @@ void case_(pEnv env)
 	if (!Compare(env, node, pvec_lst(elem.u.lis))) {
 	    node.u.lis = pvec_init();
 	    pvec_shallow_copy(node.u.lis, elem.u.lis);
-	    node.u.lis = pvec_del(elem.u.lis);
+	    node.u.lis = pvec_del(node.u.lis);
 	    env->stck = pvec_del(env->stck);
 	    break;
 	}

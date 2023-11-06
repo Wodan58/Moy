@@ -12,12 +12,12 @@ LIBRA
 	(* rand 5 rem *) 0 at putchars newline;		      (* R.W. *)
     get-integer ==
 	get
-	[ dup integer not ]
+	[ integer not ]
 	[ pop "An integer is expected:\n" putchars get ]
 	while;
     get-list ==
 	get
-	[ dup list not ]
+	[ list not ]
 	[ pop "A list is expected:\n" putchars get ]
 	while;
     get-quote ==
@@ -26,13 +26,13 @@ LIBRA
 	[ pop "A quotation is expected:\n" putchars get ]
 	while;
     expecting ==
-	[ over over equal ]
+	[ equal ]
 	[ pop pop praise [succ] dip]
 	[ "No, the right answer is:  " putchars put pop newline ]
 	ifte
 	succ;
     expecting-from ==
-	[ [over over equal] some ]
+	[ [equal] some ]
 	[ pop pop praise [succ] dip]
 	[ "No, the right answer must be one of the following:\n\t"
           putchars [put "  " putchars] step pop newline ]

@@ -1,7 +1,7 @@
 /*
     module  : save.c
-    version : 1.8
-    date    : 10/12/23
+    version : 1.9
+    date    : 11/06/23
 */
 #include "globals.h"
 #include "prim.h"
@@ -19,15 +19,16 @@ PUBLIC void save(pEnv env, NodeList *list, int num, int remove)
 	goto done;
     if ((status = pvec_getarity(list)) == ARITY_UNKNOWN)
 	status = arity(env, list, num) == 1 ? ARITY_OK : ARITY_KNOWN;
-    if (status == ARITY_KNOWN) {
+    if (status == ARITY_KNOWN || status == ARITY_OK) {
 #ifdef ARITY
 	if (env->overwrite) {
-	    printf("warning: `");
+	    printf("%s: `", status == ARITY_OK ? "info" : "warning");
 	    writeterm(env, list, stdout);
-	    printf("` has incorrect arity\n");
+	    printf("` has %scorrect arity\n", status == ARITY_OK ? "" : "in");
 	}
 #endif
-	status = ARITY_NOT_OK;
+	if (status == ARITY_KNOWN)
+	    status = ARITY_NOT_OK;
     }
     pvec_setarity(list, status);
     if (status == ARITY_NOT_OK) {

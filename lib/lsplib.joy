@@ -30,7 +30,7 @@ eval == 					(*  env  exp  *)
 	[ IF					(* env  [[i] [t] [e]] *)
 	  uncons [eval] dip			(* env  e-i [[t] [e]] *)
 	  swap					(* env  [[t] [e]] e-i *)
-	  [ dup null ]
+	  [ null ]
 	  [ pop second]				(* env  [e]	      *)
 	  [ pop first ]				(* env  [t]	      *)
 	  ifte eval ]
@@ -60,11 +60,11 @@ eval == 					(*  env  exp  *)
 	[					(* lookup!	      *)
 	  dupd swap				(*  env  v  env	      *)
 	  [					(*  member?	      *)
-	    [ dup null ]
+	    [ null ]
 	    [ true ]				(*  fake	      *)
 	    [ first first in ]			(*  really ?	      *)
 	    ifte ]
-	  [ [ dup null ]			(*  was fake ?	      *)
+	  [ [ null ]				(*  was fake ?	      *)
 	    [ pop ]				(*  self-evaluating   *)
 	    [					(*  search really     *)
 	      first unswons rolldown		(*  [e1..] [v1..] v   *)

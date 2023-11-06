@@ -126,7 +126,7 @@ DEFINE
 
 DEFINE
     string2charlist ==
-	[dup null]  [pop []]  [uncons]  [cons]  linrec.
+	[null]  [pop []]  [uncons]  [cons]  linrec.
 
 
 "CNpApKpp"  string2charlist Polish prs-test.

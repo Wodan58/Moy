@@ -1,13 +1,13 @@
 /*
     module  : ygenrec.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 11/06/23
 */
 #ifndef YGENREC_C
 #define YGENREC_C
 
 /**
-OK 3140  (genrec)  :  DDDDU	[B] [T] [R1] [R2]  ->  ...
+OK 3140  (genrec)  :  DDDDDA	[B] [T] [R1] [R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */

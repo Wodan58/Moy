@@ -39,7 +39,7 @@ LIBRA
 
 (* on two operands *)
 
-    null2 == over null over null or;
+    null2 == nulld null or;
     cons2 == swapd cons consd;
     uncons2 == unconsd uncons swapd;
     swons2 == swapd swons swonsd;
@@ -49,7 +49,7 @@ LIBRA
 
     from-to ==		(*  lo  hi  agg  *)
 	[] cons  [pop pop] swoncat
-	[over over >] swap
+	[>] swap
 	[ [dup succ] dip ]
 	[cons]
 	linrec;

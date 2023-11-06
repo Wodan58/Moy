@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.11
-    date    : 10/02/23
+    version : 1.12
+    date    : 11/06/23
 */
 #include "globals.h"
 %}
@@ -100,8 +100,7 @@ opt_term : term | /* empty */ { $$ = 0; } ;
 /*
     A term is one or more factors.
 */
-term : term factor { int i, j; for (i = 0, j = pvec_cnt($1); i < j; i++)
-		     $2 = pvec_add($2, pvec_nth($1, i)); $$ = $2; }
+term : term factor { $$ = pvec_concat($1, $2); }
      | factor ;
 
 /*

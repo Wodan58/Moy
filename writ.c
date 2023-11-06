@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.14
- *  date    : 10/12/23
+ *  version : 1.15
+ *  date    : 11/06/23
  */
 #include "globals.h"
 
@@ -73,7 +73,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	}
 	putc('"', fp);
 	break;
-#if 0
+#ifdef WRITE_USING_RECURSION
     case LIST_:
 	putc('[', fp);
 	writeterm(env, node.u.lis, fp);
@@ -171,14 +171,24 @@ PRIVATE void writing(pEnv env, void *parm, FILE *fp)
 PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
 {
     int i, j;
+#ifndef WRITE_USING_RECURSION
     vector(Node) *array;
+#endif
 
     if ((j = pvec_cnt(list)) == 0)
 	return;
+#ifdef WRITE_USING_RECURSION
+    for (i = j - 1; i >= 0; i--) {
+	writefactor(env, pvec_nth(list, i), fp);
+	if (i)
+	    putchar(' ');
+    }
+#else
     vec_init(array);				/* collect nodes in a vector */
     for (i = 0; i < j; i++)
 	vec_push(array, pvec_nth(list, i));
     writing(env, (void *)array, fp);
+#endif
 }
 
 /*
