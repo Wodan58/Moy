@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.6
-    date    : 11/06/23
+    version : 1.7
+    date    : 11/09/23
 */
 #include "globals.h"
 
@@ -44,7 +44,8 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
 		} else if (*str == 'P') {	/* previous */
 		    if (prev.op != LIST_)
 			return -1;
-		    list = pvec_concat(list, prev.u.lis);
+		    if (prev.u.lis)		/* prevent empty */
+			list = pvec_concat(list, prev.u.lis);
 		} else if (*str == 'U')		/* unknown */
 		    return -1;
 	    break;
