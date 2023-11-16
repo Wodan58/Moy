@@ -1,7 +1,7 @@
 /*
     module  : in.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 11/16/23
 */
 #ifndef IN_C
 #define IN_C
@@ -17,7 +17,7 @@ void in_(pEnv env)
     int i, found = 0;
     Node aggr, elem, node;
 
-    PARM(2, CONS);
+    PARM(2, IN);
     env->stck = pvec_pop(env->stck, &aggr);
     env->stck = pvec_pop(env->stck, &elem);
     switch (aggr.op) {

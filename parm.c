@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.11
-    version : 10/24/23
+    date    : 1.12
+    version : 11/16/23
 */
 #include "globals.h"
 
@@ -538,6 +538,33 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 /*
     set member:
 */
+    case IN:
+	if (leng < 2)
+	    execerror(env->filename, "two parameters", file);
+	first = pvec_lst(env->stck);
+	second = pvec_nth(env->stck, leng - 2);
+	switch (first.op) {
+	case LIST_:
+	    break;
+	case STRING_:
+	case BIGNUM_:
+#if 0
+	    if (second.op != CHAR_)
+		execerror(env->filename, "character", file);
+#endif
+	    break;
+	case SET_:
+	    if ((second.op != INTEGER_ && second.op != CHAR_) ||
+		 second.u.num < 0 || second.u.num >= SETSIZE)
+		execerror(env->filename, "small numeric", file);
+	    break;
+	default:
+	    execerror(env->filename, "aggregate parameter", file);
+	}
+	break;
+/*
+    set member:
+*/
     case HAS:
 	if (leng < 2)
 	    execerror(env->filename, "two parameters", file);
@@ -548,8 +575,10 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	    break;
 	case STRING_:
 	case BIGNUM_:
+#if 0
 	    if (first.op != CHAR_)
 		execerror(env->filename, "character", file);
+#endif
 	    break;
 	case SET_:
 	    if ((first.op != INTEGER_ && first.op != CHAR_) ||

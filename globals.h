@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.26
-    date    : 11/06/23
+    version : 1.27
+    date    : 11/16/23
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -84,6 +84,7 @@ typedef enum {
     FORMAT,
     FORMATF,
     CONS,
+    IN,
     HAS,
     CASE,
     FIRST,
