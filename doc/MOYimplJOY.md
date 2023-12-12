@@ -19,10 +19,11 @@ directory should behave exactly as in the reference implementation of Joy.
 
 What is different in this implementation is the use of vectors instead of
 linked lists and the stackless recursion. There are exceptions: `get` and
-`fget` use readfactor that may call readterm, that calls readfactor.
+`fget` use `readfactor` that may call `readterm`, that calls `readfactor`.
 
 The big advantage of stackless recursion is in the size of data structures that
-can be handled. A program that builds a list of integers looks like this:
+can be handled. A program that builds a list of integers in idiomatic fashion
+looks like this:
 
     echo '1 100000 from-to-list.' | build/joy.exe
 
@@ -33,4 +34,4 @@ implemented, that is not recursive but still fails because `from-to-list` makes
 use of `linrec` and `linrec` recurses.
 
 This implementation is stackless and so succeeds where other implementations
-fail. There is also a downside: function calling is slower.
+fail. There is a downside: function calling is slower.
