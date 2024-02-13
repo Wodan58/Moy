@@ -1,7 +1,7 @@
 /*
     module  : unswons.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef UNSWONS_C
 #define UNSWONS_C
@@ -45,9 +45,6 @@ void unswons_(pEnv env)
 	env->stck = pvec_add(env->stck, node);
 	temp.op = INTEGER_;
 	env->stck = pvec_add(env->stck, temp);
-	break;
-
-    default:
 	break;
     }
 }

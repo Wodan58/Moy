@@ -1,14 +1,14 @@
 /*
     module  : fseek.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef FSEEK_C
 #define FSEEK_C
 
 /**
 OK 1980  fseek  :  DDA	S P W  ->  S B
-Stream S is repositioned to position P relative to whence-point W,
+[FOREIGN] Stream S is repositioned to position P relative to whence-point W,
 where W = 0, 1, 2 for beginning, current position, end respectively.
 */
 void fseek_(pEnv env)

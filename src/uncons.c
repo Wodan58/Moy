@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef UNCONS_C
 #define UNCONS_C
@@ -41,9 +41,6 @@ void uncons_(pEnv env)
 	elem.op = INTEGER_;
 	env->stck = pvec_add(env->stck, elem);	/* push element */
 	aggr.u.set &= ~((int64_t)1 << i);
-	break;
-
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, aggr);	/* push remainder */

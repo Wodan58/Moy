@@ -1,7 +1,7 @@
 /*
  *  module  : exec.c
- *  version : 1.4
- *  date    : 10/12/23
+ *  version : 1.5
+ *  date    : 02/01/24
  */
 #include "globals.h"
 
@@ -13,8 +13,14 @@ PUBLIC void execute(pEnv env, NodeList *list)
 {
     Node node;
 
+#ifdef BYTECODE
+    if (env->bytecoding == 1) {
+	bytecode(list);
+	return;
+    }
+#endif
 #ifdef COMPILER
-    if (env->compiling) {
+    if (env->compiling == 1) {
 	compileprog(env, list);
 	return;
     }
@@ -32,6 +38,7 @@ PUBLIC void execute(pEnv env, NodeList *list)
 	    } else
 		writefactor(env, node, stdout);
 	}
-	putchar('\n');
+	if (env->autoput && !env->ignore)
+	    putchar('\n');
     }
 }

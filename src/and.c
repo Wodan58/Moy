@@ -1,7 +1,7 @@
 /*
     module  : and.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 01/25/24
 */
 #ifndef AND_C
 #define AND_C
@@ -26,8 +26,6 @@ void and_(pEnv env)
     case INTEGER_:
 	first.u.num = first.u.num && second.u.num;
 	first.op = BOOLEAN_;
-	break;
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, first);

@@ -1,7 +1,7 @@
 /*
     module  : __memorymax.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef __MEMORYMAX_C
 #define __MEMORYMAX_C
@@ -14,7 +14,10 @@ void __memorymax_(pEnv env)
 {
     Node node;
 
-    node.u.num = GC_get_memory_use() + GC_get_free_bytes();
+    if (env->ignore)
+	node.u.num = 0;
+    else
+	node.u.num = GC_get_memory_use() + GC_get_free_bytes();
     node.op = INTEGER_;
     env->stck = pvec_add(env->stck, node);
 }

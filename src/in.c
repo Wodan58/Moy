@@ -1,7 +1,7 @@
 /*
     module  : in.c
-    version : 1.9
-    date    : 11/16/23
+    version : 1.10
+    date    : 01/25/24
 */
 #ifndef IN_C
 #define IN_C
@@ -30,6 +30,7 @@ void in_(pEnv env)
 	    }
 	}
 	break;
+
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
@@ -39,10 +40,9 @@ void in_(pEnv env)
 		break;
 	    }
 	break;
+
     case SET_:
 	found = (aggr.u.set & ((int64_t)1 << elem.u.num)) > 0;
-	break;
-    default:
 	break;
     }
     node.u.num = found;

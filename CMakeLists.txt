@@ -1,14 +1,18 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.18
-#   date    : 11/06/23
+#   version : 1.20
+#   date    : 01/23/24
 #
 cmake_minimum_required(VERSION 3.0)
-project(Moy VERSION 1.0)
+project(Joy VERSION 1.0)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE "Release")
 endif()
-option(RUN_TESTS "Run standard tests" OFF)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+  option(RUN_TESTS "Run standard tests" ON)
+else()
+  option(RUN_TESTS "Run standard tests" OFF)
+endif()
 find_package(BISON)
 find_package(FLEX)
 BISON_TARGET(MyParser ${CMAKE_SOURCE_DIR}/pars.y ${CMAKE_SOURCE_DIR}/pars.c
@@ -23,26 +27,32 @@ ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 	       scan.c repl.c modl.c ylex.c util.c exec.c eval.c xerr.c otab.c
 	       prog.c writ.c read.c save.c parm.c arty.c)
-add_dependencies(joy always)
-add_custom_target(always
-		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-		  COMMAND sh tabl.sh .
-		  COMMAND sh prim.sh .
-		 )
+add_definitions(-DLINK="\\"${CMAKE_EXE_LINKER_FLAGS}\\"")
+add_definitions(-DVERS="BDW ${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
+#
+#    MSVC: cmake --build . --config Release
+#
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(CF "-DCOPYRIGHT -DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS")
-  add_definitions(${CF} -DCOMP="${CMAKE_C_FLAGS_RELEASE} ${CF}" -DLINK="${CMAKE_EXE_LINKER_FLAGS}" -DVERS="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
-  target_link_libraries(joy gc-lib)
+  set(CMAKE_VERBOSE_MAKEFILE ON)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCOPYRIGHT -DGC_NOT_DLL -D_CRT_SECURE_NO_WARNINGS")
+  add_definitions(-DCOMP="\\"${CMAKE_C_FLAGS}\\"")
+  target_link_libraries(joy bdwgc/Release/gc)
   include_directories(bdwgc/include)
   add_subdirectory(bdwgc)
 else()
+  add_dependencies(joy always)
+  add_custom_target(always
+		    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		    COMMAND sh tabl.sh .
+		    COMMAND sh prim.sh .)
   set(CF "-DCOPYRIGHT -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
-  if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
-    add_definitions(${CF} -DCOMP="${CMAKE_C_FLAGS_DEBUG} ${CF}" -DLINK="${CMAKE_EXE_LINKER_FLAGS}" -DVERS="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
+  if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CF}")
+    add_definitions(-DCOMP="\\"${CMAKE_C_FLAGS_RELEASE}\\"")
   else()
-    add_definitions(${CF} -DCOMP="${CMAKE_C_FLAGS_RELEASE} ${CF}" -DLINK="${CMAKE_EXE_LINKER_FLAGS}" -DVERS="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CF} -g -O0 --coverage -fprofile-arcs -ftest-coverage") # debug, no optimization
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
+    add_definitions(-DCOMP="\\"${CMAKE_C_FLAGS_DEBUG}\\"")
   endif()
   target_link_libraries(joy m gc)
   if(RUN_TESTS)

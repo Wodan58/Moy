@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.15
-    date    : 11/06/23
+    version : 1.16
+    date    : 01/25/24
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -279,8 +279,6 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	}
 	break;
 #endif
-    default:
-	return 1; /* unequal */
     }
 cmpnum:
     return num1 < num2 ? -1 : num1 > num2;

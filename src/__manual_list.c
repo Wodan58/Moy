@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/24/24
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -21,7 +21,7 @@ void __manual_list_(pEnv env)
     elem.op = STRING_;
     for (i = 0; (tab = readtable(i)) != 0; i++) /* find end */
 	;
-    while (--i) {
+    for (--i; i >= 0; i--) { /* overshot */
 	tab = readtable(i);
 	temp.u.lis = pvec_init();
 	elem.u.str = tab->messg2;

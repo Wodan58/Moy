@@ -1,13 +1,13 @@
 /*
     module  : fpush.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.11
+    date    : 01/25/24
 */
 #ifndef FPUSH_C
 #define FPUSH_C
 
 /**
-OK 3380  (fpush)  :  D	->
+OK 3380  #fpush  :  D	->
 Pop the location of an aggregate and an element from the program stack.
 If the top of the data stack is true, add the element to the aggregate.
 */
@@ -37,9 +37,6 @@ void fpush_(pEnv env)
 
 	case SET_:
 	    node.u.set |= ((int64_t)1 << elem.u.num);
-	    break;
-
-	default:
 	    break;
 	}
 	env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */

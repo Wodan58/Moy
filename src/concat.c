@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/25/24
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -44,10 +44,6 @@ void concat_(pEnv env)
 
     case SET_:
 	result.u.set = first.u.set | second.u.set;
-	break;
-
-    default:
-	result = first;
 	break;
     }
     result.op = first.op;

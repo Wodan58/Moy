@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.12
-    date    : 11/06/23
+    version : 1.14
+    date    : 02/01/24
 */
 #include "globals.h"
 %}
@@ -12,7 +12,6 @@
 
 %token MODULE JPRIVATE JPUBLIC EQDEF END
 
-%token <num> KEYWORD_		1
 %token <str> USR_		2
 %token <proc> ANON_FUNCT_	3
 %token <num> BOOLEAN_		4
@@ -24,10 +23,11 @@
 %token <dbl> FLOAT_		10
 %token <fil> FILE_		11
 %token <str> BIGNUM_		12
-%token <str> USR_PRIME_		13
-%token <proc> ANON_PRIME_	14
-%token <str> USR_STRING_	15
-%token <lis> USR_LIST_		16
+%token <num> KEYWORD_		13
+%token <str> USR_PRIME_		14
+%token <proc> ANON_PRIME_	15
+%token <str> USR_STRING_	16
+%token <lis> USR_LIST_		17
 
 %type <num> char_or_int
 %type <set> opt_set set
@@ -120,8 +120,8 @@ factor  : USR_      {   Entry ent; Node node;
 				node.u.ent = env->location;
 				node.op = USR_;
 			    } else {
-				if (env->compiling)
-				    node.u.str = ent.name;
+				if (env->bytecoding || env->compiling)
+				    node.u.ent = env->location;
 				else
 				    node.u.proc = ent.u.proc;
 				node.op = ANON_FUNCT_;

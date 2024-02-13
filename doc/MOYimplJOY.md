@@ -7,19 +7,13 @@ Introduction
 This page presents a note about the technicalities of this Joy implementation.
 The mechanisms of this implementation differ from the
 [reference implementation](https://github.com/Wodan58/Joy).
-The language itself should be the same. Whatever is not the same should be
-repaired, unless it is a consequence of using Flex and Bison.
+The language itself should be the same.
 
 Implementation details
 ======================
 
-About the implementation: the aim is to leave the language untouched. That
-means that all tests in the test2 directory and all examples in the lib
-directory should behave exactly as in the reference implementation of Joy.
-
-What is different in this implementation is the use of vectors instead of
-linked lists and the stackless recursion. There are exceptions: `get` and
-`fget` use `readfactor` that may call `readterm`, that calls `readfactor`.
+This implementation uses vectors instead of linked lists and it recurses
+without overflowing the stack.
 
 The big advantage of stackless recursion is in the size of data structures that
 can be handled. A program that builds a list of integers in idiomatic fashion
@@ -33,5 +27,5 @@ collector that causes the stack overflow. `Joy` has Cheney's algorithm
 implemented, that is not recursive but still fails because `from-to-list` makes
 use of `linrec` and `linrec` recurses.
 
-This implementation is stackless and so succeeds where other implementations
-fail. There is a downside: function calling is slower.
+This implementation succeeds where other implementations fail.
+There is a downside: function calling is slower.

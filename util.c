@@ -1,7 +1,7 @@
 /*
     module  : util.c
-    version : 1.1
-    date    : 07/10/23
+    version : 1.2
+    date    : 02/09/24
 */
 #include "globals.h"
 
@@ -32,33 +32,51 @@ PRIVATE int EscVal(char *str)
     return num;
 }
 
-PUBLIC int ChrVal(char *str)
+/*
+ * chr(0) is not allowed
+ */
+PUBLIC int ChrVal(pEnv env, char *str)
 {
+    int ch;
+
     if (*str == '\\')
-	return EscVal(++str);
-    return *str;
+	ch = EscVal(++str);
+    else
+        ch = *str;
+    if (!ch)
+	yyerror(env, "chr(0) in character constant is not supported");
+    return ch;
 }
 
-PUBLIC char *StrVal(char *str)
+/*
+ * chr(0) and chr(1) are not allowed
+ */
+PUBLIC char *StrVal(pEnv env, char *str)
 {
-    int i = 0;
-    char *buf;
+    int ch, i = 0;
 
+    char *buf;
     buf = GC_strdup(str);
-    while (*str != '"')
+    while (*str != '"') {
 	if (*str != '\\')
-	    buf[i++] = *str++;
+	    buf[i++] = ch = *str++;
 	else {
-	    buf[i++] = EscVal(++str);
+	    buf[i++] = ch = EscVal(++str);
 	    ++str;
 	    if (isdigit((int)*str))
 		str += 2;
 	}
+	if (ch == 0)
+	    yyerror(env, "chr(0) in string constant is not supported");
+	if (ch == 1)
+	    yyerror(env, "chr(1) in string constant is not supported");
+    }
     buf[i] = 0;
     return buf;
 }
 
-PUBLIC char *DelSpace(char *str)
+#if 0
+PUBLIC char *DelSpace(char *str)	/* not used anymore */
 {
     int i;
 
@@ -73,3 +91,4 @@ PUBLIC char *DelSpace(char *str)
 	str++;
     return str;
 }
+#endif

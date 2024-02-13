@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.27
-    date    : 11/16/23
+    version : 1.32
+    date    : 02/12/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -14,6 +14,12 @@
 #include <math.h>
 #include <time.h>
 #include <inttypes.h>
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4244 4267)
+#else
+#include <unistd.h>		/* alarm function */
+#endif
 
 /*
     The following #defines are present in the source code.
@@ -31,7 +37,7 @@
 #include "bignum.h"
 #endif
 
-/* configure		     */
+/* configure			*/
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
 #define BUFFERMAX 80
@@ -41,9 +47,9 @@
 #define INIUNDEFERROR 0
 #define INIWARNING 1
 
-/* installation dependent    */
-#define SETSIZE 64
-#define MAXINT 9223372036854775807LL
+/* installation dependent	*/
+#define SETSIZE (int)(CHAR_BIT * sizeof(uint64_t))	/* from limits.h */
+#define MAXINT INT64_MAX				/* from stdint.h */
 
 typedef enum {
     ANYTYPE,
@@ -102,7 +108,8 @@ typedef enum {
     NOT_USED,
     MY_ABORT,
     PARS_ERR,
-    EXEC_ERR
+    EXEC_ERR,
+    QUIT_ERR
 } Aborts;
 
 typedef enum {
@@ -113,7 +120,7 @@ typedef enum {
 #define PRIVATE
 #define PUBLIC
 
-/* types		     */
+/* types			*/
 typedef int Symbol;			/* symbol created by scanner */
 
 typedef struct Env *pEnv;		/* pointer to global variables */
@@ -182,28 +189,42 @@ typedef struct Env {
     clock_t startclock;		/* main */
     char *pathname;
     char *filename;
+    char *output;		/* output file/function */
     char **g_argv;
     int g_argc;
     int token;			/* yylex */
     pEntry location;		/* lookup */
 #ifdef USE_BIGNUM_ARITHMETIC
+    int radix;			/* output radix */
     int scale;			/* number of digits after the decimal point */
 #endif
 #ifdef USE_MULTI_THREADS_JOY
     int current;		/* currently executing thread */
 #endif
+    int maximum;		/* maximum limit of data and code */
+    int operats;		/* limit to number of operations */
     int hide_stack[DISPLAYMAX];
     struct module {
 	char *name;
 	int hide;
     } module_stack[DISPLAYMAX];
     unsigned char autoput;	/* options */
+    unsigned char autoput_set;
     unsigned char echoflag;
+    unsigned char echoflag_set;
     unsigned char undeferror;
+    unsigned char undeferror_set;
     unsigned char tracegc;
     unsigned char debugging;
+    unsigned char ignore;
     unsigned char overwrite;
     unsigned char compiling;
+    unsigned char bytecoding;
+    unsigned char statistics;
+    unsigned char keyboard;
+    unsigned char preserve;
+    unsigned char quiet;
+    unsigned char norecurse;
     unsigned char alarming;
 } Env;
 
@@ -235,10 +256,11 @@ PUBLIC char *operarity(proc_t proc);
 /* exec.c */
 PUBLIC void execute(pEnv env, NodeList *list);
 /* lexr.l */
+PUBLIC void do_putline(pEnv env, char *str, int line);
 PUBLIC void new_buffer(void);
 PUBLIC void old_buffer(int num);
 PUBLIC int my_yylex(pEnv env);
-PUBLIC int get_char(void);
+PUBLIC int get_input(void);
 /* main.c */
 PUBLIC void abortexecution_(int num);
 /* modl.c */
@@ -253,6 +275,7 @@ PUBLIC char *classify(pEnv env, char *name);
 PUBLIC pEntry qualify(pEnv env, char *name);
 /* otab.c */
 PUBLIC OpTable *readtable(int i);
+PUBLIC int tablesize(void);
 /* parm.c */
 PUBLIC void parm(pEnv env, int num, Params type, char *file);
 /* prog.c */
@@ -272,16 +295,14 @@ PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
 /* save.c */
 PUBLIC void save(pEnv env, NodeList *list, int num, int remove);
 /* scan.c */
-PUBLIC void inilinebuffer(char *str);
-PUBLIC int redirect(char *file, char *name, FILE *fp);
-PUBLIC int include(pEnv env, char *name, int error);
+PUBLIC void inilinebuffer(pEnv env, int joy);
+PUBLIC void include(pEnv env, char *str);
 PUBLIC int yywrap(void);
 PUBLIC void my_error(char *str, YYLTYPE *bloc);
 PUBLIC int yyerror(pEnv env, char *str);
 /* util.c */
-PUBLIC int ChrVal(char *str);
-PUBLIC char *StrVal(char *str);
-PUBLIC char *DelSpace(char *str);
+PUBLIC int ChrVal(pEnv env, char *str);
+PUBLIC char *StrVal(pEnv env, char *str);
 /* writ.c */
 PUBLIC void writefactor(pEnv env, Node node, FILE *fp);
 PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp);
@@ -293,4 +314,11 @@ PUBLIC int yylex(pEnv env);
 /* quit.c */
 PUBLIC void my_atexit(proc_t proc);
 PUBLIC void quit_(pEnv env);
+/* byte.c */
+PUBLIC void initbytes(pEnv env);
+PUBLIC void bytecode(NodeList *list);
+/* code.c */
+PUBLIC void readbytes(pEnv env);
+/* dump.c */
+PUBLIC void dumpbytes(pEnv env);
 #endif

@@ -11,28 +11,37 @@ This repository implements [Joy](https://github.com/Wodan58/Joy) and uses
 [document](https://github.com/Wodan58/Moy/blob/master/doc/MOYimplJOY.md)
 explains the raison d'être.
 
-Changes
--------
-
-Directives borrowed from [42minjoy](https://github.com/Wodan58/42minjoy) are:
-`%INCLUDE`, `%LISTING`, `%PUT`, and `%TRACE`.
-The build system requires new builtins in only one location: as a .c file in
-the src-directory.
-
 Build instructions
 ------------------
 
     cd build
-    SOURCE_DATE_EPOCH=1047920271 cmake ..
+    cmake ..
     cmake --build .
 
-There is a customized version of usrlib.joy waiting in the build directory.
+Build with MSVC
+---------------
+
+After installing bdwgc in the bdwgc-directory use the CMake GUI to uncheck all
+boxes and then check the boxes in the lines that start with disable\_ and
+check the last one: without\_libatomic\_ops.
+
+    cd build
+    cmake ..
+    cmake --build . --config Release
+    copy Release\joy.exe
+
+Running
+-------
+
+There is a copy of usrlib.joy in the build directory.
 
 See also
 --------
 
 Implementation|Dependencies
 --------------|------------
+[42minjoy](https://github.com/Wodan58/42minjoy)|
+[joy0](https://github.com/Wodan58/joy0)|
 [Joy](https://github.com/Wodan58/Joy)|
 [joy1](https://github.com/Wodan58/joy1)|[BDW garbage collector](https://github.com/ivmai/bdwgc)
 

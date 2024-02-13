@@ -1,14 +1,14 @@
 /*
     module  : fread.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 02/01/24
 */
 #ifndef FREAD_C
 #define FREAD_C
 
 /**
 OK 1900  fread  :  DA	S I  ->  S L
-I bytes are read from the current position of stream S
+[FOREIGN] I bytes are read from the current position of stream S
 and returned as a list of I integers.
 */
 void fread_(pEnv env)

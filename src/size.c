@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -29,8 +29,6 @@ void size_(pEnv env)
 	for (temp.u.num = 0, j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
 	    if (node.u.set & j)
 		temp.u.num++;
-	break;
-    default:
 	break;
     }
     temp.op = INTEGER_;

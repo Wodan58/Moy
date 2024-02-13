@@ -1,7 +1,7 @@
 /*
     module  : manual.c
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 02/01/24
 */
 #ifndef MANUAL_C
 #define MANUAL_C
@@ -10,10 +10,12 @@
 
 /**
 OK 2930  manual  :  N	->
-Writes this manual of all Joy primitives to output file.
+[IMPURE] Writes this manual of all Joy primitives to output file.
 */
 void manual_(pEnv env)
 {
+    if (env->ignore)
+	return;
     make_manual(0);
     /* nothing */
 }

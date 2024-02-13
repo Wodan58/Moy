@@ -1,17 +1,17 @@
 /*
-    module  : ygenrec.c
-    version : 1.8
-    date    : 11/06/23
+    module  : genrecaux.c
+    version : 1.11
+    date    : 02/01/24
 */
-#ifndef YGENREC_C
-#define YGENREC_C
+#ifndef GENRECAUX_C
+#define GENRECAUX_C
 
 /**
-OK 3140  (genrec)  :  DDDDDA	[B] [T] [R1] [R2]  ->  ...
+OK 3290  #genrec  :  DDDDDA	[[B] [T] [R1] R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */
-void ygenrec_(pEnv env)
+void genrecaux_(pEnv env)
 {
     int i, j, size;
     unsigned size1, size2;
@@ -33,14 +33,14 @@ void ygenrec_(pEnv env)
     for (i = 0, j = pvec_cnt(aggr.u.lis) - 3; i < j; i++)
 	env->prog = pvec_add(env->prog, pvec_nth(aggr.u.lis, i));
 
-    code(env, cons_);		/* build [[[B] [T] [R1] R2] ygenrec_] */
-    code(env, cons_);		/* build [ygenrec_] */
+    code(env, cons_);		/* build [[[B] [T] [R1] R2] genrecaux_] */
+    code(env, cons_);		/* build [genrecaux_] */
 
     node.u.lis = 0;
     node.op = LIST_;
     prime(env, node);
 
-    node.u.proc = ygenrec_;
+    node.u.proc = genrecaux_;
     node.op = ANON_PRIME_;
     prime(env, node);
     /*

@@ -1,20 +1,23 @@
 /*
     module  : rand.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef RAND_C
 #define RAND_C
 
 /**
 OK 1150  rand  :  A	->  I
-I is a random integer.
+[IMPURE] I is a random integer.
 */
 void rand_(pEnv env)
 {
     Node node;
 
-    node.u.num = rand();
+    if (env->ignore)
+	node.u.num = 0;
+    else
+	node.u.num = rand();
     node.op = INTEGER_;
     env->stck = pvec_add(env->stck, node);
 }

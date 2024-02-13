@@ -1,7 +1,7 @@
 /*
     module  : first.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef FIRST_C
 #define FIRST_C
@@ -34,9 +34,6 @@ void first_(pEnv env)
 	    i++;
 	node.u.num = i;
 	node.op = INTEGER_;
-	break;
-
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, node);

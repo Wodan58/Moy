@@ -1,16 +1,16 @@
 /*
-    module  : ytreerec.c
-    version : 1.9
-    date    : 11/06/23
+    module  : treerecaux.c
+    version : 1.12
+    date    : 02/01/24
 */
-#ifndef YTREEREC_C
-#define YTREEREC_C
+#ifndef TREERECAUX_C
+#define TREERECAUX_C
 
 /**
-OK 3160  (treerec)  :  DDDDA	T [O] [C]  ->  ...
+OK 3310  #treerec  :  DDDDA	T [[O] C]  ->  ...
 T is a tree. If T is a leaf, executes O. Else executes [[[O] C] treerec] C.
 */
-void ytreerec_(pEnv env)
+void treerecaux_(pEnv env)
 {
     Node list, node;
 
@@ -28,7 +28,7 @@ void ytreerec_(pEnv env)
 	node.u.lis = 0;
 	prime(env, node);
 
-	node.u.proc = ytreerec_;
+	node.u.proc = treerecaux_;
 	node.op = ANON_PRIME_;
 	prime(env, node);
 

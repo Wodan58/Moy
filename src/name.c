@@ -1,7 +1,7 @@
 /*
     module  : name.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef NAME_C
 #define NAME_C
@@ -19,9 +19,12 @@ void name_(pEnv env)
     env->stck = pvec_pop(env->stck, &node);
     if (node.op == USR_)
 	node.u.str = vec_at(env->symtab, node.u.ent).name;
-    else if (node.op == ANON_FUNCT_)
-	node.u.str = opername(node.u.proc);
-    else
+    else if (node.op == ANON_FUNCT_) {
+	if (env->bytecoding || env->compiling)
+	    node.u.str = vec_at(env->symtab, node.u.ent).name;
+        else
+	    node.u.str = opername(node.u.proc);
+    } else
 	node.u.str = showname(node.op);
     node.op = STRING_;
     env->stck = pvec_add(env->stck, node);

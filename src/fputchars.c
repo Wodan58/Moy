@@ -1,14 +1,15 @@
 /*
     module  : fputchars.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef FPUTCHARS_C
 #define FPUTCHARS_C
 
 /**
-OK 1960  fputchars  :  D 	S "abc.."  ->  S
-The string abc.. (no quotes) is written to the current position of stream S.
+OK 1960  fputchars  :  D	S "abc.."  ->  S
+[FOREIGN] The string abc.. (no quotes) is written to the current position of
+stream S.
 */
 void fputchars_(pEnv env) /* suggested by Heiko Kuhrt, as "fputstring_" */
 {

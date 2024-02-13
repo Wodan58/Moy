@@ -1,14 +1,11 @@
 /*
  *  module  : main.c
- *  version : 1.24
- *  date    : 11/06/23
+ *  version : 1.30
+ *  date    : 02/13/24
  */
 #include "globals.h"
 
-#define ERROR_ON_USRLIB 0		/* no error */
-
 extern FILE *yyin;			/* lexr.c */
-extern unsigned char mustinclude;	/* scan.c */
 
 static jmp_buf begin;			/* restart with empty program */
 
@@ -29,7 +26,10 @@ PUBLIC void abortexecution_(int num)
 #ifdef STATS
 PRIVATE void report_clock(pEnv env)
 {
+    if (!env->statistics)
+	return;
     fflush(stdout);
+    fprintf(stderr, "%.0f garbage collections\n", (double)GC_get_gc_no());
     fprintf(stderr, "%ld milliseconds CPU to execute\n",
 	   (clock() - env->startclock) * 1000 / CLOCKS_PER_SEC);
 }
@@ -96,9 +96,17 @@ PRIVATE void copyright(char *file)
 #ifdef SYMBOLS
 PRIVATE void dump_table(pEnv env)
 {
-    int i;
+    khint_t k;
     Entry ent;
+    int i, j = 0;
 
+    for (k = kh_begin(env->hash); k != kh_end(env->hash); k++)
+	if (kh_exist(env->hash, k)) {
+	    i = printf("(%d) %s\n", kh_val(env->hash, k), kh_key(env->hash, k));
+	    if (j < i)
+		j = i;
+	}
+    printf("%*.*s\n", j, j, "------------------------------------------------");
     for (i = vec_size(env->symtab) - 1; i >= 0; i--) {
 	ent = vec_at(env->symtab, i);
 	if (!ent.is_user)
@@ -120,106 +128,100 @@ PRIVATE void options(pEnv env)
 {
     char str[BUFFERMAX];
 
-    printf("Usage: joy [options] [filename] [parameters]\n");
-    printf("options, filename, parameters can be given in any order\n");
-    printf("options start with '-' and are all given together\n");
-    printf("parameters start with a digit\n");
-    printf("the filename parameter cannot start with '-' or a digit\n");
+    printf("Usage: joy (options | filenames | parameters)*\n");
+    printf("options, filenames, parameters can be given in any order\n");
+    printf("options start with '-' and parameters start with a digit\n");
+    printf("filenames can be preceded by a pathname: e.g. './'\n");
     printf("Features included (+) or not (-):\n");
-    sprintf(str, " symbols  overwrite  copyright  arity  alarm  yydebug");
+    sprintf(str, " symbols  copyright  jversion  tracing  stats  ncheck");
 #ifdef SYMBOLS
     str[0] = '+';
 #else
     str[0] = '-';
 #endif
-#ifdef OVERWRITE
+#ifdef COPYRIGHT
     str[9] = '+';
 #else
     str[9] = '-';
 #endif
-#ifdef COPYRIGHT
+#ifdef VERS
     str[20] = '+';
 #else
     str[20] = '-';
 #endif
-#ifdef ARITY
-    str[31] = '+';
+#ifdef TRACING
+    str[30] = '+';
 #else
-    str[31] = '-';
+    str[30] = '-';
 #endif
-#if ALARM
-    str[38] = '+';
+#ifdef STATS
+    str[39] = '+';
 #else
-    str[38] = '-';
+    str[39] = '-';
 #endif
-#if YYDEBUG
-    str[45] = '+';
+#ifdef NCHECK
+    str[46] = '+';
 #else
-    str[45] = '-';
+    str[46] = '-';
 #endif
     printf("%s\n", str);
-    sprintf(str, " jversion  tracing  stats  ncheck  multitask  bignums");
-#ifdef VERS
+    sprintf(str, " tokens  ndebug  settings  yydebug  overwrite  arity");
+#ifdef TOKENS
     str[0] = '+';
 #else
     str[0] = '-';
 #endif
-#ifdef TRACING
-    str[10] = '+';
+#ifdef NDEBUG
+    str[8] = '+';
 #else
-    str[10] = '-';
+    str[8] = '-';
 #endif
-#ifdef STATS
-    str[19] = '+';
+#ifdef SETTINGS
+    str[16] = '+';
 #else
-    str[19] = '-';
+    str[16] = '-';
 #endif
-#ifdef NCHECK
+#if YYDEBUG
     str[26] = '+';
 #else
     str[26] = '-';
 #endif
-#ifdef USE_MULTI_THREADS_JOY
-    str[34] = '+';
+#ifdef OVERWRITE
+    str[35] = '+';
 #else
-    str[34] = '-';
+    str[35] = '-';
 #endif
-#ifdef USE_BIGNUM_ARITHMETIC
-    str[45] = '+';
+#ifdef ARITY
+    str[46] = '+';
 #else
-    str[45] = '-';
+    str[46] = '-';
 #endif
     printf("%s\n", str);
-    sprintf(str, " compiler  tokens  ndebug  debug  nobdw  tracegc");
-#ifdef COMPILER
+    sprintf(str, " alarm  multitask  bignums  compiler  bytecodes");
+#if ALARM
     str[0] = '+';
 #else
     str[0] = '-';
 #endif
-#ifdef TOKENS
-    str[10] = '+';
+#ifdef USE_MULTI_THREADS_JOY
+    str[7] = '+';
 #else
-    str[10] = '-';
+    str[7] = '-';
 #endif
-#ifdef NDEBUG
+#ifdef USE_BIGNUM_ARITHMETIC
     str[18] = '+';
 #else
     str[18] = '-';
 #endif
-#ifdef DEBUG
-    str[26] = '+';
+#ifdef COMPILER
+    str[27] = '+';
 #else
-    str[26] = '-';
+    str[27] = '-';
 #endif
-#ifdef NOBDW
-    str[33] = '+';
+#ifdef BYTECODE
+    str[37] = '+';
 #else
-    str[33] = '-';
-#endif
-#ifdef ENABLE_TRACEGC
-    str[40] = '+';
-#else
-    str[40] = '-';
+    str[37] = '-';
 #endif
     printf("%s\n", str);
 #ifdef COMP
@@ -229,18 +231,58 @@ PRIVATE void options(pEnv env)
     printf("Linker flags: %s\n", LINK);
 #endif
     printf("Options:\n");
-    printf("  -h : print this help text and exit\n");
+#ifdef SETTINGS
+    printf("  -a : set the autoput flag (0-2)\n");
+#endif
+#ifdef BYTECODE
+    printf("  -b : compile a joy program to bytecode\n");
+#endif
 #ifdef COMPILER
     printf("  -c : compile joy source into C source\n");
 #endif
 #ifdef TRACING
     printf("  -d : print a trace of stack development\n");
 #endif
+#ifdef SETTINGS
+    printf("  -e : set the echoflag (0-3)\n");
+#endif
+#ifdef BYTECODE
+    printf("  -f : display a byte code file and exit\n");
+#endif
+#ifdef SETTINGS
+    printf("  -g : set the __tracegc flag (0-6)\n");
+#endif
+    printf("  -h : print this help text and exit\n");
+#ifdef SETTINGS
+    printf("  -i : ignore impure functions\n");
+    printf("  -j : filename parameter is a .joy file\n");
+#if 0
+    printf("  -k : allow keyboard editing and history\n");
+#endif
+    printf("  -l : do not read usrlib.joy at startup\n");
+#endif
+#ifdef STATS
+    printf("  -m : set maximum limit of data stack\n");
+    printf("  -n : limit the number of operations\n");
+#endif
+#if 0
+#if defined(BYTECODE) || defined(COMPILER)
+    printf("  -o : name of output file/function\n");
+#endif
+#ifdef SETTINGS
+    printf("  -p : preserve joy1 semantics\n");
+    printf("  -q : operate in quiet mode\n");
+    printf("  -r : print without using recursion\n");
+#endif
+#endif
 #ifdef SYMBOLS
-    printf("  -s : dump symbol table functions after execution\n");
+    printf("  -s : dump symbol table after execution\n");
 #endif
 #ifdef TRACING
     printf("  -t : print a trace of program execution\n");
+#endif
+#ifdef SETTINGS
+    printf("  -u : set the undeferror flag (0,1)\n");
 #endif
 #ifdef COPYRIGHT
     printf("  -v : do not print a copyright notice\n");
@@ -248,25 +290,42 @@ PRIVATE void options(pEnv env)
 #ifdef OVERWRITE
     printf("  -w : suppress warnings: overwriting, arities\n");
 #endif
+#ifdef STATS
+    printf("  -x : print statistics after program finishes\n");
+#endif
 #if YYDEBUG
     printf("  -y : print a trace of parser execution\n");
 #endif
+#if ALARM
+    printf("  -z : time out after %d seconds\n", ALARM);
+#endif
+    quit_(env);
+}
+
+PRIVATE void unknown_opt(pEnv env, char *exe, int ch)
+{
+    printf("Unknown option argument: \"-%c\"\n", ch);
+    printf("More info with: \"%s -h\"\n", exe);
     quit_(env);
 }
 
 PRIVATE int my_main(int argc, char **argv)
 {
-    char *ptr;
+    static unsigned char mustinclude = 1, joy = 1;	/* assume .joy */
     int i, j, ch;
-    unsigned char helping = 0;
+    char *ptr, *exe;					/* joy binary */
+    unsigned char helping = 0, unknown = 0;
 #ifdef COPYRIGHT
     unsigned char verbose = 1;
 #endif
 #ifdef SYMBOLS
     unsigned char symdump = 0;
 #endif
+#ifdef BYTECODE
+    unsigned char listing = 0;
+#endif
 
-    Env env; /* global variables */
+    Env env;	/* global variables */
     memset(&env, 0, sizeof(env));
     /*
      *  Start the clock. my_atexit is called from quit_ that is called in
@@ -276,6 +335,7 @@ PRIVATE int my_main(int argc, char **argv)
 #ifdef STATS
     my_atexit(report_clock);
 #endif
+    setbuf(stdout, 0);
     vec_init(env.tokens);
     vec_init(env.symtab);
 #ifdef USE_MULTI_THREADS_JOY
@@ -287,28 +347,120 @@ PRIVATE int my_main(int argc, char **argv)
      */
     yyin = stdin;
     env.filename = "stdin";
+    env.autoput = INIAUTOPUT;
+    env.echoflag = INIECHOFLAG;
+    env.undeferror = INIUNDEFERROR;
     env.overwrite = INIWARNING;
-    if ((ptr = strrchr(env.pathname = argv[0], '/')) != 0) {
+    /*
+     * Extract the pathname from the program that started this.
+     */
+    if ((ptr = strrchr(env.pathname = exe = argv[0], '/')) != 0) {
 	*ptr++ = 0;
-	argv[0] = ptr;
+	argv[0] = exe = ptr;
     } else if ((ptr = strrchr(env.pathname, '\\')) != 0) {
 	*ptr++ = 0;
-	argv[0] = ptr;
+	argv[0] = exe = ptr;
     } else
 	env.pathname = ".";
+
     /*
      *  First look for options. They start with -.
      */
-    for (i = 1; i < argc; i++)
+    for (i = 1; i < argc; i++) {
 	if (argv[i][0] == '-') {
-	    for (j = 1; argv[i][j]; j++)
+	    for (j = 1; argv[i][j]; j++) {
 		switch (argv[i][j]) {
-		case 'h' : helping = 1; break;
+#ifdef SETTINGS
+		case 'a' : ptr = &argv[i][j + 1];
+			   env.autoput = atoi(ptr);	/* numeric payload */
+			   env.autoput_set = 1;
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+#endif
+#ifdef BYTECODE
+		case 'b' : env.bytecoding = 2; break;	/* prepare & suspend */
+#endif
 #ifdef COMPILER
-		case 'c' : env.compiling = 1; break;
+		case 'c' : env.compiling = 2; break;	/* prepare & suspend */
 #endif
 #ifdef TRACING
 		case 'd' : env.debugging = 1; break;
+#endif
+#ifdef SETTINGS
+		case 'e' : ptr = &argv[i][j + 1];
+			   env.echoflag = atoi(ptr);	/* numeric payload */
+			   env.echoflag_set = 1;
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+#endif
+#ifdef BYTECODE
+		case 'f' : listing = 1; break;
+#endif
+#ifdef SETTINGS
+		case 'g' : ptr = &argv[i][j + 1];
+			   env.tracegc = atoi(ptr);	/* numeric payload */
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+#endif
+		case 'h' : helping = 1; break;
+#ifdef SETTINGS
+		case 'i' : env.ignore = 1; break;
+		case 'j' : joy = 2; break;		/* enforce .joy */
+		case 'k' : env.keyboard = 1; break;
+		case 'l' : mustinclude = 0; break;
+#endif
+#ifdef STATS
+		case 'm' : ptr = &argv[i][j + 1];
+			   env.maximum = atoi(ptr);	/* numeric payload */
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+		case 'n' : ptr = &argv[i][j + 1];
+			   env.operats = atoi(ptr);	/* numeric payload */
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+#endif
+#if defined(BYTECODE) || defined(COMPILER)
+		case 'o' : ptr = &argv[i][j + 1];
+			   env.output = ptr;		/* string payload */
+			   goto next_parm;
+#endif
+#ifdef SETTINGS
+		case 'p' : ptr = &argv[i][j + 1];
+			   env.preserve = atoi(ptr);	/* numeric payload */
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+		case 'q' : env.quiet = 1; break;
+		case 'r' : env.norecurse = 1; break;
 #endif
 #ifdef SYMBOLS
 		case 's' : symdump = 1; break;
@@ -316,23 +468,49 @@ PRIVATE int my_main(int argc, char **argv)
 #ifdef TRACING
 		case 't' : env.debugging = 2; break;
 #endif
+#ifdef SETTINGS
+		case 'u' : ptr = &argv[i][j + 1];
+			   env.undeferror = atoi(ptr);	/* numeric payload */
+			   env.undeferror_set = 1;
+			   ch = *ptr;			/* first digit */
+			   while (isdigit(ch)) {
+			       j++;			/* point last digit */
+			       ptr++;
+			       ch = *ptr;
+			   }
+			   break;
+#endif
 #ifdef COPYRIGHT
 		case 'v' : verbose = 0; break;
 #endif
 #ifdef OVERWRITE
 		case 'w' : env.overwrite = 0; break;
 #endif
+#ifdef STATS
+		case 'x' : env.statistics = 1; break;
+#endif
 #if YYDEBUG
 		case 'y' : yydebug = 1; break;
 #endif
-		}
+#if ALARM
+		case 'z' : env.alarming = 1; break;
+#endif
+		default  : unknown = argv[i][j]; break;
+		} /* end switch */
+	    } /* end for */
+#if defined(BYTECODE) || defined(COMPILER)
+next_parm:
+#endif
 	    /*
-		Overwrite the options with subsequent parameters.
+		Overwrite the options with subsequent parameters. Index i is
+		decreased, because the next parameter is copied to the current
+		index and i is increased in the for-loop.
 	    */
-	    for (--argc; i < argc; i++)
-		argv[i] = argv[i + 1];
-	    break;
-	}
+	    for (--argc, j = i--; j < argc; j++)
+		argv[j] = argv[j + 1];
+	} /* end if */
+    } /* end for */
+
     /*
      *  Look for a possible filename parameter. Filenames cannot start with -
      *  and cannot start with a digit, unless preceded by a path: e.g. './'.
@@ -340,24 +518,39 @@ PRIVATE int my_main(int argc, char **argv)
     for (i = 1; i < argc; i++) {
 	ch = argv[i][0];
 	if (!isdigit(ch)) {
-	    if ((yyin = freopen(env.filename = argv[i], "r", stdin)) == 0) {
-		fprintf(stderr, "failed to open the file '%s'.\n",
-			env.filename);
+	    /*
+	     * If the filename parameter has no extension or an extension
+	     * different from .joy, it is assumed to be a binary file.
+	     */
+	    if (joy == 1) {
+		ptr = strrchr(argv[i], '.');
+		if (!ptr || strcmp(ptr, ".joy"))
+		    joy = 0;
+	    }
+	    if ((yyin = fopen(argv[i], joy ? "r" : "rb")) == 0) {
+		fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
 		return 0;
 	    }
 	    /*
-	     *  Overwrite argv[0] with the filename and shift subsequent
-	     *  parameters.
+	     *  Overwrite argv[0] with the filename.
 	     */
-	    if ((ptr = strrchr(argv[0] = env.filename, '/')) != 0) {
+	    if ((ptr = strrchr(argv[0] = env.filename = argv[i], '/')) != 0) {
 		*ptr++ = 0;
 		argv[0] = env.filename = ptr;
 	    }
+	    /*
+		Overwrite the filename with subsequent parameters.
+	    */
 	    for (--argc; i < argc; i++)
 		argv[i] = argv[i + 1];
+	    /*
+	     *  Only one possible filename is read. Subsequent names are
+	     *  passed on to joy.
+	     */
 	    break;
-	}
-    }
+	} /* end if */
+    } /* end for */
+
     env.g_argc = argc;
     env.g_argv = argv;
 #ifdef COPYRIGHT
@@ -368,22 +561,38 @@ PRIVATE int my_main(int argc, char **argv)
     if (symdump)
 	my_atexit(dump_table);
 #endif
-    env.echoflag = INIECHOFLAG;
-    env.autoput = INIAUTOPUT;
-    env.undeferror = INIUNDEFERROR;
-    inilinebuffer(env.filename);
-    inisymboltable(&env);
+#ifdef BYTECODE
+    if (tablesize() != 256) {
+	fprintf(stderr, "error: wrong tablesize\n");
+	return 0;
+    }
+#endif
     if (helping)
 	options(&env);		/* might print symbol table */
+    if (unknown)
+	unknown_opt(&env, exe, unknown);
+    inisymboltable(&env);
+#ifdef BYTECODE
+    if (listing)
+	dumpbytes(&env);	/* might print symbol table */
+    if (env.bytecoding)
+	initbytes(&env);	/* uses symtab and filename */
+#endif
 #ifdef COMPILER
     if (env.compiling)
 	initcompile(&env);	/* uses symtab and filename */
 #endif
+    inilinebuffer(&env, joy && !env.bytecoding && !env.compiling);
     env.stck = pvec_init();	/* start with an empty stack */
     setjmp(begin);		/* return here after error or abort */
     env.prog = pvec_init();	/* restart with an empty program */
+#ifdef BYTECODE
+    if (!joy)
+	readbytes(&env);	/* might print symbol table */
+#endif
     if (mustinclude) {
-	mustinclude = include(&env, "usrlib.joy", ERROR_ON_USRLIB);
+	mustinclude = 0;	/* try including only once */
+	include(&env, "usrlib.joy");
 	fflush(stdout);		/* flush include messages */
     }
     return yyparse(&env);

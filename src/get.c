@@ -1,17 +1,25 @@
 /*
     module  : get.c
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 02/01/24
 */
 #ifndef GET_C
 #define GET_C
 
 /**
-OK 3070  get  :  A 	->  F
-Reads a factor from input and pushes it onto stack.
+OK 3070  get  :  A	->  F
+[IMPURE] Reads a factor from input and pushes it onto stack.
 */
 PRIVATE void get_(pEnv env)
 {
+    Node node;
+
+    if (env->ignore) {
+	node.u.num = 0;
+	node.op = INTEGER_;
+	env->stck = pvec_add(env->stck, node);
+	return;
+    }
     env->token = yylex(env);
     readfactor(env);
 }

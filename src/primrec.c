@@ -1,7 +1,7 @@
 /*
     module  : primrec.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef PRIMREC_C
 #define PRIMREC_C
@@ -55,9 +55,6 @@ void primrec_(pEnv env)
 	    node.u.num = i;
 	    env->stck = pvec_add(env->stck, node);
 	}
-	break;
-
-    default:
 	break;
     }
     for (i = 0; i < k; i++)

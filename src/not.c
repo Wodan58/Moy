@@ -1,7 +1,7 @@
 /*
     module  : not.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 01/25/24
 */
 #ifndef NOT_C
 #define NOT_C
@@ -25,8 +25,6 @@ void not_(pEnv env)
     case INTEGER_:
 	node.u.num = !node.u.num;
 	node.op = BOOLEAN_;
-	break;
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, node);

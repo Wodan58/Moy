@@ -1,13 +1,13 @@
 /*
     module  : setsize.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 01/26/24
 */
 #ifndef SETSIZE_C
 #define SETSIZE_C
 
 /**
-OK 1030  setsize  :  A	->  setsize
+IMMEDIATE  1030  setsize  :  A	->  setsize
 Pushes the maximum number of elements in a set (platform dependent).
 Typically it is 32, and set members are in the range 0..31.
 */

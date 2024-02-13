@@ -1,7 +1,7 @@
 /*
     module  : manual.h
-    version : 1.5
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef MANUAL_H
 #define MANUAL_H
@@ -39,7 +39,8 @@ PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 	HEADER(n, "null", "predicate") else
 	HEADER(n, "i", "combinator") else
 	HEADER(n, "help", "miscellaneous commands") else
-	HEADER(n, "casting", "additional commands")
+	HEADER(n, "casting", "additional commands") else
+	HEADER(n, "#genrec", "runtime commands")
 	if (n[0] != '_') {
 	    if (HTML)
 		printf("\n<DT>");
@@ -60,7 +61,7 @@ PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 		printf(" <CODE>      :  </CODE> ");
 	    /* the above line does not produce the spaces around ":" */
 	    else
-		printf("\t:  ");
+		printf("  :  ");
 	    printf("%s", optable->messg1);
 	    if (HTML)
 		printf("\n<DD>");

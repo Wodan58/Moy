@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.13
- *  date    : 11/06/23
+ *  version : 1.17
+ *  date    : 02/12/24
  */
 #include "globals.h"
 
@@ -15,7 +15,7 @@ PRIVATE void catch_alarm(__attribute__((unused)) int sig)
 
 PRIVATE void set_alarm(pEnv env)
 {
-    static int init;
+    static unsigned char init;
 
     if (!env->alarming)
 	return;
@@ -35,13 +35,17 @@ PRIVATE void alarm_off(pEnv env)
 #endif
 
 #ifdef STATS
-static double calls, opers;
+static double max_data, max_code, calls, opers, total_opers;
 
-PRIVATE void report_stats(void)
+PRIVATE void report_stats(pEnv env)
 {
+    if (!env->statistics)
+	return;
     fflush(stdout);
+    fprintf(stderr, "%.0f data nodes in use\n", max_data);
+    fprintf(stderr, "%.0f code nodes in use\n", max_code);
     fprintf(stderr, "%.0f calls to joy interpreter\n", calls);
-    fprintf(stderr, "%.0f operations executed\n", opers);
+    fprintf(stderr, "%.0f operations executed\n", total_opers);
 }
 #endif
 
@@ -69,11 +73,13 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
     Entry ent;
 
 #if ALARM
-    set_alarm(env); /* set alarm to trigger after ALARM seconds */
+    set_alarm(env);		/* set alarm to trigger after ALARM seconds */
 #endif
 #ifdef STATS
-    if (++calls == 1) /* install only once */
-	atexit(report_stats);
+    if (++calls == 1)		/* install only once */
+	my_atexit(report_stats);
+    total_opers += opers;	/* add number of operations to total count */
+    opers = 0;			/* reset operations after each program */
 #endif
     prog(env, list);
     while (pvec_cnt(env->prog)) {
@@ -84,7 +90,15 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
 	}
 #endif
 #ifdef STATS
+	if (max_data < pvec_cnt(env->stck))
+	    max_data = pvec_cnt(env->stck);
+	if (max_code < pvec_cnt(env->prog))
+	    max_code = pvec_cnt(env->prog);
 	opers++;
+	if (env->operats && opers > env->operats)
+	    execerror(env->filename, "more operations", "exeterm");
+	if (env->maximum && pvec_cnt(env->stck) > env->maximum)
+	    execerror(env->filename, "more stacknodes", "exeterm");
 #endif
 #ifdef TRACING
 	trace(env, stdout);
@@ -99,7 +113,11 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
 		execerror(env->filename, "definition", ent.name);
 	    break;
 	case ANON_FUNCT_:
-	    (*node.u.proc)(env);
+	    if (env->bytecoding || env->compiling) {
+		ent = vec_at(env->symtab, node.u.ent);
+		(*ent.u.proc)(env);
+	    } else
+		(*node.u.proc)(env);
 	    break;
 	case USR_PRIME_:
 	    node.op = USR_;
@@ -108,23 +126,9 @@ PUBLIC void exeterm(pEnv env, NodeList *list)
 	    node.op = ANON_FUNCT_;
 	    goto next;
 next:
-	case BOOLEAN_:
-	case CHAR_:
-	case INTEGER_:
-	case SET_:
-	case STRING_:
-	case LIST_:
-	case FLOAT_:
-	case FILE_:
-	case BIGNUM_:
-	case USR_STRING_:
+default:
 	    env->stck = pvec_add(env->stck, node);
 	    break;
-#if 0
-	default:
-	    fprintf(stderr, "exeterm: attempting to execute bad node\n");
-	    break;
-#endif
 	}
     }
 #if ALARM
@@ -174,9 +178,11 @@ PUBLIC int operindex(proc_t proc)
     int i;
     OpTable *tab;
 
-    for (i = 0; (tab = readtable(i)) != 0; i++)
+    for (i = tablesize() - 1; i > 0; i--) {
+	tab = readtable(i);
 	if (tab->proc == proc)
 	    return i;
+    }
     return ANON_FUNCT_;	/* if not found, return the index of ANON_FUNCT_ */
 }
 

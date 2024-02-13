@@ -1,17 +1,17 @@
 /*
-    module  : ytreegenrec.c
-    version : 1.9
-    date    : 11/06/23
+    module  : treegenrecaux.c
+    version : 1.12
+    date    : 02/01/24
 */
-#ifndef YTREEGENREC_C
-#define YTREEGENREC_C
+#ifndef TREEGENRECAUX_C
+#define TREEGENRECAUX_C
 
 /**
-OK 3150  (treegenrec)  :  DDDDDA	T [O1] [O2] [C]  ->  ...
+OK 3300  #treegenrec  :  DDDDDA	T [[O1] [O2] C]  ->  ...
 T is a tree. If T is a leaf, executes O1.
 Else executes O2 and then [[[O1] [O2] C] treegenrec] C.
 */
-void ytreegenrec_(pEnv env)
+void treegenrecaux_(pEnv env)
 {
     unsigned size;
     Node list, node;
@@ -30,7 +30,7 @@ void ytreegenrec_(pEnv env)
 	node.u.lis = 0;
 	prime(env, node);
 
-	node.u.proc = ytreegenrec_;
+	node.u.proc = treegenrecaux_;
 	node.op = ANON_PRIME_;
 	prime(env, node);
 

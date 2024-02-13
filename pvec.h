@@ -1,7 +1,7 @@
 /*
     module  : pvec.h
-    version : 1.6
-    date    : 11/06/23
+    version : 1.7
+    date    : 02/05/24
 */
 struct NodeList {
     uint64_t m : 30,	/* capacity */
@@ -22,7 +22,6 @@ enum owner_t {
 /* arity tells: saving and restoring stack in a condition is necessary */
 enum arity_t {
     ARITY_UNKNOWN,	/* not yet calculated */
-    ARITY_KNOWN,
     ARITY_NOT_OK,
     ARITY_OK,
 };

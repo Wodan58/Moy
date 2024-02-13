@@ -1,13 +1,9 @@
+joy.exe
+moy.tar
 pars.c
 pars.h
 lexr.c
 prim.c
 prim.h
 tabl.c
-moy.tar
-CMakeCache.txt
-CMakeFiles
-Makefile
-cmake_install.cmake
-joy.exe
-*.o
+bdwgc

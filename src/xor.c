@@ -1,7 +1,7 @@
 /*
     module  : xor.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 01/25/24
 */
 #ifndef XOR_C
 #define XOR_C
@@ -27,8 +27,6 @@ void xor_(pEnv env)
     case INTEGER_:
 	first.u.num = first.u.num != second.u.num;
 	first.op = BOOLEAN_;
-	break;
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, first);

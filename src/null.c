@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.10
+    date    : 02/01/24
 */
 #ifndef NULL_C
 #define NULL_C
@@ -23,7 +23,10 @@ void null_(pEnv env)
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	node.u.num = !node.u.proc;
+	if (env->bytecoding || env->compiling)
+	    node.u.num = !node.u.ent;
+	else
+	    node.u.num = !node.u.proc;
 	break;
     case BOOLEAN_:
     case CHAR_:
@@ -47,9 +50,11 @@ void null_(pEnv env)
     case FILE_:
 	node.u.num = !node.u.fil;
 	break;
+#ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
 	node.u.num = node.u.str[1] == '0';
 	break;
+#endif
     }
     node.op = BOOLEAN_;
     env->stck = pvec_add(env->stck, node);

@@ -1,14 +1,14 @@
 /*
     module  : fclose.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef FCLOSE_C
 #define FCLOSE_C
 
 /**
 OK 1830  fclose  :  D	S  ->
-Stream S is closed and removed from the stack.
+[FOREIGN] Stream S is closed and removed from the stack.
 */
 void fclose_(pEnv env)
 {

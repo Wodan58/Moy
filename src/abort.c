@@ -1,7 +1,7 @@
 /*
     module  : abort.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef ABORT_C
 #define ABORT_C

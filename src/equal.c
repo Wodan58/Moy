@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/25/24
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -51,6 +51,7 @@ PRIVATE int compatible(int first, int second)
 	}
 	break;
 
+#ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
 	switch (second) {
 	case USR_:
@@ -69,9 +70,7 @@ PRIVATE int compatible(int first, int second)
 	    return 0;
 	}
 	break;
-
-    default:
-	break;
+#endif
     }
     return first == second;
 }

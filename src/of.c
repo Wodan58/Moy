@@ -1,7 +1,7 @@
 /*
     module  : of.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef OF_C
 #define OF_C
@@ -41,9 +41,6 @@ void of_(pEnv env)
 		}
 		elem.u.num--;
 	    }
-	break;
-
-    default:
 	break;
     }
     env->stck = pvec_add(env->stck, elem);

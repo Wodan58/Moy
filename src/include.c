@@ -1,7 +1,7 @@
 /*
     module  : include.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef INCLUDE_C
 #define INCLUDE_C
@@ -17,6 +17,6 @@ void include_(pEnv env)
 
     PARM(1, STRTOD);
     env->stck = pvec_pop(env->stck, &node);
-    include(env, node.u.str, 1);
+    include(env, node.u.str);
 }
 #endif

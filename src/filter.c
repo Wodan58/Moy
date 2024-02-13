@@ -1,7 +1,7 @@
 /*
     module  : filter.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef FILTER_C
 #define FILTER_C
@@ -128,9 +128,6 @@ void filter_(pEnv env)
 		*/
 		prime(env, node);
 	    }
-	break;
-
-    default:
 	break;
     }
 }

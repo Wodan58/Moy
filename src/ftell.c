@@ -1,14 +1,14 @@
 /*
     module  : ftell.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef FTELL_C
 #define FTELL_C
 
 /**
 OK 1990  ftell  :  A	S  ->  S I
-I is the current position of stream S.
+[FOREIGN] I is the current position of stream S.
 */
 void ftell_(pEnv env)
 {

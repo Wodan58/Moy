@@ -1,14 +1,14 @@
 /*
     module  : fputstring.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef FPUTSTRING_C
 #define FPUTSTRING_C
 
 /**
 OK 1970  fputstring  :  D	S "abc.."  ->  S
-== fputchars, as a temporary alternative.
+[FOREIGN] == fputchars, as a temporary alternative.
 */
 void fputstring_(pEnv env)
 {

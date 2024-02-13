@@ -1,13 +1,13 @@
 /*
     module  : push.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.11
+    date    : 01/25/24
 */
 #ifndef PUSH_C
 #define PUSH_C
 
 /**
-OK 3340  (push)  :  D	->
+OK 3340  #push  :  D	->
 Pop the location of an aggregate from the program stack. Pop an element
 from the data stack and add that element to the aggregate.
 */
@@ -35,9 +35,6 @@ void push_(pEnv env)
 
     case SET_:
 	node.u.set |= ((int64_t)1 << elem.u.num);
-	break;
-
-    default:
 	break;
     }
     env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */

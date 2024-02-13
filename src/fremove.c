@@ -1,15 +1,15 @@
 /*
     module  : fremove.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef FREMOVE_C
 #define FREMOVE_C
 
 /**
 OK 1920  fremove  :  DA	P  ->  B
-The file system object with pathname P is removed from the file system.
-B is a boolean indicating success or failure.
+[FOREIGN] The file system object with pathname P is removed from the file
+system. B is a boolean indicating success or failure.
 */
 void fremove_(pEnv env)
 {

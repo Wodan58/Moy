@@ -1,7 +1,7 @@
 (*
     module  : test20.joy
-    version : 1.1
-    date    : 07/12/23
+    version : 1.2
+    date    : 02/01/24
 *)
 (* 100% testing of parm.c, that checks parameters *)
 
@@ -557,3 +557,19 @@ fwrite.
 (* fwrite needs a numeric list as parameter *)
 stdout ['A] fwrite.
 (* fwrite needs a list of integers *)
+
+(* dip needs a quote on top of the stack *)
+1 1 dip.
+
+(* mul needs two parameters *)
+[] unstack.
+10 *.
+10 [] *.
+[] 10 *.
+
+(* in needs two parameters *)
+[] unstack.
+{} in.
+
+(* set needs a small numeric *)
+65 {} in.

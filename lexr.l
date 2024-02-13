@@ -1,10 +1,14 @@
 %{
 /*
     module  : lexr.l
-    version : 1.16
-    date    : 10/12/23
+    version : 1.27
+    date    : 02/13/24
 */
 #include "globals.h"
+
+#ifdef _MSC_VER
+#define YY_NO_UNISTD_H
+#endif
 
 #define YY_DECL		int my_yylex(pEnv env)
 #define YY_NO_UNPUT
@@ -12,9 +16,10 @@
 #define OUT_OF_COM	0
 #define WITHIN_COM	1
 #define LEAVE_COMM	2
+#define MAX_FILLER	3	/* allow max. three empty lines */
 
 char line[INPLINEMAX + 1];
-static int linenum;
+static int linenum, linepos;
 
 static int include_stack_ptr;
 static YY_BUFFER_STATE include_stack[INPSTACKMAX];
@@ -24,8 +29,6 @@ static YY_BUFFER_STATE include_stack[INPSTACKMAX];
 */
 static void addline(int ch)
 {
-    static int linepos;
-
     if (linepos >= INPLINEMAX)
 	return;
     if (ch == '\n') {
@@ -49,7 +52,7 @@ static void putline(pEnv env, char *str, int leng, int status)
 	return;
     i = linenum;
     target = status == LEAVE_COMM ? yylineno : yylineno - 1;
-    if (i)
+    if (i && target - i < MAX_FILLER)
 	for (; i < target; i++) {
 	    if (env->echoflag > 2)
 		printf("%4d", i);
@@ -69,7 +72,8 @@ PUBLIC void new_buffer(void)
 {
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
-    yylineno = 1; /* restart with line 1 */
+    yylineno = 1;			/* restart with line 1 */
+    linepos = 0;			/* start at position 0 */
 }
 
 PUBLIC void old_buffer(int num)
@@ -78,7 +82,7 @@ PUBLIC void old_buffer(int num)
 	include_stack_ptr = 0;
     if (include_stack[include_stack_ptr])
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
-    yylineno = num; /* restart old file */
+    yylineno = num;			/* restart old file */
     linenum = num + 1;
 }
 
@@ -106,9 +110,9 @@ linecom		#.*
 
 %%
 
-<<EOF>>		quit_(env);
+<<EOF>>		{ quit_(env); }
 <COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
-<COMMENT>.	addline(yytext[0]);
+<COMMENT>.	{ addline(yytext[0]); }
 <COMMENT>\n	{ putline(env, "\n", 1, WITHIN_COM); }
 
 [\n]+.*\n	{ int i = 0; putline(env, yytext, yyleng, OUT_OF_COM);
@@ -125,39 +129,42 @@ END[ \t]*	return END;
 MODULE[ \t]*	return MODULE;
 "=="[ \t]*	return EQDEF;
 
-{character}	{ yylval.num = ChrVal(yytext + 1); return CHAR_; }
+{character}	{ yylval.num = ChrVal(env, yytext + 1); return CHAR_; }
 {octal}		|
 {hexal}		{ yylval.num = strtoll(yytext, 0, 0); if (yylval.num == MAXINT)
 		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
 		  return INTEGER_; }
 {integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-' ? 1 : 0),
 		  0, 0);
-		  if (yylval.num == MAXINT) { yylval.str = GC_strdup(yytext);
-		  return BIGNUM_; }
+		  if (yylval.num == MAXINT) {
+#ifdef USE_BIGNUM_ARITHMETIC
+			yylval.str = GC_strdup(yytext);
+			return BIGNUM_;
+#else
+			yylval.dbl = strtod(yytext, 0);
+			return FLOAT_;
+#endif
+		  }
 		  if (yytext[0] == '-') yylval.num = -yylval.num;
-		  return INTEGER_; }
+		  return INTEGER_;
+		}
 {float}		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
-{string}	{ yylval.str = StrVal(yytext + 1); return STRING_; }
+{string}	{ yylval.str = StrVal(env, yytext + 1); return STRING_; }
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
-^\$.*		{ int rv = system(yytext + 1); if (rv) { fflush(stdout);
-		  fprintf(stderr, "warning: system() returns %d\n", rv); } }
-^\%INCLUDE.*	include(env, DelSpace(yytext + 8), 1);
-^\%PUT.*	{ fflush(stdout); fprintf(stderr, "%s\n", yytext + 4); }
-^\%LISTING.*	env->echoflag = atoi(yytext + 8);
-^\%TRACE.*	env->debugging = atoi(yytext + 6);
+^\$.*		{ int rv; if (!env->ignore) { rv = system(yytext + 1); if (rv) {
+		  fflush(stdout); fprintf(stderr, "system: %d\n", rv); } } }
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];
 
 %%
 
-PUBLIC int get_char(void)
+/*
+    Supporting getch, reading from the stack of input files, like get.
+*/
+PUBLIC int get_input(void)
 {
-    int ch;
-
-    while ((ch = input()) <= ' ')
-	;
-    return ch;
+    return input();
 }

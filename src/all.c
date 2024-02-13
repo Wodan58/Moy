@@ -1,7 +1,7 @@
 /*
     module  : all.c
-    version : 1.9
-    date    : 10/02/23
+    version : 1.10
+    date    : 01/25/24
 */
 #ifndef ALL_C
 #define ALL_C
@@ -105,9 +105,6 @@ void all_(pEnv env)
 		node.u.num = i;
 		prime(env, node);
 	    }
-	break;
-
-    default:
 	break;
     }
 }

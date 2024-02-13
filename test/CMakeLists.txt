@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.5
-#   date    : 08/28/23
+#   version : 1.7
+#   date    : 02/13/24
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -27,7 +27,7 @@ exe9(test14)
 exe9(test15)
 exe9(test16)
 exe9(test17)
-exe9(test18)
+# exe9(test18)	too many heap sections
 exe9(test19)
 exe9(test20)
 exe9(test21)
@@ -38,6 +38,7 @@ exe9(test29)
 exe9(test30)
 exe9(test31)
 exe9(test32)
+exe9(test33)
 
 #
 #  Taking parameter 10 and redirecting

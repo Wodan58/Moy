@@ -1,7 +1,7 @@
 /*
     module  : map.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef MAP_C
 #define MAP_C
@@ -116,9 +116,6 @@ void map_(pEnv env)
 		node.u.num = i;
 		prime(env, node);
 	    }
-	break;
-
-    default:
 	break;
     }
 }

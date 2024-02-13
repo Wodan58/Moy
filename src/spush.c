@@ -1,13 +1,13 @@
 /*
     module  : spush.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/24/24
 */
 #ifndef SPUSH_C
 #define SPUSH_C
 
 /**
-OK 3360  (spush)  :  A	->
+OK 3360  #spush  :  A	->
 Pop the location of an element on the code stack.
 Read that element and push it on the data stack.
 */

@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -134,9 +134,6 @@ void split_(pEnv env)
 		*/
 		prime(env, node);
 	    }
-	break;
-
-    default:
 	break;
     }
 }

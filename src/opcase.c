@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef OPCASE_C
 #define OPCASE_C
@@ -26,15 +26,18 @@ void opcase_(pEnv env)
 	}
 	temp = pvec_lst(elem.u.lis);
 	if (node.op == temp.op) {
-	    if (node.op == ANON_FUNCT_ && node.u.proc != temp.u.proc)
-		;
-	    else {
-		node.u.lis = pvec_init();
-		pvec_shallow_copy(node.u.lis, elem.u.lis);
-		node.u.lis = pvec_del(elem.u.lis);
-		node.op = LIST_;
-		break;
+	    if (node.op == ANON_FUNCT_) {
+		if (env->bytecoding || env->compiling) {
+		    if (node.u.ent != temp.u.ent)
+			continue;
+		} else if (node.u.proc != temp.u.proc)
+		    continue;
 	    }
+	    node.u.lis = pvec_init();
+	    pvec_shallow_copy(node.u.lis, elem.u.lis);
+	    node.u.lis = pvec_del(elem.u.lis);
+	    node.op = LIST_;
+	    break;
 	}
     }
     env->stck = pvec_add(env->stck, node);

@@ -1,7 +1,7 @@
 #
 #   module  : makefile
-#   version : 1.4
-#   date    : 10/12/23
+#   version : 1.5
+#   date    : 01/18/24
 #
 .POSIX:
 .SUFFIXES:
@@ -11,13 +11,14 @@ CC = gcc
 CF = -DCOPYRIGHT -O3 -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 LF = -lm -lgc
 CFLAGS = $(CF) -DCOMP="\"$(CF)\"" -DLINK="\"$(LF)\"" -DVERS="\"Release 1.0\""
-OBJECTS = main.o pars.o lexr.o scan.o repl.o modl.o ylex.o util.o exec.o \
-	  eval.o xerr.o otab.o prog.o writ.o read.o save.o parm.o arty.o
+HDRS = globals.h
+OBJS = main.o pars.o lexr.o scan.o repl.o modl.o ylex.o util.o exec.o \
+       eval.o xerr.o otab.o prog.o writ.o read.o save.o parm.o arty.o
 
-joy: prep $(OBJECTS)
-	$(CC) -o$@ $(OBJECTS) $(LF)
+joy:	prep $(OBJS)
+	$(CC) -o$@ $(OBJS) $(LF)
 
-$(OBJECTS): globals.h
+$(OBJECTS): $(HDRS)
 
 prep:
 	sh prim.sh .
@@ -25,7 +26,7 @@ prep:
 	$(MAKE) pars.c
 
 clean:
-	rm -f *.o pars.c pars.h lexr.c prim.c prim.h tabl.c
+	rm -f $(OBJS) pars.c pars.h lexr.c prim.c prim.h tabl.c
 
 .SUFFIXES: .c .o .y .l
 

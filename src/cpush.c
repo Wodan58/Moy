@@ -1,13 +1,13 @@
 /*
     module  : cpush.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/24/24
 */
 #ifndef CPUSH_C
 #define CPUSH_C
 
 /**
-OK 3350  (cpush)  :  D	->
+OK 3350  #cpush  :  D	->
 Pop the location of an element from the code stack.
 Pop an element from the data stack and store it at the given location.
 */

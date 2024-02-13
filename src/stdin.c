@@ -1,14 +1,14 @@
 /*
     module  : stdin.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef STDIN_C
 #define STDIN_C
 
 /**
-OK 1170  stdin  :  A	->  S
-Pushes the standard input stream.
+IMMEDIATE  1170  stdin  :  A	->  S
+[FOREIGN] Pushes the standard input stream.
 */
 void stdin_(pEnv env)
 {

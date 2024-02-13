@@ -1,14 +1,14 @@
 /*
     module  : fgetch.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 02/01/24
 */
 #ifndef FGETCH_C
 #define FGETCH_C
 
 /**
 OK 1870  fgetch  :  A	S  ->  S C
-C is the next available character from stream S.
+[FOREIGN] C is the next available character from stream S.
 */
 void fgetch_(pEnv env)
 {

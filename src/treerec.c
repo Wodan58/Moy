@@ -1,7 +1,7 @@
 /*
     module  : treerec.c
-    version : 1.6
-    date    : 11/06/23
+    version : 1.8
+    date    : 01/24/24
 */
 #ifndef TREEREC_C
 #define TREEREC_C
@@ -14,6 +14,6 @@ void treerec_(pEnv env)
 {
     PARM(3, WHILE);
     cons_(env);
-    ytreerec_(env);
+    treerecaux_(env);
 }
 #endif

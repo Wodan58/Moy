@@ -1,13 +1,13 @@
 /*
     module  : mul.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef MUL_C
 #define MUL_C
 
 /**
-OK 1400  *\0mul  :  DDA	I J  ->  K
+OK 1400  *\0ast  :  DDA	I J  ->  K
 Integer K is the product of integers I and J.  Also supports float.
 */
 void mul_(pEnv env)

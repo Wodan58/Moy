@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/24/24
 */
 #include "globals.h"
 
@@ -18,9 +18,9 @@ PUBLIC void inisymboltable(pEnv env) /* initialise */
 
     env->hash = kh_init(Symtab);
     for (i = 0; (tab = readtable(i)) != 0; i++) {
-	ent.flags = tab->flags;
-	ent.is_user = 0;
 	ent.name = tab->name;
+	ent.is_user = 0;
+	ent.flags = tab->flags;
 	ent.u.proc = tab->proc;
 	key = kh_put(Symtab, env->hash, ent.name, &rv);
 	kh_value(env->hash, key) = i;
@@ -39,9 +39,9 @@ PRIVATE void enterglobal(pEnv env, char *name)
     khiter_t key;
 
     env->location = vec_size(env->symtab);
-    ent.flags = 0;
     ent.name = name;
     ent.is_user = 1;
+    ent.flags = 0;
     ent.u.body = 0; /* may be assigned in definition */
     key = kh_put(Symtab, env->hash, ent.name, &rv);
     kh_value(env->hash, key) = env->location;
@@ -83,12 +83,8 @@ PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
      *  and public sections of a module.
      *  They should be found during the second read.
      */
-    if ((env->location = qualify(env, name)) == 0) {
-	if (strchr(name, '.') == 0)
-	    enterglobal(env, classify(env, name));
-	else
-	    enterglobal(env, name);
-    }
+    if ((env->location = qualify(env, name)) == 0)
+	enterglobal(env, classify(env, name));
     temp = vec_at(env->symtab, env->location);
     if (!temp.is_user) {
 	if (env->overwrite) {

@@ -1,15 +1,15 @@
 /*
     module  : pfalse.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.8
+    date    : 01/24/24
 */
 #ifndef PFALSE_C
 #define PFALSE_C
 
 /**
-OK 3370  (pfalse)  :  D	->
+OK 3370  #pfalse  :  D	->
 Pop the jump location from the program stack. Pop the condition from the data
-stack. If the condition is false, jump to the location.
+stack. If the condition is false, jump to that location.
 */
 void pfalse_(pEnv env)
 {

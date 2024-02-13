@@ -1,15 +1,16 @@
 /*
     module  : fopen.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef FOPEN_C
 #define FOPEN_C
 
 /**
 OK 1890  fopen  :  DDA	P M  ->  S
-The file system object with pathname P is opened with mode M (r, w, a, etc.)
-and stream object S is pushed; if the open fails, file:NULL is pushed.
+[FOREIGN] The file system object with pathname P is opened with mode M
+(r, w, a, etc.) and stream object S is pushed; if the open fails, file:NULL
+is pushed.
 */
 void fopen_(pEnv env)
 {

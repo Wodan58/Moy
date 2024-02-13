@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.15
- *  date    : 11/06/23
+ *  version : 1.19
+ *  date    : 02/01/24
  */
 #include "globals.h"
 
@@ -13,7 +13,9 @@ static int spacechar = ' ';
 PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 {
     int i;
-    char *ptr;
+    Entry ent;
+    uint64_t set, j;
+    char *ptr, buf[BUFFERMAX], tmp[BUFFERMAX];
 
 /*
     This cannot happen. writefactor has a small number of customers: writeterm,
@@ -25,17 +27,23 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	execerror(env->filename, "non-empty stack", "print");
 #endif
     switch (node.op) {
-    case USR_:
     case USR_PRIME_:
+	putc('#', fp);
+	goto usr_prime;
+    case USR_:
+usr_prime:
 	fprintf(fp, "%s", vec_at(env->symtab, node.u.ent).name);
-	if (node.op == USR_PRIME_)
-	    putc('\'', fp);
 	break;
-    case ANON_FUNCT_:
     case ANON_PRIME_:
-	fprintf(fp, "%s", opername(node.u.proc));
-	if (node.op == ANON_PRIME_)
-	    putc('\'', fp);
+	putc('#', fp);
+	goto anon_prime;
+    case ANON_FUNCT_:
+anon_prime:
+	if (env->bytecoding || env->compiling) {
+	    ent = vec_at(env->symtab, node.u.ent);
+	    fprintf(fp, "%s", ent.name);
+	} else
+	    fprintf(fp, "%s", opername(node.u.proc));
 	break;
     case BOOLEAN_:
 	fprintf(fp, "%s", node.u.num ? "true" : "false");
@@ -43,34 +51,40 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     case CHAR_:
 	if (node.u.num >= 8 && node.u.num <= 13)
 	    fprintf(fp, "'\\%c", "btnvfr"[node.u.num - 8]);
+	else if (iscntrl((int)node.u.num))
+	    fprintf(fp, "'\\%03d", (int)node.u.num);
 	else
 	    fprintf(fp, "'%c", (int)node.u.num);
 	break;
-    case INTEGER_:
     case KEYWORD_:
+	putc('#', fp);
+	goto keyword;
+    case INTEGER_:
+keyword:
 	fprintf(fp, "%" PRId64, node.u.num);
-	if (node.op == KEYWORD_)
-	    fputc('\'', fp);
 	break;
     case SET_:
 	putc('{', fp);
-	for (i = 0; i < SETSIZE; i++)
-	    if (node.u.set & ((int64_t)1 << i)) {
+	for (i = 0, j = 1, set = node.u.set; i < SETSIZE; i++, j <<= 1)
+	    if (set & j) {
 		fprintf(fp, "%d", i);
-		node.u.set &= ~((int64_t)1 << i);
-		if (node.u.set)
+		set &= ~j;
+		if (set)
 		    putc(spacechar, fp);
 	    }
 	putc('}', fp);
 	break;
     case STRING_:
 	putc('"', fp);
-	for (ptr = node.u.str; ptr && *ptr; ptr++) {
-	    if (*ptr >= 8 && *ptr <= 13)
+	for (ptr = node.u.str; ptr && *ptr; ptr++)
+	    if (*ptr == '"')
+		fprintf(fp, "\\\"");
+	    else if (*ptr >= 8 && *ptr <= 13)
 		fprintf(fp, "\\%c", "btnvfr"[*ptr - 8]);
+	    else if (iscntrl((int)*ptr))
+		fprintf(fp, "\\%03d", *ptr);
 	    else
 		putc(*ptr, fp);
-	}
 	putc('"', fp);
 	break;
 #ifdef WRITE_USING_RECURSION
@@ -81,17 +95,26 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
 	break;
 #endif
     case FLOAT_:
-	fprintf(fp, "%g", node.u.dbl);
+	sprintf(buf, "%g", node.u.dbl);		/* exponent character is e */
+	if ((ptr = strchr(buf, '.')) == 0) {	/* locate decimal point */
+	    if ((ptr = strchr(buf, 'e')) == 0)  /* locate start of exponent */
+		strcat(buf, ".0");		/* append decimal point + 0 */
+	    else {
+		strcpy(tmp, ptr);		/* save exponent */
+		sprintf(ptr, ".0%s", tmp);	/* insert decimal point + 0 */
+	    }
+        }
+	fprintf(fp, "%s", buf);
 	break;
     case FILE_:
 	if (!node.u.fil)
 	    fprintf(fp, "file:NULL");
 	else if (node.u.fil == stdin)
-	    fprintf(fp, "file:stdin");
+	    fprintf(fp, "stdin");
 	else if (node.u.fil == stdout)
-	    fprintf(fp, "file:stdout");
+	    fprintf(fp, "stdout");
 	else if (node.u.fil == stderr)
-	    fprintf(fp, "file:stderr");
+	    fprintf(fp, "stderr");
 	else
 	    fprintf(fp, "file:%p", (void *)node.u.fil);
 	break;

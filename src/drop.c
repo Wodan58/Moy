@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.8
-    date    : 10/02/23
+    version : 1.9
+    date    : 01/25/24
 */
 #ifndef DROP_C
 #define DROP_C
@@ -50,10 +50,6 @@ void drop_(pEnv env)
 		else
 		    elem.u.num--;
 	    }
-	break;
-
-    default:
-	node = aggr;
 	break;
     }
     node.op = aggr.op;

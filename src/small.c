@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.9
-    date    : 10/02/23
+    version : 1.10
+    date    : 02/01/24
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -25,7 +25,10 @@ void small_(pEnv env)
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	node.u.num = !node.u.proc;
+	if (env->bytecoding || env->compiling)
+	    node.u.num = node.u.ent < 2;
+	else
+	    node.u.num = !node.u.proc;
 	break;
 #endif
     case BOOLEAN_:

@@ -1,14 +1,14 @@
 /*
     module  : putchars.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 02/01/24
 */
 #ifndef PUTCHARS_C
 #define PUTCHARS_C
 
 /**
 OK 3100  putchars  :  D	"abc.."  ->
-Writes abc.. (without quotes)
+[IMPURE] Writes abc.. (without quotes)
 */
 void putchars_(pEnv env)
 {
@@ -16,6 +16,7 @@ void putchars_(pEnv env)
 
     PARM(1, STRTOD);
     env->stck = pvec_pop(env->stck, &node);
-    printf("%s", node.u.str);
+    if (!env->ignore)
+	printf("%s", node.u.str);
 }
 #endif

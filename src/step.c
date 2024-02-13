@@ -1,13 +1,13 @@
 /*
     module  : step.c
-    version : 1.9
-    date    : 11/06/23
+    version : 1.11
+    date    : 01/25/24
 */
 #ifndef STEP_C
 #define STEP_C
 
 /**
-OK 2770  step  :  DDU	A [P]  ->  ...
+OK 2770  step  :  DDQ	A [P]  ->  ...
 Sequentially putting members of aggregate A onto stack,
 executes P for each member of A.
 */
@@ -40,15 +40,12 @@ void step_(pEnv env)
 
     case SET_:
 	node.op = INTEGER_;
-	for (j = 1, i = 0; i < SETSIZE; i++, j <<= 1)
+	for (j = 1, i = SETSIZE - 1, j <<= i; i >= 0; i--, j >>= 1)
 	    if (aggr.u.set & j) {
 		prog(env, list.u.lis);
 		node.u.num = i;
 		prime(env, node);
 	    }
-	break;
-
-    default:
 	break;
     }
 }
