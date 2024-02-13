@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.15
-    date    : 02/12/24
+    version : 1.16
+    date    : 02/13/24
 */
 #include "globals.h"
 
@@ -45,8 +45,8 @@ PUBLIC void inilinebuffer(pEnv env, int joy)
     infile[0].name = env->filename;
     if (!joy)				/* test whether compiler active */
 	return;
-    fgets(my_line, INPLINEMAX, yyin);	/* read first line into my_line */
-    rewind(yyin);
+    if (fgets(my_line, INPLINEMAX, yyin))	/* read first line */
+	rewind(yyin);
     my_echoflag = env->echoflag;
 }
 
