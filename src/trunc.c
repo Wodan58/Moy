@@ -1,13 +1,13 @@
 /*
     module  : trunc.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef TRUNC_C
 #define TRUNC_C
 
 /**
-OK 1690  trunc  :  DA	F  ->  I
+Q0  OK  1690  trunc  :  DA  F  ->  I
 I is an integer equal to the float F truncated toward zero.
 */
 void trunc_(pEnv env)

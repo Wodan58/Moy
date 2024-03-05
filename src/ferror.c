@@ -1,13 +1,13 @@
 /*
     module  : ferror.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef FERROR_C
 #define FERROR_C
 
 /**
-OK 1850  ferror  :  A	S  ->  S B
+Q0  OK  1850  ferror  :  A  S  ->  S B
 [FOREIGN] B is the error status of stream S.
 */
 void ferror_(pEnv env)

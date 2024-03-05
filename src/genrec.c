@@ -1,13 +1,13 @@
 /*
     module  : genrec.c
-    version : 1.8
-    date    : 01/24/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef GENREC_C
 #define GENREC_C
 
 /**
-OK 2740  genrec  :  DDDDDA	[B] [T] [R1] [R2]  ->  ...
+Q4  OK  2740  genrec  :  DDDDDA  [B] [T] [R1] [R2]  ->  ...
 Executes B, if that yields true, executes T.
 Else executes R1 and then [[[B] [T] [R1] R2] genrec] R2.
 */

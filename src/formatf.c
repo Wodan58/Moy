@@ -1,13 +1,13 @@
 /*
     module  : formatf.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef FORMATF_C
 #define FORMATF_C
 
 /**
-OK 1770  formatf  :  DDDDA 	F C I J  ->  S
+Q0  OK  1770  formatf  :  DDDDA  F C I J  ->  S
 S is the formatted version of F in mode C
 ('e or 'E = exponential, 'f = fractional,
 'g or G = general with lower or upper case letters)

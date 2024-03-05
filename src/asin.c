@@ -1,13 +1,13 @@
 /*
     module  : asin.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef ASIN_C
 #define ASIN_C
 
 /**
-OK 1500  asin  :  DA	F  ->  G
+Q0  OK  1500  asin  :  DA  F  ->  G
 G is the arc sine of F.
 */
 void asin_(pEnv env)

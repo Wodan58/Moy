@@ -1,13 +1,13 @@
 /*
     module  : div.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef DIV_C
 #define DIV_C
 
 /**
-OK 1430  div  :  DDAA	I J  ->  K L
+Q0  OK  1430  div  :  DDAA  I J  ->  K L
 Integers K and L are the quotient and remainder of dividing I by J.
 */
 void div_(pEnv env)

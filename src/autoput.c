@@ -1,13 +1,13 @@
 /*
     module  : autoput.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef AUTOPUT_C
 #define AUTOPUT_C
 
 /**
-OK 1090  autoput  :  A	->  I
+Q0  OK  1090  autoput  :  A  ->  I
 Pushes current value of flag for automatic output, I = 0..2.
 */
 void autoput_(pEnv env)

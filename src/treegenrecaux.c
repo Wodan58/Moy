@@ -1,13 +1,13 @@
 /*
     module  : treegenrecaux.c
-    version : 1.12
-    date    : 02/01/24
+    version : 1.13
+    date    : 03/05/24
 */
 #ifndef TREEGENRECAUX_C
 #define TREEGENRECAUX_C
 
 /**
-OK 3300  #treegenrec  :  DDDDDA	T [[O1] [O2] C]  ->  ...
+Q1  OK  3300  #treegenrec  :  DDDDDA  T [[O1] [O2] C]  ->  ...
 T is a tree. If T is a leaf, executes O1.
 Else executes O2 and then [[[O1] [O2] C] treegenrec] C.
 */

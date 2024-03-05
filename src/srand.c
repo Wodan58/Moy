@@ -1,13 +1,13 @@
 /*
     module  : srand.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef SRAND_C
 #define SRAND_C
 
 /**
-OK 1780  srand  :  D	I  ->
+Q0  OK  1780  srand  :  D  I  ->
 [IMPURE] Sets the random integer seed to integer I.
 */
 void srand_(pEnv env)

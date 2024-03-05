@@ -1,13 +1,13 @@
 /*
     module  : __manual_list.c
-    version : 1.8
-    date    : 01/24/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
 
 /**
-OK 2960  __manual_list  :  A	->  L
+Q0  OK  2960  __manual_list  :  A  ->  L
 Pushes a list L of lists (one per operator) of three documentation strings.
 */
 void __manual_list_(pEnv env)
@@ -19,9 +19,9 @@ void __manual_list_(pEnv env)
     node.u.lis = pvec_init();
     node.op = temp.op = LIST_;
     elem.op = STRING_;
-    for (i = 0; (tab = readtable(i)) != 0; i++) /* find end */
+    for (i = 0; (tab = readtable(i)) != 0; i++)	/* find end */
 	;
-    for (--i; i >= 0; i--) { /* overshot */
+    for (--i; i >= 0; i--) {	/* overshot */
 	tab = readtable(i);
 	temp.u.lis = pvec_init();
 	elem.u.str = tab->messg2;

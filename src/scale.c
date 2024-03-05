@@ -1,13 +1,13 @@
 /*
     module  : scale.c
-    version : 1.4
-    date    : 02/05/24
+    version : 1.5
+    date    : 03/05/24
 */
 #ifndef SCALE_C
 #define SCALE_C
 
 /**
-OK 3220  scale  :  D	I  ->
+Q0  OK  3220  scale  :  D  I  ->
 [NUM] Sets the number of digits to be used after the decimal point.
 */
 void scale_(pEnv env)

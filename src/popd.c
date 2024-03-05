@@ -1,13 +1,13 @@
 /*
     module  : popd.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef POPD_C
 #define POPD_C
 
 /**
-OK 1260  popd  :  DDA	Y Z  ->  Z
+Q0  OK  1260  popd  :  DDA  Y Z  ->  Z
 As if defined by:   popd  ==  [pop] dip
 */
 void popd_(pEnv env)

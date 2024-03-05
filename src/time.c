@@ -1,13 +1,13 @@
 /*
     module  : time.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef TIME_C
 #define TIME_C
 
 /**
-OK 1140  time  :  A	->  I
+Q0  OK  1140  time  :  A  ->  I
 [IMPURE] Pushes the current time (in seconds since the Epoch).
 */
 void time_(pEnv env)

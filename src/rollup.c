@@ -1,13 +1,13 @@
 /*
     module  : rollup.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef ROLLUP_C
 #define ROLLUP_C
 
 /**
-OK 1230  rollup  :  DDDAAA 	X Y Z  ->  Z X Y
+Q0  OK  1230  rollup  :  DDDAAA  X Y Z  ->  Z X Y
 Moves X and Y up, moves Z down.
 */
 void rollup_(pEnv env)

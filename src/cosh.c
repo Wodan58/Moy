@@ -1,13 +1,13 @@
 /*
     module  : cosh.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef COSH_C
 #define COSH_C
 
 /**
-OK 1550  cosh  :  DA	F  ->  G
+Q0  OK  1550  cosh  :  DA  F  ->  G
 G is the hyperbolic cosine of F.
 */
 void cosh_(pEnv env)

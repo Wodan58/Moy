@@ -1,13 +1,13 @@
 /*
     module  : pred.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef PRED_C
 #define PRED_C
 
 /**
-OK 1790  pred  :  DA	M  ->  N
+Q0  OK  1790  pred  :  DA  M  ->  N
 Numeric N is the predecessor of numeric M.
 */
 void pred_(pEnv env)

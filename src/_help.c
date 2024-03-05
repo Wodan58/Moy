@@ -1,13 +1,13 @@
 /*
     module  : _help.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef _HELP_C
 #define _HELP_C
 
 /**
-OK 2910  _help  :  N	->
+Q0  OK  2910  _help  :  N  ->
 [IMPURE] Lists all hidden symbols in library and then all hidden builtin
 symbols.
 */

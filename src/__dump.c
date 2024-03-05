@@ -1,13 +1,13 @@
 /*
     module  : __dump.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef __DUMP_C
 #define __DUMP_C
 
 /**
-OK 1070  __dump  :  A	->  [..]
+Q0  OK  1070  __dump  :  A  ->  [..]
 debugging only: pushes the dump as a list.
 */
 void __dump_(pEnv env)

@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.19
- *  date    : 02/01/24
+ *  version : 1.20
+ *  date    : 03/05/24
  */
 #include "globals.h"
 
@@ -15,7 +15,7 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     int i;
     Entry ent;
     uint64_t set, j;
-    char *ptr, buf[BUFFERMAX], tmp[BUFFERMAX];
+    char *ptr, buf[MAXNUM], tmp[MAXNUM];
 
 /*
     This cannot happen. writefactor has a small number of customers: writeterm,
@@ -43,7 +43,7 @@ anon_prime:
 	    ent = vec_at(env->symtab, node.u.ent);
 	    fprintf(fp, "%s", ent.name);
 	} else
-	    fprintf(fp, "%s", opername(node.u.proc));
+	    fprintf(fp, "%s", opername(env, node.u.proc));
 	break;
     case BOOLEAN_:
 	fprintf(fp, "%s", node.u.num ? "true" : "false");
@@ -51,7 +51,7 @@ anon_prime:
     case CHAR_:
 	if (node.u.num >= 8 && node.u.num <= 13)
 	    fprintf(fp, "'\\%c", "btnvfr"[node.u.num - 8]);
-	else if (iscntrl((int)node.u.num))
+	else if (iscntrl((int)node.u.num) || node.u.num == 32)
 	    fprintf(fp, "'\\%03d", (int)node.u.num);
 	else
 	    fprintf(fp, "'%c", (int)node.u.num);
@@ -201,16 +201,21 @@ PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
     if ((j = pvec_cnt(list)) == 0)
 	return;
 #ifdef WRITE_USING_RECURSION
-    for (i = j - 1; i >= 0; i--) {
-	writefactor(env, pvec_nth(list, i), fp);
-	if (i)
-	    putchar(' ');
-    }
+    if (env->recurse)
+	for (i = j - 1; i >= 0; i--) {
+	    writefactor(env, pvec_nth(list, i), fp);
+	    if (i)
+		putchar(' ');
+	}
+    else {
 #else
-    vec_init(array);				/* collect nodes in a vector */
-    for (i = 0; i < j; i++)
-	vec_push(array, pvec_nth(list, i));
-    writing(env, (void *)array, fp);
+	vec_init(array);			/* collect nodes in a vector */
+	for (i = 0; i < j; i++)
+	    vec_push(array, pvec_nth(list, i));
+	writing(env, (void *)array, fp);
+#endif
+#ifdef WRITE_USING_RECURSION
+    }
 #endif
 }
 

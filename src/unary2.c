@@ -1,18 +1,18 @@
 /*
     module  : unary2.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef UNARY2_C
 #define UNARY2_C
 
 /**
-OK 2500  unary2  :  DDDAA	X1 X2 [P]  ->  R1 R2
+Q1  OK  2500  unary2  :  DDDAA  X1 X2 [P]  ->  R1 R2
 Executes P twice, with X1 and X2 on top of the stack.
 Returns the two values R1 and R2.
 */
 void unary2_(pEnv env)
-{	/*   Y  Z  [P]  unary2     ==>  Y'  Z'  */
+{	/*	Y Z [P]  unary2  ==>  Y' Z'	*/
     unsigned size;
     Node list, node;
 
@@ -20,7 +20,7 @@ void unary2_(pEnv env)
     env->stck = pvec_pop(env->stck, &list);
     env->stck = pvec_pop(env->stck, &node);	/* Z */
     code(env, swap_);
-    size = pvec_cnt(env->prog); /* location of first Z, then Y' */
+    size = pvec_cnt(env->prog);	/* location of first Z, then Y' */
     prime(env, node);		/* first Z, then Y' */
     /*
 	save the stack before the condition and restore it afterwards with

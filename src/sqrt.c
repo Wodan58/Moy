@@ -1,13 +1,13 @@
 /*
     module  : sqrt.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef SQRT_C
 #define SQRT_C
 
 /**
-OK 1660  sqrt  :  DA	F  ->  G
+Q0  OK  1660  sqrt  :  DA  F  ->  G
 G is the square root of F.
 */
 void sqrt_(pEnv env)

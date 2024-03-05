@@ -1,13 +1,13 @@
 /*
     module  : pow.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef POW_C
 #define POW_C
 
 /**
-OK 1630  pow  :  DDA	F G  ->  H
+Q0  OK  1630  pow  :  DDA  F G  ->  H
 H is F raised to the Gth power.
 */
 void pow_(pEnv env)

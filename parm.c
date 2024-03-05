@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.12
-    version : 11/16/23
+    date    : 1.14
+    version : 03/05/24
 */
 #include "globals.h"
 
@@ -342,7 +342,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 /*
     aggregate parameter is needed:
 */
-    case SIZE:
+    case SIZE_:
 	if (leng < 1)
 	    execerror(env->filename, "one parameter", file);
 	first = pvec_lst(env->stck);
@@ -538,7 +538,7 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 /*
     set member:
 */
-    case IN:
+    case IN_:
 	if (leng < 2)
 	    execerror(env->filename, "two parameters", file);
 	first = pvec_lst(env->stck);

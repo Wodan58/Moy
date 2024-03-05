@@ -1,7 +1,7 @@
 /*
     module  : less.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef LESS_C
 #define LESS_C
@@ -9,7 +9,7 @@
 #include "compare.h"
 
 /**
-OK 2250  <\0less  :  DDA	X Y  ->  B
+Q0  OK  2250  <\0less  :  DDA  X Y  ->  B
 Either both X and Y are numeric or both are strings or symbols.
 Tests whether X less than Y.  Also supports float.
 */

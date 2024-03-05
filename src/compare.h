@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.16
-    date    : 01/25/24
+    version : 1.18
+    date    : 03/05/24
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -34,7 +34,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	case ANON_PRIME_:
-	    name2 = cmpname(second.u.proc);
+	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:
 	case CHAR_:
@@ -54,7 +54,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	name1 = cmpname(first.u.proc);
+	name1 = cmpname(env, first.u.proc);
 	switch (second.op) {
 	case USR_:
 	case USR_PRIME_:
@@ -62,7 +62,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	case ANON_PRIME_:
-	    name2 = cmpname(second.u.proc);
+	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:
 	case CHAR_:
@@ -193,7 +193,7 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	    goto cmpstr;
 	case ANON_FUNCT_:
 	case ANON_PRIME_:
-	    name2 = cmpname(second.u.proc);
+	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
 	case BOOLEAN_:
 	case CHAR_:
@@ -213,6 +213,11 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	break;
     case LIST_:
     case USR_LIST_:
+	if (second.op == LIST_ || second.op == USR_LIST_) {
+	    if (!pvec_cnt(first.u.lis) && !pvec_cnt(second.u.lis))
+		return 0; /* equal */
+	    return first.u.lis != second.u.lis;
+	}
 	return 1; /* unequal */
 	break;
     case FLOAT_:

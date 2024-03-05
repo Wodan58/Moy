@@ -1,13 +1,13 @@
 /*
     module  : getch.c
-    version : 1.11
-    date    : 02/05/24
+    version : 1.12
+    date    : 03/05/24
 */
 #ifndef GETCH_C
 #define GETCH_C
 
 /**
-OK 3160  getch  :  A	->  N
+Q0  OK  3160  getch  :  A  ->  N
 [IMPURE] Reads a character from input and puts it onto stack.
 */
 void getch_(pEnv env)

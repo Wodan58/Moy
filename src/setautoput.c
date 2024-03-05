@@ -1,13 +1,13 @@
 /*
     module  : setautoput.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef SETAUTOPUT_C
 #define SETAUTOPUT_C
 
 /**
-OK 2980  setautoput  :  D	I  ->
+Q0  OK  2980  setautoput  :  D  I  ->
 [IMPURE] Sets value of flag for automatic put to I (if I = 0, none;
 if I = 1, put; if I = 2, stack).
 */

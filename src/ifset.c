@@ -1,13 +1,13 @@
 /*
     module  : ifset.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef IFSET_C
 #define IFSET_C
 
 /**
-OK 2640  ifset  :  DDDP	X [T] [E]  ->  ...
+Q2  OK  2640  ifset  :  DDDP  X [T] [E]  ->  ...
 If X is a set, executes T else executes E.
 */
 void ifset_(pEnv env)

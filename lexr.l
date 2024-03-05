@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.27
-    date    : 02/13/24
+    version : 1.28
+    date    : 03/05/24
 */
 #include "globals.h"
 
@@ -131,12 +131,12 @@ MODULE[ \t]*	return MODULE;
 
 {character}	{ yylval.num = ChrVal(env, yytext + 1); return CHAR_; }
 {octal}		|
-{hexal}		{ yylval.num = strtoll(yytext, 0, 0); if (yylval.num == MAXINT)
+{hexal}		{ yylval.num = strtoll(yytext, 0, 0); if (yylval.num == MAXINT_)
 		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
 		  return INTEGER_; }
 {integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-' ? 1 : 0),
 		  0, 0);
-		  if (yylval.num == MAXINT) {
+		  if (yylval.num == MAXINT_) {
 #ifdef USE_BIGNUM_ARITHMETIC
 			yylval.str = GC_strdup(yytext);
 			return BIGNUM_;

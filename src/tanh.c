@@ -1,13 +1,13 @@
 /*
     module  : tanh.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef TANH_C
 #define TANH_C
 
 /**
-OK 1680  tanh  :  DA	F  ->  G
+Q0  OK  1680  tanh  :  DA  F  ->  G
 G is the hyperbolic tangent of F.
 */
 void tanh_(pEnv env)

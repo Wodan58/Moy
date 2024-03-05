@@ -1,13 +1,13 @@
 /*
     module  : iflogical.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef IFLOGICAL_C
 #define IFLOGICAL_C
 
 /**
-OK 2630  iflogical  :  DDDP	X [T] [E]  ->  ...
+Q2  OK  2630  iflogical  :  DDDP  X [T] [E]  ->  ...
 If X is a logical or truth value, executes T else executes E.
 */
 void iflogical_(pEnv env)

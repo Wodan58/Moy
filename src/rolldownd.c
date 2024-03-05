@@ -1,13 +1,13 @@
 /*
     module  : rolldownd.c
-    version : 1.6
+    version : 1.7
     date    : 
 */
 #ifndef ROLLDOWND_C
 #define ROLLDOWND_C
 
 /**
-OK 1300  rolldownd  :  DDDDAAAA	X Y Z W  ->  Y Z X W
+Q0  OK  1300  rolldownd  :  DDDDAAAA  X Y Z W  ->  Y Z X W
 As if defined by:   rolldownd  ==  [rolldown] dip
 */
 void rolldownd_(pEnv env)

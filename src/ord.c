@@ -1,13 +1,13 @@
 /*
     module  : ord.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef ORD_C
 #define ORD_C
 
 /**
-OK 1460  ord  :  DA	C  ->  I
+Q0  OK  1460  ord  :  DA  C  ->  I
 Integer I is the Ascii value of character C (or logical or integer).
 */
 void ord_(pEnv env)

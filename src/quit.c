@@ -1,13 +1,13 @@
 /*
     module  : quit.c
-    version : 1.10
-    date    : 02/01/24
+    version : 1.11
+    date    : 03/05/24
 */
 #ifndef QUIT_C
 #define QUIT_C
 
 /**
-OK 3130  quit  :  N	->
+Q0  OK  3130  quit  :  N  ->
 Exit from Joy.
 */
 static int exit_index;

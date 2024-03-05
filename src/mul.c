@@ -1,13 +1,13 @@
 /*
     module  : mul.c
-    version : 1.9
-    date    : 01/25/24
+    version : 1.11
+    date    : 03/05/24
 */
 #ifndef MUL_C
 #define MUL_C
 
 /**
-OK 1400  *\0ast  :  DDA	I J  ->  K
+Q0  OK  1400  *\0ast  :  DDA  I J  ->  K
 Integer K is the product of integers I and J.  Also supports float.
 */
 void mul_(pEnv env)
@@ -81,7 +81,7 @@ void mul_(pEnv env)
 	    if ((sign2 = num2 < 0) != 0) /* make positive */
 		num2 = -num2;
 #ifdef USE_BIGNUM_ARITHMETIC
-	    if (num1 > MAXINT / num2 || num2 > MAXINT / num1) { /* overflow */
+	    if (num1 > MAXINT_ / num2 || num2 > MAXINT_ / num1) { /* overflow */
 		first.u.str = num2big(num1);
 		second.u.str = num2big(num2);
 		first.u.str = num_str_mul(first.u.str, second.u.str);

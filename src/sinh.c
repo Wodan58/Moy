@@ -1,13 +1,13 @@
 /*
     module  : sinh.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef SINH_C
 #define SINH_C
 
 /**
-OK 1650  sinh  :  DA	F  ->  G
+Q0  OK  1650  sinh  :  DA  F  ->  G
 G is the hyperbolic sine of F.
 */
 void sinh_(pEnv env)

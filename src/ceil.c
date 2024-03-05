@@ -1,13 +1,13 @@
 /*
     module  : ceil.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef CEIL_C
 #define CEIL_C
 
 /**
-OK 1530  ceil  :  DA	F  ->  G
+Q0  OK  1530  ceil  :  DA  F  ->  G
 G is the float ceiling of F.
 */
 void ceil_(pEnv env)

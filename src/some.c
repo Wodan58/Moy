@@ -1,13 +1,13 @@
 /*
     module  : some.c
-    version : 1.11
-    date    : 01/25/24
+    version : 1.12
+    date    : 03/05/24
 */
 #ifndef SOME_C
 #define SOME_C
 
 /**
-OK 2850  some  :  DDA	A [B]  ->  X
+Q1  OK  2850  some  :  DDA  A [B]  ->  X
 Applies test B to members of aggregate A, X = true if some pass.
 */
 void some_(pEnv env)

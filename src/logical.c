@@ -1,13 +1,13 @@
 /*
     module  : logical.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef LOGICAL_C
 #define LOGICAL_C
 
 /**
-OK 2330  logical  :  DA	X  ->  B
+Q0  OK  2330  logical  :  DA  X  ->  B
 Tests whether X is a logical.
 */
 void logical_(pEnv env)

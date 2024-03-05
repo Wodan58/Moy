@@ -1,13 +1,13 @@
 /*
     module  : times.c
-    version : 1.7
-    date    : 11/06/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef TIMES_C
 #define TIMES_C
 
 /**
-OK 2800  times  :  DDA	N [P]  ->  ...
+Q1  OK  2800  times  :  DDA  N [P]  ->  ...
 N times executes P.
 */
 void times_(pEnv env)

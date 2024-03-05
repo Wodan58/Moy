@@ -1,13 +1,13 @@
 /*
     module  : log.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef LOG_C
 #define LOG_C
 
 /**
-OK 1600  log  :  DA	F  ->  G
+Q0  OK  1600  log  :  DA  F  ->  G
 G is the natural logarithm of F.
 */
 void log_(pEnv env)

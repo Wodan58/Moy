@@ -1,7 +1,7 @@
 /*
     module  : has.c
-    version : 1.9
-    date    : 01/25/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef HAS_C
 #define HAS_C
@@ -9,7 +9,7 @@
 #include "compare.h"
 
 /**
-OK 2290  has  :  DDA	A X  ->  B
+Q0  OK  2290  has  :  DDA  A X  ->  B
 Tests whether aggregate A has X as a member.
 */
 void has_(pEnv env)

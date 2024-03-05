@@ -1,13 +1,13 @@
 /*
     module  : system.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef SYSTEM_C
 #define SYSTEM_C
 
 /**
-OK 3020  system  :  D	"command"  ->
+Q0  OK  3020  system  :  D  "command"  ->
 [IMPURE] Escapes to shell, executes string "command".
 The string may cause execution of another program.
 When that has finished, the process returns to Joy.

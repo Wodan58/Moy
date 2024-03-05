@@ -1,13 +1,13 @@
 /*
     module  : gmtime.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef GMTIME_C
 #define GMTIME_C
 
 /**
-OK 1710  gmtime  :  DA	I  ->  T
+Q0  OK  1710  gmtime  :  DA  I  ->  T
 Converts a time I into a list T representing universal time:
 [year month day hour minute second isdst yearday weekday].
 Month is 1 = January ... 12 = December;

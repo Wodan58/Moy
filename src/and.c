@@ -1,13 +1,13 @@
 /*
     module  : and.c
-    version : 1.7
-    date    : 01/25/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef AND_C
 #define AND_C
 
 /**
-OK 1360  and  :  DDA	X Y  ->  Z
+Q0  OK  1360  and  :  DDA  X Y  ->  Z
 Z is the intersection of sets X and Y, logical conjunction for truth values.
 */
 void and_(pEnv env)

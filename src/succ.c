@@ -1,13 +1,13 @@
 /*
     module  : succ.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef SUCC_C
 #define SUCC_C
 
 /**
-OK 1800  succ  :  DA	M  ->  N
+Q0  OK  1800  succ  :  DA  M  ->  N
 Numeric N is the successor of numeric M.
 */
 void succ_(pEnv env)

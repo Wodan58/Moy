@@ -1,13 +1,13 @@
 /*
     module  : true.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef TRUE_C
 #define TRUE_C
 
 /**
-IMMEDIATE 1010  true  :  A	->  true
+Q0  IMMEDIATE  1010  true  :  A  ->  true
 Pushes the value true.
 */
 void true_(pEnv env)

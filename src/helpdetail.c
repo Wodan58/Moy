@@ -1,13 +1,13 @@
 /*
     module  : helpdetail.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.11
+    date    : 03/05/24
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
 
 /**
-OK 2920  helpdetail  :  D	[ S1 S2 .. ]  ->
+Q0  OK  2920  helpdetail  :  D  [ S1 S2 .. ]  ->
 [IMPURE] Gives brief help on each symbol S in the list.
 */
 void helpdetail_(pEnv env)
@@ -33,12 +33,12 @@ void helpdetail_(pEnv env)
 		if (env->bytecoding || env->compiling)
 		    opcode = temp.u.ent;
 	        else
-		    opcode = operindex(temp.u.proc);
+		    opcode = operindex(env, temp.u.proc);
 	    }
 	    if (opcode == BOOLEAN_)
-		opcode = operindex(temp.u.num ? true_ : false_);
-	    if (opcode == INTEGER_ && temp.u.num == MAXINT)
-		opcode = operindex(maxint_);
+		opcode = operindex(env, temp.u.num ? true_ : false_);
+	    if (opcode == INTEGER_ && temp.u.num == MAXINT_)
+		opcode = operindex(env, maxint_);
 	    tab = readtable(opcode);
 	    printf("%s\t:  %s.\n%s\n", tab->name, tab->messg1, tab->messg2);
 	    if (opcode <= BIGNUM_)

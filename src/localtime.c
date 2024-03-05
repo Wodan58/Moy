@@ -1,13 +1,13 @@
 /*
     module  : localtime.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef LOCALTIME_C
 #define LOCALTIME_C
 
 /**
-OK 1700  localtime  :  DA	I  ->  T
+Q0  OK  1700  localtime  :  DA  I  ->  T
 Converts a time I into a list T representing local time:
 [year month day hour minute second isdst yearday weekday].
 Month is 1 = January ... 12 = December;

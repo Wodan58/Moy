@@ -1,13 +1,13 @@
 /*
     module  : fpush.c
-    version : 1.11
-    date    : 01/25/24
+    version : 1.12
+    date    : 03/05/24
 */
 #ifndef FPUSH_C
 #define FPUSH_C
 
 /**
-OK 3380  #fpush  :  D	->
+Q0  OK  3380  #fpush  :  D  ->
 Pop the location of an aggregate and an element from the program stack.
 If the top of the data stack is true, add the element to the aggregate.
 */

@@ -1,13 +1,13 @@
 /*
     module  : casting.c
-    version : 1.9
-    date    : 02/01/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef CASTING_C
 #define CASTING_C
 
 /**
-OK 3140  casting  :  DDA 	X Y  ->  Z
+Q0  OK  3140  casting  :  DDA  X Y  ->  Z
 [EXT] Z takes the value from X and uses the value from Y as its type.
 */
 void casting_(pEnv env)

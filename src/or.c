@@ -1,13 +1,13 @@
 /*
     module  : or.c
-    version : 1.7
-    date    : 01/25/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef OR_C
 #define OR_C
 
 /**
-OK 1340  or  :  DDA	X Y  ->  Z
+Q0  OK  1340  or  :  DDA  X Y  ->  Z
 Z is the union of sets X and Y, logical disjunction for truth values.
 */
 void or_(pEnv env)

@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.30
- *  date    : 02/13/24
+ *  version : 1.31
+ *  date    : 03/05/24
  */
 #include "globals.h"
 
@@ -17,6 +17,7 @@ char *bottom_of_stack;			/* used in gc.c */
 */
 PUBLIC void abortexecution_(int num)
 {
+    fflush(yyin);
     longjmp(begin, num);
 }
 
@@ -96,17 +97,9 @@ PRIVATE void copyright(char *file)
 #ifdef SYMBOLS
 PRIVATE void dump_table(pEnv env)
 {
-    khint_t k;
+    int i;
     Entry ent;
-    int i, j = 0;
 
-    for (k = kh_begin(env->hash); k != kh_end(env->hash); k++)
-	if (kh_exist(env->hash, k)) {
-	    i = printf("(%d) %s\n", kh_val(env->hash, k), kh_key(env->hash, k));
-	    if (j < i)
-		j = i;
-	}
-    printf("%*.*s\n", j, j, "------------------------------------------------");
     for (i = vec_size(env->symtab) - 1; i >= 0; i--) {
 	ent = vec_at(env->symtab, i);
 	if (!ent.is_user)
@@ -255,25 +248,31 @@ PRIVATE void options(pEnv env)
     printf("  -h : print this help text and exit\n");
 #ifdef SETTINGS
     printf("  -i : ignore impure functions\n");
-    printf("  -j : filename parameter is a .joy file\n");
-#if 0
-    printf("  -k : allow keyboard editing and history\n");
 #endif
+#if defined(BYTECODE) || defined(COMPILER)
+    printf("  -j : filename parameter is a .joy file\n");
+#endif
+#ifdef KEYBOARD
+    printf("  -k : allow keyboard input in raw mode\n");
+#endif
+#ifdef SETTINGS
     printf("  -l : do not read usrlib.joy at startup\n");
 #endif
 #ifdef STATS
     printf("  -m : set maximum limit of data stack\n");
     printf("  -n : limit the number of operations\n");
 #endif
-#if 0
 #if defined(BYTECODE) || defined(COMPILER)
     printf("  -o : name of output file/function\n");
 #endif
-#ifdef SETTINGS
-    printf("  -p : preserve joy1 semantics\n");
-    printf("  -q : operate in quiet mode\n");
-    printf("  -r : print without using recursion\n");
+#ifdef TOKENS
+    printf("  -p : print debug list of tokens\n");
 #endif
+#ifdef SETTINGS
+    printf("  -q : operate in quiet mode\n");
+#endif
+#ifdef WRITE_USING_RECURSION
+    printf("  -r : print without using recursion\n");
 #endif
 #ifdef SYMBOLS
     printf("  -s : dump symbol table after execution\n");
@@ -311,9 +310,20 @@ PRIVATE void unknown_opt(pEnv env, char *exe, int ch)
 
 PRIVATE int my_main(int argc, char **argv)
 {
-    static unsigned char mustinclude = 1, joy = 1;	/* assume .joy */
+/*
+ * These variables need to be static because of an intervening longjmp.
+ */
+    static unsigned char mustinclude = 1, joy = 0;
+#ifdef BYTECODE
+    static unsigned char skip = 6;
+#endif
+
     int i, j, ch;
-    char *ptr, *exe;					/* joy binary */
+    char *ptr, *exe;		/* joy binary */
+/*
+ * A number of flags can be handled within the main function; no need to pass
+ * them to subordinate functions.
+ */
     unsigned char helping = 0, unknown = 0;
 #ifdef COPYRIGHT
     unsigned char verbose = 1;
@@ -323,6 +333,10 @@ PRIVATE int my_main(int argc, char **argv)
 #endif
 #ifdef BYTECODE
     unsigned char listing = 0;
+    char *filename = "a.out";	/* filename when rewriting */
+#endif
+#ifdef KEYBOARD
+    unsigned char raw = 0;
 #endif
 
     Env env;	/* global variables */
@@ -335,7 +349,6 @@ PRIVATE int my_main(int argc, char **argv)
 #ifdef STATS
     my_atexit(report_clock);
 #endif
-    setbuf(stdout, 0);
     vec_init(env.tokens);
     vec_init(env.symtab);
 #ifdef USE_MULTI_THREADS_JOY
@@ -372,7 +385,8 @@ PRIVATE int my_main(int argc, char **argv)
 		switch (argv[i][j]) {
 #ifdef SETTINGS
 		case 'a' : ptr = &argv[i][j + 1];
-			   env.autoput = atoi(ptr);	/* numeric payload */
+			   if (!env.autoput_set)
+				env.autoput = atoi(ptr);/* numeric payload */
 			   env.autoput_set = 1;
 			   ch = *ptr;			/* first digit */
 			   while (isdigit(ch)) {
@@ -420,9 +434,17 @@ PRIVATE int my_main(int argc, char **argv)
 		case 'h' : helping = 1; break;
 #ifdef SETTINGS
 		case 'i' : env.ignore = 1; break;
-		case 'j' : joy = 2; break;		/* enforce .joy */
-		case 'k' : env.keyboard = 1; break;
-		case 'l' : mustinclude = 0; break;
+#endif
+#if defined(BYTECODE) || defined(COMPILER)
+		case 'j' : joy = 1; break;		/* enforce .joy */
+#endif
+#ifdef KEYBOARD
+		case 'k' : raw = 1; env.autoput = 0;	/* terminal raw mode */
+			   env.autoput_set = 1;		/* prevent override */
+			   break;			/* & disable autoput */
+#endif
+#ifdef SETTINGS
+		case 'l' : mustinclude = 0; break;	/* include usrlib.joy */
 #endif
 #ifdef STATS
 		case 'm' : ptr = &argv[i][j + 1];
@@ -445,22 +467,17 @@ PRIVATE int my_main(int argc, char **argv)
 			   break;
 #endif
 #if defined(BYTECODE) || defined(COMPILER)
-		case 'o' : ptr = &argv[i][j + 1];
-			   env.output = ptr;		/* string payload */
+		case 'o' : filename = &argv[i][j + 1];	/* string payload */
 			   goto next_parm;
 #endif
+#ifdef TOKENS
+		case 'p' : env.printing = 1; break;
+#endif
 #ifdef SETTINGS
-		case 'p' : ptr = &argv[i][j + 1];
-			   env.preserve = atoi(ptr);	/* numeric payload */
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
-			   break;
 		case 'q' : env.quiet = 1; break;
-		case 'r' : env.norecurse = 1; break;
+#endif
+#ifdef WRITE_USING_RECURSION
+		case 'r' : env.recurse = 1; break;
 #endif
 #ifdef SYMBOLS
 		case 's' : symdump = 1; break;
@@ -519,13 +536,20 @@ next_parm:
 	ch = argv[i][0];
 	if (!isdigit(ch)) {
 	    /*
-	     * If the filename parameter has no extension or an extension
-	     * different from .joy, it is assumed to be a binary file.
+	     *  If the filename parameter has no extension or an extension that
+	     *  differs from .joy, it is assumed to be a binary file.
 	     */
-	    if (joy == 1) {
-		ptr = strrchr(argv[i], '.');
-		if (!ptr || strcmp(ptr, ".joy"))
-		    joy = 0;
+	    if (!joy) {
+		if ((ptr = strrchr(argv[i], '.')) == argv[i])
+		    ptr = 0;
+		if (ptr) {
+#ifdef BYTECODE
+		    if (!strcmp(ptr, ".bic"))	/* extension .bic */
+			skip = 0;
+#endif
+		    if (!strcmp(ptr, ".joy"))	/* extension .joy */
+			joy = 1;
+		}
 	    }
 	    if ((yyin = fopen(argv[i], joy ? "r" : "rb")) == 0) {
 		fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
@@ -571,24 +595,36 @@ next_parm:
 	options(&env);		/* might print symbol table */
     if (unknown)
 	unknown_opt(&env, exe, unknown);
+    inilinebuffer(&env);
     inisymboltable(&env);
 #ifdef BYTECODE
     if (listing)
-	dumpbytes(&env);	/* might print symbol table */
-    if (env.bytecoding)
-	initbytes(&env);	/* uses symtab and filename */
+	dumpbytes(&env, skip);	/* calls quit_; might print symbol table */
+    if (env.bytecoding) {
+	if (joy)
+	    initbytes(&env);	/* create .bic file; uses symtab and filename */
+	else {
+	    rewritebic(filename);
+	    quit_(&env);	/* quit_ might print symbol table */
+	}
+    }
 #endif
 #ifdef COMPILER
     if (env.compiling)
 	initcompile(&env);	/* uses symtab and filename */
 #endif
-    inilinebuffer(&env, joy && !env.bytecoding && !env.compiling);
     env.stck = pvec_init();	/* start with an empty stack */
+#ifdef KEYBOARD
+    if (raw)
+	enableRawMode(&env);	/* needs to be done only once */
+    else
+#endif
+    setbuf(stdout, 0);		/* necessary when writing to a pipe */
     setjmp(begin);		/* return here after error or abort */
     env.prog = pvec_init();	/* restart with an empty program */
 #ifdef BYTECODE
-    if (!joy)
-	readbytes(&env);	/* might print symbol table */
+    if (!joy)			/* process .bic file instead of .joy file */
+	readbytes(&env, skip);	/* calls quit_; might print symbol table */
 #endif
     if (mustinclude) {
 	mustinclude = 0;	/* try including only once */

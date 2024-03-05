@@ -1,13 +1,13 @@
 /*
     module  : swapd.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef SWAPD_C
 #define SWAPD_C
 
 /**
-OK 1280  swapd  :  DDDAAA	X Y Z  ->  Y X Z
+Q0  OK  1280  swapd  :  DDDAAA  X Y Z  ->  Y X Z
 As if defined by:   swapd  ==  [swap] dip
 */
 void swapd_(pEnv env)

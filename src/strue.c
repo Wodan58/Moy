@@ -1,13 +1,13 @@
 /*
     module  : strue.c
-    version : 1.9
-    date    : 01/24/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef STRUE_C
 #define STRUE_C
 
 /**
-OK 3400  #strue  :  N	->
+Q0  OK  3400  #strue  :  N  ->
 Pop the jump location from the program stack. If the top of the data stack
 is true, jump to that location.
 */

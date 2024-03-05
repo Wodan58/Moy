@@ -1,13 +1,13 @@
 /*
     module  : ifte.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef IFTE_C
 #define IFTE_C
 
 /**
-OK 2600  ifte  :  DDDP	[B] [T] [F]  ->  ...
+Q3  OK  2600  ifte  :  DDDP  [B] [T] [F]  ->  ...
 Executes B. If that yields true, then executes T else executes F.
 */
 void ifte_(pEnv env)

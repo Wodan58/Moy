@@ -1,13 +1,13 @@
 /*
     module  : tailrec.c
-    version : 1.7
-    date    : 11/06/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef TAILREC_C
 #define TAILREC_C
 
 /**
-OK 2720  tailrec  :  DDDDA	[P] [T] [R1]  ->  ...
+Q3  OK  2720  tailrec  :  DDDDA  [P] [T] [R1]  ->  ...
 Executes P. If that yields true, executes T.
 Else executes R1, recurses.
 */

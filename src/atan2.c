@@ -1,13 +1,13 @@
 /*
     module  : atan2.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef ATAN2_C
 #define ATAN2_C
 
 /**
-OK 1520  atan2  :  DDA	F G  ->  H
+Q0  OK  1520  atan2  :  DDA  F G  ->  H
 H is the arc tangent of F / G.
 */
 void atan2_(pEnv env)

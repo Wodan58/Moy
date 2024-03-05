@@ -1,13 +1,13 @@
 /*
     module  : tan.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef TAN_C
 #define TAN_C
 
 /**
-OK 1670  tan  :  DA	F  ->  G
+Q0  OK  1670  tan  :  DA  F  ->  G
 G is the tangent of F.
 */
 void tan_(pEnv env)

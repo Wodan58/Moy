@@ -1,13 +1,13 @@
 /*
     module  : modf.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef MODF_C
 #define MODF_C
 
 /**
-OK 1620  modf  :  DAA	F  ->  G H
+Q0  OK  1620  modf  :  DAA  F  ->  G H
 G is the fractional part and H is the integer part
 (but expressed as a float) of F.
 */

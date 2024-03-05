@@ -1,13 +1,13 @@
 /*
     module  : integer.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef INTEGER_C
 #define INTEGER_C
 
 /**
-OK 2310  integer  :  DA	X  ->  B
+Q0  OK  2310  integer  :  DA  X  ->  B
 Tests whether X is an integer.
 */
 void integer_(pEnv env)

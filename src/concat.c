@@ -1,13 +1,13 @@
 /*
     module  : concat.c
-    version : 1.8
-    date    : 01/25/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef CONCAT_C
 #define CONCAT_C
 
 /**
-OK 2150  concat  :  DDA	S T  ->  U
+Q0  OK  2150  concat  :  DDA  S T  ->  U
 Sequence U is the concatenation of sequences S and T.
 */
 void concat_(pEnv env)

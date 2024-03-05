@@ -1,13 +1,13 @@
 /*
     module  : exp.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef EXP_C
 #define EXP_C
 
 /**
-OK 1560  exp  :  DA	F  ->  G
+Q0  OK  1560  exp  :  DA  F  ->  G
 G is e (2.718281828...) raised to the Fth power.
 */
 void exp_(pEnv env)

@@ -1,13 +1,13 @@
 /*
     module  : binary.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef BINARY_C
 #define BINARY_C
 
 /**
-OK 2560  binary  :  DDDA	X Y [P]  ->  R
+Q0  OK  2560  binary  :  DDDA  X Y [P]  ->  R
 Executes P, which leaves R on top of the stack.
 No matter how many parameters this consumes,
 exactly two are removed from the stack.

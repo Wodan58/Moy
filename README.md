@@ -45,7 +45,7 @@ Implementation|Dependencies
 [Joy](https://github.com/Wodan58/Joy)|
 [joy1](https://github.com/Wodan58/joy1)|[BDW garbage collector](https://github.com/ivmai/bdwgc)
 
-Documentation
--------------
-
+Documentation|
+-------------|
 [Legacy Docs](https://wodan58.github.io)
+[User Manual](https://wodan58.github.io/j09imp.html)

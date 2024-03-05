@@ -1,13 +1,13 @@
 /*
     module  : min.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef MIN_C
 #define MIN_C
 
 /**
-OK 1820  min  :  DDA	N1 N2  ->  N
+Q0  OK  1820  min  :  DDA  N1 N2  ->  N
 N is the minimum of numeric values N1 and N2.  Also supports float.
 */
 void min_(pEnv env)

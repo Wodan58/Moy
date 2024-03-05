@@ -1,13 +1,13 @@
 /*
     module  : unary.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef UNARY_C
 #define UNARY_C
 
 /**
-OK 2490  unary  :  DDA	X [P]  ->  R
+Q1  OK  2490  unary  :  DDA  X [P]  ->  R
 Executes P, which leaves R on top of the stack.
 No matter how many parameters this consumes,
 exactly one is removed from the stack.

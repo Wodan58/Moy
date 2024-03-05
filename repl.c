@@ -1,15 +1,15 @@
 /*
     module  : repl.c
-    version : 1.9
-    date    : 01/24/24
+    version : 1.10
+    date    : 03/05/24
 */
 #include "globals.h"
 
 /*
  *  Initialise the symbol table with builtins. There is no need to classify
- *  builtins. The hash table contains an index into the symbol table.
+ *  builtins. The hash tables contain an index into the symbol table.
  */
-PUBLIC void inisymboltable(pEnv env) /* initialise */
+PUBLIC void inisymboltable(pEnv env)	/* initialise */
 {
     Entry ent;
     int i, rv;
@@ -17,13 +17,16 @@ PUBLIC void inisymboltable(pEnv env) /* initialise */
     OpTable *tab;
 
     env->hash = kh_init(Symtab);
+    env->prim = kh_init(Funtab);
     for (i = 0; (tab = readtable(i)) != 0; i++) {
 	ent.name = tab->name;
-	ent.is_user = 0;
+	ent.is_user = 0;		/* builtins */
 	ent.flags = tab->flags;
 	ent.u.proc = tab->proc;
 	key = kh_put(Symtab, env->hash, ent.name, &rv);
 	kh_value(env->hash, key) = i;
+	key = kh_put(Funtab, env->prim, (int64_t)ent.u.proc, &rv);
+	kh_value(env->prim, key) = i;
 	vec_push(env->symtab, ent);
     }
 }
@@ -42,7 +45,7 @@ PRIVATE void enterglobal(pEnv env, char *name)
     ent.name = name;
     ent.is_user = 1;
     ent.flags = 0;
-    ent.u.body = 0; /* may be assigned in definition */
+    ent.u.body = 0;	/* may be assigned in definition */
     key = kh_put(Symtab, env->hash, ent.name, &rv);
     kh_value(env->hash, key) = env->location;
     vec_push(env->symtab, ent);

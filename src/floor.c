@@ -1,13 +1,13 @@
 /*
     module  : floor.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef FLOOR_C
 #define FLOOR_C
 
 /**
-OK 1570  floor  :  DA	F  ->  G
+Q0  OK  1570  floor  :  DA  F  ->  G
 G is the floor of F.
 */
 void floor_(pEnv env)

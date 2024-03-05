@@ -1,7 +1,7 @@
 /*
     module  : manual.h
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef MANUAL_H
 #define MANUAL_H
@@ -24,15 +24,16 @@
 	printf("\n\n");							\
     }
 
-PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
+PRIVATE void make_manual(int style)	/* 0=plain, 1=HTML, 2=Latex */
 {
     int i;
+    char *n;
     OpTable *optable;
 
     if (HTML)
 	printf("<HTML>\n<DL>\n");
     for (i = BOOLEAN_; (optable = readtable(i)) != 0; i++) {
-	char *n = optable->name;
+	n = optable->name;
 	HEADER(n, " truth value type", "literal") else
 	HEADER(n, "false", "operand") else
 	HEADER(n, "id", "operator") else
@@ -41,39 +42,43 @@ PUBLIC void make_manual(int style /* 0=plain, 1=HTML, 2=Latex */)
 	HEADER(n, "help", "miscellaneous commands") else
 	HEADER(n, "casting", "additional commands") else
 	HEADER(n, "#genrec", "runtime commands")
+#if 0
 	if (n[0] != '_') {
-	    if (HTML)
-		printf("\n<DT>");
-	    else if (LATEX) {
-		if (n[0] == ' ') {
-		    n++;
-		    printf("\\item[\\BX{");
-		} else
-		    printf("\\item[\\JX{");
-	    }
-	    if (HTML && strcmp(n, "<=") == 0)
-		printf("&lt;=");
-	    else
-		printf("%s", n);
-	    if (LATEX)
-		printf("}]  \\verb#");
-	    if (HTML)
-		printf(" <CODE>      :  </CODE> ");
-	    /* the above line does not produce the spaces around ":" */
-	    else
-		printf("  :  ");
-	    printf("%s", optable->messg1);
-	    if (HTML)
-		printf("\n<DD>");
-	    else if (LATEX)
-		printf("# \\\\ \n {\\small\\verb#");
-	    else
-		printf("\n");
-	    printf("%s", optable->messg2);
-	    if (LATEX)
-		printf("#}");
-	    printf("\n\n");
+#endif
+	if (HTML)
+	    printf("\n<DT>");
+	else if (LATEX) {
+	    if (n[0] == ' ') {
+		n++;
+		printf("\\item[\\BX{");
+	    } else
+		printf("\\item[\\JX{");
 	}
+	if (HTML && strcmp(n, "<=") == 0)
+	    printf("&lt;=");
+	else
+	    printf("%s", n);
+	if (LATEX)
+	    printf("}]  \\verb#");
+	if (HTML)
+	    printf("<CODE>&nbsp;&nbsp;:&nbsp;&nbsp;</CODE>");
+	/* the above line does produce the spaces around ":" */
+	else
+	    printf("  :  ");
+	printf("%s", optable->messg1);
+	if (HTML)
+	    printf("\n<DD>");
+	else if (LATEX)
+	    printf("# \\\\ \n {\\small\\verb#");
+	else
+	    printf("\n");
+	printf("%s", optable->messg2);
+	if (LATEX)
+	    printf("#}");
+	printf("\n\n");
+#if 0
+	}
+#endif
     }
     if (HTML)
 	printf("\n</DL>\n</HTML>\n");

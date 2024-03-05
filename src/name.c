@@ -1,13 +1,13 @@
 /*
     module  : name.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef NAME_C
 #define NAME_C
 
 /**
-OK 2170  name  :  DA	sym  ->  "sym"
+Q0  OK  2170  name  :  DA  sym  ->  "sym"
 For operators and combinators, the string "sym" is the name of item sym,
 for literals sym the result string is its type.
 */
@@ -23,7 +23,7 @@ void name_(pEnv env)
 	if (env->bytecoding || env->compiling)
 	    node.u.str = vec_at(env->symtab, node.u.ent).name;
         else
-	    node.u.str = opername(node.u.proc);
+	    node.u.str = opername(env, node.u.proc);
     } else
 	node.u.str = showname(node.op);
     node.op = STRING_;

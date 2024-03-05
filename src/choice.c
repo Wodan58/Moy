@@ -1,13 +1,13 @@
 /*
     module  : choice.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef CHOICE_C
 #define CHOICE_C
 
 /**
-OK 1330  choice  :  DDDA	B T F  ->  X
+Q0  OK  1330  choice  :  DDDA  B T F  ->  X
 If B is true, then X = T else X = F.
 */
 void choice_(pEnv env)

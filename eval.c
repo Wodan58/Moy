@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.17
- *  date    : 02/12/24
+ *  version : 1.18
+ *  date    : 03/05/24
  */
 #include "globals.h"
 
@@ -21,16 +21,16 @@ PRIVATE void set_alarm(pEnv env)
 	return;
     if (!init) {
 	init = 1;
-	signal(SIGALRM, catch_alarm); /* install alarm clock */
+	signal(SIGALRM, catch_alarm);	/* install alarm clock */
     }
-    alarm(ALARM); /* set alarm to trigger after ALARM seconds */
+    alarm(ALARM);	/* set alarm to trigger after ALARM seconds */
 }
 
 PRIVATE void alarm_off(pEnv env)
 {
     if (!env->alarming)
 	return;
-    alarm(0); /* set alarm off */
+    alarm(0);	/* set alarm off */
 }
 #endif
 
@@ -132,18 +132,18 @@ default:
 	}
     }
 #if ALARM
-    alarm_off(env); /* set alarm off */
+    alarm_off(env);	/* set alarm off */
 #endif
 #ifdef TRACING
-    trace(env, stdout); /* final stack */
+    trace(env, stdout);	/* final stack */
 #endif
 }
 
 /*
     nickname - return the name of an operator. If the operator starts with a
-	       character that is not part of an identifier, then the nick name
-	       is the part of the string after the first \0. The nick name
-	       should be equal to the filename of the operator.
+	       character that is not alphanumeric or underscore, then the nick
+	       name is the part of the string after the first \0. The nick name
+	       is sometimes equal to the filename that implements the operator.
 */
 PRIVATE char *nickname(int ch)
 {
@@ -160,55 +160,62 @@ PRIVATE char *nickname(int ch)
 }
 
 /*
-    showname - return the display name of an operator, not the filename.
+    showname - return the display name of a datatype, used in name.
 */
-PUBLIC char *showname(int i)
+PUBLIC char *showname(int index)
 {
     OpTable *tab;
 
-    tab = readtable(i);
+    tab = readtable(index);
     return tab->name;
 }
 
 /*
-    operindex - return the optable entry for an operator. This requires search.
+    operindex - return the optable entry of an operator or combinator.
 */
-PUBLIC int operindex(proc_t proc)
+PUBLIC int operindex(pEnv env, proc_t proc)
 {
-    int i;
-    OpTable *tab;
+    khiter_t key;
 
-    for (i = tablesize() - 1; i > 0; i--) {
-	tab = readtable(i);
-	if (tab->proc == proc)
-	    return i;
-    }
+    if ((key = kh_get(Funtab, env->prim, (int64_t)proc)) != kh_end(env->prim))
+	return kh_value(env->prim, key);
     return ANON_FUNCT_;	/* if not found, return the index of ANON_FUNCT_ */
 }
 
 /*
     cmpname - return the name of an operator, used in Compare.
 */
-PUBLIC char *cmpname(proc_t proc)
+PUBLIC char *cmpname(pEnv env, proc_t proc)
 {
-    return nickname(operindex(proc));
+    return nickname(operindex(env, proc));
 }
 
 /*
     opername - return the name of an operator, used in writefactor.
 */
-PUBLIC char *opername(proc_t proc)
+PUBLIC char *opername(pEnv env, proc_t proc)
 {
-    return showname(operindex(proc));
+    return showname(operindex(env, proc));
 }
 
 /*
     operarity - return the arity of an operator, used in arity.
 */
-PUBLIC char *operarity(proc_t proc)
+PUBLIC char *operarity(pEnv env, proc_t proc)
 {
     OpTable *tab;
 
-    tab = readtable(operindex(proc));
+    tab = readtable(operindex(env, proc));
     return tab->arity;
+}
+
+/*
+ *  qcode - return the qcode value of an operator or combinator.
+ */
+PUBLIC int operqcode(int index)
+{
+    OpTable *tab;
+
+    tab = readtable(index);
+    return tab->qcode;
 }

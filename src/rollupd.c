@@ -1,13 +1,13 @@
 /*
     module  : rollupd.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef ROLLUPD_C
 #define ROLLUPD_C
 
 /**
-OK 1290  rollupd  :  DDDDAAAA	X Y Z W  ->  Z X Y W
+Q0  OK  1290  rollupd  :  DDDDAAAA  X Y Z W  ->  Z X Y W
 As if defined by:   rollupd  ==  [rollup] dip
 */
 void rollupd_(pEnv env)

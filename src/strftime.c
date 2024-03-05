@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
@@ -9,7 +9,7 @@
 #include "decode.h"
 
 /**
-OK 1730  strftime  :  DDA	T S1  ->  S2
+Q0  OK  1730  strftime  :  DDA  T S1  ->  S2
 Formats a list T in the format of localtime or gmtime
 using string S1 and pushes the result S2.
 */

@@ -1,13 +1,13 @@
 /*
     module  : file.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef FILE_C
 #define FILE_C
 
 /**
-OK 2400  file  :  DA	F  ->  B
+Q0  OK  2400  file  :  DA  F  ->  B
 [FOREIGN] Tests whether F is a file.
 */
 void file_(pEnv env)

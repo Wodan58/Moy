@@ -1,7 +1,7 @@
 /*
     module  : geql.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef GEQL_C
 #define GEQL_C
@@ -9,7 +9,7 @@
 #include "compare.h"
 
 /**
-OK 2220  >=\0geql  :  DDA	X Y  ->  B
+Q0  OK  2220  >=\0geql  :  DDA  X Y  ->  B
 Either both X and Y are numeric or both are strings or symbols.
 Tests whether X greater than or equal to Y.  Also supports float.
 */

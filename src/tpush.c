@@ -1,13 +1,13 @@
 /*
     module  : tpush.c
-    version : 1.11
-    date    : 01/25/24
+    version : 1.12
+    date    : 03/05/24
 */
 #ifndef TPUSH_C
 #define TPUSH_C
 
 /**
-OK 3410  #tpush  :  D	->
+Q0  OK  3410  #tpush  :  D  ->
 Pop the location of two aggregates and an element from the program stack.
 The element is added to one of the two aggregates, depending on the value
 on top of the data stack.
@@ -24,7 +24,7 @@ void tpush_(pEnv env)
     if (test.u.num)
 	node = pvec_nth(env->prog, jump.u.num + 1);
     else
-	node = pvec_nth(env->prog, jump.u.num); /* one step further away */
+	node = pvec_nth(env->prog, jump.u.num);	/* one step further away */
     switch (node.op) {
     case LIST_:
 	node.u.lis = pvec_add(node.u.lis, elem);

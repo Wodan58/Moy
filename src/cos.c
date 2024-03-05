@@ -1,13 +1,13 @@
 /*
     module  : cos.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef COS_C
 #define COS_C
 
 /**
-OK 1540  cos  :  DA	F  ->  G
+Q0  OK  1540  cos  :  DA  F  ->  G
 G is the cosine of F.
 */
 void cos_(pEnv env)

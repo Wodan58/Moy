@@ -1,13 +1,13 @@
 /*
     module  : setundeferror.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef SETUNDEFERROR_C
 #define SETUNDEFERROR_C
 
 /**
-OK 2990  setundeferror  :  D	I  ->
+Q0  OK  2990  setundeferror  :  D  I  ->
 [IMPURE] Sets flag that controls behavior of undefined functions
 (0 = no error, 1 = error).
 */

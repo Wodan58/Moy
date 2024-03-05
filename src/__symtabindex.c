@@ -1,13 +1,13 @@
 /*
     module  : __symtabindex.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef __SYMTABINDEX_C
 #define __SYMTABINDEX_C
 
 /**
-OK 1060  __symtabindex  :  A	->  I
+Q0  OK  1060  __symtabindex  :  A  ->  I
 Pushes current size of the symbol table.
 */
 void __symtabindex_(pEnv env)

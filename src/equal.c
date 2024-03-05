@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.8
-    date    : 01/25/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -9,7 +9,7 @@
 #include "compare.h"
 
 /**
-OK 2280  equal  :  DDA	T U  ->  B
+Q0  OK  2280  equal  :  DDA  T U  ->  B
 (Recursively) tests whether trees T and U are identical.
 */
 PRIVATE int compatible(int first, int second)

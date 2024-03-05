@@ -3,7 +3,4 @@ moy.tar
 pars.c
 pars.h
 lexr.c
-prim.c
-prim.h
-tabl.c
 bdwgc

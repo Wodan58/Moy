@@ -1,13 +1,13 @@
 /*
     module  : log10.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef LOG10_C
 #define LOG10_C
 
 /**
-OK 1610  log10  :  DA	F  ->  G
+Q0  OK  1610  log10  :  DA  F  ->  G
 G is the common logarithm of F.
 */
 void log10_(pEnv env)

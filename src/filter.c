@@ -1,13 +1,13 @@
 /*
     module  : filter.c
-    version : 1.9
-    date    : 01/25/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef FILTER_C
 #define FILTER_C
 
 /**
-OK 2830  filter  :  DDA	A [B]  ->  A1
+Q0  OK  2830  filter  :  DDA  A [B]  ->  A1
 Uses test B to filter aggregate A producing sametype aggregate A1.
 */
 void filter_(pEnv env)

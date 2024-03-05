@@ -1,17 +1,17 @@
 /*
     module  : unary3.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef UNARY3_C
 #define UNARY3_C
 
 /**
-OK 2510  unary3  :  DDDDAAA	X1 X2 X3 [P]  ->  R1 R2 R3
+Q1  OK  2510  unary3  :  DDDDAAA  X1 X2 X3 [P]  ->  R1 R2 R3
 Executes P three times, with Xi, returns Ri (i = 1..3).
 */
 PRIVATE void unary3_(pEnv env)
-{	/*  X Y Z [P]  unary3    ==>  X' Y' Z'	*/
+{	/*	X Y Z [P]  unary3  ==>  X' Y' Z'	*/
     unsigned size1, size2;
     Node param1, param2, list;
 

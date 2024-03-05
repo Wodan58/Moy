@@ -1,13 +1,13 @@
 /*
     module  : max.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef MAX_C
 #define MAX_C
 
 /**
-OK 1810  max  :  DDA	N1 N2  ->  N
+Q0  OK  1810  max  :  DDA  N1 N2  ->  N
 N is the maximum of numeric values N1 and N2.  Also supports float.
 */
 void max_(pEnv env)

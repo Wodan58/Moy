@@ -1,13 +1,13 @@
 /*
     module  : rotated.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef ROTATED_C
 #define ROTATED_C
 
 /**
-OK 1310  rotated  :  DDDDAAAA	X Y Z W  ->  Z Y X W
+Q0  OK  1310  rotated  :  DDDDAAAA  X Y Z W  ->  Z Y X W
 As if defined by:   rotated  ==  [rotate] dip
 */
 void rotated_(pEnv env)

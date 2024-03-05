@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.32
-    date    : 02/12/24
+    version : 1.35
+    date    : 03/05/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -16,9 +16,13 @@
 #include <inttypes.h>
 
 #ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #pragma warning(disable: 4244 4267)
 #else
 #include <unistd.h>		/* alarm function */
+#include <termios.h>
+#include <sys/ioctl.h>
 #endif
 
 /*
@@ -40,7 +44,8 @@
 /* configure			*/
 #define INPSTACKMAX 10
 #define INPLINEMAX 255
-#define BUFFERMAX 80
+#define BUFFERMAX 80		/* smaller buffer */
+#define MAXNUM 32		/* even smaller buffer */
 #define DISPLAYMAX 10		/* nesting in HIDE & MODULE */
 #define INIECHOFLAG 0
 #define INIAUTOPUT 1
@@ -49,7 +54,7 @@
 
 /* installation dependent	*/
 #define SETSIZE (int)(CHAR_BIT * sizeof(uint64_t))	/* from limits.h */
-#define MAXINT INT64_MAX				/* from stdint.h */
+#define MAXINT_ INT64_MAX				/* from stdint.h */
 
 typedef enum {
     ANYTYPE,
@@ -77,7 +82,7 @@ typedef enum {
     MAXMIN,
     PREDSUCC,
     PLUSMINUS,
-    SIZE,
+    SIZE_,
     STEP,
     TAKE,
     CONCAT,
@@ -90,7 +95,7 @@ typedef enum {
     FORMAT,
     FORMATF,
     CONS,
-    IN,
+    IN_,
     HAS,
     CASE,
     FIRST,
@@ -157,7 +162,8 @@ typedef struct Node {
     The flags are used to distinguish between immediate and normal functions.
 */
 typedef struct Entry {
-    char *name, is_user, flags;
+    char *name;
+    unsigned char is_user, flags;
     union {
 	NodeList *body;
 	proc_t proc;
@@ -170,9 +176,11 @@ typedef struct Token {
 } Token;
 
 /*
-    The symbol table is accessed through a hash table.
+    The symbol table is accessed through two hash tables, one with name as
+    index; the other with function address as index, cast to int64_t.
 */
 KHASH_MAP_INIT_STR(Symtab, pEntry)
+KHASH_MAP_INIT_INT64(Funtab, pEntry)
 
 /*
     Global variables are stored locally in the main function.
@@ -185,11 +193,11 @@ typedef struct Env {
     vector(Channel) *channel;
 #endif
     khash_t(Symtab) *hash;
+    khash_t(Funtab) *prim;
     NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
     clock_t startclock;		/* main */
     char *pathname;
     char *filename;
-    char *output;		/* output file/function */
     char **g_argv;
     int g_argc;
     int token;			/* yylex */
@@ -215,21 +223,20 @@ typedef struct Env {
     unsigned char undeferror;
     unsigned char undeferror_set;
     unsigned char tracegc;
+    unsigned char alarming;
+    unsigned char bytecoding;
+    unsigned char compiling;
     unsigned char debugging;
     unsigned char ignore;
     unsigned char overwrite;
-    unsigned char compiling;
-    unsigned char bytecoding;
-    unsigned char statistics;
-    unsigned char keyboard;
-    unsigned char preserve;
+    unsigned char printing;
     unsigned char quiet;
-    unsigned char norecurse;
-    unsigned char alarming;
+    unsigned char recurse;
+    unsigned char statistics;
 } Env;
 
 typedef struct OpTable {
-    char flags;
+    unsigned char qcode, flags;
     char *name;
     proc_t proc;
     char *arity, *messg1, *messg2;
@@ -249,10 +256,11 @@ PUBLIC void compileprog(pEnv env, NodeList *list);
 /* eval.c */
 PUBLIC void exeterm(pEnv env, NodeList *list);
 PUBLIC char *showname(int i);
-PUBLIC int operindex(proc_t proc);
-PUBLIC char *cmpname(proc_t proc);
-PUBLIC char *opername(proc_t proc);
-PUBLIC char *operarity(proc_t proc);
+PUBLIC int operindex(pEnv env, proc_t proc);
+PUBLIC char *cmpname(pEnv env, proc_t proc);
+PUBLIC char *opername(pEnv env, proc_t proc);
+PUBLIC char *operarity(pEnv env, proc_t proc);
+PUBLIC int operqcode(int i);
 /* exec.c */
 PUBLIC void execute(pEnv env, NodeList *list);
 /* lexr.l */
@@ -285,17 +293,17 @@ PUBLIC void push(pEnv env, int64_t num);
 PUBLIC void prime(pEnv env, Node node);
 PUBLIC Node pop(pEnv env);
 /* read.c */
-PUBLIC void readfactor(pEnv env) /* read a JOY factor */;
+PUBLIC void readfactor(pEnv env);	/* read a JOY factor */
 PUBLIC void readterm(pEnv env);
 /* repl.c */
-PUBLIC void inisymboltable(pEnv env) /* initialise */;
+PUBLIC void inisymboltable(pEnv env);	/* initialise */
 PUBLIC void lookup(pEnv env, char *name);
 PUBLIC void enteratom(pEnv env, char *name, NodeList *list);
 PUBLIC NodeList *newnode(Operator op, YYSTYPE u);
 /* save.c */
 PUBLIC void save(pEnv env, NodeList *list, int num, int remove);
 /* scan.c */
-PUBLIC void inilinebuffer(pEnv env, int joy);
+PUBLIC void inilinebuffer(pEnv env);
 PUBLIC void include(pEnv env, char *str);
 PUBLIC int yywrap(void);
 PUBLIC void my_error(char *str, YYLTYPE *bloc);
@@ -318,7 +326,11 @@ PUBLIC void quit_(pEnv env);
 PUBLIC void initbytes(pEnv env);
 PUBLIC void bytecode(NodeList *list);
 /* code.c */
-PUBLIC void readbytes(pEnv env);
+PUBLIC void readbytes(pEnv env, int skip);
 /* dump.c */
-PUBLIC void dumpbytes(pEnv env);
+PUBLIC void dumpbytes(pEnv env, int skip);
+/* optm.c */
+PUBLIC void rewritebic(char *file);
+/* kraw.c */
+PUBLIC void enableRawMode(pEnv env);
 #endif

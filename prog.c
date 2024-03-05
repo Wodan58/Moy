@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.8
-    date    : 02/01/24
+    version : 1.9
+    date    : 03/05/24
 */
 #include "globals.h"
 
@@ -24,7 +24,7 @@ PUBLIC void code(pEnv env, proc_t proc)
     Node node;
 
     if (env->bytecoding || env->compiling)
-	node.u.ent = operindex(proc);
+	node.u.ent = operindex(env, proc);
     else
 	node.u.proc = proc;
     node.op = ANON_FUNCT_;

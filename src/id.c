@@ -1,13 +1,13 @@
 /*
     module  : id.c
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 03/05/24
 */
 #ifndef ID_C
 #define ID_C
 
 /**
-OK 1200  id  :  N	->
+Q0  OK  1200  id  :  N  ->
 Identity function, does nothing.
 Any program of the form  P id Q  is equivalent to just  P Q.
 */

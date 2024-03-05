@@ -1,17 +1,17 @@
 /*
     module  : cleave.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef CLEAVE_C
 #define CLEAVE_C
 
 /**
-OK 2580  cleave  :  DDDAA	X [P1] [P2]  ->  R1 R2
+Q2  OK  2580  cleave  :  DDDAA  X [P1] [P2]  ->  R1 R2
 Executes P1 and P2, each with X on top, producing two results.
 */
 PRIVATE void cleave_(pEnv env)
-{	/*  X [P1] [P2] cleave ==>  X1 X2	*/
+{	/*	X [P1] [P2]  cleave  ==>  X1 X2	*/
     unsigned size;
     Node first, second;
 

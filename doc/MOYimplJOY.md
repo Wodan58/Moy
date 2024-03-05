@@ -7,13 +7,12 @@ Introduction
 This page presents a note about the technicalities of this Joy implementation.
 The mechanisms of this implementation differ from the
 [reference implementation](https://github.com/Wodan58/Joy).
-The language itself should be the same.
 
 Implementation details
 ======================
 
 This implementation uses vectors instead of linked lists and it recurses
-without overflowing the stack.
+without overflowing the hardware stack.
 
 The big advantage of stackless recursion is in the size of data structures that
 can be handled. A program that builds a list of integers in idiomatic fashion
@@ -28,4 +27,3 @@ implemented, that is not recursive but still fails because `from-to-list` makes
 use of `linrec` and `linrec` recurses.
 
 This implementation succeeds where other implementations fail.
-There is a downside: function calling is slower.

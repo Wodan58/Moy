@@ -1,13 +1,13 @@
 /*
     module  : iffloat.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef IFFLOAT_C
 #define IFFLOAT_C
 
 /**
-OK 2670  iffloat  :  DDDP	X [T] [E]  ->  ...
+Q2  OK  2670  iffloat  :  DDDP  X [T] [E]  ->  ...
 If X is a float, executes T else executes E.
 */
 void iffloat_(pEnv env)

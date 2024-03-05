@@ -1,13 +1,13 @@
 /*
     module  : abs.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef ABS_C
 #define ABS_C
 
 /**
-OK 1480  abs  :  DA	N1  ->  N2
+Q0  OK  1480  abs  :  DA  N1  ->  N2
 Integer N2 is the absolute value (0,1,2..) of integer N1,
 or float N2 is the absolute value (0.0 ..) of float N1.
 */

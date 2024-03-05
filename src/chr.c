@@ -1,13 +1,13 @@
 /*
     module  : chr.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef CHR_C
 #define CHR_C
 
 /**
-OK 1470  chr  :  DA	I  ->  C
+Q0  OK  1470  chr  :  DA  I  ->  C
 C is the character whose Ascii value is integer I (or logical or character).
 */
 void chr_(pEnv env)

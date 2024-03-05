@@ -1,14 +1,14 @@
 /*
     module  : app1.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef APP1_C
 #define APP1_C
 
 /**
-OK 2440  app1  :  DDA	X [P]  ->  R
-Executes P, pushes result R on stack.
+Q1  OK  2440  app1  :  DDA  X [P]  ->  R
+Obsolescent.  Executes P, pushes result R on stack.
 */
 void app1_(pEnv env)
 {

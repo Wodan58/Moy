@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.11
-    date    : 02/12/24
+    version : 1.12
+    date    : 03/05/24
 */
 #include "globals.h"
 
@@ -56,7 +56,7 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
 		tab = readtable(node.u.ent);	/* symbol table is w/o arity */
 		str = tab->arity;
 	    } else
-		str = operarity(node.u.proc);	/* problem: lineair search */
+		str = operarity(env, node.u.proc);
 	    for (; *str; str++)
 		if (*str == 'A')		/* add */
 		    num++;

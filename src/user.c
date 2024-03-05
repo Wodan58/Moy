@@ -1,13 +1,13 @@
 /*
     module  : user.c
-    version : 1.7
-    date    : 10/02/23
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef USER_C
 #define USER_C
 
 /**
-OK 2380  user  :  DA	X  ->  B
+Q0  OK  2380  user  :  DA  X  ->  B
 Tests whether X is a user-defined symbol.
 */
 void user_(pEnv env)

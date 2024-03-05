@@ -1,13 +1,13 @@
 /*
     module  : size.c
-    version : 1.9
-    date    : 01/25/24
+    version : 1.11
+    date    : 03/05/24
 */
 #ifndef SIZE_C
 #define SIZE_C
 
 /**
-OK 2080  size  :  DA	A  ->  I
+Q0  OK  2080  size  :  DA  A  ->  I
 Integer I is the number of elements of aggregate A.
 */
 void size_(pEnv env)
@@ -15,7 +15,7 @@ void size_(pEnv env)
     int64_t i, j;
     Node node, temp;
 
-    PARM(1, SIZE);
+    PARM(1, SIZE_);
     env->stck = pvec_pop(env->stck, &node);
     switch (node.op) {
     case LIST_:

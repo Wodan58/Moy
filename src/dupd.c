@@ -1,13 +1,13 @@
 /*
     module  : dupd.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef DUPD_C
 #define DUPD_C
 
 /**
-OK 1270  dupd  :  DDAAA	Y Z  ->  Y Y Z
+Q0  OK  1270  dupd  :  DDAAA  Y Z  ->  Y Y Z
 As if defined by:   dupd  ==  [dup] dip
 */
 void dupd_(pEnv env)

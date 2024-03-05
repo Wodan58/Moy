@@ -1,13 +1,13 @@
 /*
     module  : undeferror.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef UNDEFERROR_C
 #define UNDEFERROR_C
 
 /**
-OK 1100  undeferror  :  A	->  I
+Q0  OK  1100  undeferror  :  A  ->  I
 Pushes current value of undefined-is-error flag.
 */
 void undeferror_(pEnv env)

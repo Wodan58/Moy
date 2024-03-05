@@ -1,13 +1,13 @@
 /*
     module  : sign.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef SIGN_C
 #define SIGN_C
 
 /**
-OK 1440  sign  :  DA	N1  ->  N2
+Q0  OK  1440  sign  :  DA  N1  ->  N2
 Integer N2 is the sign (-1 or 0 or +1) of integer N1,
 or float N2 is the sign (-1.0 or 0.0 or 1.0) of float N1.
 */

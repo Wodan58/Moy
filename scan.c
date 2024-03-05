@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.16
-    date    : 02/13/24
+    version : 1.17
+    date    : 03/05/24
 */
 #include "globals.h"
 
@@ -10,8 +10,6 @@ extern char line[];
 extern int yylineno;
 
 static int ilevel;
-static char my_line[INPLINEMAX + 1];
-static unsigned char my_echoflag;
 
 static struct {
     FILE *fp;
@@ -20,34 +18,14 @@ static struct {
 } infile[INPSTACKMAX];
 
 /*
- * Possibly echo a line.
- */
-PRIVATE void echoline(void)
-{
-    if (!my_echoflag || !my_line[0])
-	return;
-    if (my_echoflag > 2)
-	printf("%4d", 1);
-    if (my_echoflag > 1)
-	putchar('\t');
-    printf("%s", my_line);
-    my_line[0] = 0;
-}
-
-/*
     inilinebuffer - initialise the stack of input files. The filename parameter
-		    is used in error messages. Also read the first line.
+		    is used in error messages.
 */
-PUBLIC void inilinebuffer(pEnv env, int joy)
+PUBLIC void inilinebuffer(pEnv env)
 {
     infile[0].fp = yyin;
     infile[0].line = 1;			/* start with line 1 */
     infile[0].name = env->filename;
-    if (!joy)				/* test whether compiler active */
-	return;
-    if (fgets(my_line, INPLINEMAX, yyin))	/* read first line */
-	rewind(yyin);
-    my_echoflag = env->echoflag;
 }
 
 /*
@@ -56,8 +34,6 @@ PUBLIC void inilinebuffer(pEnv env, int joy)
 */
 PRIVATE void redirect(char *str, FILE *fp)
 {
-    if (infile[ilevel].fp == fp)
-	return;				/* already reading from this file */
     infile[ilevel].line = yylineno;	/* save last line number and line */
     if (ilevel + 1 == INPSTACKMAX)	/* increase the include level */
 	execerror(str, "fewer include files", "include");
@@ -92,13 +68,13 @@ PUBLIC void include(pEnv env, char *name)
     if (!strcmp(name, "usrlib.joy")) {			/* check usrlib.joy */
 	if ((fp = fopen(str, "r")) != 0)
 	    goto normal;
-	if ((ptr = getenv("USERPROFILE")) != 0) {	/* windows */
+	if ((ptr = getenv("HOME")) != 0) {		/* unix/cygwin */
 	    str = GC_malloc_atomic(strlen(ptr) + strlen(name) + 2);
 	    sprintf(str, "%s/%s", ptr, name);
 	    if ((fp = fopen(str, "r")) != 0)
 		goto normal;
 	}
-	if ((ptr = getenv("HOME")) != 0) {
+	if ((ptr = getenv("USERPROFILE")) != 0) {	/* windows */
 	    str = GC_malloc_atomic(strlen(ptr) + strlen(name) + 2);
 	    sprintf(str, "%s/%s", ptr, name);
 	    if ((fp = fopen(str, "r")) != 0)
@@ -124,7 +100,6 @@ normal:
 	    *ptr = 0;
 	}
 	redirect(name, fp);
-	my_echoflag = env->echoflag;
 	return;
     }
     /*
@@ -159,8 +134,6 @@ PUBLIC int yywrap(void)
     infile[ilevel].fp = 0;		/* invalidate file pointer */
     yyin = infile[--ilevel].fp;		/* proceed with previous file */
     old_buffer(infile[ilevel].line);	/* and previous input buffer */
-    if (!ilevel	&& yylineno == 1)	/* if back to first input file */
-	echoline();
     return 0;				/* continue with old buffer */
 }
 

@@ -1,13 +1,13 @@
 /*
     module  : ldexp.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef LDEXP_C
 #define LDEXP_C
 
 /**
-OK 1590  ldexp  :  DDA	F I  ->  G
+Q0  OK  1590  ldexp  :  DDA  F I  ->  G
 G is F times 2 to the Ith power.
 */
 void ldexp_(pEnv env)

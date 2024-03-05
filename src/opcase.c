@@ -1,13 +1,13 @@
 /*
     module  : opcase.c
-    version : 1.7
-    date    : 02/01/24
+    version : 1.8
+    date    : 03/05/24
 */
 #ifndef OPCASE_C
 #define OPCASE_C
 
 /**
-OK 2090  opcase  :  DA	X [..[X Xs]..]  ->  X [Xs]
+Q0  OK  2090  opcase  :  DA  X [..[X Xs]..]  ->  X [Xs]
 Indexing on type of X, returns the list [Xs].
 */
 void opcase_(pEnv env)

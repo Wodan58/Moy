@@ -1,13 +1,13 @@
 /*
     module  : string.c
-    version : 1.6
-    date    : 10/02/23
+    version : 1.7
+    date    : 03/05/24
 */
 #ifndef STRING_C
 #define STRING_C
 
 /**
-OK 2350  string  :  DA	X  ->  B
+Q0  OK  2350  string  :  DA  X  ->  B
 Tests whether X is a string.
 */
 void string_(pEnv env)
