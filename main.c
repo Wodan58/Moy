@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.36
- *  date    : 03/25/24
+ *  version : 1.37
+ *  date    : 03/26/24
  */
 #include "globals.h"
 
@@ -103,14 +103,14 @@ int my_main(int argc, char **argv)
 /*
  * These variables need to be static because of an intervening longjmp.
  */
-    static unsigned char psdump = 0, pstats = 0;
+    static unsigned char psdump = 0, pstats = 0, rv;
 #ifdef BYTECODE
     static unsigned char joy = 1;	/* assume .joy input */
 #endif
 
     Env env;				/* global variables */
+    int i, j, ch;
     char *ptr, *exe;			/* exe = joy binary */
-    int i, j, ch, rv;
 /*
  * A number of flags can be handled within the main function; no need to pass
  * them to subordinate functions.
