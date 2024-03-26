@@ -1,19 +1,19 @@
 #
 #   module  : makefile
-#   version : 1.5
-#   date    : 01/18/24
+#   version : 1.8
+#   date    : 03/26/24
 #
 .POSIX:
 .SUFFIXES:
 .PRECIOUS: pars.c lexr.c
 
-CC = gcc
-CF = -DCOPYRIGHT -O3 -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
+CC = gcc # -pg
+CF = -O3 -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 LF = -lm -lgc
 CFLAGS = $(CF) -DCOMP="\"$(CF)\"" -DLINK="\"$(LF)\"" -DVERS="\"Release 1.0\""
 HDRS = globals.h
-OBJS = main.o pars.o lexr.o scan.o repl.o modl.o ylex.o util.o exec.o \
-       eval.o xerr.o otab.o prog.o writ.o read.o save.o parm.o arty.o
+OBJS = main.o pars.o lexr.o arty.o eval.o exec.o modl.o otab.o parm.o prog.o \
+       read.o repl.o save.o scan.o util.o writ.o xerr.o ylex.o
 
 joy:	prep $(OBJS)
 	$(CC) -o$@ $(OBJS) $(LF)
@@ -31,7 +31,7 @@ clean:
 .SUFFIXES: .c .o .y .l
 
 .c.o:
-	SOURCE_DATE_EPOCH=1047920271 $(CC) -o$@ $(CFLAGS) -c $<
+	$(CC) -o$@ $(CFLAGS) -c $<
 
 .y.c:
 	bison -o$@ $<

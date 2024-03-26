@@ -1,20 +1,17 @@
 /*
     module  : gc.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 03/21/24
 */
 #ifndef GC_C
 #define GC_C
 
 /**
-Q0  OK  3010  gc  :  N  ->
+Q0  IGNORE_OK  3010  gc  :  N  ->
 [IMPURE] Initiates garbage collection.
 */
 void gc_(pEnv env)
 {
-    if (env->ignore)
-	return;
     GC_gcollect();
-    /* nothing */
 }
 #endif

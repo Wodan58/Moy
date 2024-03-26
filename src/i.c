@@ -1,7 +1,7 @@
 /*
     module  : i.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 03/21/24
 */
 #ifndef I_C
 #define I_C
@@ -10,7 +10,7 @@
 Q1  OK  2410  i  :  DP  [P]  ->  ...
 Executes P. So, [P] i  ==  P.
 */
-PRIVATE void i_(pEnv env)
+void i_(pEnv env)
 {
     Node node;
 

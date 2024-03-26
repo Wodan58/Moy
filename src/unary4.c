@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 03/21/24
 */
 #ifndef UNARY4_C
 #define UNARY4_C
@@ -10,7 +10,7 @@
 Q1  OK  2520  unary4  :  DDDDDAAAA  X1 X2 X3 X4 [P]  ->  R1 R2 R3 R4
 Executes P four times, with Xi, returns Ri (i = 1..4).
 */
-PRIVATE void unary4_(pEnv env)
+void unary4_(pEnv env)
 {	/*	X Y Z W [P]  unary4  ==>  X' Y' Z' W'	*/
     unsigned size1, size2, size3;
     Node param1, param2, param3, list;

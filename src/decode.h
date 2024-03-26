@@ -1,12 +1,12 @@
 /*
     module  : decode.h
-    version : 1.5
-    date    : 10/02/23
+    version : 1.6
+    date    : 03/21/24
 */
 #ifndef DECODE_H
 #define DECODE_H
 
-PUBLIC void decode(Node node, struct tm *t)
+void decode(Node node, struct tm *t)
 {
     int i;
     Node temp;

@@ -1,13 +1,13 @@
 /*
     module  : kill.c
-    version : 1.6
-    date    : 01/18/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef KILL_C
 #define KILL_C
 
 /**
-OK 3280  kill  :  N	->
+Q0  OK  3250  kill  :  N  ->
 [MTH] Make all threads eligible for garbage collection.
 */
 void kill_(pEnv env)

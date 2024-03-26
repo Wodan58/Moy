@@ -1,7 +1,7 @@
 /*
     module  : otab.c
-    version : 1.5
-    date    : 03/05/24
+    version : 1.6
+    date    : 03/21/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
@@ -23,7 +23,12 @@ enum {
     Q4
 };
 
-static OpTable optable[] = {
+static struct {
+    unsigned char qcode, flags;
+    char *name;
+    proc_t proc;
+    char *arity, *messg1, *messg2;
+} optable[] = {
     /* THESE MUST BE DEFINED IN THE ORDER OF THEIR VALUES */
 {Q0, OK, "__ILLEGAL",		id_,	"U",	"->",
 "internal error, cannot happen - supposedly."},
@@ -72,22 +77,120 @@ static OpTable optable[] = {
 #include "prim.c"	/* the primitive functions themselves */
 
 /*
+ * nickname - return the name of an operator. If the operator starts with a
+ *	      character that is not part of an identifier, then the nick name
+ *	      is the part of the string after the first \0.
+ */
+static char *nickname(int ch)
+{
+    char *str;
+
+    str = optable[ch].name;
+    if ((ch = *str) == '_' || isalpha(ch))
+	return str;
+    while (*str)
+	str++;
+    return str + 1;
+}
+
+/*
+    showname - return the display name of a datatype, used in name.
+*/
+char *showname(int index)
+{
+    return optable[index].name;
+}
+
+/*
+ * operindex returns the optable entry for an operator.
+ */
+int operindex(pEnv env, proc_t proc)
+{
+    khiter_t key;
+
+    if ((key = kh_get(Funtab, env->prim, (int64_t)proc)) != kh_end(env->prim))
+	return kh_value(env->prim, key);
+    return ANON_FUNCT_; /* if not found, return the index of ANON_FUNCT_ */
+}
+
+/*
+    opername - return the name of an operator, used in writefactor.
+*/
+char *opername(pEnv env, proc_t proc)
+{
+    return showname(operindex(env, proc));
+}
+
+/*
+ * cmpname - return the name of an operator, used in Compare.
+ */
+char *cmpname(pEnv env, proc_t proc)
+{
+    return nickname(operindex(env, proc));
+}
+
+/*
+ * operarity - return the arity of an operator, used in arity.
+ */
+char *operarity(int index)
+{
+    return optable[index].arity;
+}
+
+/*
  * tablesize - return the size of the table, to be used when searching from the
  *	       end of the table to the start.
  */
-PUBLIC int tablesize(void)
+#ifdef BYTECODE
+int tablesize(void)
 {
     return sizeof(optable) / sizeof(optable[0]);
 }
 
 /*
-    readtable - return a pointer into optable; when looping, the index i is
-		increased from 0 onwards until the index becomes invalid.
-*/
-PUBLIC OpTable *readtable(int i)
+ *  qcode - return the qcode value of an operator or combinator.
+ */
+int operqcode(int index)
 {
-    int size;
+    return optable[index].qcode;
+}
+#endif
 
-    size = tablesize();
-    return i >= 0 && i < size ? &optable[i] : 0;
+/*
+ * Initialise the symbol table with builtins.
+ * The hash tables contain an index into the symbol table.
+ */
+void inisymboltable(pEnv env) /* initialise */
+{
+    Entry ent;
+    khiter_t key;
+    int i, j, rv;
+
+    env->hash = kh_init(Symtab);
+    env->prim = kh_init(Funtab);
+    j = sizeof(optable) / sizeof(optable[0]);
+    for (i = 0; i < j; i++) {
+	ent.name = optable[i].name;
+	ent.is_user = 0;
+	ent.flags = optable[i].flags;
+	ent.u.proc = optable[i].proc;
+	if (env->ignore)
+	    switch (ent.flags) {
+	    case IGNORE_OK:
+		ent.u.proc = id_;
+		break;
+	    case IGNORE_POP:
+		ent.u.proc = pop_;
+		break;
+	    case POSTPONE:
+	    case IGNORE_PUSH:
+		ent.u.proc = __dump_;
+		break;
+	    }
+	key = kh_put(Symtab, env->hash, ent.name, &rv);
+	kh_value(env->hash, key) = i;
+	key = kh_put(Funtab, env->prim, (int64_t)ent.u.proc, &rv);
+	kh_value(env->prim, key) = i;
+	vec_push(env->symtab, ent);
+    }
 }

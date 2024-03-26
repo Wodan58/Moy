@@ -1,14 +1,10 @@
 %{
 /*
     module  : lexr.l
-    version : 1.28
-    date    : 03/05/24
+    version : 1.31
+    date    : 03/22/24
 */
 #include "globals.h"
-
-#ifdef _MSC_VER
-#define YY_NO_UNISTD_H
-#endif
 
 #define YY_DECL		int my_yylex(pEnv env)
 #define YY_NO_UNPUT
@@ -68,7 +64,7 @@ static void putline(pEnv env, char *str, int leng, int status)
     linenum = target + 1;
 }
 
-PUBLIC void new_buffer(void)
+void new_buffer(void)
 {
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
@@ -76,7 +72,7 @@ PUBLIC void new_buffer(void)
     linepos = 0;			/* start at position 0 */
 }
 
-PUBLIC void old_buffer(int num)
+void old_buffer(int num)
 {
     if (--include_stack_ptr < 0)
 	include_stack_ptr = 0;
@@ -110,7 +106,7 @@ linecom		#.*
 
 %%
 
-<<EOF>>		{ quit_(env); }
+<<EOF>>		{ abortexecution_(ABORT_QUIT); }
 <COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
 <COMMENT>.	{ addline(yytext[0]); }
 <COMMENT>\n	{ putline(env, "\n", 1, WITHIN_COM); }
@@ -121,21 +117,20 @@ linecom		#.*
 LIBRA[ \t]*	|
 DEFINE[ \t]*	|
 IN[ \t]*	|
-PUBLIC[ \t]*	return JPUBLIC;
+PUBLIC[ \t]*	return PUBLIC;
 HIDE[ \t]*	|
-PRIVATE[ \t]*	return JPRIVATE;
+PRIVATE[ \t]*	return PRIVATE;
 "."[ \t]*	|
 END[ \t]*	return END;
-MODULE[ \t]*	return MODULE;
+MODULE[ \t]*	return MODULE_;
+CONST[ \t]*	|
+INLINE[ \t]*	return CONST_;
 "=="[ \t]*	return EQDEF;
 
 {character}	{ yylval.num = ChrVal(env, yytext + 1); return CHAR_; }
 {octal}		|
-{hexal}		{ yylval.num = strtoll(yytext, 0, 0); if (yylval.num == MAXINT_)
-		{ yylval.dbl = strtod(yytext, 0); return FLOAT_; }
-		  return INTEGER_; }
-{integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-' ? 1 : 0),
-		  0, 0);
+{hexal}		{ yylval.num = strtoll(yytext, 0, 0); return INTEGER_; }
+{integer}	{ yylval.num = strtoll(yytext + (yytext[0] == '-'), 0, 0);
 		  if (yylval.num == MAXINT_) {
 #ifdef USE_BIGNUM_ARITHMETIC
 			yylval.str = GC_strdup(yytext);
@@ -153,8 +148,8 @@ MODULE[ \t]*	return MODULE;
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
-^\$.*		{ int rv; if (!env->ignore) { rv = system(yytext + 1); if (rv) {
-		  fflush(stdout); fprintf(stderr, "system: %d\n", rv); } } }
+^\$.*		{ int rv; if (!env->ignore) { rv = system(yytext + 1); if (rv)
+		  { fflush(stdout); fprintf(stderr, "system: %d\n", rv); } } }
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];
@@ -162,9 +157,9 @@ MODULE[ \t]*	return MODULE;
 %%
 
 /*
-    Supporting getch, reading from the stack of input files, like get.
-*/
-PUBLIC int get_input(void)
+ * Supporting getch, reading from the stack of input files, like get.
+ */
+int get_input(void)
 {
     return input();
 }

@@ -1,7 +1,7 @@
 /*
     module  : modl.c
-    version : 1.6
-    date    : 09/11/23
+    version : 1.7
+    date    : 03/21/24
 */
 #include "globals.h"
 
@@ -21,14 +21,14 @@ static int module_index = -1;
 /*
  * savemod saves the global variables, to be restored later with undomod.
 */
-PUBLIC void savemod(int *hide, int *modl, int *hcnt)
+void savemod(int *hide, int *modl, int *hcnt)
 {
     *hide = hide_index;
     *modl = module_index;
     *hcnt = hide_count;
 }
 
-PUBLIC void undomod(int hide, int modl, int hcnt)
+void undomod(int hide, int modl, int hcnt)
 {
     hide_index = hide;
     module_index = modl;
@@ -39,7 +39,7 @@ PUBLIC void undomod(int hide, int modl, int hcnt)
  * initmod registers name as a module name. Modules within modules are
  * supported. Up to a certain extent, that is.
  */
-PUBLIC void initmod(pEnv env, char *name)
+void initmod(pEnv env, char *name)
 {
     if (++module_index >= DISPLAYMAX) {
 	module_index = -1;
@@ -58,7 +58,7 @@ PUBLIC void initmod(pEnv env, char *name)
  * Only register a new private section during the first read. During the
  * second read, the number that was installed should be picked up again.
  */
-PUBLIC void initpriv(pEnv env)
+void initpriv(pEnv env)
 {
     if (++hide_index >= DISPLAYMAX) {
 	hide_index = -1;
@@ -72,7 +72,7 @@ PUBLIC void initpriv(pEnv env)
  * stoppriv registers the transition from private to public definitions. Names
  * should no longer be prefixed with the name of the private section.
  */
-PUBLIC void stoppriv(void)
+void stoppriv(void)
 {
     been_inside = 1;
     inside_hide = 0;
@@ -81,7 +81,7 @@ PUBLIC void stoppriv(void)
 /*
  * exitpriv lowers the hide_index after reading the public section.
  */
-PUBLIC void exitpriv(void)
+void exitpriv(void)
 {
     if (!been_inside)
 	return;
@@ -93,7 +93,7 @@ PUBLIC void exitpriv(void)
 /*
  * exitmod deregisters a module. It also ends an outstanding private section.
  */
-PUBLIC void exitmod(void)
+void exitmod(void)
 {
     if (module_index >= 0)
 	module_index--;
@@ -112,10 +112,10 @@ PUBLIC void exitmod(void)
  *
  * classify is used when entering the name that has a definition.
  */
-PUBLIC char *classify(pEnv env, char *name)
+char *classify(pEnv env, char *name)
 {
     size_t leng;
-    char temp[BUFFERMAX], *buf = 0, *str;
+    char temp[MAXNUM], *buf = 0, *str;
 
     if (strchr(name, '.'))
 	return name;
@@ -161,12 +161,12 @@ PUBLIC char *classify(pEnv env, char *name)
  *
  * qualify is used when reading a name, as part of a definition.
  */
-PUBLIC pEntry qualify(pEnv env, char *name)
+int qualify(pEnv env, char *name)
 {
     size_t leng;
     khiter_t key;
     int index, limit;
-    char temp[BUFFERMAX], *buf, *str;
+    char temp[MAXNUM], *buf, *str;
 
     /*
      * if name has a prefix, it is already a fully qualified name and can be

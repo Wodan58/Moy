@@ -1,16 +1,16 @@
 /*
     module  : save.c
-    version : 1.11
-    date    : 02/05/24
+    version : 1.12
+    date    : 03/21/24
 */
 #include "globals.h"
 #include "prim.h"
 
 /*
-    Save the stack just before executing a program. Restore it afterwards
-    without num items and including the new top of the stack.
-*/
-PUBLIC void save(pEnv env, NodeList *list, int num, int remove)
+ * Save the stack just before executing a program. Restore it afterwards
+ * without num items and including the new top of the stack.
+ */
+void save(pEnv env, NodeList *list, int num, int remove)
 {
     Node node;
     int status;
@@ -25,14 +25,11 @@ PUBLIC void save(pEnv env, NodeList *list, int num, int remove)
      */
     if ((status = pvec_getarity(list)) == ARITY_UNKNOWN) {
 	status = arity(env, list, num) == 1 ? ARITY_OK : ARITY_NOT_OK;
-#ifdef ARITY
 	if (env->overwrite) {
-	    fprintf(stderr, "%s: (", status == ARITY_OK ? "info" : "warning");
-	    writeterm(env, list, stderr);
-	    fprintf(stderr, ") has %scorrect arity\n", status == ARITY_OK ?
-			    "" : "in");
+	    printf("%s: (", status == ARITY_OK ? "info" : "warning");
+	    writeterm(env, list, stdout);
+	    printf(") has %scorrect arity\n", status == ARITY_OK ?  "" : "in");
 	}
-#endif
     }
     pvec_setarity(list, status);
     if (status == ARITY_NOT_OK) {

@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.17
-    date    : 03/05/24
+    version : 1.18
+    date    : 03/21/24
 */
 #include "globals.h"
 
@@ -14,49 +14,48 @@ static int ilevel;
 static struct {
     FILE *fp;
     int line;
-    char *name;
+    char name[FILENAMEMAX + 1];
 } infile[INPSTACKMAX];
 
 /*
-    inilinebuffer - initialise the stack of input files. The filename parameter
-		    is used in error messages.
-*/
-PUBLIC void inilinebuffer(pEnv env)
+ * inilinebuffer - initialise the stack of input files. The filename parameter
+ *		   is used in error messages.
+ */
+void inilinebuffer(pEnv env)
 {
     infile[0].fp = yyin;
     infile[0].line = 1;			/* start with line 1 */
-    infile[0].name = env->filename;
+    strncpy(infile[0].name, env->filename, FILENAMEMAX);
 }
 
 /*
-    redirect - read from another file descriptor. Some special processing in
-	       the case of reading with fget.
-*/
-PRIVATE void redirect(char *str, FILE *fp)
+ * redirect - read from another file descriptor.
+ */
+static void redirect(FILE *fp, char *str)
 {
     infile[ilevel].line = yylineno;	/* save last line number and line */
     if (ilevel + 1 == INPSTACKMAX)	/* increase the include level */
 	execerror(str, "fewer include files", "include");
     infile[++ilevel].fp = yyin = fp; 	/* update yyin, used by yylex */
     infile[ilevel].line = 1;		/* start with line 1 */
-    infile[ilevel].name = str;
+    strncpy(infile[ilevel].name, str, FILENAMEMAX);
     new_buffer();			/* new file, new buffer */
 }
 
 /*
-    include - insert the contents of a file in the input.
-
-    Files are read in the current directory or if that fails from the
-    previous location. If that also fails an error is generated.
-*/
-PUBLIC void include(pEnv env, char *name)
+ * include - insert the contents of a file in the input.
+ *
+ * Files are read in the current directory or if that fails from the previous
+ * location. If that also fails an error is generated.
+ */
+void include(pEnv env, char *name)
 {
     /*
      * mustinclude - determine whether an attempt must be made to include
      * usrlib.joy
      */
     FILE *fp;
-    char *ptr, *str;
+    char *path = 0, *str = name;
 
     /*
      * usrlib.joy is tried first in the current directory, then in the home
@@ -64,25 +63,25 @@ PUBLIC void include(pEnv env, char *name)
      *
      * If all of that fails, no harm done.
      */
-    str = name;						/* name copied to str */
     if (!strcmp(name, "usrlib.joy")) {			/* check usrlib.joy */
-	if ((fp = fopen(str, "r")) != 0)
+	if ((fp = fopen(name, "r")) != 0)
 	    goto normal;
-	if ((ptr = getenv("HOME")) != 0) {		/* unix/cygwin */
-	    str = GC_malloc_atomic(strlen(ptr) + strlen(name) + 2);
-	    sprintf(str, "%s/%s", ptr, name);
+	if ((path = getenv("HOME")) != 0) {		/* unix/cygwin */
+	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
+	    sprintf(str, "%s/%s", path, name);
 	    if ((fp = fopen(str, "r")) != 0)
 		goto normal;
 	}
-	if ((ptr = getenv("USERPROFILE")) != 0) {	/* windows */
-	    str = GC_malloc_atomic(strlen(ptr) + strlen(name) + 2);
-	    sprintf(str, "%s/%s", ptr, name);
+	if ((path = getenv("USERPROFILE")) != 0) {	/* windows */
+	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
+	    sprintf(str, "%s/%s", path, name);
 	    if ((fp = fopen(str, "r")) != 0)
 		goto normal;
 	}
-	if (strcmp(env->pathname, ".")) {
-	    str = GC_malloc_atomic(strlen(env->pathname) + strlen(name) + 2);
-	    sprintf(str, "%s/%s", env->pathname, name);
+	path = env->pathname;				/* joy binary */
+	if (strcmp(path, ".")) {
+	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
+	    sprintf(str, "%s/%s", path, name);
 	    if ((fp = fopen(str, "r")) != 0)
 		goto normal;
 	}
@@ -96,23 +95,24 @@ normal:
 	 */
 	if (strrchr(str, '/')) {
 	    env->pathname = GC_strdup(str);
-	    ptr = strrchr(env->pathname, '/');
-	    *ptr = 0;
+	    path = strrchr(env->pathname, '/');
+	    *path = 0;
 	}
-	redirect(name, fp);
+	redirect(fp, name);
 	return;
     }
     /*
-     * A file other that usrlib.joy is first tried in the current directory.
+     * A file other than usrlib.joy is tried first in the current directory.
      */
     if ((fp = fopen(name, "r")) != 0)
 	goto normal;
     /*
      * If that fails, the pathname is prepended and the file is tried again.
      */
-    if (strcmp(env->pathname, ".")) {
-	str = GC_malloc_atomic(strlen(env->pathname) + strlen(name) + 2);
-	sprintf(str, "%s/%s", env->pathname, name);
+    path = env->pathname;
+    if (strcmp(path, ".")) {
+	str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
+	sprintf(str, "%s/%s", path, name);
 	if ((fp = fopen(str, "r")) != 0)
 	    goto normal;
     }
@@ -124,9 +124,9 @@ normal:
 }
 
 /*
-    yywrap - continue reading after EOF.
-*/
-PUBLIC int yywrap(void)
+ * yywrap - continue reading after EOF.
+ */
+int yywrap(void)
 {
     if (!ilevel)			/* at end of first file, end program */
 	return 1;			/* terminate */
@@ -138,27 +138,26 @@ PUBLIC int yywrap(void)
 }
 
 /*
-    my_error - error processing during parsing; location info as parameter.
-*/
-PUBLIC void my_error(char *str, YYLTYPE *bloc)
+ * my_error - error processing during parsing; location info as parameter.
+ */
+void my_error(char *str, YYLTYPE *bloc)
 {
     int leng = bloc->last_column - 1;
 
     fflush(stdout);
     leng += fprintf(stderr, "%s:%d:", infile[ilevel].name, yylineno);
     fprintf(stderr, "%s\n%*s^\n%*s%s\n", line, leng, "", leng, "", str);
-    line[0] = 0; /* invalidate line */
-    abortexecution_(PARS_ERR);
+    line[0] = 0;	/* invalidate line */
+    abortexecution_(ABORT_RETRY);
 }
 
 /*
-    yyerror - error processing during source file read; location info global.
-*/
-PUBLIC int yyerror(pEnv env, char *str)
+ * yyerror - error processing during source file read; location info global.
+ */
+void yyerror(pEnv env, char *str)
 {
     YYLTYPE bloc;
 
     bloc.last_column = yylloc.last_column;
     my_error(str, &bloc);
-    return 0;
 }

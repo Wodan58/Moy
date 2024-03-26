@@ -1,13 +1,13 @@
 /*
     module  : task.c
-    version : 1.7
-    date    : 01/18/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef TASK_C
 #define TASK_C
 
 /**
-OK 3310  task  :  D	Q  ->
+Q0  OK  3270  task  :  D  Q  ->
 [MTH] Execute quotation Q in a separate thread.
 */
 void task_(pEnv env)

@@ -1,14 +1,14 @@
 /*
     module  : prog.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 03/21/24
 */
 #include "globals.h"
 
 /*
     prog - push the contents of a program onto the code stack
 */
-PUBLIC void prog(pEnv env, NodeList *list)
+void prog(pEnv env, NodeList *list)
 {
     int i, j;
 
@@ -19,7 +19,7 @@ PUBLIC void prog(pEnv env, NodeList *list)
 /*
     code - push an anonymous function onto the code stack
 */
-PUBLIC void code(pEnv env, proc_t proc)
+void code(pEnv env, proc_t proc)
 {
     Node node;
 
@@ -34,7 +34,7 @@ PUBLIC void code(pEnv env, proc_t proc)
 /*
     push - push an integer on the code stack
 */
-PUBLIC void push(pEnv env, int64_t num)
+void push(pEnv env, int64_t num)
 {
     Node node;
 
@@ -46,7 +46,7 @@ PUBLIC void push(pEnv env, int64_t num)
 /*
     prime - push node on the code stack that came from the data stack
 */
-PUBLIC void prime(pEnv env, Node node)
+void prime(pEnv env, Node node)
 {
     if (node.op == USR_)
 	node.op = USR_PRIME_;
@@ -58,7 +58,7 @@ PUBLIC void prime(pEnv env, Node node)
 /*
     pop - remove an item from the code stack
 */
-PUBLIC Node pop(pEnv env)
+Node pop(pEnv env)
 {
     Node node;
 

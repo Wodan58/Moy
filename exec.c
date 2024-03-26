@@ -1,15 +1,15 @@
 /*
  *  module  : exec.c
- *  version : 1.5
- *  date    : 02/01/24
+ *  version : 1.6
+ *  date    : 03/21/24
  */
 #include "globals.h"
 
 /*
- *  Execute a program and print the result according to the autoput settings,
- *  if there is anything to be printed.
+ * Execute a program and print the result according to the autoput settings,
+ * if there is anything to be printed.
  */
-PUBLIC void execute(pEnv env, NodeList *list)
+void execute(pEnv env, NodeList *list)
 {
     Node node;
 
@@ -38,7 +38,7 @@ PUBLIC void execute(pEnv env, NodeList *list)
 	    } else
 		writefactor(env, node, stdout);
 	}
-	if (env->autoput && !env->ignore)
+	if (env->autoput)
 	    putchar('\n');
     }
 }

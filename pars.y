@@ -1,16 +1,35 @@
 %{
 /*
     module  : pars.y
-    version : 1.14
-    date    : 02/01/24
+    version : 1.16
+    date    : 03/21/24
 */
 #include "globals.h"
+
+static uint64_t list2set(pEnv env, NodeList *list)
+{
+    int i;
+    Node node;
+    uint64_t set = 0;
+
+    for (i = pvec_cnt(list) - 1; i >= 0; i--) {
+	node = pvec_nth(list, i);
+	if (node.op == CHAR_ || node.op == INTEGER_)
+	    if (node.u.num < 0 || node.u.num >= SETSIZE)
+		yyerror(env, "small numeric expected in set");
+	    else
+		set |= (uint64_t)1 << node.u.num;
+	else
+	    yyerror(env, "numeric expected in set");
+    }
+    return set;
+}
 %}
 
 %lex-param	{env}
 %parse-param	{pEnv env}
 
-%token MODULE JPRIVATE JPUBLIC EQDEF END
+%token MODULE_ PRIVATE PUBLIC EQDEF END CONST_
 
 %token <str> USR_		2
 %token <proc> ANON_FUNCT_	3
@@ -23,14 +42,12 @@
 %token <dbl> FLOAT_		10
 %token <fil> FILE_		11
 %token <str> BIGNUM_		12
-%token <num> KEYWORD_		13
-%token <str> USR_PRIME_		14
-%token <proc> ANON_PRIME_	15
-%token <str> USR_STRING_	16
-%token <lis> USR_LIST_		17
+%token <str> USR_PRIME_		13
+%token <proc> ANON_PRIME_	14
+%token <str> USR_STRING_	15
+%token <lis> USR_LIST_		16
 
-%type <num> char_or_int
-%type <set> opt_set set
+%type <set> set
 %type <lis> opt_term term factor list
 
 /* generate include file with symbols and types */
@@ -45,7 +62,7 @@
     NodeList *lis;	/* LIST */
     double dbl;		/* FLOAT */
     FILE *fil;		/* FILE */
-    pEntry ent;		/* SYMBOL */
+    int ent;		/* SYMBOL */
 };
 
 /* start the grammar with cycle */
@@ -68,15 +85,16 @@ compound_def : public
 	     | private opt_public { exitpriv(); }
 	     | module opt_private opt_public { exitmod(); } ;
 
-module : MODULE USR_ { initmod(env, $2); } ;
+module : MODULE_ USR_ { initmod(env, $2); } ;
 
 opt_private : private | /* empty */ ;
 
-private : JPRIVATE { initpriv(env); } seq_definition { stoppriv(); } ;
+private : PRIVATE { initpriv(env); } seq_definition { stoppriv(); } ;
 
 opt_public : public | /* empty */ ;
 
-public : JPUBLIC seq_definition ;
+public : PUBLIC seq_definition | CONST_ { env->inlining = 1; }
+         seq_definition { env->inlining = 0; } ;
 
 /*
     A definition sequence is one or more definitions, separated by ';' .
@@ -106,28 +124,29 @@ term : term factor { $$ = pvec_concat($1, $2); }
 /*
     A factor is a constant, or a list, or a set.
 */
-factor  : USR_      {   Entry ent; Node node;
-			lookup(env, $1);
-			if (!env->location && strchr($1, '.'))
+factor  : USR_      {   int index; Entry ent; Node node;
+			index = lookup(env, $1);
+			if (!index && strchr($1, '.'))
 			    my_error("no such field in module", &@1);
-			else {
-			    ent = vec_at(env->symtab, env->location);
-			    /* execute immediate functions at compile time */
-			    if (ent.flags == IMMEDIATE) {
+			ent = vec_at(env->symtab, index);
+			/* execute immediate functions at compile time */
+			if (ent.flags == IMMEDIATE) {
+			    if (ent.is_user)
+				exeterm(env, ent.u.body);
+			    else
 				(*ent.u.proc)(env);
-				env->stck = pvec_pop(env->stck, &node);
-			    } else if (ent.is_user) {
-				node.u.ent = env->location;
-				node.op = USR_;
-			    } else {
-				if (env->bytecoding || env->compiling)
-				    node.u.ent = env->location;
-				else
-				    node.u.proc = ent.u.proc;
-				node.op = ANON_FUNCT_;
-			    }
-			    $$ = pvec_add(pvec_init(), node);
-			}
+			    env->stck = pvec_pop(env->stck, &node);
+			 } else if (ent.is_user) {
+			    node.u.ent = index;
+			    node.op = USR_;
+			 } else {
+			    if (env->bytecoding || env->compiling)
+				node.u.ent = index;
+			    else
+				node.u.proc = ent.u.proc;
+			    node.op = ANON_FUNCT_;
+			 }
+			 $$ = pvec_add(pvec_init(), node);
 		    }
 	| CHAR_     { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u); }
 	| INTEGER_  { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u); }
@@ -139,11 +158,4 @@ factor  : USR_      {   Entry ent; Node node;
 
 list : '[' opt_term ']' { $$ = $2; } ;
 
-set : '{' opt_set '}' { $$ = $2; } ;
-
-opt_set : opt_set char_or_int { if ($2 < 0 || $2 >= SETSIZE) my_error(
-				    "small numeric expected in set", &@2);
-				else $$ |= (int64_t)1 << $2; }
-	| /* empty */ { $$ = 0; } ;
-
-char_or_int : CHAR_ | INTEGER_ ;
+set : '{' opt_term '}' { $$ = list2set(env, $2); } ;

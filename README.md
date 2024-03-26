@@ -14,6 +14,7 @@ explains the raison d'être.
 Build instructions
 ------------------
 
+    mkdir build
     cd build
     cmake ..
     cmake --build .
@@ -21,10 +22,9 @@ Build instructions
 Build with MSVC
 ---------------
 
-After installing bdwgc in the bdwgc-directory use the CMake GUI to uncheck all
-boxes and then check the boxes in the lines that start with disable\_ and
-check the last one: without\_libatomic\_ops.
+Install bdwgc in a bdwgc-subdirectory.
 
+    mkdir build
     cd build
     cmake ..
     cmake --build . --config Release
@@ -33,7 +33,9 @@ check the last one: without\_libatomic\_ops.
 Running
 -------
 
-There is a copy of usrlib.joy in the build directory.
+    joy -h
+
+gives an overview of available options.
 
 See also
 --------
@@ -44,6 +46,7 @@ Implementation|Dependencies
 [joy0](https://github.com/Wodan58/joy0)|
 [Joy](https://github.com/Wodan58/Joy)|
 [joy1](https://github.com/Wodan58/joy1)|[BDW garbage collector](https://github.com/ivmai/bdwgc)
+[Foy](https://github.com/Wodan58/Foy)|[BDW garbage collector](https://github.com/ivmai/bdwgc)
 
 Documentation|
 -------------|

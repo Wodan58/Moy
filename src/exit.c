@@ -1,13 +1,13 @@
 /*
     module  : exit.c
-    version : 1.6
-    date    : 01/18/24
+    version : 1.9
+    date    : 03/05/24
 */
 #ifndef EXIT_C
 #define EXIT_C
 
 /**
-OK 3270  exit  :  N	->
+Q0  OK  3240  exit  :  N  ->
 [MTH] Exit a thread.
 */
 void exit_(pEnv env)

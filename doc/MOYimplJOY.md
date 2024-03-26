@@ -12,7 +12,7 @@ Implementation details
 ======================
 
 This implementation uses vectors instead of linked lists and it recurses
-without overflowing the hardware stack.
+without overflowing the call stack.
 
 The big advantage of stackless recursion is in the size of data structures that
 can be handled. A program that builds a list of integers in idiomatic fashion

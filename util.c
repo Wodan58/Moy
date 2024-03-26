@@ -1,11 +1,11 @@
 /*
     module  : util.c
-    version : 1.2
-    date    : 02/09/24
+    version : 1.3
+    date    : 03/21/24
 */
 #include "globals.h"
 
-PRIVATE int EscVal(char *str)
+int EscVal(char *str)
 {
     int i, num;
 
@@ -35,7 +35,7 @@ PRIVATE int EscVal(char *str)
 /*
  * chr(0) is not allowed
  */
-PUBLIC int ChrVal(pEnv env, char *str)
+int ChrVal(pEnv env, char *str)
 {
     int ch;
 
@@ -51,7 +51,7 @@ PUBLIC int ChrVal(pEnv env, char *str)
 /*
  * chr(0) and chr(1) are not allowed
  */
-PUBLIC char *StrVal(pEnv env, char *str)
+char *StrVal(pEnv env, char *str)
 {
     int ch, i = 0;
 
@@ -74,21 +74,3 @@ PUBLIC char *StrVal(pEnv env, char *str)
     buf[i] = 0;
     return buf;
 }
-
-#if 0
-PUBLIC char *DelSpace(char *str)	/* not used anymore */
-{
-    int i;
-
-    for (i = 0; str[i]; i++)		/* find end of line */
-	;
-    while (--i > 0)			/* remove trailing spaces */
-	if (isspace((int)str[i]))
-	    str[i] = 0;
-	else
-	    break;
-    while (isspace((int)*str))		/* skip leading spaces */
-	str++;
-    return str;
-}
-#endif

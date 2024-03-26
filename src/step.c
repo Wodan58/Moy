@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.12
-    date    : 03/05/24
+    version : 1.13
+    date    : 03/21/24
 */
 #ifndef STEP_C
 #define STEP_C
@@ -13,7 +13,7 @@ executes P for each member of A.
 */
 void step_(pEnv env)
 {
-    int64_t i, j;
+    int i, j;
     Node aggr, list, node;
 
     PARM(2, STEP);
@@ -40,8 +40,8 @@ void step_(pEnv env)
 
     case SET_:
 	node.op = INTEGER_;
-	for (j = 1, i = SETSIZE - 1, j <<= i; i >= 0; i--, j >>= 1)
-	    if (aggr.u.set & j) {
+	for (i = SETSIZE - 1; i >= 0; i--)
+	    if (aggr.u.set & ((int64_t)1 << i)) {
 		prog(env, list.u.lis);
 		node.u.num = i;
 		prime(env, node);

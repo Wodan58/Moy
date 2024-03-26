@@ -1,40 +1,39 @@
 /*
  *  module  : read.c
- *  version : 1.9
- *  date    : 10/02/23
+ *  version : 1.10
+ *  date    : 03/21/24
  */
 #include "globals.h"
 
 /*
     readfactor - read a factor from srcfile and push it on the stack.
-		 There is always something that gets pushed - easier.
 */
-PUBLIC void readfactor(pEnv env) /* read a JOY factor */
+int readfactor(pEnv env) /* read a JOY factor */
 {
+    int index;
     Node node;
     Entry ent;
     uint64_t set = 0;
 
     switch (env->token) {
     case USR_:
-	lookup(env, yylval.str);
-	if (!env->location && strchr(yylval.str, '.'))
+	index = lookup(env, yylval.str);
+	if (!index && strchr(yylval.str, '.')) {
 	    yyerror(env, "no such field in module");
-	ent = vec_at(env->symtab, env->location);
-	/* execute immediate functions at compile time */
-	if (ent.flags == IMMEDIATE)
-	    (*ent.u.proc)(env);
-	else {
-	    if (ent.is_user) {
-		node.u.ent = env->location;
-		node.op = USR_;
-	    } else {
-		node.u.proc = ent.u.proc;
-		node.op = ANON_FUNCT_;
-	    }
-	    env->stck = pvec_add(env->stck, node);
+	    break;
 	}
-	break;
+	ent = vec_at(env->symtab, index);
+	/* do not execute immediate functions at compile time */
+	if (ent.is_user) {
+	    node.u.ent = index;
+	    node.op = USR_;
+	} else {
+	    node.u.proc = ent.u.proc;
+	    node.op = ANON_FUNCT_;
+	}
+	env->stck = pvec_add(env->stck, node);
+	return 1;
+
     case CHAR_:
     case INTEGER_:
     case STRING_:
@@ -43,7 +42,8 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
 	node.u = yylval;
 	node.op = env->token;
 	env->stck = pvec_add(env->stck, node);
-	break;
+	return 1;
+
     case '{':
 	while ((env->token = yylex(env)) != '}')
 	    if ((env->token != CHAR_ && env->token != INTEGER_)
@@ -54,25 +54,22 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
 	node.u.set = set;
 	node.op = SET_;
 	env->stck = pvec_add(env->stck, node);
-	break;
+	return 1;
+
     case '[':
 	env->token = yylex(env); /* read past [ */
 	readterm(env);
-	break;
-    default:
-	node.u.num = env->token;
-	node.op = KEYWORD_;
-	env->stck = pvec_add(env->stck, node);
-	break;
-#if 0
+	return 1;
+
     case '(':
 	yyerror(env, "'(' not implemented");
 	break;
+
     default:
 	yyerror(env, "a factor cannot begin with this symbol");
 	break;
-#endif
     }
+    return 0;
 }
 
 /*
@@ -80,7 +77,7 @@ PUBLIC void readfactor(pEnv env) /* read a JOY factor */
 	       The nodes are first collected in a vector and only afterwards
 	       pushed as a NodeList.
 */
-PUBLIC void readterm(pEnv env)
+void readterm(pEnv env)
 {
     int i;
     Node node, temp;
@@ -91,9 +88,10 @@ PUBLIC void readterm(pEnv env)
     node.op = LIST_;
     if (env->token != ']') {
 	do {
-	    readfactor(env);
-	    env->stck = pvec_pop(env->stck, &temp);
-	    vec_push(array, temp);
+	    if (readfactor(env)) {
+		env->stck = pvec_pop(env->stck, &temp);
+		vec_push(array, temp);
+	    }
 	} while ((env->token = yylex(env)) != ']');	/* read past factor */
 	node.u.lis = pvec_init();
 	for (i = vec_size(array) - 1; i >= 0; i--)	/* reverse */

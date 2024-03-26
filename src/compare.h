@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.18
-    date    : 03/05/24
+    version : 1.20
+    date    : 03/23/24
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -9,10 +9,10 @@
 /*
     BOOLEAN, CHAR, INTEGER, SET, FLOAT, BIGNUM are lumped together allowing
     numerical compare; USR, ANON_FUNCT, STRING, BIGNUM are lumped together
-    allowing string compare; FILE can only be compared with FILE; LIST cannot
-    be compared with anything.
+    allowing string compare; FILE can only be compared with FILE; LISTs can
+    be compared when empty.
 */
-PUBLIC int Compare(pEnv env, Node first, Node second)
+int Compare(pEnv env, Node first, Node second)
 {
     FILE *fp1, *fp2;
     char *name1, *name2;
@@ -177,9 +177,12 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 	case ANON_PRIME_:
 	case STRING_:
 	case USR_STRING_:
+	default:
+	    return 1; /* unequal */
 	case LIST_:
 	case USR_LIST_:
-	default:
+	    if (!num1 && !pvec_cnt(second.u.lis))
+		return 0; /* equal */
 	    return 1; /* unequal */
 	}
 	break;
@@ -218,6 +221,8 @@ PUBLIC int Compare(pEnv env, Node first, Node second)
 		return 0; /* equal */
 	    return first.u.lis != second.u.lis;
 	}
+	if (second.op == SET_ && !pvec_cnt(first.u.lis) && !second.u.num)
+	    return 0; /* equal */
 	return 1; /* unequal */
 	break;
     case FLOAT_:

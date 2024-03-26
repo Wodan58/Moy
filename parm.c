@@ -1,14 +1,14 @@
 /*
     module  : parm.c
-    date    : 1.14
-    version : 03/05/24
+    date    : 1.15
+    version : 03/21/24
 */
 #include "globals.h"
 
 /*
     check the number of parameters and if not sufficient call execerror.
 */
-PRIVATE void checknum(char *name, int num, int leng, char *file)
+void checknum(char *name, int num, int leng, char *file)
 {
     char *ptr = 0;
 
@@ -32,7 +32,7 @@ PRIVATE void checknum(char *name, int num, int leng, char *file)
 /*
     check parameters, all of them
 */
-PUBLIC void parm(pEnv env, int num, Params type, char *file)
+void parm(pEnv env, int num, Params type, char *file)
 {
     int i, j;
     unsigned leng;
@@ -756,6 +756,22 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	}
 	break;
 /*
+ * check list at top with user defined symbol.
+ */
+    case ASSIGN:
+	if (leng < 2)
+	    execerror(env->filename, "two parameters", file);
+	first = pvec_lst(env->stck);
+	if (first.op != LIST_)
+	    execerror(env->filename, "list", file);
+	if (!pvec_cnt(first.u.lis))
+	    execerror(env->filename, "non-empty list", file);
+	first = pvec_lst(first.u.lis);
+	if (first.op != USR_)
+	    execerror(env->filename, "user defined symbol", file);
+	break;
+#ifdef USE_MULTI_THREADS_JOY
+/*
     channel as top parameter:
 */
     case RECEIVE:
@@ -775,5 +791,6 @@ PUBLIC void parm(pEnv env, int num, Params type, char *file)
 	if (second.op != INTEGER_)
 	    execerror(env->filename, "channel", file);
 	break;
+#endif
     }
 }

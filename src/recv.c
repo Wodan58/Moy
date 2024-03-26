@@ -1,13 +1,13 @@
 /*
     module  : recv.c
-    version : 1.7
-    date    : 01/18/24
+    version : 1.10
+    date    : 03/05/24
 */
 #ifndef RECV_C
 #define RECV_C
 
 /**
-OK 3290  recv  :  A	P  ->  P  N
+Q0  OK  3260  recv  :  A  P  ->  P  N
 [MTH] Receive a node from a channel and push it on the stack.
 */
 void recv_(pEnv env)

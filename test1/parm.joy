@@ -1,10 +1,8 @@
 (*
-    module  : test20.joy
-    version : 1.2
-    date    : 02/01/24
+    module  : parm.joy
+    version : 1.1
+    date    : 03/21/24
 *)
-(* 100% testing of parm.c, that checks parameters *)
-
 [] unstack.
 
 (* rolldownd needs four parameters *)
@@ -269,6 +267,9 @@ pred.
 (* plus needs an integer or character as second parameter *)
 [] 10 +.
 
+(* plus needs an integer as top parameter *)
+'A 'A +.
+
 [] unstack.
 
 (* size needs one parameter *)
@@ -339,6 +340,9 @@ primrec.
 
 (* primrec needs an aggregate or integer as third parameter *)
 [] [] [] primrec.
+
+(* primrec cannot use a character as third parameter *)
+'A [] [] primrec.
 
 [] unstack.
 
@@ -429,10 +433,13 @@ has.
 (* has needs an aggregate as second parameter *)
 10 10 has.
 
-(* cons needs a character as top parameter *)
+(* has can use a list as second parameter *)
+[] 10 has.
+
+(* has needs a character as top parameter *)
 "" 10 has.
 
-(* cons needs a small numeric as top parameter *)
+(* has needs a small numeric as top parameter *)
 {} 100 has.
 
 [] unstack.
@@ -573,3 +580,40 @@ stdout ['A] fwrite.
 
 (* set needs a small numeric *)
 65 {} in.
+
+(* in needs two parameters *)
+in.
+
+(* in needs an aggregate as second parameter *)
+10 10 in.
+
+(* in can use a list as second parameter *)
+10 [] in.
+
+(* in needs a character as top parameter *)
+10 "" in.
+
+(* in needs a small numeric as top parameter *)
+100 {} in.
+
+(* clear stack *)
+[] unstack.
+
+(* feof needs a parameter *)
+feof.
+
+(* feof needs a FILE parameter *)
+0 feof.
+
+(* assign needs two parameters *)
+[] unstack.
+[A] assign.
+
+(* assign needs quotation on top *)
+[] 1 assign.
+
+(* assign needs non-empty list *)
+1 [] assign.
+
+(* assign needs user defined symbol *)
+1 [pop] assign.

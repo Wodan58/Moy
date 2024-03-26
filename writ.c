@@ -1,28 +1,28 @@
 /*
  *  module  : writ.c
- *  version : 1.20
- *  date    : 03/05/24
+ *  version : 1.21
+ *  date    : 03/21/24
  */
 #include "globals.h"
 
 static int spacechar = ' ';
 
 /*
-    writefactor - print a factor in readable format to stdout.
-*/
-PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
+ * writefactor - print a factor in readable format to stdout.
+ */
+void writefactor(pEnv env, Node node, FILE *fp)
 {
     int i;
     Entry ent;
     uint64_t set, j;
     char *ptr, buf[MAXNUM], tmp[MAXNUM];
 
-/*
-    This cannot happen. writefactor has a small number of customers: writeterm,
-    main, put, fput. They all check that the stack is not empty, so this code
-    only serves as a reminder for future customers.
-*/
 #if 0
+/*
+ * This cannot happen. writefactor has a small number of customers: writeterm,
+ * main, put, fput. They all check that the stack is not empty, so this code
+ * only serves as a reminder for future customers.
+ */
     if (!env->stck)
 	execerror(env->filename, "non-empty stack", "print");
 #endif
@@ -30,13 +30,16 @@ PUBLIC void writefactor(pEnv env, Node node, FILE *fp)
     case USR_PRIME_:
 	putc('#', fp);
 	goto usr_prime;
+
     case USR_:
 usr_prime:
 	fprintf(fp, "%s", vec_at(env->symtab, node.u.ent).name);
 	break;
+
     case ANON_PRIME_:
 	putc('#', fp);
 	goto anon_prime;
+
     case ANON_FUNCT_:
 anon_prime:
 	if (env->bytecoding || env->compiling) {
@@ -45,9 +48,11 @@ anon_prime:
 	} else
 	    fprintf(fp, "%s", opername(env, node.u.proc));
 	break;
+
     case BOOLEAN_:
 	fprintf(fp, "%s", node.u.num ? "true" : "false");
 	break;
+
     case CHAR_:
 	if (node.u.num >= 8 && node.u.num <= 13)
 	    fprintf(fp, "'\\%c", "btnvfr"[node.u.num - 8]);
@@ -56,13 +61,11 @@ anon_prime:
 	else
 	    fprintf(fp, "'%c", (int)node.u.num);
 	break;
-    case KEYWORD_:
-	putc('#', fp);
-	goto keyword;
+
     case INTEGER_:
-keyword:
 	fprintf(fp, "%" PRId64, node.u.num);
 	break;
+
     case SET_:
 	putc('{', fp);
 	for (i = 0, j = 1, set = node.u.set; i < SETSIZE; i++, j <<= 1)
@@ -74,6 +77,7 @@ keyword:
 	    }
 	putc('}', fp);
 	break;
+
     case STRING_:
 	putc('"', fp);
 	for (ptr = node.u.str; ptr && *ptr; ptr++)
@@ -87,13 +91,13 @@ keyword:
 		putc(*ptr, fp);
 	putc('"', fp);
 	break;
-#ifdef WRITE_USING_RECURSION
+
     case LIST_:
 	putc('[', fp);
 	writeterm(env, node.u.lis, fp);
 	putc(']', fp);
 	break;
-#endif
+
     case FLOAT_:
 	sprintf(buf, "%g", node.u.dbl);		/* exponent character is e */
 	if ((ptr = strchr(buf, '.')) == 0) {	/* locate decimal point */
@@ -106,9 +110,10 @@ keyword:
         }
 	fprintf(fp, "%s", buf);
 	break;
+
     case FILE_:
 	if (!node.u.fil)
-	    fprintf(fp, "file:NULL");
+	    fprintf(fp, "NULL");
 	else if (node.u.fil == stdin)
 	    fprintf(fp, "stdin");
 	else if (node.u.fil == stdout)
@@ -116,17 +121,18 @@ keyword:
 	else if (node.u.fil == stderr)
 	    fprintf(fp, "stderr");
 	else
-	    fprintf(fp, "file:%p", (void *)node.u.fil);
+	    fprintf(fp, "%p", (void *)node.u.fil);
 	break;
+
     case BIGNUM_:
     case USR_STRING_:
 	fprintf(fp, "%s", node.u.str);
 	break;
 /*
-    The symbol table is not present in compiled code, but the body of
-    a quotation is. The body can be printed in a special way so as to
-    distinguish it from a normal list.
-*/
+ * The symbol table is not present in compiled code, but the body of
+ * a quotation is. The body can be printed in a special way so as to
+ * distinguish it from a normal list.
+ */
     case USR_LIST_:
 	if (spacechar == ' ') {
 	    spacechar = ',';
@@ -134,17 +140,16 @@ keyword:
 	    spacechar = ' ';
 	}
 	break;
-#if 0
+
     default:
 	yyerror(env, "a factor cannot begin with this symbol");
-#endif
     }
 }
 
 /*
-    spacing - write a space character, except after [ or before ].
-*/
-PRIVATE void spacing(void *parm, Node node, FILE *fp)
+ * spacing - write a space character, except after [ or before ].
+ */
+void spacing(void *parm, Node node, FILE *fp)
 {
     vector(Node) *array = parm;
 
@@ -160,9 +165,9 @@ PRIVATE void spacing(void *parm, Node node, FILE *fp)
 }
 
 /*
-    writing - print from a stack, used by writeterm and writestack.
-*/
-PRIVATE void writing(pEnv env, void *parm, FILE *fp)
+ * writing - print from a stack, used by writeterm and writestack.
+ */
+void writing(pEnv env, void *parm, FILE *fp)
 {
     int i, j;
     Node node, temp;
@@ -189,41 +194,33 @@ PRIVATE void writing(pEnv env, void *parm, FILE *fp)
 }
 
 /*
-    writeterm - print the contents of a list in readable format to stdout.
-*/
-PUBLIC void writeterm(pEnv env, NodeList *list, FILE *fp)
+ * writeterm - print the contents of a list in readable format to stdout.
+ */
+void writeterm(pEnv env, NodeList *list, FILE *fp)
 {
     int i, j;
-#ifndef WRITE_USING_RECURSION
     vector(Node) *array;
-#endif
 
     if ((j = pvec_cnt(list)) == 0)
 	return;
-#ifdef WRITE_USING_RECURSION
-    if (env->recurse)
+    if (!env->recurse)				/* print using recursion */
 	for (i = j - 1; i >= 0; i--) {
 	    writefactor(env, pvec_nth(list, i), fp);
 	    if (i)
 		putchar(' ');
 	}
     else {
-#else
 	vec_init(array);			/* collect nodes in a vector */
 	for (i = 0; i < j; i++)
 	    vec_push(array, pvec_nth(list, i));
 	writing(env, (void *)array, fp);
-#endif
-#ifdef WRITE_USING_RECURSION
     }
-#endif
 }
 
 /*
-    writestack - print the contents of the stack in readable format to stdout.
-*/
-#ifdef TRACING
-PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp)
+ * writestack - print the contents of the stack in readable format to stdout.
+ */
+void writestack(pEnv env, NodeList *list, FILE *fp)
 {
     int i, j;
     vector(Node) *array;
@@ -235,4 +232,3 @@ PUBLIC void writestack(pEnv env, NodeList *list, FILE *fp)
 	vec_push(array, pvec_nth(list, i));
     writing(env, (void *)array, fp);
 }
-#endif

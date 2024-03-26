@@ -1,7 +1,7 @@
 /*
     module  : app11.c
-    version : 1.6
-    date    : 03/05/24
+    version : 1.7
+    date    : 03/21/24
 */
 #ifndef APP11_C
 #define APP11_C
@@ -14,6 +14,6 @@ void app11_(pEnv env)
 {
     PARM(3, DIP);
     code(env, popd_);
-    app1_(env);
+    i_(env);
 }
 #endif

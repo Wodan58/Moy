@@ -1,62 +1,39 @@
 /*
     module  : repl.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 03/21/24
 */
 #include "globals.h"
 
 /*
- *  Initialise the symbol table with builtins. There is no need to classify
- *  builtins. The hash tables contain an index into the symbol table.
+ * Global identifiers are stored at location. The hash table uses a classified
+ * name. The name parameter has already been allocated.
  */
-PUBLIC void inisymboltable(pEnv env)	/* initialise */
+static int enterglobal(pEnv env, char *name)
 {
     Entry ent;
-    int i, rv;
-    khiter_t key;
-    OpTable *tab;
-
-    env->hash = kh_init(Symtab);
-    env->prim = kh_init(Funtab);
-    for (i = 0; (tab = readtable(i)) != 0; i++) {
-	ent.name = tab->name;
-	ent.is_user = 0;		/* builtins */
-	ent.flags = tab->flags;
-	ent.u.proc = tab->proc;
-	key = kh_put(Symtab, env->hash, ent.name, &rv);
-	kh_value(env->hash, key) = i;
-	key = kh_put(Funtab, env->prim, (int64_t)ent.u.proc, &rv);
-	kh_value(env->prim, key) = i;
-	vec_push(env->symtab, ent);
-    }
-}
-
-/*
- *  Global identifiers are stored at location. The hash table uses a classified
- *  name. The name parameter has already been allocated.
- */
-PRIVATE void enterglobal(pEnv env, char *name)
-{
-    int rv;
-    Entry ent;
+    int rv, index;
     khiter_t key;
 
-    env->location = vec_size(env->symtab);
+    index = vec_size(env->symtab);
     ent.name = name;
     ent.is_user = 1;
-    ent.flags = 0;
+    ent.flags = env->inlining ? IMMEDIATE : OK;
     ent.u.body = 0;	/* may be assigned in definition */
     key = kh_put(Symtab, env->hash, ent.name, &rv);
-    kh_value(env->hash, key) = env->location;
+    kh_value(env->hash, key) = index;
     vec_push(env->symtab, ent);
+    return index;
 }
 
 /*
- *  Lookup first searches ident in the local symbol tables; if not found in the
- *  global symbol table; if still not found enters ident in the global table.
+ * Lookup first searches ident in the local symbol tables; if not found in the
+ * global symbol table; if still not found enters ident in the global table.
  */
-PUBLIC void lookup(pEnv env, char *name)
+int lookup(pEnv env, char *name)
 {
+    int index;
+
     /*
      * Sequential search in the local tables is replaced by a search in the
      * hash table, where each entry receives a unique key built from module +
@@ -67,42 +44,43 @@ PUBLIC void lookup(pEnv env, char *name)
      * entered as classified symbol in the symbol table. Global symbols are not
      * added during the first time read of private sections.
      */
-    if ((env->location = qualify(env, name)) == 0)
+    if ((index = qualify(env, name)) == 0)
 	/* not found, enter in global, unless it is a module-member  */
 	if (strchr(name, '.') == 0)
-	    enterglobal(env, name);
+	    index = enterglobal(env, name);
+    return index;
 }
 
 /*
- *  Enteratom enters a symbol in the symbol table, maybe a local symbol. This
- *  local symbol is also added to the hash table, but in its classified form.
+ * Enteratom enters a symbol in the symbol table, maybe a local symbol. This
+ * local symbol is also added to the hash table, but in its classified form.
  */
-PUBLIC void enteratom(pEnv env, char *name, NodeList *list)
+void enteratom(pEnv env, char *name, NodeList *list)
 {
-    Entry temp;
+    int index;
+    Entry ent;
 
     /*
-     *  Local symbols are only added during the first read of private sections
-     *  and public sections of a module.
-     *  They should be found during the second read.
+     * Local symbols are only added during the first read of private sections
+     * and public sections of a module.
+     * They should be found during the second read.
      */
-    if ((env->location = qualify(env, name)) == 0)
-	enterglobal(env, classify(env, name));
-    temp = vec_at(env->symtab, env->location);
-    if (!temp.is_user) {
-	if (env->overwrite) {
-	    fflush(stdout);
-	    fprintf(stderr, "warning: overwriting inbuilt '%s'\n", temp.name);
-	}
-	enterglobal(env, name);
+    if ((index = qualify(env, name)) == 0)
+	index = enterglobal(env, classify(env, name));
+    ent = vec_at(env->symtab, index);
+    if (!ent.is_user && env->overwrite) {
+	fflush(stdout);
+	fprintf(stderr, "warning: overwriting inbuilt '%s'\n", ent.name);
     }
-    vec_at(env->symtab, env->location).u.body = list;
+    ent.is_user = 1;
+    ent.u.body = list;
+    vec_at(env->symtab, index) = ent;
 }
 
 /*
- *  Allocate and fill a singleton list.
+ * Allocate and fill a singleton list.
  */
-PUBLIC NodeList *newnode(Operator op, YYSTYPE u)
+NodeList *newnode(Operator op, YYSTYPE u)
 {
     Node node;
 

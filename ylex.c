@@ -1,14 +1,12 @@
 /*
     module  : ylex.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.10
+    date    : 03/21/24
 */
 #include "globals.h"
 
-#ifdef TOKENS
-static void dumptok(Token tok, int num)
+static void dumptok(Token tok)
 {
-    printf("(%d) ", num);
     switch (tok.symb) {
     case CHAR_	  : printf("'%d", (int)tok.yylval.num);
 		    break;
@@ -28,9 +26,9 @@ static void dumptok(Token tok, int num)
 		    break;
     case ']'	  : printf("RBRACK");
 		    break;
-    case ')'	  : printf("RPAREN");
-		    break;
     case '}'	  : printf("RBRACE");
+		    break;
+    case ')'	  : printf("RPAREN");
 		    break;
     case ';'	  : printf("SEMICOL");
 		    break;
@@ -38,21 +36,21 @@ static void dumptok(Token tok, int num)
 		    break;
     case END	  : printf("END");
 		    break;
-    case MODULE	  : printf("MODULE");
+    case MODULE_  : printf("MODULE");
 		    break;
-    case JPRIVATE : printf("PRIVATE");
+    case PRIVATE  : printf("PRIVATE");
 		    break;
-    case JPUBLIC  : printf("PUBLIC");
+    case PUBLIC   : printf("PUBLIC");
+		    break;
+    case CONST_   : printf("CONST");
 		    break;
     }
     printf("\n");
-    fflush(stdout);
 }
-#endif
 
 /*
-    Push a symbol into the tokenlist.
-*/
+ * Push a symbol into the tokenlist.
+ */
 static void push_symb(pEnv env, Symbol symb)
 {
     Token tok;
@@ -63,49 +61,48 @@ static void push_symb(pEnv env, Symbol symb)
 }
 
 /*
-    yylex - wrapper around my_yylex, storing tokens read, reading from the
-	    store or just calling my_yylex itself. This allows tokens to be
-	    read twice.
-
-    After reading MODULE or JPRIVATE, read all tokens upto END, and include
-    them in the tokenlist. All symbols preceding "==" are declared.
-*/
-PUBLIC int yylex(pEnv env)
+ * yylex - wrapper around my_yylex, storing tokens read, reading from the
+ *	   store or just calling my_yylex itself. This allows tokens to be
+ *	   read twice.
+ *
+ * After reading MODULE or PRIVATE, read all tokens upto END, and include
+ * them in the tokenlist. All symbols preceding "==" are declared.
+ */
+int yylex(pEnv env)
 {
     Token tok;
     Symbol symb;
     int module = 0, private = 0, hide = 0, modl = 0, hcnt = 0;
 
 /*
-    If there is a tokenlist, extract tokens from there.
-*/
+ * If there is a tokenlist, extract tokens from there.
+ */
     if (vec_size(env->tokens)) {
+begin:	    
 	tok = vec_pop(env->tokens);
-#ifdef TOKENS
 	if (env->printing)
-	    dumptok(tok, 1); /* tokens from the first pop */
-#endif
+	    dumptok(tok);
 	symb = tok.symb;
 	yylval = tok.yylval;
 	return symb;
     }
 /*
-    There is no tokenlist, use the normal procedure to get one.
-*/
+ * There is no tokenlist, use the normal procedure to get one.
+ */
     symb = my_yylex(env);
 /*
-    There is a token available, do some extra processing, in case the token is
-    MODULE or JPRIVATE: MODULE .. END or HIDE .. END.
-*/
-    if (symb == MODULE || symb == JPRIVATE) {
+ * There is a token available, do some extra processing, in case the token is
+ * MODULE or PRIVATE: MODULE .. END or HIDE .. END.
+ */
+    if (symb == MODULE_ || symb == PRIVATE) {
 /*
-    Copy the global variables of modl.c into local variables.
-*/
+ * Copy the global variables of modl.c into local variables.
+ */
 	tok.symb = symb;
 	savemod(&hide, &modl, &hcnt);
 	do {
 	    switch (symb) {
-	    case MODULE	  : push_symb(env, symb);
+	    case MODULE_  : push_symb(env, symb);
 			    symb = my_yylex(env);
 			    if (symb == USR_) {
 				initmod(env, yylval.str);
@@ -113,11 +110,11 @@ PUBLIC int yylex(pEnv env)
 			    } else
 				yyerror(env, "atom expected as name of module");
 			    break;
-	    case JPRIVATE : initpriv(env);
+	    case PRIVATE  : initpriv(env);
 			    if (!module)
 				private++;
 			    break;
-	    case JPUBLIC  : stoppriv();
+	    case PUBLIC   : stoppriv();
 			    break;
 	    case EQDEF	  : if (tok.symb == USR_) {
 				if (strchr(yylval.str, '.') == 0)
@@ -136,36 +133,27 @@ PUBLIC int yylex(pEnv env)
 				goto done;
 			    break;
 	    }
-	    tok.symb = symb; /* previous symbol */
+	    tok.symb = symb;	/* previous symbol */
 	    push_symb(env, symb);
 	    symb = my_yylex(env);
 	} while (1);
 /*
-    Restore the global variables in modl.c from the local copies.
-*/
+ * Restore the global variables in modl.c from the local copies.
+ */
 done:	undomod(hide, modl, hcnt);
-	push_symb(env, symb); /* store the last symbol that was read */
-	push_symb(env, symb); /* extra sym for the benefit of reverse */
+	push_symb(env, symb);	/* store the last symbol that was read */
+	push_symb(env, symb);	/* extra sym for the benefit of reverse */
 	vec_reverse(env->tokens);
     }
 /*
-    If there is a tokenlist, extract tokens from there.
-*/
-    if (vec_size(env->tokens)) {
-	tok = vec_pop(env->tokens);
-#ifdef TOKENS
-	if (env->printing)
-	    dumptok(tok, 2); /* tokens from the second pop */
-#endif
-	symb = tok.symb;
-	yylval = tok.yylval;
-    } else {
-#ifdef TOKENS
+ * If there is a tokenlist, extract tokens from there.
+ */
+    if (vec_size(env->tokens))
+	goto begin;
+    if (env->printing) {
 	tok.symb = symb;
 	tok.yylval = yylval;
-	if (env->printing)
-	    dumptok(tok, 3); /* there was no value popped */
-#endif
+	dumptok(tok);
     }
     return symb;
 }

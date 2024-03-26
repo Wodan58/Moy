@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.12
-    date    : 03/05/24
+    version : 1.13
+    date    : 03/21/24
 */
 #include "globals.h"
 
@@ -12,7 +12,7 @@
     are handled by returning -1. Unknown only means that it is considered
     too difficult to try to figure out what the stack effect is.
 */
-PRIVATE int aggr_size(Node node)
+static int aggr_size(Node node)
 {
     int num;
     int64_t i, j;
@@ -34,10 +34,9 @@ PRIVATE int aggr_size(Node node)
     return 0;
 }
 
-PUBLIC int arity(pEnv env, NodeList *quot, int num)
+int arity(pEnv env, NodeList *quot, int num)
 {
     char *str;
-    OpTable *tab;
     int aggr, prog;				/* step combinator */
     NodeList *list;
     Node node, prev, prevprev;
@@ -52,11 +51,10 @@ PUBLIC int arity(pEnv env, NodeList *quot, int num)
 	case USR_:
 	    return -1;				/* assume too difficult */
 	case ANON_FUNCT_:
-	    if (env->bytecoding || env->compiling) {
-		tab = readtable(node.u.ent);	/* symbol table is w/o arity */
-		str = tab->arity;
-	    } else
-		str = operarity(env, node.u.proc);
+	    if (env->bytecoding || env->compiling)
+		str = operarity(node.u.ent);
+	    else
+		str = operarity(operindex(env, node.u.proc));
 	    for (; *str; str++)
 		if (*str == 'A')		/* add */
 		    num++;
