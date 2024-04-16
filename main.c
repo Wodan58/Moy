@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.37
- *  date    : 03/26/24
+ *  version : 1.38
+ *  date    : 04/11/24
  */
 #include "globals.h"
 
@@ -45,8 +45,6 @@ void options(pEnv env)
     printf("  -a : set the autoput flag (0-2)\n");
 #ifdef BYTECODE
     printf("  -b : compile a joy program to bytecode\n");
-#endif
-#ifdef COMPILER
     printf("  -c : compile joy source into C source\n");
 #endif
     printf("  -d : print a trace of stack development\n");
@@ -67,23 +65,21 @@ void options(pEnv env)
 #if 0
     printf("  -m : set maximum limit of data stack\n");
     printf("  -n : limit the number of operations\n");
-#endif
-#if defined(BYTECODE) || defined(COMPILER)
     printf("  -o : name of output file/function\n");
 #endif
     printf("  -p : print debug list of tokens\n");
 #if 0
     printf("  -q : operate in quiet mode\n");
 #endif
-    printf("  -r : print without using recursion\n");
+    printf("  -r : recurse w/o using the call stack\n");
     printf("  -s : dump symbol table after execution\n");
     printf("  -t : print a trace of program execution\n");
     printf("  -u : set the undeferror flag (0,1)\n");
 #if 0
     printf("  -v : do not print a copyright notice\n");
 #endif
-    printf("  -w : suppress warnings: overwriting, arities\n");
-    printf("  -x : print statistics after program finishes\n");
+    printf("  -w : no warnings: overwriting, arities\n");
+    printf("  -x : print statistics at end of program\n");
 #if YYDEBUG
     printf("  -y : print a trace of parser execution\n");
 #endif
@@ -103,14 +99,14 @@ int my_main(int argc, char **argv)
 /*
  * These variables need to be static because of an intervening longjmp.
  */
-    static unsigned char psdump = 0, pstats = 0, rv;
+    static unsigned char psdump = 0, pstats = 0, joy = 1;
 #ifdef BYTECODE
-    static unsigned char joy = 1;	/* assume .joy input */
+    unsigned char listing = 0;
 #endif
 
     Env env;				/* global variables */
-    int i, j, ch;
-    char *ptr, *exe;			/* exe = joy binary */
+    int i, j, ch, rv;
+    char *ptr, *tmp, *exe;		/* exe = joy binary */
 /*
  * A number of flags can be handled within the main function; no need to pass
  * them to subordinate functions.
@@ -118,12 +114,6 @@ int my_main(int argc, char **argv)
     unsigned char helping = 0, unknown = 0, mustinclude = 1;
 #ifdef KEYBOARD
     unsigned char raw = 0;
-#endif
-#ifdef BYTECODE
-    unsigned char listing = 0;
-#endif
-#if defined(BYTECODE) || defined(COMPILER)
-    char *filename = "a.out";		/* default filename when rewriting */
 #endif
 
     memset(&env, 0, sizeof(env));
@@ -165,44 +155,25 @@ int my_main(int argc, char **argv)
 	    for (j = 1; argv[i][j]; j++) {
 		switch (argv[i][j]) {
 		case 'a' : ptr = &argv[i][j + 1];
-			   if (!env.autoput_set)
-				env.autoput = atoi(ptr);/* numeric payload */
-			   env.autoput_set = 1;
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.autoput = strtoll(ptr, &tmp, 0);
+			   j += tmp - ptr;
+			   env.autoput_set = 1;		/* disable usrlib.joy */
 			   break;
 #ifdef BYTECODE
 		case 'b' : env.bytecoding = 2; break;	/* prepare & suspend */
-#endif
-#ifdef COMPILER
 		case 'c' : env.compiling = 2; break;	/* prepare & suspend */
 #endif
 		case 'd' : env.debugging = 1; break;
 		case 'e' : ptr = &argv[i][j + 1];
-			   env.echoflag = atoi(ptr);	/* numeric payload */
-			   env.echoflag_set = 1;
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.echoflag = strtoll(ptr, &tmp, 0);
+			   j += tmp - ptr;
 			   break;
 #ifdef BYTECODE
 		case 'f' : listing = 1; break;
 #endif
 		case 'g' : ptr = &argv[i][j + 1];
-			   env.tracegc = atoi(ptr);	/* numeric payload */
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.tracegc = strtoll(ptr, &tmp, 0);
+			   j += tmp - ptr;
 			   break;
 		case 'h' : helping = 1; break;
 		case 'i' : env.ignore = 1; break;
@@ -215,25 +186,13 @@ int my_main(int argc, char **argv)
 		case 'l' : mustinclude = 0; break;	/* include usrlib.joy */
 #if 0
 		case 'm' : ptr = &argv[i][j + 1];
-			   env.maximum = atoi(ptr);	/* numeric payload */
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.maximum = strtod(ptr, &tmp);
+			   j += tmp - ptr;
 			   break;
 		case 'n' : ptr = &argv[i][j + 1];
-			   env.operats = atoi(ptr);	/* numeric payload */
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.operats = strtod(ptr, &tmp);
+			   j += tmp - ptr;
 			   break;
-#endif
-#if defined (BYTECODE) || defined(COMPILER)
 		case 'o' : filename = &argv[i][j + 1];	/* string payload */
 			   goto next_parm;
 #endif
@@ -245,14 +204,9 @@ int my_main(int argc, char **argv)
 		case 's' : psdump = 1; break;
 		case 't' : env.debugging = 2; break;
 		case 'u' : ptr = &argv[i][j + 1];
-			   env.undeferror = atoi(ptr);	/* numeric payload */
-			   env.undeferror_set = 1;
-			   ch = *ptr;			/* first digit */
-			   while (isdigit(ch)) {
-			       j++;			/* point last digit */
-			       ptr++;
-			       ch = *ptr;
-			   }
+			   env.undeferror = strtoll(ptr, &tmp, 0);
+			   j += tmp - ptr;
+			   env.undeferror_set = 1;	/* disable usrlib.joy */
 			   break;
 #if 0
 		case 'v' : verbose = 0; break;
@@ -268,7 +222,7 @@ int my_main(int argc, char **argv)
 		default  : unknown = argv[i][j]; break;
 		} /* end switch */
 	    } /* end for */
-#if defined(BYTECODE) || defined(COMPILER)
+#if 0
 next_parm:
 #endif
 	    /*
@@ -287,19 +241,17 @@ next_parm:
     for (i = 1; i < argc; i++) {
 	ch = argv[i][0];
 	if (!isdigit(ch)) {
-#ifdef BYTECODE
 	    /*
 	     * If the filename parameter has no extension or an extension that
 	     * differs from .joy, it is assumed to be a binary file.
 	     */
+#ifdef BYTECODE
 	    if (joy) {
 		if ((ptr = strrchr(argv[i], '.')) == 0 || strcmp(ptr, ".joy"))
 		    mustinclude = joy = 0;
 	    }
-	    if ((yyin = fopen(argv[i], joy ? "r" : "rb")) == 0) {
-#else
-	    if ((yyin = fopen(argv[i], "r")) == 0) {
 #endif
+	    if ((yyin = fopen(argv[i], joy ? "r" : "rb")) == 0) {
 		fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
 		return 0;
 	    }
@@ -350,59 +302,56 @@ next_parm:
 	goto einde;
     }
 #ifdef BYTECODE
-    if (tablesize() != 256) {
-	fprintf(stderr, "error: wrong tablesize\n");
-	return 0;
-    }
     if (listing) {
-	dumpbytes(&env);
-	goto einde;			/* might print symbol table */
+	dumpbytes(&env);		/* display .bic or .bjc file */
+	goto einde;
     }
     if (env.bytecoding) {
 	if (joy)
-	    initbytes(&env, filename);	/* create .bic file; uses filename */
+	    initbytes(&env);		/* create .bic file */
 	else {
-	    rewritebic(filename);
-	    goto einde;			/* might print symbol table */
+	    rewritebic(&env);		/* create .bjc file */
+	    goto einde;
 	}
     }
-#endif
-#ifdef COMPILER
     if (env.compiling)
-	initcompile(&env, filename);	/* uses symtab and filename */
+	initcompile(&env);		/* create .c file */
 #endif
     /*
      * initialize standard input and output.
      */
 #ifdef KEYBOARD
-    if (raw && strcmp(env.filename, "stdin")) {
-	env.autoput = 0;		/* disable autoput: the dimensions of */
-	env.autoput_set = 1;		/* the terminal are stacked; no print */
-	SetRaw(&env);			/* there must be a filename parameter */
-    } else				/* the terminal benefits from buffers */
+    if (raw && strcmp(env.filename, "stdin")) {	/* filename required */
+	env.autoput = 0;		/* disable autoput */
+	env.autoput_set = 1;		/* prevent enabling autoput */
+	SetRaw(&env);
+    } else				/* keep output buffered */
 #endif
-	setbuf(stdout, 0);		/* necessary when writing to a pipe */
+	setbuf(stdout, 0);		/* disable output buffering (pipe) */
     /*
      * read initial library.
      */
     if (mustinclude)
 	include(&env, "usrlib.joy");	/* start reading from library first */
-    if (setjmp(begin) == ABORT_QUIT)	/* return here after error or abort */
+    rv = setjmp(begin);			/* return here after error or abort */
+    if (rv == ABORT_QUIT || (rv && !joy))
 	goto einde;
     /*
      * (re)initialize code.
      */
     env.prog = pvec_init();		/* restart with an empty program */
+    if (joy)
+	yyparse(&env);
 #ifdef BYTECODE
-    if (!joy)				/* process .bic file instead of .joy */
-	readbytes(&env);
-    else
+    else				/* process .bic file instead of .joy */
+	readbytes(&env, env.compiling ? 0 : 1);
 #endif
-    rv = yyparse(&env);
 einde:
 #ifdef BYTECODE
     if (env.bytecoding)
 	exitbytes(&env);
+    if (env.compiling)
+	exitcompile(&env);
 #endif
     /*
      * This is the location where statistics and the symbol table can be
@@ -412,7 +361,7 @@ einde:
 	stats(&env);
     if (psdump)
 	dump(&env);
-    return rv;
+    return 0;
 }
 
 int main(int argc, char **argv)

@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.21
- *  date    : 03/21/24
+ *  version : 1.22
+ *  date    : 04/11/24
  */
 #include "globals.h"
 
@@ -13,7 +13,6 @@ static int spacechar = ' ';
 void writefactor(pEnv env, Node node, FILE *fp)
 {
     int i;
-    Entry ent;
     uint64_t set, j;
     char *ptr, buf[MAXNUM], tmp[MAXNUM];
 
@@ -42,11 +41,7 @@ usr_prime:
 
     case ANON_FUNCT_:
 anon_prime:
-	if (env->bytecoding || env->compiling) {
-	    ent = vec_at(env->symtab, node.u.ent);
-	    fprintf(fp, "%s", ent.name);
-	} else
-	    fprintf(fp, "%s", opername(env, node.u.proc));
+	fprintf(fp, "%s", opername(env, node.u.proc));
 	break;
 
     case BOOLEAN_:

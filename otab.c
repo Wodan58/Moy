@@ -1,7 +1,7 @@
 /*
     module  : otab.c
-    version : 1.6
-    date    : 03/21/24
+    version : 1.7
+    date    : 04/11/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
@@ -110,7 +110,7 @@ int operindex(pEnv env, proc_t proc)
 
     if ((key = kh_get(Funtab, env->prim, (int64_t)proc)) != kh_end(env->prim))
 	return kh_value(env->prim, key);
-    return ANON_FUNCT_; /* if not found, return the index of ANON_FUNCT_ */
+    return 0;	/* if not found, return 0 */
 }
 
 /*
@@ -141,12 +141,12 @@ char *operarity(int index)
  * tablesize - return the size of the table, to be used when searching from the
  *	       end of the table to the start.
  */
-#ifdef BYTECODE
 int tablesize(void)
 {
     return sizeof(optable) / sizeof(optable[0]);
 }
 
+#ifdef BYTECODE
 /*
  *  qcode - return the qcode value of an operator or combinator.
  */
@@ -168,8 +168,7 @@ void inisymboltable(pEnv env) /* initialise */
 
     env->hash = kh_init(Symtab);
     env->prim = kh_init(Funtab);
-    j = sizeof(optable) / sizeof(optable[0]);
-    for (i = 0; i < j; i++) {
+    for (i = 0, j = tablesize(); i < j; i++) {
 	ent.name = optable[i].name;
 	ent.is_user = 0;
 	ent.flags = optable[i].flags;

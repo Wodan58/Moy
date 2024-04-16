@@ -1,7 +1,7 @@
 /*
  *  module  : exec.c
- *  version : 1.6
- *  date    : 03/21/24
+ *  version : 1.7
+ *  date    : 04/11/24
  */
 #include "globals.h"
 
@@ -15,17 +15,11 @@ void execute(pEnv env, NodeList *list)
 
 #ifdef BYTECODE
     if (env->bytecoding == 1) {
-	bytecode(list);
+	bytecode(env, list);
 	return;
     }
 #endif
-#ifdef COMPILER
-    if (env->compiling == 1) {
-	compileprog(env, list);
-	return;
-    }
-#endif
-    exeterm(env, list);
+    evaluate(env, list);
     if (pvec_cnt(env->stck)) {
 	if (env->autoput == 2)
 	    writeterm(env, env->stck, stdout);

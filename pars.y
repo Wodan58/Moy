@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.16
-    date    : 03/21/24
+    version : 1.17
+    date    : 04/11/24
 */
 #include "globals.h"
 
@@ -129,10 +129,10 @@ factor  : USR_      {   int index; Entry ent; Node node;
 			if (!index && strchr($1, '.'))
 			    my_error("no such field in module", &@1);
 			ent = vec_at(env->symtab, index);
-			/* execute immediate functions at compile time */
+			/* evaluate immediate functions at compile time */
 			if (ent.flags == IMMEDIATE) {
 			    if (ent.is_user)
-				exeterm(env, ent.u.body);
+				evaluate(env, ent.u.body);
 			    else
 				(*ent.u.proc)(env);
 			    env->stck = pvec_pop(env->stck, &node);
@@ -140,10 +140,7 @@ factor  : USR_      {   int index; Entry ent; Node node;
 			    node.u.ent = index;
 			    node.op = USR_;
 			 } else {
-			    if (env->bytecoding || env->compiling)
-				node.u.ent = index;
-			    else
-				node.u.proc = ent.u.proc;
+			    node.u.proc = ent.u.proc;
 			    node.op = ANON_FUNCT_;
 			 }
 			 $$ = pvec_add(pvec_init(), node);

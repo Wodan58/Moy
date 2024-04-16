@@ -1,7 +1,7 @@
 /*
     module  : manual.h
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 04/11/24
 */
 #ifndef MANUAL_H
 #define MANUAL_H
@@ -31,8 +31,7 @@ void make_manual(int style)	/* 0=plain, 1=HTML, 2=Latex */
 
     if (HTML)
 	printf("<HTML>\n<DL>\n");
-    j = sizeof(optable) / sizeof(optable[0]);
-    for (i = BOOLEAN_; i < j; i++) {
+    for (i = BOOLEAN_, j = tablesize(); i < j; i++) {
 	n = optable[i].name;
 	HEADER(n, " truth value type", "literal") else
 	HEADER(n, "false", "operand") else
@@ -65,14 +64,14 @@ void make_manual(int style)	/* 0=plain, 1=HTML, 2=Latex */
 	/* the above line does produce the spaces around ":" */
 	else
 	    printf("  :  ");
-	printf("%s", optable->messg1);
+	printf("%s", optable[i].messg1);
 	if (HTML)
 	    printf("\n<DD>");
 	else if (LATEX)
 	    printf("# \\\\ \n {\\small\\verb#");
 	else
 	    printf("\n");
-	printf("%s", optable->messg2);
+	printf("%s", optable[i].messg2);
 	if (LATEX)
 	    printf("#}");
 	printf("\n\n");

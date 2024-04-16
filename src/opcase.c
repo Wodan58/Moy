@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 04/11/24
 */
 #ifndef OPCASE_C
 #define OPCASE_C
@@ -27,10 +27,7 @@ void opcase_(pEnv env)
 	temp = pvec_lst(elem.u.lis);
 	if (node.op == temp.op) {
 	    if (node.op == ANON_FUNCT_) {
-		if (env->bytecoding || env->compiling) {
-		    if (node.u.ent != temp.u.ent)
-			continue;
-		} else if (node.u.proc != temp.u.proc)
+		if (node.u.proc != temp.u.proc)
 		    continue;
 	    }
 	    node.u.lis = pvec_init();

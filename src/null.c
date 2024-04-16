@@ -1,7 +1,7 @@
 /*
     module  : null.c
-    version : 1.11
-    date    : 03/05/24
+    version : 1.12
+    date    : 04/11/24
 */
 #ifndef NULL_C
 #define NULL_C
@@ -17,17 +17,16 @@ void null_(pEnv env)
     PARM(1, ANYTYPE);
     env->stck = pvec_pop(env->stck, &node);
     switch (node.op) {
+#if 0
     case USR_:
     case USR_PRIME_:
 	node.u.num = !node.u.ent;
 	break;
     case ANON_FUNCT_:
     case ANON_PRIME_:
-	if (env->bytecoding || env->compiling)
-	    node.u.num = !node.u.ent;
-	else
-	    node.u.num = !node.u.proc;
+	node.u.num = !node.u.proc;
 	break;
+#endif
     case BOOLEAN_:
     case CHAR_:
     case INTEGER_:
@@ -55,6 +54,9 @@ void null_(pEnv env)
 	node.u.num = node.u.str[1] == '0';
 	break;
 #endif
+    default:
+	node.u.num = 0;		/* false */
+	break;
     }
     node.op = BOOLEAN_;
     env->stck = pvec_add(env->stck, node);

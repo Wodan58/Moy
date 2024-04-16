@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    date    : 1.15
-    version : 03/21/24
+    date    : 1.16
+    version : 04/11/24
 */
 #include "globals.h"
 
@@ -319,7 +319,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (leng < 1)
 	    execerror(env->filename, "one parameter", file);
 	first = pvec_lst(env->stck);
-	if (first.op != INTEGER_ && first.op != CHAR_ && first.op != BOOLEAN_)
+	if (first.op != INTEGER_ && first.op != CHAR_ && first.op != BOOLEAN_ &&
+	    first.op != BIGNUM_)
 	    execerror(env->filename, "numeric", file);
 	break;
 /*

@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.41
-    date    : 03/25/24
+    version : 1.42
+    date    : 04/11/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -220,7 +220,6 @@ typedef struct Env {
     unsigned char autoput;	/* options */
     unsigned char autoput_set;
     unsigned char echoflag;
-    unsigned char echoflag_set;
     unsigned char tracegc;
     unsigned char undeferror;
     unsigned char undeferror_set;
@@ -243,12 +242,15 @@ typedef struct table_t {
 /* arty.c */
 int arity(pEnv env, NodeList *quot, int num);
 /* comp.c */
-void initcompile(pEnv env, char *file);
+void initcompile(pEnv env);
+void exitcompile(pEnv env);
 void compileprog(pEnv env, NodeList *list);
 /* eval.c */
-void exeterm(pEnv env, NodeList *list);
+void evaluate(pEnv env, NodeList *list);
 /* exec.c */
 void execute(pEnv env, NodeList *list);
+/* exeterm.c */
+void exeterm(pEnv env, NodeList *list);
 /* lexr.l */
 void new_buffer(void);
 void old_buffer(int num);
@@ -312,15 +314,15 @@ void execerror(char *filename, char *message, char *op);
 /* ylex.c */
 int yylex(pEnv env);
 /* byte.c */
-void initbytes(pEnv env, char *file);
-void bytecode(NodeList *list);
+void initbytes(pEnv env);
+void bytecode(pEnv env, NodeList *list);
 void exitbytes(pEnv env);
 /* code.c */
-void readbytes(pEnv env);
+void readbytes(pEnv env, int flag);
 /* dump.c */
 void dumpbytes(pEnv env);
 /* optm.c */
-void rewritebic(char *file);
+void rewritebic(pEnv env);
 /* kraw.c */
 void SetRaw(pEnv env);
 #endif

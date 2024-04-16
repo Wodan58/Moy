@@ -1,16 +1,49 @@
 /*
     module  : compare.h
-    version : 1.20
-    date    : 03/23/24
+    version : 1.21
+    date    : 04/11/24
 */
 #ifndef COMPARE_H
 #define COMPARE_H
+
+int is_null(pEnv env, Node node)
+{
+    switch (node.op) {
+    case USR_:
+    case USR_PRIME_:
+	return !node.u.ent;
+    case ANON_FUNCT_:
+    case ANON_PRIME_:
+	return !node.u.proc;
+    case BOOLEAN_:
+    case CHAR_:
+    case INTEGER_:
+	return !node.u.num;
+    case SET_:
+	return !node.u.set;
+    case STRING_:
+    case USR_STRING_:
+	return !*node.u.str;
+    case LIST_:
+    case USR_LIST_:
+	return !pvec_cnt(node.u.lis);
+    case FLOAT_:
+	return !node.u.dbl;
+    case FILE_:
+	return !node.u.fil;
+#ifdef USE_BIGNUM_ARITHMETIC
+    case BIGNUM_:
+	return node.u.str[1] == '0';
+#endif
+    }
+    return 0;
+}
 
 /*
     BOOLEAN, CHAR, INTEGER, SET, FLOAT, BIGNUM are lumped together allowing
     numerical compare; USR, ANON_FUNCT, STRING, BIGNUM are lumped together
     allowing string compare; FILE can only be compared with FILE; LISTs can
-    be compared when empty.
+    be not be compared with anything.
 */
 int Compare(pEnv env, Node first, Node second)
 {
@@ -23,6 +56,8 @@ int Compare(pEnv env, Node first, Node second)
 
     str[1] = 0;
 #endif
+    if (is_null(env, first) && is_null(env, second))	/* nothing is unique */
+	return 0;
     switch (first.op) {
     case USR_:
     case USR_PRIME_:
@@ -36,20 +71,13 @@ int Compare(pEnv env, Node first, Node second)
 	case ANON_PRIME_:
 	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
-	case BOOLEAN_:
-	case CHAR_:
-	case INTEGER_:
-	case SET_:
-	case LIST_:
-	case FLOAT_:
-	case FILE_:
-	default:
-	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
 	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
+	default:
+	    return 1; /* unequal */
 	}
 	break;
     case ANON_FUNCT_:
@@ -64,20 +92,13 @@ int Compare(pEnv env, Node first, Node second)
 	case ANON_PRIME_:
 	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
-	case BOOLEAN_:
-	case CHAR_:
-	case INTEGER_:
-	case SET_:
-	case LIST_:
-	case FLOAT_:
-	case FILE_:
-	default:
-	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
 	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
+	default:
+	    return 1; /* unequal */
 	}
 	break;
     case BOOLEAN_:
@@ -171,18 +192,7 @@ int Compare(pEnv env, Node first, Node second)
 	    goto cmpbig;
 	    break;
 #endif
-	case USR_:
-	case USR_PRIME_:
-	case ANON_FUNCT_:
-	case ANON_PRIME_:
-	case STRING_:
-	case USR_STRING_:
 	default:
-	    return 1; /* unequal */
-	case LIST_:
-	case USR_LIST_:
-	    if (!num1 && !pvec_cnt(second.u.lis))
-		return 0; /* equal */
 	    return 1; /* unequal */
 	}
 	break;
@@ -198,32 +208,14 @@ int Compare(pEnv env, Node first, Node second)
 	case ANON_PRIME_:
 	    name2 = cmpname(env, second.u.proc);
 	    goto cmpstr;
-	case BOOLEAN_:
-	case CHAR_:
-	case INTEGER_:
-	case SET_:
-	case LIST_:
-	case FLOAT_:
-	case FILE_:
-	default:
-	    return 1; /* unequal */
 	case STRING_:
 	case BIGNUM_:
 	case USR_STRING_:
 	    name2 = second.u.str;
 	    goto cmpstr;
+	default:
+	    return 1; /* unequal */
 	}
-	break;
-    case LIST_:
-    case USR_LIST_:
-	if (second.op == LIST_ || second.op == USR_LIST_) {
-	    if (!pvec_cnt(first.u.lis) && !pvec_cnt(second.u.lis))
-		return 0; /* equal */
-	    return first.u.lis != second.u.lis;
-	}
-	if (second.op == SET_ && !pvec_cnt(first.u.lis) && !second.u.num)
-	    return 0; /* equal */
-	return 1; /* unequal */
 	break;
     case FLOAT_:
 	dbl1 = first.u.dbl;
@@ -289,6 +281,8 @@ int Compare(pEnv env, Node first, Node second)
 	}
 	break;
 #endif
+    default:
+	return 1; /* unequal */
     }
 cmpnum:
     return num1 < num2 ? -1 : num1 > num2;

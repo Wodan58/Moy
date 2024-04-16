@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.19
- *  date    : 03/21/24
+ *  version : 1.20
+ *  date    : 04/11/24
  */
 #include "globals.h"
 
@@ -37,9 +37,9 @@ static void trace(pEnv env, FILE *fp)
 }
 
 /*
- * Execute program, as long as it is not empty.
+ * Evaluate program, as long as it is not empty.
  */
-void exeterm(pEnv env, NodeList *list)
+void evaluate(pEnv env, NodeList *list)
 {
     Node node;
     Entry ent;
@@ -54,7 +54,7 @@ void exeterm(pEnv env, NodeList *list)
 #if ALARM
 	if (time_out) {
 	    time_out = 0;
-	    execerror(env->filename, "more time", "exeterm");
+	    execerror(env->filename, "more time", "evaluate");
 	}
 #endif
 	if (env->debugging)
@@ -67,26 +67,19 @@ void exeterm(pEnv env, NodeList *list)
 		prog(env, ent.u.body);
 	    else if (env->undeferror)
 		execerror(env->filename, "definition", ent.name);
-	    break;
+	    continue;
 	case ANON_FUNCT_:
-	    if (env->bytecoding || env->compiling) {
-		ent = vec_at(env->symtab, node.u.ent);
-		(*ent.u.proc)(env);
-	    } else
-		(*node.u.proc)(env);
+	    (*node.u.proc)(env);
 	    env->opers++;
-	    break;
+	    continue;
 	case USR_PRIME_:
 	    node.op = USR_;
-	    goto next;
+	    break;
 	case ANON_PRIME_:
 	    node.op = ANON_FUNCT_;
-	    goto next;
-next:
-default:
-	    env->stck = pvec_add(env->stck, node);
 	    break;
 	}
+	env->stck = pvec_add(env->stck, node);
     }
     if (env->debugging)
 	trace(env, stdout);	/* final stack */

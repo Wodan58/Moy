@@ -1,7 +1,7 @@
 /*
     module  : put.c
-    version : 1.10
-    date    : 03/21/24
+    version : 1.11
+    date    : 04/11/24
 */
 #ifndef PUT_C
 #define PUT_C
@@ -22,6 +22,5 @@ void put_(pEnv env)
 	putchar(']');
     } else
 	writefactor(env, node, stdout);
-    putchar(' ');
 }
 #endif

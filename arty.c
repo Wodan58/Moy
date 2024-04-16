@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.13
-    date    : 03/21/24
+    version : 1.14
+    date    : 04/11/24
 */
 #include "globals.h"
 
@@ -51,10 +51,7 @@ int arity(pEnv env, NodeList *quot, int num)
 	case USR_:
 	    return -1;				/* assume too difficult */
 	case ANON_FUNCT_:
-	    if (env->bytecoding || env->compiling)
-		str = operarity(node.u.ent);
-	    else
-		str = operarity(operindex(env, node.u.proc));
+	    str = operarity(operindex(env, node.u.proc));
 	    for (; *str; str++)
 		if (*str == 'A')		/* add */
 		    num++;

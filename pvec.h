@@ -1,12 +1,12 @@
 /*
     module  : pvec.h
-    version : 1.9
-    date    : 03/23/24
+    version : 1.10
+    date    : 04/11/24
 */
 struct NodeList {
-    uint64_t m : 30,	/* capacity */
-	     n : 30,	/* valid items */
-	     o :  1,	/* ownership */
+    unsigned m : 31,	/* capacity */
+	     o :  1;	/* ownership */
+    unsigned n : 30,	/* valid items */
 	     r :  2;	/* arity */
     YYSTYPE *a;		/* union */
     Operator *b;	/* datatype */

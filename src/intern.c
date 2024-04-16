@@ -1,7 +1,7 @@
 /*
     module  : intern.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 04/11/24
 */
 #ifndef INTERN_C
 #define INTERN_C
@@ -25,10 +25,7 @@ void intern_(pEnv env)
 	node.u.ent = index;
     } else {
 	node.op = ANON_FUNCT_;
-	if (env->bytecoding || env->compiling)
-	    node.u.ent = index;
-	else
-	    node.u.proc = ent.u.proc;
+	node.u.proc = ent.u.proc;
     }
     env->stck = pvec_add(env->stck, node);
 }

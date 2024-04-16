@@ -1,7 +1,7 @@
 /*
     module  : prog.c
-    version : 1.10
-    date    : 03/21/24
+    version : 1.11
+    date    : 04/11/24
 */
 #include "globals.h"
 
@@ -23,10 +23,7 @@ void code(pEnv env, proc_t proc)
 {
     Node node;
 
-    if (env->bytecoding || env->compiling)
-	node.u.ent = operindex(env, proc);
-    else
-	node.u.proc = proc;
+    node.u.proc = proc;
     node.op = ANON_FUNCT_;
     env->prog = pvec_add(env->prog, node);
 }
