@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.22
- *  date    : 04/11/24
+ *  version : 1.24
+ *  date    : 04/23/24
  */
 #include "globals.h"
 
@@ -23,7 +23,7 @@ void writefactor(pEnv env, Node node, FILE *fp)
  * only serves as a reminder for future customers.
  */
     if (!env->stck)
-	execerror(env->filename, "non-empty stack", "print");
+	execerror("non-empty stack", "print");
 #endif
     switch (node.op) {
     case USR_PRIME_:
@@ -96,9 +96,11 @@ anon_prime:
     case FLOAT_:
 	sprintf(buf, "%g", node.u.dbl);		/* exponent character is e */
 	if ((ptr = strchr(buf, '.')) == 0) {	/* locate decimal point */
-	    if ((ptr = strchr(buf, 'e')) == 0)  /* locate start of exponent */
-		strcat(buf, ".0");		/* append decimal point + 0 */
-	    else {
+	    if ((ptr = strchr(buf, 'e')) == 0) {/* locate start of exponent */
+		i = buf[strlen(buf) - 1];
+		if (isdigit(i))			/* check digit present */
+		    strcat(buf, ".0");		/* add decimal point and 0 */
+	    } else {
 		strcpy(tmp, ptr);		/* save exponent */
 		sprintf(ptr, ".0%s", tmp);	/* insert decimal point + 0 */
 	    }
@@ -202,7 +204,7 @@ void writeterm(pEnv env, NodeList *list, FILE *fp)
 	for (i = j - 1; i >= 0; i--) {
 	    writefactor(env, pvec_nth(list, i), fp);
 	    if (i)
-		putchar(' ');
+		putc(' ', fp);
 	}
     else {
 	vec_init(array);			/* collect nodes in a vector */
@@ -217,13 +219,13 @@ void writeterm(pEnv env, NodeList *list, FILE *fp)
  */
 void writestack(pEnv env, NodeList *list, FILE *fp)
 {
-    int i, j;
+    int i;
     vector(Node) *array;
 
-    if ((j = pvec_cnt(list)) == 0)
+    if ((i = pvec_cnt(list)) == 0)
 	return;
     vec_init(array);				/* collect nodes in a vector */
-    for (i = j - 1; i >= 0; i--)
+    for (--i; i >= 0; i--)
 	vec_push(array, pvec_nth(list, i));
     writing(env, (void *)array, fp);
 }

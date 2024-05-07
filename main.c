@@ -1,15 +1,18 @@
 /*
  *  module  : main.c
- *  version : 1.38
- *  date    : 04/11/24
+ *  version : 1.44
+ *  date    : 05/06/24
  */
 #include "globals.h"
 
 extern FILE *yyin;			/* lexr.c */
 
+static jmp_buf begin;			/* restart with empty program */
+
 char *bottom_of_stack;			/* used in gc.c */
 
-static jmp_buf begin;			/* restart with empty program */
+static void stats(pEnv env);
+static void dump(pEnv env);
 
 /*
  * abort execution and restart reading from yyin. In the NOBDW version the
@@ -17,6 +20,7 @@ static jmp_buf begin;			/* restart with empty program */
  */
 void abortexecution_(int num)
 {
+    fflush(stdin);
     longjmp(begin, num);
 }
 
@@ -24,7 +28,7 @@ void abortexecution_(int num)
  * options - print help on startup options and exit: options are those that
  *	     cannot be set from within the language itself.
  */
-void options(pEnv env)
+static void options(pEnv env)
 {
     printf("JOY  -  compiled at %s on %s", __TIME__, __DATE__);
 #ifdef VERS
@@ -71,7 +75,7 @@ void options(pEnv env)
 #if 0
     printf("  -q : operate in quiet mode\n");
 #endif
-    printf("  -r : recurse w/o using the call stack\n");
+    printf("  -r : print without using recursion\n");
     printf("  -s : dump symbol table after execution\n");
     printf("  -t : print a trace of program execution\n");
     printf("  -u : set the undeferror flag (0,1)\n");
@@ -88,7 +92,7 @@ void options(pEnv env)
 #endif
 }
 
-void unknown_opt(pEnv env, char *exe, int ch)
+static void unknown_opt(pEnv env, char *exe, int ch)
 {
     printf("Unknown option argument: \"-%c\"\n", ch);
     printf("More info with: \"%s -h\"\n", exe);
@@ -211,7 +215,7 @@ int my_main(int argc, char **argv)
 #if 0
 		case 'v' : verbose = 0; break;
 #endif
-		case 'w' : env.overwrite = 0; break;
+		case 'w' : remove("joy.log"); env.overwrite = 0; break;
 		case 'x' : pstats = 1; break;
 #if YYDEBUG
 		case 'y' : yydebug = 1; break;
@@ -321,8 +325,8 @@ next_parm:
      * initialize standard input and output.
      */
 #ifdef KEYBOARD
-    if (raw && strcmp(env.filename, "stdin")) {	/* filename required */
-	env.autoput = 0;		/* disable autoput */
+    if (raw && strcmp(env.filename, "stdin")) {	/* raw requires filename */
+	env.autoput = 0;		/* disable autoput and usrlib.joy */
 	env.autoput_set = 1;		/* prevent enabling autoput */
 	SetRaw(&env);
     } else				/* keep output buffered */
@@ -334,8 +338,10 @@ next_parm:
     if (mustinclude)
 	include(&env, "usrlib.joy");	/* start reading from library first */
     rv = setjmp(begin);			/* return here after error or abort */
-    if (rv == ABORT_QUIT || (rv && !joy))
-	goto einde;
+    if (rv == ABORT_ERROR && joy)	/* in case of a runtime error ...   */
+	trace(&env, stderr);		/* ... dump stack and (all of) code */
+    if (rv == ABORT_QUIT || (rv && !joy))	/* in case end of file ...  */
+	goto einde;				/* ... wrap up and exit     */
     /*
      * (re)initialize code.
      */
@@ -376,7 +382,7 @@ int main(int argc, char **argv)
 /*
  * print statistics.
  */
-void stats(pEnv env)
+static void stats(pEnv env)
 {
     printf("%.0f milliseconds CPU\n", (clock() - env->startclock) * 1000.0 /
 	   CLOCKS_PER_SEC);
@@ -390,7 +396,7 @@ void stats(pEnv env)
 /*
  * dump the symbol table, from last to first.
  */
-void dump(pEnv env)
+static void dump(pEnv env)
 {
     int i;
     Entry ent;

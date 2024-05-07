@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.42
-    date    : 04/11/24
+    version : 1.46
+    date    : 05/02/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -127,6 +127,7 @@ typedef enum {
 typedef enum {
     ABORT_NONE,
     ABORT_RETRY,
+    ABORT_ERROR,
     ABORT_QUIT
 } Abort;
 
@@ -188,6 +189,7 @@ KHASH_MAP_INIT_INT64(Funtab, int)
  * Global variables are stored locally in the main function.
  */
 typedef struct Env {
+    jmp_buf finclude;		/* return point in finclude */
     double calls;		/* statistics */
     double opers;
     vector(Token) *tokens;	/* read ahead table */
@@ -231,6 +233,7 @@ typedef struct Env {
     unsigned char overwrite;
     unsigned char printing;
     unsigned char recurse;
+    unsigned char finclude_busy;
 } Env;
 
 typedef struct table_t {
@@ -246,6 +249,7 @@ void initcompile(pEnv env);
 void exitcompile(pEnv env);
 void compileprog(pEnv env, NodeList *list);
 /* eval.c */
+void trace(pEnv env, FILE *fp);
 void evaluate(pEnv env, NodeList *list);
 /* exec.c */
 void execute(pEnv env, NodeList *list);
@@ -258,8 +262,6 @@ int my_yylex(pEnv env);
 int get_input(void);
 /* main.c */
 void abortexecution_(int num);
-void stats(pEnv env);
-void dump(pEnv env);
 /* modl.c */
 void savemod(int *hide, int *modl, int *hcnt);
 void undomod(int hide, int modl, int hcnt);
@@ -299,7 +301,7 @@ void save(pEnv env, NodeList *list, int num, int remove);
 /* scan.c */
 void inilinebuffer(pEnv env);
 void include(pEnv env, char *str);
-int yywrap(void);
+int my_yywrap(pEnv env);	/* yywrap replacement */
 void my_error(char *str, YYLTYPE *bloc);
 void yyerror(pEnv env, char *str);
 /* util.c */
@@ -310,7 +312,7 @@ void writefactor(pEnv env, Node node, FILE *fp);
 void writeterm(pEnv env, NodeList *list, FILE *fp);
 void writestack(pEnv env, NodeList *list, FILE *fp);
 /* xerr.c */
-void execerror(char *filename, char *message, char *op);
+void execerror(char *message, char *op);
 /* ylex.c */
 int yylex(pEnv env);
 /* byte.c */

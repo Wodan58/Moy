@@ -1,7 +1,7 @@
 /*
     module  : save.c
-    version : 1.12
-    date    : 03/21/24
+    version : 1.13
+    date    : 05/06/24
 */
 #include "globals.h"
 #include "prim.h"
@@ -12,6 +12,7 @@
  */
 void save(pEnv env, NodeList *list, int num, int remove)
 {
+    FILE *fp;
     Node node;
     int status;
 
@@ -26,9 +27,17 @@ void save(pEnv env, NodeList *list, int num, int remove)
     if ((status = pvec_getarity(list)) == ARITY_UNKNOWN) {
 	status = arity(env, list, num) == 1 ? ARITY_OK : ARITY_NOT_OK;
 	if (env->overwrite) {
-	    printf("%s: (", status == ARITY_OK ? "info" : "warning");
-	    writeterm(env, list, stdout);
-	    printf(") has %scorrect arity\n", status == ARITY_OK ?  "" : "in");
+	    /*
+	     * Arities are reported in a log file, because the screen may be
+	     * cleared right after displaying a message.
+	     */
+	    if ((fp = fopen("joy.log", "a")) != 0) {
+		fprintf(fp, "%s: (", status == ARITY_OK ? "info" : "warning");
+		writeterm(env, list, fp);
+		fprintf(fp, ") has %scorrect arity\n", status == ARITY_OK ?
+			"" : "in");
+		fclose(fp);
+	    }
 	}
     }
     pvec_setarity(list, status);

@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.18
-    date    : 03/21/24
+    version : 1.20
+    date    : 05/02/24
 */
 #include "globals.h"
 
@@ -35,7 +35,7 @@ static void redirect(FILE *fp, char *str)
 {
     infile[ilevel].line = yylineno;	/* save last line number and line */
     if (ilevel + 1 == INPSTACKMAX)	/* increase the include level */
-	execerror(str, "fewer include files", "include");
+	execerror("fewer include files", "include");
     infile[++ilevel].fp = yyin = fp; 	/* update yyin, used by yylex */
     infile[ilevel].line = 1;		/* start with line 1 */
     strncpy(infile[ilevel].name, str, FILENAMEMAX);
@@ -120,13 +120,13 @@ normal:
      * If that also fails, no other path can be tried and an error is
      * generated.
      */
-    execerror(name, "valid file name", "include");
+    execerror("valid file name", "include");
 }
 
 /*
- * yywrap - continue reading after EOF.
+ * my_yywrap - continue reading after EOF.
  */
-int yywrap(void)
+int my_yywrap(pEnv env)
 {
     if (!ilevel)			/* at end of first file, end program */
 	return 1;			/* terminate */
@@ -134,6 +134,8 @@ int yywrap(void)
     infile[ilevel].fp = 0;		/* invalidate file pointer */
     yyin = infile[--ilevel].fp;		/* proceed with previous file */
     old_buffer(infile[ilevel].line);	/* and previous input buffer */
+    if (env->finclude_busy)
+	longjmp(env->finclude, 1);	/* back to finclude */
     return 0;				/* continue with old buffer */
 }
 

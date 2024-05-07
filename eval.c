@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.20
- *  date    : 04/11/24
+ *  version : 1.22
+ *  date    : 04/26/24
  */
 #include "globals.h"
 
@@ -25,7 +25,7 @@ static void set_alarm(int num)
 }
 #endif
 
-static void trace(pEnv env, FILE *fp)
+void trace(pEnv env, FILE *fp)
 {
     writestack(env, env->stck, fp);
     if (env->debugging == 2) {
@@ -54,7 +54,7 @@ void evaluate(pEnv env, NodeList *list)
 #if ALARM
 	if (time_out) {
 	    time_out = 0;
-	    execerror(env->filename, "more time", "evaluate");
+	    execerror("more time", "evaluate");
 	}
 #endif
 	if (env->debugging)
@@ -66,7 +66,7 @@ void evaluate(pEnv env, NodeList *list)
 	    if (ent.u.body)
 		prog(env, ent.u.body);
 	    else if (env->undeferror)
-		execerror(env->filename, "definition", ent.name);
+		execerror("definition", ent.name);
 	    continue;
 	case ANON_FUNCT_:
 	    (*node.u.proc)(env);

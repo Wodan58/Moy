@@ -1,7 +1,7 @@
 /*
     module  : modl.c
-    version : 1.7
-    date    : 03/21/24
+    version : 1.8
+    date    : 04/23/24
 */
 #include "globals.h"
 
@@ -20,7 +20,7 @@ static int module_index = -1;
 
 /*
  * savemod saves the global variables, to be restored later with undomod.
-*/
+ */
 void savemod(int *hide, int *modl, int *hcnt)
 {
     *hide = hide_index;
@@ -43,7 +43,7 @@ void initmod(pEnv env, char *name)
 {
     if (++module_index >= DISPLAYMAX) {
 	module_index = -1;
-	execerror(env->filename, "index", "display");
+	execerror("index", "display");
     }
     env->module_stack[module_index].name = name;
     env->module_stack[module_index].hide = hide_index;
@@ -62,7 +62,7 @@ void initpriv(pEnv env)
 {
     if (++hide_index >= DISPLAYMAX) {
 	hide_index = -1;
-	execerror(env->filename, "index", "display");
+	execerror("index", "display");
     }
     env->hide_stack[hide_index] = ++hide_count;
     inside_hide = 1;
@@ -117,6 +117,9 @@ char *classify(pEnv env, char *name)
     size_t leng;
     char temp[MAXNUM], *buf = 0, *str;
 
+    /*
+     * if name already has a prefix, there is no need to add another one.
+     */
     if (strchr(name, '.'))
 	return name;
     /*

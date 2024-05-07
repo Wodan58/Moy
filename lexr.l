@@ -1,13 +1,17 @@
 %{
 /*
     module  : lexr.l
-    version : 1.31
-    date    : 03/22/24
+    version : 1.33
+    date    : 05/06/24
 */
 #include "globals.h"
 
 #define YY_DECL		int my_yylex(pEnv env)
+#define YY_NO_INPUT
 #define YY_NO_UNPUT
+#define YY_SKIP_YYWRAP
+
+#define yywrap()	my_yywrap(env)
 
 #define OUT_OF_COM	0
 #define WITHIN_COM	1
@@ -15,8 +19,8 @@
 #define MAX_FILLER	3	/* allow max. three empty lines */
 
 char line[INPLINEMAX + 1];
-static int linenum, linepos;
 
+static int linenum, linepos;
 static int include_stack_ptr;
 static YY_BUFFER_STATE include_stack[INPSTACKMAX];
 
@@ -155,11 +159,3 @@ INLINE[ \t]*	return CONST_;
 .		return yytext[0];
 
 %%
-
-/*
- * Supporting getch, reading from the stack of input files, like get.
- */
-int get_input(void)
-{
-    return input();
-}

@@ -1,14 +1,14 @@
 /*
  *  module  : xerr.c
- *  version : 1.2
- *  date    : 03/21/24
+ *  version : 1.3
+ *  date    : 04/23/24
  */
 #include "globals.h"
 
 /*
     print a runtime error to stderr and abort the execution of current program.
 */
-void execerror(char *filename, char *message, char *op)
+void execerror(char *message, char *op)
 {
     int leng = 0;
     char *ptr, *str;
@@ -22,7 +22,6 @@ void execerror(char *filename, char *message, char *op)
     else
 	leng = strlen(ptr);
     fflush(stdout);
-    fprintf(stderr, "%s:run time error: %s needed for %.*s\n", filename,
-	    message, leng, ptr);
-    abortexecution_(ABORT_RETRY);
+    fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
+    abortexecution_(ABORT_ERROR);
 }
