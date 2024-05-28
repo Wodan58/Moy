@@ -1,7 +1,7 @@
 /*
     module  : otab.c
-    version : 1.7
-    date    : 04/11/24
+    version : 1.8
+    date    : 05/27/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
@@ -106,10 +106,10 @@ char *showname(int index)
  */
 int operindex(pEnv env, proc_t proc)
 {
-    khiter_t key;
+    khint_t key;
 
-    if ((key = kh_get(Funtab, env->prim, (int64_t)proc)) != kh_end(env->prim))
-	return kh_value(env->prim, key);
+    if ((key = funtab_get(env->prim, (uint64_t)proc)) != kh_end(env->prim))
+	return kh_val(env->prim, key);
     return 0;	/* if not found, return 0 */
 }
 
@@ -163,11 +163,11 @@ int operqcode(int index)
 void inisymboltable(pEnv env) /* initialise */
 {
     Entry ent;
-    khiter_t key;
+    khint_t key;
     int i, j, rv;
 
-    env->hash = kh_init(Symtab);
-    env->prim = kh_init(Funtab);
+    env->hash = symtab_init();
+    env->prim = funtab_init();
     for (i = 0, j = tablesize(); i < j; i++) {
 	ent.name = optable[i].name;
 	ent.is_user = 0;
@@ -186,10 +186,10 @@ void inisymboltable(pEnv env) /* initialise */
 		ent.u.proc = __dump_;
 		break;
 	    }
-	key = kh_put(Symtab, env->hash, ent.name, &rv);
-	kh_value(env->hash, key) = i;
-	key = kh_put(Funtab, env->prim, (int64_t)ent.u.proc, &rv);
-	kh_value(env->prim, key) = i;
+	key = symtab_put(env->hash, ent.name, &rv);
+	kh_val(env->hash, key) = i;
+	key = funtab_put(env->prim, (uint64_t)ent.u.proc, &rv);
+	kh_val(env->prim, key) = i;
 	vec_push(env->symtab, ent);
     }
 }

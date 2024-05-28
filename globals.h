@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.46
-    date    : 05/02/24
+    version : 1.48
+    date    : 05/28/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -17,9 +17,10 @@
 
 #ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <io.h>
+#include <windows.h>		/* pollute name space as much as possible */
+#include <io.h>			/* also import deprecated POSIX names */
 #pragma warning(disable: 4244 4267 4996)
+#define kh_packed		/* forget about __attribute__ ((packed)) */
 #else
 #include <unistd.h>		/* alarm function */
 #include <termios.h>
@@ -36,7 +37,7 @@
 
 #include <gc.h>			/* system installed BDW or local gc.h */
 #include "kvec.h"
-#include "khash.h"
+#include "khashl.h"
 #ifdef USE_BIGNUM_ARITHMETIC
 #include "bignum.h"
 #endif
@@ -180,10 +181,10 @@ typedef struct Token {
 
 /*
  * The symbol table is accessed through two hash tables, one with name as
- * index; the other with function address as index, cast to int64_t.
+ * index; the other with function address as index, cast to uint64_t.
  */
-KHASH_MAP_INIT_STR(Symtab, int)
-KHASH_MAP_INIT_INT64(Funtab, int)
+KHASHL_MAP_INIT(KH_LOCAL, symtab_t, symtab, kh_cstr_t, int, kh_hash_str, kh_eq_str)
+KHASHL_MAP_INIT(KH_LOCAL, funtab_t, funtab, uint64_t, int, kh_hash_uint64, kh_eq_generic)
 
 /*
  * Global variables are stored locally in the main function.
@@ -198,8 +199,8 @@ typedef struct Env {
     vector(Context) *context;
     vector(Channel) *channel;
 #endif
-    khash_t(Symtab) *hash;
-    khash_t(Funtab) *prim;
+    symtab_t *hash;		/* hash tables that index the symbol table */
+    funtab_t *prim;
     NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
     clock_t startclock;		/* main */
     char **g_argv;
@@ -300,7 +301,7 @@ NodeList *newnode(Operator op, YYSTYPE u);
 void save(pEnv env, NodeList *list, int num, int remove);
 /* scan.c */
 void inilinebuffer(pEnv env);
-void include(pEnv env, char *str);
+int include(pEnv env, char *str);
 int my_yywrap(pEnv env);	/* yywrap replacement */
 void my_error(char *str, YYLTYPE *bloc);
 void yyerror(pEnv env, char *str);

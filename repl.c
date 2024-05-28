@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.11
-    date    : 03/21/24
+    version : 1.12
+    date    : 05/27/24
 */
 #include "globals.h"
 
@@ -12,16 +12,16 @@
 static int enterglobal(pEnv env, char *name)
 {
     Entry ent;
+    khint_t key;
     int rv, index;
-    khiter_t key;
 
     index = vec_size(env->symtab);
     ent.name = name;
     ent.is_user = 1;
     ent.flags = env->inlining ? IMMEDIATE : OK;
     ent.u.body = 0;	/* may be assigned in definition */
-    key = kh_put(Symtab, env->hash, ent.name, &rv);
-    kh_value(env->hash, key) = index;
+    key = symtab_put(env->hash, ent.name, &rv);
+    kh_val(env->hash, key) = index;
     vec_push(env->symtab, ent);
     return index;
 }

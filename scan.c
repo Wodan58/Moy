@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.20
-    date    : 05/02/24
+    version : 1.21
+    date    : 05/27/24
 */
 #include "globals.h"
 
@@ -46,9 +46,11 @@ static void redirect(FILE *fp, char *str)
  * include - insert the contents of a file in the input.
  *
  * Files are read in the current directory or if that fails from the previous
- * location. If that also fails an error is generated.
+ * location. Generating an error is left to the call site.
+ *
+ * Return code is 1 if the file could not be opened.
  */
-void include(pEnv env, char *name)
+int include(pEnv env, char *name)
 {
     /*
      * mustinclude - determine whether an attempt must be made to include
@@ -64,7 +66,7 @@ void include(pEnv env, char *name)
      * If all of that fails, no harm done.
      */
     if (!strcmp(name, "usrlib.joy")) {			/* check usrlib.joy */
-	if ((fp = fopen(name, "r")) != 0)
+	if ((fp = fopen(name, "r")) != 0)		/* current dir */
 	    goto normal;
 	if ((path = getenv("HOME")) != 0) {		/* unix/cygwin */
 	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
@@ -88,18 +90,7 @@ void include(pEnv env, char *name)
 	/*
 	 * Failure to open usrlib.joy need not be reported.
 	 */
-	return;
-normal:
-	/*
-	 * If there is a new pathname, replace the old one.
-	 */
-	if (strrchr(str, '/')) {
-	    env->pathname = GC_strdup(str);
-	    path = strrchr(env->pathname, '/');
-	    *path = 0;
-	}
-	redirect(fp, name);
-	return;
+	return 1;
     }
     /*
      * A file other than usrlib.joy is tried first in the current directory.
@@ -115,12 +106,19 @@ normal:
 	sprintf(str, "%s/%s", path, name);
 	if ((fp = fopen(str, "r")) != 0)
 	    goto normal;
+	return 1;
     }
+normal:
     /*
-     * If that also fails, no other path can be tried and an error is
-     * generated.
+     * If there is a new pathname, replace the old one.
      */
-    execerror("valid file name", "include");
+    if (strrchr(str, '/')) {
+	env->pathname = GC_strdup(str);
+	path = strrchr(env->pathname, '/');
+	*path = 0;
+    }
+    redirect(fp, name);
+    return 0;
 }
 
 /*
