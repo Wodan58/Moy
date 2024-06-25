@@ -1,7 +1,7 @@
 /*
  *  module  : xerr.c
- *  version : 1.3
- *  date    : 04/23/24
+ *  version : 1.4
+ *  date    : 06/22/24
  */
 #include "globals.h"
 
@@ -24,4 +24,4 @@ void execerror(char *message, char *op)
     fflush(stdout);
     fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
     abortexecution_(ABORT_ERROR);
-}
+}	/* LCOV_EXCL_LINE */

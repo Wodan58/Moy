@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.48
-    date    : 05/28/24
+    version : 1.49
+    date    : 06/22/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -47,7 +47,7 @@
 #define INPLINEMAX	255
 #define BUFFERMAX	80	/* smaller buffer */
 #define HELPLINEMAX	72
-#define MAXNUM		32	/* even smaller buffer */
+#define MAXNUM		40	/* even smaller buffer */
 #define FILENAMEMAX	14
 #define DISPLAYMAX	10	/* nesting in HIDE & MODULE */
 #define INIECHOFLAG	0
@@ -183,8 +183,10 @@ typedef struct Token {
  * The symbol table is accessed through two hash tables, one with name as
  * index; the other with function address as index, cast to uint64_t.
  */
-KHASHL_MAP_INIT(KH_LOCAL, symtab_t, symtab, kh_cstr_t, int, kh_hash_str, kh_eq_str)
-KHASHL_MAP_INIT(KH_LOCAL, funtab_t, funtab, uint64_t, int, kh_hash_uint64, kh_eq_generic)
+KHASHL_MAP_INIT(KH_LOCAL, symtab_t, symtab, kh_cstr_t, int, kh_hash_str,
+		kh_eq_str)
+KHASHL_MAP_INIT(KH_LOCAL, funtab_t, funtab, uint64_t, int, kh_hash_uint64,
+		kh_eq_generic)
 
 /*
  * Global variables are stored locally in the main function.

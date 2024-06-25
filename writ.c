@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.24
- *  date    : 04/23/24
+ *  version : 1.25
+ *  date    : 06/22/24
  */
 #include "globals.h"
 
@@ -14,7 +14,7 @@ void writefactor(pEnv env, Node node, FILE *fp)
 {
     int i;
     uint64_t set, j;
-    char *ptr, buf[MAXNUM], tmp[MAXNUM];
+    char *ptr, buf[BUFFERMAX], tmp[MAXNUM];
 
 #if 0
 /*

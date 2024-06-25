@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.24
-#   date    : 05/28/24
+#   version : 1.25
+#   date    : 06/22/24
 #
 cmake_minimum_required(VERSION 3.5)
 project(Joy VERSION 1.0)
@@ -72,8 +72,9 @@ else()
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CF}")
     add_definitions(-DCOMP="\\"${CMAKE_C_FLAGS_RELEASE}\\"")
   else()
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${CF} -g -O0 --coverage -fprofile-arcs -ftest-coverage")	# debug, no optimization
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # enabling coverage
+    set(CMAKE_C_FLAGS_DEBUG	# debug, enabling coverage
+  "${CMAKE_C_FLAGS_DEBUG} ${CF} -O3 --coverage -fprofile-arcs -ftest-coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
     add_definitions(-DCOMP="\\"${CMAKE_C_FLAGS_DEBUG}\\"")
   endif()
   target_link_libraries(joy m gc)

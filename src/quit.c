@@ -1,7 +1,7 @@
 /*
     module  : quit.c
-    version : 1.13
-    date    : 04/29/24
+    version : 1.14
+    date    : 06/22/24
 */
 #ifndef QUIT_C
 #define QUIT_C
@@ -13,5 +13,5 @@ Exit from Joy.
 void quit_(pEnv env)
 {
     abortexecution_(ABORT_QUIT);
-}
+}	/* LCOV_EXCL_LINE */
 #endif

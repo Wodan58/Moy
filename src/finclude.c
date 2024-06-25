@@ -1,13 +1,13 @@
 /*
     module  : finclude.c
-    version : 1.12
-    date    : 05/27/24
+    version : 1.13
+    date    : 06/22/24
 */
 #ifndef FINCLUDE_C
 #define FINCLUDE_C
 
 /**
-Q0  OK  3160  finclude  :  DU  S  ->  F ...
+Q0  OK  3170  finclude  :  DU  S  ->  F ...
 [FOREIGN] Reads Joy source code from stream S and pushes it onto stack.
 */
 void finclude_(pEnv env)

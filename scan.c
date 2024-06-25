@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.21
-    date    : 05/27/24
+    version : 1.22
+    date    : 06/22/24
 */
 #include "globals.h"
 
@@ -52,22 +52,19 @@ static void redirect(FILE *fp, char *str)
  */
 int include(pEnv env, char *name)
 {
-    /*
-     * mustinclude - determine whether an attempt must be made to include
-     * usrlib.joy
-     */
     FILE *fp;
     char *path = 0, *str = name;
 
     /*
-     * usrlib.joy is tried first in the current directory, then in the home
-     * directory and then in the directory where the joy binary is located.
-     *
-     * If all of that fails, no harm done.
+     * A file is first tried in the current directory.
+     */
+    if ((fp = fopen(name, "r")) != 0)
+	goto normal;
+    /*
+     * usrlib.joy is tried in the home directory and then in the directory
+     * where the joy binary is located.
      */
     if (!strcmp(name, "usrlib.joy")) {			/* check usrlib.joy */
-	if ((fp = fopen(name, "r")) != 0)		/* current dir */
-	    goto normal;
 	if ((path = getenv("HOME")) != 0) {		/* unix/cygwin */
 	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
 	    sprintf(str, "%s/%s", path, name);
@@ -80,33 +77,16 @@ int include(pEnv env, char *name)
 	    if ((fp = fopen(str, "r")) != 0)
 		goto normal;
 	}
-	path = env->pathname;				/* joy binary */
-	if (strcmp(path, ".")) {
-	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
-	    sprintf(str, "%s/%s", path, name);
-	    if ((fp = fopen(str, "r")) != 0)
-		goto normal;
-	}
-	/*
-	 * Failure to open usrlib.joy need not be reported.
-	 */
-	return 1;
     }
-    /*
-     * A file other than usrlib.joy is tried first in the current directory.
-     */
-    if ((fp = fopen(name, "r")) != 0)
-	goto normal;
     /*
      * If that fails, the pathname is prepended and the file is tried again.
      */
-    path = env->pathname;
+    path = env->pathname;				/* joy binary */
     if (strcmp(path, ".")) {
 	str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
 	sprintf(str, "%s/%s", path, name);
-	if ((fp = fopen(str, "r")) != 0)
-	    goto normal;
-	return 1;
+	if ((fp = fopen(str, "r")) == 0)
+	    return 1;
     }
 normal:
     /*
@@ -149,7 +129,7 @@ void my_error(char *str, YYLTYPE *bloc)
     fprintf(stderr, "%s\n%*s^\n%*s%s\n", line, leng, "", leng, "", str);
     line[0] = 0;	/* invalidate line */
     abortexecution_(ABORT_RETRY);
-}
+}	/* LCOV_EXCL_LINE */
 
 /*
  * yyerror - error processing during source file read; location info global.
@@ -160,4 +140,4 @@ void yyerror(pEnv env, char *str)
 
     bloc.last_column = yylloc.last_column;
     my_error(str, &bloc);
-}
+}	/* LCOV_EXCL_LINE */

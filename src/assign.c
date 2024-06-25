@@ -1,13 +1,13 @@
 /*
     module  : assign.c
-    version : 1.3
-    date    : 03/21/24
+    version : 1.4
+    date    : 06/22/24
 */
 #ifndef ASSIGN_C
 #define ASSIGN_C
 
 /**
-Q0  IGNORE_POP  3190  assign  :  DD  V [N]  ->
+Q0  IGNORE_POP  3140  assign  :  DD  V [N]  ->
 [IMPURE] Assigns value V to the variable with name N.
 */
 void assign_(pEnv env)

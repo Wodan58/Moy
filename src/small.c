@@ -1,7 +1,7 @@
 /*
     module  : small.c
-    version : 1.12
-    date    : 04/11/24
+    version : 1.13
+    date    : 06/22/24
 */
 #ifndef SMALL_C
 #define SMALL_C
@@ -49,12 +49,14 @@ void small_(pEnv env)
     case USR_LIST_:
 	node.u.num = pvec_cnt(node.u.lis) < 2;
 	break;
+#if 0
     case FLOAT_:
 	node.u.num = node.u.dbl >= 0 && node.u.dbl < 2;
 	break;
     case FILE_:
 	node.u.num = !node.u.fil || (node.u.fil - stdin) < 2;
 	break;
+#endif
 #ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
 	node.u.num = node.u.str[1] == '0' || !strcmp(node.u.str, " 1");

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.33
-    date    : 05/06/24
+    version : 1.34
+    date    : 06/22/24
 */
 #include "globals.h"
 
@@ -78,9 +78,7 @@ void new_buffer(void)
 
 void old_buffer(int num)
 {
-    if (--include_stack_ptr < 0)
-	include_stack_ptr = 0;
-    if (include_stack[include_stack_ptr])
+    if (include_stack[--include_stack_ptr])
 	yy_switch_to_buffer(include_stack[include_stack_ptr]);
     yylineno = num;			/* restart old file */
     linenum = num + 1;
@@ -153,9 +151,10 @@ INLINE[ \t]*	return CONST_;
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
 ^\$.*		{ int rv; if (!env->ignore) { rv = system(yytext + 1); if (rv)
-		  { fflush(stdout); fprintf(stderr, "system: %d\n", rv); } } }
+		  { fflush(stdout); fprintf(stderr, "system: %u\n", rv & 0xFF);
+		} } }
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];
 
-%%
+%%		/* LCOV_EXCL_LINE */
