@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.49
-    date    : 06/22/24
+    version : 1.50
+    date    : 07/02/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -206,6 +206,7 @@ typedef struct Env {
     NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
     clock_t startclock;		/* main */
     char **g_argv;
+    char *homedir;
     char *pathname;
     char *filename;
     int g_argc;

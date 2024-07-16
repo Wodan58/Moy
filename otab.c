@@ -1,7 +1,7 @@
 /*
     module  : otab.c
-    version : 1.8
-    date    : 05/27/24
+    version : 1.9
+    date    : 07/02/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
@@ -141,12 +141,12 @@ char *operarity(int index)
  * tablesize - return the size of the table, to be used when searching from the
  *	       end of the table to the start.
  */
+#ifdef BYTECODE
 int tablesize(void)
 {
     return sizeof(optable) / sizeof(optable[0]);
 }
 
-#ifdef BYTECODE
 /*
  *  qcode - return the qcode value of an operator or combinator.
  */
@@ -168,7 +168,8 @@ void inisymboltable(pEnv env) /* initialise */
 
     env->hash = symtab_init();
     env->prim = funtab_init();
-    for (i = 0, j = tablesize(); i < j; i++) {
+    j = sizeof(optable) / sizeof(optable[0]);
+    for (i = 0; i < j; i++) {
 	ent.name = optable[i].name;
 	ent.is_user = 0;
 	ent.flags = optable[i].flags;

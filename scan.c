@@ -1,7 +1,7 @@
 /*
     module  : scan.c
-    version : 1.22
-    date    : 06/22/24
+    version : 1.24
+    date    : 07/03/24
 */
 #include "globals.h"
 
@@ -24,22 +24,31 @@ static struct {
 void inilinebuffer(pEnv env)
 {
     infile[0].fp = yyin;
-    infile[0].line = 1;			/* start with line 1 */
+    infile[0].line = 1;		/* start with line 1 */
     strncpy(infile[0].name, env->filename, FILENAMEMAX);
 }
 
 /*
- * redirect - read from another file descriptor.
+ * redirect - register another file descriptor to read from.
  */
-static void redirect(FILE *fp, char *str)
+static int redirect(pEnv env, char *name, FILE *fp, char *str)
 {
-    infile[ilevel].line = yylineno;	/* save last line number and line */
-    if (ilevel + 1 == INPSTACKMAX)	/* increase the include level */
+    /*
+     * If there is a new pathname, replace the old one.
+     */
+    if (strrchr(str, '/')) {
+	env->pathname = GC_strdup(str);
+	str = strrchr(env->pathname, '/');
+	*str = 0;
+    }
+    infile[ilevel].line = yylineno;		/* save last line number */
+    if (ilevel + 1 == INPSTACKMAX)		/* increase include level */
 	execerror("fewer include files", "include");
-    infile[++ilevel].fp = yyin = fp; 	/* update yyin, used by yylex */
-    infile[ilevel].line = 1;		/* start with line 1 */
-    strncpy(infile[ilevel].name, str, FILENAMEMAX);
-    new_buffer();			/* new file, new buffer */
+    infile[++ilevel].fp = yyin = fp;		/* use new file pointer */
+    infile[ilevel].line = 1;			/* start with line 1 */
+    strncpy(infile[ilevel].name, name, FILENAMEMAX);
+    new_buffer();				/* new file, new buffer */
+    return 0;
 }
 
 /*
@@ -48,57 +57,35 @@ static void redirect(FILE *fp, char *str)
  * Files are read in the current directory or if that fails from the previous
  * location. Generating an error is left to the call site.
  *
- * Return code is 1 if the file could not be opened.
+ * Return code is 1 if the file could not be opened for reading.
  */
 int include(pEnv env, char *name)
 {
+    int i;
     FILE *fp;
-    char *path = 0, *str = name;
+    char *path = 0, *str = name;			/* str = path/name */
 
     /*
-     * A file is first tried in the current directory.
+     * A file is tried first in the current directory, then in the home
+     * directory and if that also fails in the pathname directory.
      */
-    if ((fp = fopen(name, "r")) != 0)
-	goto normal;
-    /*
-     * usrlib.joy is tried in the home directory and then in the directory
-     * where the joy binary is located.
-     */
-    if (!strcmp(name, "usrlib.joy")) {			/* check usrlib.joy */
-	if ((path = getenv("HOME")) != 0) {		/* unix/cygwin */
+    if (!env->homedir) {				/* should be present */
+	env->homedir = getenv("HOME");			/* unix/cygwin */
+#ifdef _MSC_VER
+	if (!env->homedir)
+	    env->homedir = getenv("USERPROFILE");	/* windows */
+#endif
+    }
+    for (i = 0; i < 3; i++) {
+	if (i) {					/* add pathname */
+	    path = i == 1 ? env->homedir : env->pathname;
 	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
 	    sprintf(str, "%s/%s", path, name);
-	    if ((fp = fopen(str, "r")) != 0)
-		goto normal;
 	}
-	if ((path = getenv("USERPROFILE")) != 0) {	/* windows */
-	    str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
-	    sprintf(str, "%s/%s", path, name);
-	    if ((fp = fopen(str, "r")) != 0)
-		goto normal;
-	}
+	if ((fp = fopen(str, "r")) != 0)		/* try to read */
+	    return redirect(env, name, fp, str);	/* stop trying */
     }
-    /*
-     * If that fails, the pathname is prepended and the file is tried again.
-     */
-    path = env->pathname;				/* joy binary */
-    if (strcmp(path, ".")) {
-	str = GC_malloc_atomic(strlen(path) + strlen(name) + 2);
-	sprintf(str, "%s/%s", path, name);
-	if ((fp = fopen(str, "r")) == 0)
-	    return 1;
-    }
-normal:
-    /*
-     * If there is a new pathname, replace the old one.
-     */
-    if (strrchr(str, '/')) {
-	env->pathname = GC_strdup(str);
-	path = strrchr(env->pathname, '/');
-	*path = 0;
-    }
-    redirect(fp, name);
-    return 0;
+    return 1;				/* file cannot be opened for reading */
 }
 
 /*

@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.44
- *  date    : 05/06/24
+ *  version : 1.45
+ *  date    : 07/02/24
  */
 #include "globals.h"
 
@@ -28,7 +28,7 @@ void abortexecution_(int num)
  * options - print help on startup options and exit: options are those that
  *	     cannot be set from within the language itself.
  */
-static void options(pEnv env)
+static void options(void)
 {
     printf("JOY  -  compiled at %s on %s", __TIME__, __DATE__);
 #ifdef VERS
@@ -92,7 +92,7 @@ static void options(pEnv env)
 #endif
 }
 
-static void unknown_opt(pEnv env, char *exe, int ch)
+static void unknown_opt(char *exe, int ch)
 {
     printf("Unknown option argument: \"-%c\"\n", ch);
     printf("More info with: \"%s -h\"\n", exe);
@@ -109,8 +109,8 @@ int my_main(int argc, char **argv)
 #endif
 
     Env env;				/* global variables */
+    char *ptr, *tmp;
     int i, j, ch, rv;
-    char *ptr, *tmp, *exe;		/* exe = joy binary */
 /*
  * A number of flags can be handled within the main function; no need to pass
  * them to subordinate functions.
@@ -133,14 +133,16 @@ int my_main(int argc, char **argv)
     /*
      * establish pathname, to be used when loading libraries, and basename.
      */
-    if ((ptr = strrchr(argv[0], '/')) != 0 ||
-	(ptr = strrchr(argv[0], '\\')) != 0) {
+    ptr = strrchr(argv[0], '/');
+#ifdef _MSC_VER
+    if (!ptr)
+	ptr = strrchr(argv[0], '\\');
+#endif
+    if (ptr) {
+	env.pathname = argv[0];		/* split argv[0] in pathname */
 	*ptr++ = 0;
-	env.pathname = argv[0];
-	argv[0] = ptr;
-    } else
-	env.pathname = ".";
-    exe = argv[0];
+	argv[0] = ptr;			/* and basename */
+    }
     /*
      * These flags are initialized here, allowing them to be overruled by the
      * command line. When set on the command line, they can not be overruled
@@ -302,7 +304,7 @@ next_parm:
      * handle options, might print symbol table.
      */
     if (helping || unknown) {
-	helping ? options(&env) : unknown_opt(&env, exe, unknown);
+	helping ? options() : unknown_opt(argv[0], unknown);
 	goto einde;
     }
 #ifdef BYTECODE
@@ -346,6 +348,7 @@ next_parm:
      * (re)initialize code.
      */
     env.prog = pvec_init();		/* restart with an empty program */
+    env.stck = pvec_init();		/* and empty stack */
     if (joy)
 	yyparse(&env);
 #ifdef BYTECODE

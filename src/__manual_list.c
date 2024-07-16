@@ -1,7 +1,7 @@
 /*
     module  : __manual_list.c
-    version : 1.11
-    date    : 04/11/24
+    version : 1.12
+    date    : 07/02/24
 */
 #ifndef __MANUAL_LIST_C
 #define __MANUAL_LIST_C
@@ -18,7 +18,7 @@ void __manual_list_(pEnv env)
     node.u.lis = pvec_init();
     node.op = temp.op = LIST_;
     elem.op = STRING_;
-    for (i = tablesize() - 1; i >= 0; i--) {
+    for (i = sizeof(optable) / sizeof(optable[0]) - 1; i >= 0; i--) {
 	temp.u.lis = pvec_init();
 	elem.u.str = optable[i].messg2;
 	temp.u.lis = pvec_add(temp.u.lis, elem);
