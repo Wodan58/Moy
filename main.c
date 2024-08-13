@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.45
- *  date    : 07/02/24
+ *  version : 1.46
+ *  date    : 08/12/24
  */
 #include "globals.h"
 
@@ -109,8 +109,8 @@ int my_main(int argc, char **argv)
 #endif
 
     Env env;				/* global variables */
-    char *ptr, *tmp;
     int i, j, ch, rv;
+    char *ptr, *tmp, *exe;
 /*
  * A number of flags can be handled within the main function; no need to pass
  * them to subordinate functions.
@@ -133,7 +133,7 @@ int my_main(int argc, char **argv)
     /*
      * establish pathname, to be used when loading libraries, and basename.
      */
-    ptr = strrchr(argv[0], '/');
+    ptr = strrchr(exe = argv[0], '/');
 #ifdef _MSC_VER
     if (!ptr)
 	ptr = strrchr(argv[0], '\\');
@@ -141,7 +141,7 @@ int my_main(int argc, char **argv)
     if (ptr) {
 	env.pathname = argv[0];		/* split argv[0] in pathname */
 	*ptr++ = 0;
-	argv[0] = ptr;			/* and basename */
+	argv[0] = exe = ptr;		/* and basename */
     }
     /*
      * These flags are initialized here, allowing them to be overruled by the
@@ -304,7 +304,7 @@ next_parm:
      * handle options, might print symbol table.
      */
     if (helping || unknown) {
-	helping ? options() : unknown_opt(argv[0], unknown);
+	helping ? options() : unknown_opt(exe, unknown);
 	goto einde;
     }
 #ifdef BYTECODE
@@ -324,10 +324,14 @@ next_parm:
 	initcompile(&env);		/* create .c file */
 #endif
     /*
+     * initialize stack before SetRaw.
+     */
+    env.stck = pvec_init();		/* and empty stack */
+    /*
      * initialize standard input and output.
      */
 #ifdef KEYBOARD
-    if (raw && strcmp(env.filename, "stdin")) {	/* raw requires filename */
+    if (raw && strcmp(env.filename, "stdin")) {	/* raw requires a filename */
 	env.autoput = 0;		/* disable autoput and usrlib.joy */
 	env.autoput_set = 1;		/* prevent enabling autoput */
 	SetRaw(&env);
@@ -345,10 +349,9 @@ next_parm:
     if (rv == ABORT_QUIT || (rv && !joy))	/* in case end of file ...  */
 	goto einde;				/* ... wrap up and exit     */
     /*
-     * (re)initialize code.
+     * (re)initialize code. The stack is left as it is.
      */
     env.prog = pvec_init();		/* restart with an empty program */
-    env.stck = pvec_init();		/* and empty stack */
     if (joy)
 	yyparse(&env);
 #ifdef BYTECODE

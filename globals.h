@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.50
-    date    : 07/02/24
+    version : 1.51
+    date    : 08/12/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -34,6 +34,8 @@
 #define USE_BIGNUM_ARITHMETIC
 #define USE_MULTI_THREADS_JOY
 #endif
+
+#define USE_KHASHL
 
 #include <gc.h>			/* system installed BDW or local gc.h */
 #include "kvec.h"
