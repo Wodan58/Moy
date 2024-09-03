@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.34
-    date    : 06/22/24
+    version : 1.35
+    date    : 08/31/24
 */
 #include "globals.h"
 
@@ -158,3 +158,4 @@ INLINE[ \t]*	return CONST_;
 .		return yytext[0];
 
 %%		/* LCOV_EXCL_LINE */
+		/* LCOV_EXCL_LINE */

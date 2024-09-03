@@ -1,14 +1,14 @@
 /*
     module  : parm.c
-    date    : 1.20
-    version : 05/06/24
+    date    : 1.22
+    version : 09/01/24
 */
 #include "globals.h"
 
 /*
     check the number of parameters and if not sufficient call execerror.
 */
-void checknum(char *name, int num, int leng, char *file)
+void checknum(int num, int leng, char *file)
 {
     char *ptr = 0;
 
@@ -39,18 +39,17 @@ void parm(pEnv env, int num, Params type, char *file)
     Node first, second, third, fourth;
 
     leng = pvec_cnt(env->stck);
+    checknum(num, leng, file);
 /*
     check number and type of parameters:
 */
     switch (type) {
     case ANYTYPE:
-	checknum(env->filename, num, leng, file);
 	break;
 /*
     one quote is needed:
 */
     case DIP:
-	checknum(env->filename, num, leng, file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_)
 	    execerror("quotation as top parameter", file);
@@ -59,8 +58,6 @@ void parm(pEnv env, int num, Params type, char *file)
     two quotes are needed:
 */
     case WHILE:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_)
@@ -72,8 +69,6 @@ void parm(pEnv env, int num, Params type, char *file)
     three quotes are needed:
 */
     case IFTE:
-	if (leng < 3)
-	    execerror("three parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -88,8 +83,6 @@ void parm(pEnv env, int num, Params type, char *file)
     four quotes are needed:
 */
     case LINREC:
-	if (leng < 4)
-	    execerror("four parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -107,8 +100,6 @@ void parm(pEnv env, int num, Params type, char *file)
     list is needed:
 */
     case HELP:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_)
 	    execerror("list", file);
@@ -117,8 +108,6 @@ void parm(pEnv env, int num, Params type, char *file)
     list is needed as second parameter:
 */
     case INFRA:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_)
@@ -130,8 +119,6 @@ void parm(pEnv env, int num, Params type, char *file)
     float or integer is needed:
 */
     case UFLOAT:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != FLOAT_ && first.op != INTEGER_)
 	    execerror("float or integer", file);
@@ -140,8 +127,6 @@ void parm(pEnv env, int num, Params type, char *file)
     two floats or integers are needed:
 */
     case MUL:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != BIGNUM_ && first.op != FLOAT_ && first.op != INTEGER_)
@@ -154,8 +139,6 @@ void parm(pEnv env, int num, Params type, char *file)
     two floats or integers are needed:
 */
     case BFLOAT:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != FLOAT_ && first.op != INTEGER_)
@@ -167,8 +150,6 @@ void parm(pEnv env, int num, Params type, char *file)
     file is needed:
 */
     case FGET:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != FILE_ || !first.u.fil)
 	    execerror("file", file);
@@ -177,8 +158,6 @@ void parm(pEnv env, int num, Params type, char *file)
     file is needed as second parameter:
 */
     case FPUT:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	second = pvec_nth(env->stck, leng - 2);
 	if (second.op != FILE_ || !second.u.fil)
 	    execerror("file", file);
@@ -187,8 +166,6 @@ void parm(pEnv env, int num, Params type, char *file)
     string is needed:
 */
     case STRFTIME:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != STRING_)
@@ -196,9 +173,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (second.op != LIST_)
 	    execerror("list as second parameter", file);
 	break;
+
     case FPUTCHARS:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != STRING_ && first.op != BIGNUM_)
@@ -206,9 +182,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (second.op != FILE_ || !second.u.fil)
 	    execerror("file", file);
 	break;
+
     case STRTOD:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != STRING_ && first.op != BIGNUM_)
 	    execerror("string", file);
@@ -217,8 +192,6 @@ void parm(pEnv env, int num, Params type, char *file)
     string is needed as second parameter:
 */
     case FOPEN:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != STRING_)
@@ -230,15 +203,12 @@ void parm(pEnv env, int num, Params type, char *file)
     integer is needed:
 */
     case UNMKTIME:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != INTEGER_)
 	    execerror("integer", file);
 	break;
+
     case FREAD:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != INTEGER_ && first.op != CHAR_ && first.op != BOOLEAN_)
@@ -246,9 +216,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (second.op != FILE_ || !second.u.fil)
 	    execerror("file", file);
 	break;
+
     case LDEXP:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != INTEGER_)
@@ -256,9 +225,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (second.op != FLOAT_ && second.op != INTEGER_)
 	    execerror("float or integer as second parameter", file);
 	break;
+
     case STRTOL:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != INTEGER_)
@@ -270,8 +238,6 @@ void parm(pEnv env, int num, Params type, char *file)
     two integers are needed:
 */
     case FSEEK:
-	if (leng < 3)
-	    execerror("three parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -284,8 +250,6 @@ void parm(pEnv env, int num, Params type, char *file)
     integer is needed as second parameter:
 */
     case TIMES:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_)
@@ -299,8 +263,6 @@ void parm(pEnv env, int num, Params type, char *file)
     numeric type is needed:
 */
     case MAXMIN:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if ((first.op == FLOAT_ || first.op == INTEGER_) &&
@@ -317,8 +279,6 @@ void parm(pEnv env, int num, Params type, char *file)
     numeric type is needed:
 */
     case PREDSUCC:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != INTEGER_ && first.op != CHAR_ && first.op != BOOLEAN_ &&
 	    first.op != BIGNUM_)
@@ -328,8 +288,6 @@ void parm(pEnv env, int num, Params type, char *file)
     numeric type is needed as second parameter:
 */
     case PLUSMINUS:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if ((first.op == BIGNUM_ || first.op == FLOAT_ || first.op == INTEGER_)
@@ -345,8 +303,6 @@ void parm(pEnv env, int num, Params type, char *file)
     aggregate parameter is needed:
 */
     case SIZE_:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
 	    first.op != BIGNUM_)
@@ -356,8 +312,6 @@ void parm(pEnv env, int num, Params type, char *file)
     aggregate parameter is needed as second parameter:
 */
     case STEP:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_)
@@ -366,9 +320,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	    second.op != BIGNUM_)
 	    execerror("aggregate parameter", file);
 	break;
+
     case TAKE:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != INTEGER_ || first.u.num < 0)
@@ -381,8 +334,6 @@ void parm(pEnv env, int num, Params type, char *file)
     two parameters of the same type are needed:
 */
     case CONCAT:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
@@ -395,8 +346,6 @@ void parm(pEnv env, int num, Params type, char *file)
     specific number of types:
 */
     case ANDORXOR:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != second.op)
@@ -405,9 +354,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	    first.op != BOOLEAN_)
 	    execerror("different type", file);
 	break;
+
     case NOT:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != SET_ && first.op != INTEGER_ && first.op != CHAR_ &&
 	    first.op != BOOLEAN_)
@@ -417,8 +365,6 @@ void parm(pEnv env, int num, Params type, char *file)
     specific number of types:
 */
     case PRIMREC:
-	if (leng < 3)
-	    execerror("three parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -432,8 +378,6 @@ void parm(pEnv env, int num, Params type, char *file)
     specific number of types:
 */
     case SMALL:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_ && first.op != STRING_ && first.op != SET_ &&
 	    first.op != INTEGER_ && first.op != BOOLEAN_ && first.op != BIGNUM_)
@@ -443,8 +387,6 @@ void parm(pEnv env, int num, Params type, char *file)
     user defined symbol:
 */
     case BODY:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != USR_)
 	    execerror("user defined symbol", file);
@@ -453,8 +395,6 @@ void parm(pEnv env, int num, Params type, char *file)
     valid symbol name:
 */
     case INTERN:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != STRING_)
 	    execerror("string", file);
@@ -480,8 +420,6 @@ void parm(pEnv env, int num, Params type, char *file)
     character:
 */
     case FORMAT:
-	if (leng < 4)
-	    execerror("four parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -496,9 +434,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	    fourth.op != BOOLEAN_)
 	    execerror("numeric as fourth parameter", file);
 	break;
+
     case FORMATF:
-	if (leng < 4)
-	    execerror("four parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	third = pvec_nth(env->stck, leng - 3);
@@ -516,8 +453,6 @@ void parm(pEnv env, int num, Params type, char *file)
     set member:
 */
     case CONS:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	switch (first.op) {
@@ -541,8 +476,6 @@ void parm(pEnv env, int num, Params type, char *file)
     set member:
 */
     case IN_:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	switch (first.op) {
@@ -568,8 +501,6 @@ void parm(pEnv env, int num, Params type, char *file)
     set member:
 */
     case HAS:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	switch (second.op) {
@@ -595,8 +526,6 @@ void parm(pEnv env, int num, Params type, char *file)
     check empty list:
 */
     case CASE:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_)
 	    execerror("list", file);
@@ -612,8 +541,6 @@ void parm(pEnv env, int num, Params type, char *file)
     check empty aggregate:
 */
     case FIRST:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	switch (first.op) {
 	case LIST_:
@@ -637,8 +564,6 @@ void parm(pEnv env, int num, Params type, char *file)
     check empty aggregate:
 */
     case OF:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (second.u.num < 0)
@@ -668,9 +593,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	default     : execerror("aggregate parameter", file); 
 	}
 	break;
+
     case AT:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.u.num < 0)
@@ -704,8 +628,6 @@ void parm(pEnv env, int num, Params type, char *file)
     check second operand:
 */
     case DIV:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != INTEGER_ || second.op != INTEGER_)
@@ -713,9 +635,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if (!first.u.num)
 	    execerror("non-zero operand", file);
 	break;
+
     case REM:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != FLOAT_ && first.op != INTEGER_)
@@ -725,9 +646,8 @@ void parm(pEnv env, int num, Params type, char *file)
 	if ((first.op == FLOAT_ && !first.u.dbl) || !first.u.num)
 	    execerror("non-zero operand", file);
 	break;
+
     case DIVIDE:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != BIGNUM_ && first.op != FLOAT_ && first.op != INTEGER_)
@@ -743,8 +663,6 @@ void parm(pEnv env, int num, Params type, char *file)
     check numeric list:
 */
     case FWRITE:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	first = pvec_lst(env->stck);
 	second = pvec_nth(env->stck, leng - 2);
 	if (first.op != LIST_)
@@ -761,7 +679,6 @@ void parm(pEnv env, int num, Params type, char *file)
  * check list at top with user defined symbol.
  */
     case ASSIGN:
-	checknum(env->filename, num, leng, file);
 	first = pvec_lst(env->stck);
 	if (first.op != LIST_)
 	    execerror("list", file);
@@ -776,8 +693,6 @@ void parm(pEnv env, int num, Params type, char *file)
     channel as top parameter:
 */
     case RECEIVE:
-	if (leng < 1)
-	    execerror("one parameter", file);
 	first = pvec_lst(env->stck);
 	if (first.op != INTEGER_)
 	    execerror("channel", file);
@@ -786,8 +701,6 @@ void parm(pEnv env, int num, Params type, char *file)
     channel as second parameter:
 */
     case SEND:
-	if (leng < 2)
-	    execerror("two parameters", file);
 	second = pvec_nth(env->stck, leng - 2);
 	if (second.op != INTEGER_)
 	    execerror("channel", file);

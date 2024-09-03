@@ -607,7 +607,7 @@ feof.
 
 (* assign needs two parameters *)
 [] unstack.
-[A] assign.
+# [A] assign.
 
 (* assign needs quotation on top *)
 [] 1 assign.

@@ -1,7 +1,7 @@
 /*
     module  : __settracegc.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 08/31/24
 */
 #ifndef __SETTRACEGC_C
 #define __SETTRACEGC_C
@@ -19,9 +19,9 @@ void __settracegc_(pEnv env)
     if (node.u.num)		/* 0=enable compiling */
 	;
     else if (env->bytecoding)
-	env->bytecoding = 1;
+	env->bytecoding = 1;	/* LCOV_EXCL_LINE */
     else if (env->compiling)
-	env->compiling = 1;
+	env->compiling = 1;	/* LCOV_EXCL_LINE */
     else
 	env->ignore = 0;	/* disable ignore */
 }

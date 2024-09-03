@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.51
-    date    : 08/12/24
+    version : 1.52
+    date    : 08/30/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -208,9 +208,8 @@ typedef struct Env {
     NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
     clock_t startclock;		/* main */
     char **g_argv;
-    char *homedir;
-    char *pathname;
-    char *filename;
+    char *homedir;		/* HOME or HOMEPATH */
+    vector(char *) *pathnames;	/* pathnames to be searched when including */
     int g_argc;
     int token;			/* yylex */
 #ifdef USE_BIGNUM_ARITHMETIC

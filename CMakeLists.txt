@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.25
-#   date    : 06/22/24
+#   version : 1.26
+#   date    : 08/31/24
 #
 cmake_minimum_required(VERSION 3.5)
 project(Joy VERSION 1.0)
@@ -65,8 +65,8 @@ else()
   add_dependencies(joy always)
   add_custom_target(always
 		    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-		    COMMAND sh tabl.sh .
-		    COMMAND sh prim.sh .)
+		    COMMAND sh prim.sh .
+		    COMMAND sh tabl.sh .)
   set(CF "-Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter")
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${CF}")

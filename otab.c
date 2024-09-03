@@ -1,10 +1,16 @@
 /*
     module  : otab.c
-    version : 1.9
-    date    : 07/02/24
+    version : 1.10
+    date    : 09/01/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
+
+#ifdef _MSC_VER
+#define NOINLINE
+#else
+#define NOINLINE	__attribute__((__noinline__))
+#endif
 
 #ifdef NCHECK
 #define PARM(n, m)
@@ -81,7 +87,7 @@ static struct {
  *	      character that is not part of an identifier, then the nick name
  *	      is the part of the string after the first \0.
  */
-static char *nickname(int ch)
+static NOINLINE char *nickname(int ch)
 {
     char *str;
 
@@ -96,7 +102,7 @@ static char *nickname(int ch)
 /*
     showname - return the display name of a datatype, used in name.
 */
-char *showname(int index)
+NOINLINE char *showname(int index)
 {
     return optable[index].name;
 }
@@ -116,7 +122,7 @@ int operindex(pEnv env, proc_t proc)
 /*
     opername - return the name of an operator, used in writefactor.
 */
-char *opername(pEnv env, proc_t proc)
+NOINLINE char *opername(pEnv env, proc_t proc)
 {
     return showname(operindex(env, proc));
 }
@@ -124,7 +130,7 @@ char *opername(pEnv env, proc_t proc)
 /*
  * cmpname - return the name of an operator, used in Compare.
  */
-char *cmpname(pEnv env, proc_t proc)
+NOINLINE char *cmpname(pEnv env, proc_t proc)
 {
     return nickname(operindex(env, proc));
 }
@@ -132,7 +138,7 @@ char *cmpname(pEnv env, proc_t proc)
 /*
  * operarity - return the arity of an operator, used in arity.
  */
-char *operarity(int index)
+NOINLINE char *operarity(int index)
 {
     return optable[index].arity;
 }

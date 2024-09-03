@@ -1,7 +1,7 @@
 /*
  *  module  : writ.c
- *  version : 1.25
- *  date    : 06/22/24
+ *  version : 1.26
+ *  date    : 09/01/24
  */
 #include "globals.h"
 
@@ -138,8 +138,13 @@ anon_prime:
 	}
 	break;
 
+#if 0
+/*
+ * The default case does not happen: it will be flagged as a syntax error.
+ */
     default:
 	yyerror(env, "a factor cannot begin with this symbol");
+#endif
     }
 }
 
@@ -204,7 +209,7 @@ void writeterm(pEnv env, NodeList *list, FILE *fp)
 	for (i = j - 1; i >= 0; i--) {
 	    writefactor(env, pvec_nth(list, i), fp);
 	    if (i)
-		putc(' ', fp);
+		putc(spacechar, fp);
 	}
     else {
 	vec_init(array);			/* collect nodes in a vector */

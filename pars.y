@@ -1,8 +1,8 @@
 %{
 /*
     module  : pars.y
-    version : 1.17
-    date    : 04/11/24
+    version : 1.18
+    date    : 09/01/24
 */
 #include "globals.h"
 
@@ -148,7 +148,11 @@ factor  : USR_      {   int index; Entry ent; Node node;
 	| CHAR_     { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u); }
 	| INTEGER_  { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u); }
 	| STRING_   { YYSTYPE u; u.str = $1; $$ = newnode(STRING_, u); }
-	| BIGNUM_   { YYSTYPE u; u.str = $1; $$ = newnode(BIGNUM_, u); }
+	| BIGNUM_   {
+		      #ifdef USE_BIGNUM_ARITHMETIC
+		      YYSTYPE u; u.str = $1; $$ = newnode(BIGNUM_, u);
+		      #endif
+		    }
 	| FLOAT_    { YYSTYPE u; u.dbl = $1; $$ = newnode(FLOAT_, u); }
 	| list      { YYSTYPE u; u.lis = $1; $$ = newnode(LIST_, u); }
 	| set       { YYSTYPE u; u.set = $1; $$ = newnode(SET_, u); } ;

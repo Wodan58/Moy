@@ -1,18 +1,17 @@
 /*
  *  module  : main.c
- *  version : 1.46
- *  date    : 08/12/24
+ *  version : 1.47
+ *  date    : 08/30/24
  */
 #include "globals.h"
 
-extern FILE *yyin;			/* lexr.c */
+extern FILE *yyin;	/* lexr.c */
 
-static jmp_buf begin;			/* restart with empty program */
+static jmp_buf begin;	/* restart with empty program */
 
-char *bottom_of_stack;			/* used in gc.c */
+char *bottom_of_stack;	/* used in gc.c */
 
-static void stats(pEnv env);
-static void dump(pEnv env);
+static void stats(pEnv env), dump(pEnv env);
 
 /*
  * abort execution and restart reading from yyin. In the NOBDW version the
@@ -117,7 +116,7 @@ int my_main(int argc, char **argv)
  */
     unsigned char helping = 0, unknown = 0, mustinclude = 1;
 #ifdef KEYBOARD
-    unsigned char raw = 0;
+    unsigned char raw = 0, has_filename = 0;
 #endif
 
     memset(&env, 0, sizeof(env));
@@ -126,23 +125,22 @@ int my_main(int argc, char **argv)
      */
     env.startclock = clock();
     /*
-     * Initialize yyin and other environmental parameters.
+     * store the directory where the Joy binary is located in the list of
+     * pathnames to be used when including files. argv[0] is modified such
+     * that it contains only the basename.
      */
-    yyin = stdin;
-    env.filename = "stdin";
-    /*
-     * establish pathname, to be used when loading libraries, and basename.
-     */
-    ptr = strrchr(exe = argv[0], '/');
-#ifdef _MSC_VER
+    vec_init(env.pathnames);
+    ptr = strrchr(argv[0], '/');
+#ifdef WINDOWS
     if (!ptr)
 	ptr = strrchr(argv[0], '\\');
 #endif
     if (ptr) {
-	env.pathname = argv[0];		/* split argv[0] in pathname */
-	*ptr++ = 0;
-	argv[0] = exe = ptr;		/* and basename */
+	vec_push(env.pathnames, argv[0]);
+	*ptr++ = 0;	/* split in directory */
+	argv[0] = ptr;	/* and basename */
     }
+    exe = argv[0];	/* Joy binary */
     /*
      * These flags are initialized here, allowing them to be overruled by the
      * command line. When set on the command line, they can not be overruled
@@ -256,17 +254,30 @@ next_parm:
 		if ((ptr = strrchr(argv[i], '.')) == 0 || strcmp(ptr, ".joy"))
 		    mustinclude = joy = 0;
 	    }
+	    if (!joy) {
+		if ((yyin = fopen(argv[i], "rb")) == 0) {
+		    fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
+		    return 0;
+		}
+	    } else
 #endif
-	    if ((yyin = fopen(argv[i], joy ? "r" : "rb")) == 0) {
+	    /*
+	     * The first file should also benefit from include logic. But in
+	     * case of !joy, opening should be done with "rb", not "r".
+	     */
+	    if (include(&env, argv[i])) {
 		fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
 		return 0;
 	    }
+#ifdef KEYBOARD
+	    has_filename = 1;
+#endif
 	    /*
 	     * Overwrite argv[0] with the filename.
 	     */
-	    if ((ptr = strrchr(argv[0] = env.filename = argv[i], '/')) != 0) {
+	    if ((ptr = strrchr(argv[0] = argv[i], '/')) != 0) {
 		*ptr++ = 0;
-		argv[0] = env.filename = ptr;
+		argv[0] = ptr;
 	    }
 	    /*
 	     * Overwrite the filename with subsequent parameters.
@@ -277,10 +288,11 @@ next_parm:
 	     * Only one possible filename is read. Subsequent names are
 	     * passed on to joy.
 	     */
-	    break;
+	    goto start;
 	} /* end if */
     } /* end for */
     inilinebuffer(&env);
+start:    
     /*
      * determine argc and argv.
      */
@@ -331,7 +343,7 @@ next_parm:
      * initialize standard input and output.
      */
 #ifdef KEYBOARD
-    if (raw && strcmp(env.filename, "stdin")) {	/* raw requires a filename */
+    if (raw && has_filename) {		/* raw requires a filename */
 	env.autoput = 0;		/* disable autoput and usrlib.joy */
 	env.autoput_set = 1;		/* prevent enabling autoput */
 	SetRaw(&env);
@@ -358,7 +370,7 @@ next_parm:
     else				/* process .bic file instead of .joy */
 	readbytes(&env, env.compiling ? 0 : 1);
 #endif
-einde:
+einde:	/* LCOV_EXCL_LINE */
 #ifdef BYTECODE
     if (env.bytecoding)
 	exitbytes(&env);
