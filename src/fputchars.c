@@ -1,7 +1,7 @@
 /*
     module  : fputchars.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef FPUTCHARS_C
 #define FPUTCHARS_C
@@ -13,11 +13,11 @@ stream S.
 */
 void fputchars_(pEnv env)	/* suggested by Heiko Kuhrt, as "fputstring_" */
 {
-    Node node, elem;
+    Node elem, node;
 
     PARM(2, FPUTCHARS);
-    env->stck = pvec_pop(env->stck, &elem);
-    node = pvec_lst(env->stck);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
     fprintf(node.u.fil, "%s", elem.u.str);
 }
 #endif

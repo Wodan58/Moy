@@ -1,7 +1,7 @@
 /*
     module  : filetime.c
-    version : 1.13
-    date    : 06/22/24
+    version : 1.14
+    date    : 09/17/24
 */
 #ifndef FILETIME_C
 #define FILETIME_C
@@ -14,16 +14,21 @@ Q0  OK  3160  filetime  :  DA  F  ->  T
 */
 void filetime_(pEnv env)
 {
+    FILE *fp;
     Node node;
-    struct stat buf;
+    struct stat *buf;	/* struct stat is big */
+    time_t mtime = 0;	/* modification time */
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);
-    if (stat(node.u.str, &buf) == -1)
-	node.u.num = 0;
-    else
-	node.u.num = buf.st_mtime;
+    node = vec_pop(env->stck);
+    if ((fp = fopen(node.u.str, "r")) != 0) {
+	buf = GC_malloc(sizeof(struct stat));
+	if (fstat(fileno(fp), buf) >= 0)
+	    mtime = buf->st_mtime;
+	fclose(fp);
+    }
+    node.u.num = mtime;
     node.op = INTEGER_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

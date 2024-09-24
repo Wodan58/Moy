@@ -1,7 +1,7 @@
 /*
     module  : tailrec.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef TAILREC_C
 #define TAILREC_C
@@ -17,10 +17,10 @@ void tailrec_(pEnv env)
     Node first, second, third;
 
     PARM(3, IFTE);
-    env->stck = pvec_pop(env->stck, &third);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
-    size2 = pvec_cnt(env->prog);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    size2 = vec_size(env->prog);
     /*
 	setup the continuation
     */
@@ -35,7 +35,7 @@ void tailrec_(pEnv env)
     /*
 	register the target location for the false branch
     */
-    size1 = pvec_cnt(env->prog);
+    size1 = vec_size(env->prog);
     /*
 	push the jump address onto the program stack
     */

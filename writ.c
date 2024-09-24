@@ -1,14 +1,14 @@
 /*
  *  module  : writ.c
- *  version : 1.26
- *  date    : 09/01/24
+ *  version : 1.27
+ *  date    : 09/17/24
  */
 #include "globals.h"
 
 static int spacechar = ' ';
 
 /*
- * writefactor - print a factor in readable format to stdout.
+ * writefactor prints a factor in readable format to stdout.
  */
 void writefactor(pEnv env, Node node, FILE *fp)
 {
@@ -51,7 +51,7 @@ anon_prime:
     case CHAR_:
 	if (node.u.num >= 8 && node.u.num <= 13)
 	    fprintf(fp, "'\\%c", "btnvfr"[node.u.num - 8]);
-	else if (iscntrl((int)node.u.num) || node.u.num == 32)
+	else if (iscntrl(node.u.num) || node.u.num == 32)
 	    fprintf(fp, "'\\%03d", (int)node.u.num);
 	else
 	    fprintf(fp, "'%c", (int)node.u.num);
@@ -75,7 +75,7 @@ anon_prime:
 
     case STRING_:
 	putc('"', fp);
-	for (ptr = node.u.str; ptr && *ptr; ptr++)
+	for (ptr = node.u.str; *ptr; ptr++)
 	    if (*ptr == '"')
 		fprintf(fp, "\\\"");
 	    else if (*ptr >= 8 && *ptr <= 13)
@@ -94,7 +94,7 @@ anon_prime:
 	break;
 
     case FLOAT_:
-	sprintf(buf, "%g", node.u.dbl);		/* exponent character is e */
+	snprintf(buf, BUFFERMAX, "%g", node.u.dbl);	/* exponent is e */
 	if ((ptr = strchr(buf, '.')) == 0) {	/* locate decimal point */
 	    if ((ptr = strchr(buf, 'e')) == 0) {/* locate start of exponent */
 		i = buf[strlen(buf) - 1];
@@ -102,9 +102,10 @@ anon_prime:
 		    strcat(buf, ".0");		/* add decimal point and 0 */
 	    } else {
 		strcpy(tmp, ptr);		/* save exponent */
-		sprintf(ptr, ".0%s", tmp);	/* insert decimal point + 0 */
+		strcat(buf, ".0");		/* add decimal point and 0 */
+		strcat(buf, tmp);		/* restore exponent */
 	    }
-        }
+	}
 	fprintf(fp, "%s", buf);
 	break;
 
@@ -137,7 +138,6 @@ anon_prime:
 	    spacechar = ' ';
 	}
 	break;
-
 #if 0
 /*
  * The default case does not happen: it will be flagged as a syntax error.
@@ -151,10 +151,8 @@ anon_prime:
 /*
  * spacing - write a space character, except after [ or before ].
  */
-void spacing(void *parm, Node node, FILE *fp)
+void spacing(NodeList array, Node node, FILE *fp)
 {
-    vector(Node) *array = parm;
-
     if (node.op == CHAR_ && node.u.num == '[')	/* inspect preceding node */
 	;
     else if (vec_size(array)) {			/* inspect following node */
@@ -169,11 +167,10 @@ void spacing(void *parm, Node node, FILE *fp)
 /*
  * writing - print from a stack, used by writeterm and writestack.
  */
-void writing(pEnv env, void *parm, FILE *fp)
+void writing(pEnv env, NodeList array, FILE *fp)
 {
     int i, j;
     Node node, temp;
-    vector(Node) *array = parm;
 
     while (vec_size(array)) {
 	node = vec_pop(array);
@@ -187,8 +184,8 @@ void writing(pEnv env, void *parm, FILE *fp)
 	    temp.u.num = ']';
 	    temp.op = CHAR_;
 	    vec_push(array, temp);
-	    for (i = 0, j = pvec_cnt(node.u.lis); i < j; i++)
-		vec_push(array, pvec_nth(node.u.lis, i));
+	    for (i = 0, j = vec_size(node.u.lis); i < j; i++)
+		vec_push(array, vec_at(node.u.lis, i));
 	    temp.u.num = '[';
 	    vec_push(array, temp);
 	}
@@ -198,39 +195,37 @@ void writing(pEnv env, void *parm, FILE *fp)
 /*
  * writeterm - print the contents of a list in readable format to stdout.
  */
-void writeterm(pEnv env, NodeList *list, FILE *fp)
+void writeterm(pEnv env, NodeList list, FILE *fp)
 {
     int i, j;
-    vector(Node) *array;
+    NodeList array;
 
-    if ((j = pvec_cnt(list)) == 0)
-	return;
     if (!env->recurse)				/* print using recursion */
-	for (i = j - 1; i >= 0; i--) {
-	    writefactor(env, pvec_nth(list, i), fp);
+	for (i = vec_size(list) - 1; i >= 0; i--) {
+	    writefactor(env, vec_at(list, i), fp);
 	    if (i)
 		putc(spacechar, fp);
 	}
     else {
 	vec_init(array);			/* collect nodes in a vector */
-	for (i = 0; i < j; i++)
-	    vec_push(array, pvec_nth(list, i));
-	writing(env, (void *)array, fp);
+	for (i = 0, j = vec_size(list); i < j; i++)
+	    vec_push(array, vec_at(list, i));
+	writing(env, array, fp);
     }
 }
 
 /*
  * writestack - print the contents of the stack in readable format to stdout.
  */
-void writestack(pEnv env, NodeList *list, FILE *fp)
+void writestack(pEnv env, NodeList list, FILE *fp)
 {
     int i;
-    vector(Node) *array;
+    NodeList array;
 
-    if ((i = pvec_cnt(list)) == 0)
+    if ((i = vec_size(list)) == 0)
 	return;
     vec_init(array);				/* collect nodes in a vector */
     for (--i; i >= 0; i--)
-	vec_push(array, pvec_nth(list, i));
-    writing(env, (void *)array, fp);
+	vec_push(array, vec_at(list, i));
+    writing(env, array, fp);
 }

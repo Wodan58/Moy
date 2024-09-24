@@ -1,11 +1,11 @@
 /*
     module  : util.c
-    version : 1.3
-    date    : 03/21/24
+    version : 1.4
+    date    : 09/17/24
 */
 #include "globals.h"
 
-int EscVal(char *str)
+static int EscVal(char *str)
 {
     int i, num;
 

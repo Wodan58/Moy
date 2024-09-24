@@ -1,7 +1,7 @@
 /*
     module  : fread.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef FREAD_C
 #define FREAD_C
@@ -13,23 +13,23 @@ and returned as a list of I integers.
 */
 void fread_(pEnv env)
 {
-    int64_t count;
+    int count;
     Node node, elem;
     unsigned char *buf;
 
     PARM(2, FREAD);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     count = node.u.num;
-    node = pvec_lst(env->stck);
+    node = vec_back(env->stck);
     buf = GC_malloc_atomic(count);
     count = fread(buf, 1, count, node.u.fil);
-    node.u.lis = pvec_init();
+    vec_init(node.u.lis);
     elem.op = INTEGER_;
     for (--count; count >= 0; count--) {
 	elem.u.num = buf[count];
-	node.u.lis = pvec_add(node.u.lis, elem);
+	vec_push(node.u.lis, elem);
     }
     node.op = LIST_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

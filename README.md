@@ -1,5 +1,5 @@
 Moy
----
+===
 
 Build|Linux|Windows|Coverity
 ---|---|---|---

@@ -1,7 +1,7 @@
 /*
     module  : compare.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef COMPARE_C
 #define COMPARE_C
@@ -18,10 +18,10 @@ void compare_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     first.u.num = Compare(env, first, second);
     first.op = INTEGER_;
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

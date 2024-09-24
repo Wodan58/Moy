@@ -1,7 +1,7 @@
 /*
     module  : split.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef SPLIT_C
 #define SPLIT_C
@@ -14,30 +14,30 @@ void split_(pEnv env)
 {
     int64_t i, j;
     unsigned size;
-    Node aggr, list, node, temp;
+    Node list, aggr, node, temp;
 
     PARM(2, STEP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &aggr);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     /*
 	register the location of the result aggregate
     */
-    size = pvec_cnt(env->prog);
+    size = vec_size(env->prog);
     /*
 	build a result aggregate of the correct type
     */
     temp.op = aggr.op;
     switch (aggr.op) {
     case LIST_:
-	temp.u.lis = pvec_init();
+	vec_init(temp.u.lis);
 	prime(env, temp);
-	temp.u.lis = pvec_init();
+	vec_init(temp.u.lis);
 	prime(env, temp);
-	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
+	for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
 	    /*
 		push the element to be split
 	    */
-	    node = pvec_nth(aggr.u.lis, i);
+	    node = vec_at(aggr.u.lis, i);
 	    prime(env, node);
 	    /*
 		push the location of the result types

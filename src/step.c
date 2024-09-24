@@ -1,7 +1,7 @@
 /*
     module  : step.c
-    version : 1.13
-    date    : 03/21/24
+    version : 1.14
+    date    : 09/17/24
 */
 #ifndef STEP_C
 #define STEP_C
@@ -14,16 +14,16 @@ executes P for each member of A.
 void step_(pEnv env)
 {
     int i, j;
-    Node aggr, list, node;
+    Node list, aggr, node;
 
     PARM(2, STEP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &aggr);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	for (i = 0, j = pvec_cnt(aggr.u.lis); i < j; i++) {
+	for (i = 0, j = vec_size(aggr.u.lis); i < j; i++) {
 	    prog(env, list.u.lis);
-	    prime(env, pvec_nth(aggr.u.lis, i));
+	    prime(env, vec_at(aggr.u.lis, i));
 	}
 	break;
 

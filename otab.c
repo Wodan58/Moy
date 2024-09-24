@@ -1,7 +1,7 @@
 /*
     module  : otab.c
-    version : 1.10
-    date    : 09/01/24
+    version : 1.11
+    date    : 09/17/24
 */
 #include "globals.h"
 #include "prim.h"	/* declarations of functions */
@@ -87,7 +87,7 @@ static struct {
  *	      character that is not part of an identifier, then the nick name
  *	      is the part of the string after the first \0.
  */
-static NOINLINE char *nickname(int ch)
+NOINLINE static char *nickname(int ch)
 {
     char *str;
 

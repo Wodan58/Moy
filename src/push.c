@@ -1,7 +1,7 @@
 /*
     module  : push.c
-    version : 1.12
-    date    : 03/05/24
+    version : 1.13
+    date    : 09/17/24
 */
 #ifndef PUSH_C
 #define PUSH_C
@@ -14,15 +14,15 @@ from the data stack and add that element to the aggregate.
 void push_(pEnv env)
 {
     int i;
-    Node jump, elem, node;
+    Node elem, jump, node;
 
     PARM(1, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &elem);
-    env->prog = pvec_pop(env->prog, &jump);
-    node = pvec_nth(env->prog, jump.u.num);	/* read node */
+    elem = vec_pop(env->stck);
+    jump = vec_pop(env->prog);
+    node = vec_at(env->prog, jump.u.num);	/* read node */
     switch (node.op) {
     case LIST_:
-	node.u.lis = pvec_add(node.u.lis, elem);
+	vec_push(node.u.lis, elem);
 	break;
 
     case STRING_:
@@ -37,6 +37,6 @@ void push_(pEnv env)
 	node.u.set |= ((int64_t)1 << elem.u.num);
 	break;
     }
-    env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
+    vec_at(env->prog, jump.u.num) = node;	/* write node */
 }
 #endif

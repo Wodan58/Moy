@@ -1,7 +1,7 @@
 /*
     module  : unassign.c
-    version : 1.2
-    date    : 06/22/24
+    version : 1.3
+    date    : 09/17/24
 */
 #ifndef UNASSIGN_C
 #define UNASSIGN_C
@@ -16,13 +16,13 @@ void unassign_(pEnv env)
     int index;
     Entry ent;
 
-    PARM(1, ASSIGN);				/* quotation on top */
-    env->stck = pvec_pop(env->stck, &node);	/* singleton list */
-    node = pvec_lst(node.u.lis);		/* first/last element */
-    index = node.u.ent;				/* index user defined name */
-    ent = vec_at(env->symtab, index);		/* symbol table entry */
-    ent.is_user = 1;				/* ensure again user defined */
-    ent.u.body = 0;				/* (re)initialise body */
-    vec_at(env->symtab, index) = ent;		/* update symbol table */
+    PARM(1, ASSIGN);			/* quotation on top */
+    node = vec_pop(env->stck);;		/* singleton list */
+    node = vec_back(node.u.lis);	/* first/last element */
+    index = node.u.ent;			/* index user defined name */
+    ent = vec_at(env->symtab, index);	/* symbol table entry */
+    ent.is_user = 1;			/* ensure again user defined */
+    ent.u.body = 0;			/* (re)initialise body */
+    vec_at(env->symtab, index) = ent;	/* update symbol table */
 }
 #endif

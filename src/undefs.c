@@ -1,7 +1,7 @@
 /*
     module  : undefs.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef UNDEFS_C
 #define UNDEFS_C
@@ -16,16 +16,16 @@ void undefs_(pEnv env)
     Entry ent;
     Node node, elem;
 
-    node.u.lis = pvec_init();
+    vec_init(node.u.lis);
     node.op = LIST_;
     elem.op = STRING_;
     for (i = vec_size(env->symtab) - 1; i; i--) {
 	ent = vec_at(env->symtab, i);
 	if (ent.name[0] && ent.name[0] != '_' && !ent.u.body) {
 	    elem.u.str = ent.name;
-	    node.u.lis = pvec_add(node.u.lis, elem);
+	    vec_push(node.u.lis, elem);
 	}
     }
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : condlinrec.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef CONDLINREC_C
 #define CONDLINREC_C

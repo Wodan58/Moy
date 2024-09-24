@@ -1,7 +1,7 @@
 /*
     module  : ifte.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef IFTE_C
 #define IFTE_C
@@ -16,13 +16,13 @@ void ifte_(pEnv env)
     Node first, second, third;
 
     PARM(3, IFTE);
-    env->stck = pvec_pop(env->stck, &third);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     /*
 	record the jump location after the false branch
     */
-    size2 = pvec_cnt(env->prog);
+    size2 = vec_size(env->prog);
     /*
 	push the false branch of the ifte
     */
@@ -30,7 +30,7 @@ void ifte_(pEnv env)
     /*
 	record the jump location before the false branch
     */
-    size1 = pvec_cnt(env->prog);
+    size1 = vec_size(env->prog);
     /*
 	push the jump address onto the program stack
     */

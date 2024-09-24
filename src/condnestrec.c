@@ -1,7 +1,7 @@
 /*
     module  : condnestrec.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef CONDNESTREC_C
 #define CONDNESTREC_C
@@ -21,13 +21,13 @@ void condnestrec_(pEnv env)
     Node aggr, elem, node;
 
     PARM(1, CASE);
-    env->stck = pvec_pop(env->stck, &aggr);
-    size2 = pvec_cnt(env->prog);
-    for (k = 0, l = pvec_cnt(aggr.u.lis); k < l; k++) {
+    aggr = vec_pop(env->stck);
+    size2 = vec_size(env->prog);
+    for (k = 0, l = vec_size(aggr.u.lis); k < l; k++) {
 	/*
 	    jump address of the next cond line, or the end of it
 	*/
-	size = pvec_cnt(env->prog);
+	size = vec_size(env->prog);
 	/*
 	    push the jump address onto the program stack
 	*/
@@ -39,10 +39,10 @@ void condnestrec_(pEnv env)
 	/*
 	    read a cond line
 	*/
-	elem = pvec_nth(aggr.u.lis, k);
+	elem = vec_at(aggr.u.lis, k);
 	limit = k ? 2 : 1;
-	for (i = 0, j = pvec_cnt(elem.u.lis) - limit; i < j; i++) {
-	    node = pvec_nth(elem.u.lis, i);
+	for (i = 0, j = vec_size(elem.u.lis) - limit; i < j; i++) {
+	    node = vec_at(elem.u.lis, i);
 	    prog(env, node.u.lis);
 	    /*
 		push the continuation
@@ -52,7 +52,7 @@ void condnestrec_(pEnv env)
 	    node.op = LIST_;
 	    prime(env, node);
 	}
-	node = pvec_nth(elem.u.lis, i);
+	node = vec_at(elem.u.lis, i);
 	prog(env, node.u.lis);
 	if (k) {
 	    /*
@@ -70,7 +70,7 @@ void condnestrec_(pEnv env)
 	    /*
 		push the condition of the cond line
 	    */
-	    node = pvec_lst(elem.u.lis);
+	    node = vec_back(elem.u.lis);
 	    prog(env, node.u.lis);
 	}
     }

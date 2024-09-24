@@ -1,7 +1,7 @@
 /*
     module  : sametype.c
-    version : 1.10
-    date    : 04/11/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef SAMETYPE_C
 #define SAMETYPE_C
@@ -15,13 +15,13 @@ void sametype_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     if (first.op == ANON_FUNCT_)
 	first.u.num = first.u.proc == second.u.proc;
     else
 	first.u.num = first.op == second.op;
     first.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

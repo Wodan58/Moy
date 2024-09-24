@@ -1,25 +1,18 @@
 /*
     module  : arty.c
-    version : 1.15
-    date    : 09/01/24
+    version : 1.16
+    date    : 09/17/24
 */
 #include "globals.h"
 
-/*
-    Check the arity of a quotation. Parameter num is the initial value.
-    The desired outcome is 1. In case of an error -1 is returned.
-    The rules are that num cannot become negative and that unknown effects
-    are handled by returning -1. Unknown only means that it is considered
-    too difficult to try to figure out what the stack effect is.
-*/
 static int aggr_size(Node node)
 {
-    int num;
-    int64_t i, j;
+    int64_t j;
+    int i, num;
 
     switch (node.op) {
     case LIST_:
-	return pvec_cnt(node.u.lis);
+	return vec_size(node.u.lis);
 
     case BIGNUM_:
     case STRING_:
@@ -34,19 +27,25 @@ static int aggr_size(Node node)
     return 0;
 }
 
-int arity(pEnv env, NodeList *quot, int num)
+/*
+ * Check the arity of a quotation. Parameter num is the initial value.
+ * The desired outcome is 1. In case of an error -1 is returned.
+ * The rules are that num cannot become negative and that unknown effects
+ * are handled by returning -1. Unknown only means that it is considered
+ * too difficult to try to figure out what the stack effect is.
+ */
+int arity(pEnv env, NodeList quot, int num)
 {
     char *str;
+    NodeList list;
     int aggr, prog;				/* step combinator */
-    NodeList *list;
     Node node, prev, prevprev;
 
-    list = pvec_init();
-    pvec_copy(list, quot);			/* make a copy */
+    vec_copy_count(list, quot, vec_size(quot));	/* make a copy */
     prevprev.u.lis = prev.u.lis = 0;
     prevprev.op = prev.op = 0;
-    while (pvec_cnt(list)) {
-	list = pvec_pop(list, &node);		/* read a node */
+    while (vec_size(list)) {
+	node = vec_pop(list);			/* read a node */
 	switch (node.op) {
 	case USR_:
 	    return -1;				/* assume too difficult */
@@ -63,16 +62,20 @@ int arity(pEnv env, NodeList *quot, int num)
 			return -1;
 		    if (prev.u.lis) {		/* skip empty */
 			prog = arity(env, prev.u.lis, 0);	/* recursion */
-//			if (prog < 0)
-//			    return -1;
+#if 0
+			if (prog < 0)
+			    return -1;
+#endif
 			num += prog;
 		    }
 		} else if (*str == 'Q') {	/* previous two */
 		    if (prev.op != LIST_)
 			return -1;
 		    prog = arity(env, prev.u.lis, 1);	/* recursion */
-//		    if (prog < 0)
-//			return -1;
+#if 0
+		    if (prog < 0)
+			return -1;
+#endif
 		    aggr = aggr_size(prevprev);	/* size of aggregate */
 		    num += aggr * prog;
 		} else if (*str == 'U')		/* unknown */

@@ -1,7 +1,7 @@
 /*
     module  : pred.c
-    version : 1.8
-    date    : 04/11/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef PRED_C
 #define PRED_C
@@ -18,7 +18,7 @@ void pred_(pEnv env)
 #endif
 
     PARM(1, PREDSUCC);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
 #ifdef USE_BIGNUM_ARITHMETIC
     if (node.op == BIGNUM_ || node.u.num == -(MAXINT_)) {
         second = num2big(1);
@@ -31,6 +31,6 @@ void pred_(pEnv env)
     } else
 #endif
     node.u.num--;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

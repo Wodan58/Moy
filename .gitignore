@@ -2,14 +2,5 @@ moy.tar
 pars.c
 pars.h
 lexr.c
-bdwgc
 build
-joy.dir
-CMakeCache.txt
-*.vcxproj
-*.vcxproj.*
-x64
-CMakeFiles
-*.cmake
-*.exe
-*.sln
+ATTIC

@@ -1,7 +1,7 @@
 /*
     module  : unary4.c
-    version : 1.8
-    date    : 03/21/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef UNARY4_C
 #define UNARY4_C
@@ -13,24 +13,24 @@ Executes P four times, with Xi, returns Ri (i = 1..4).
 void unary4_(pEnv env)
 {	/*	X Y Z W [P]  unary4  ==>  X' Y' Z' W'	*/
     unsigned size1, size2, size3;
-    Node param1, param2, param3, list;
+    Node list, param1, param2, param3;
 
     PARM(5, DIP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &param3);
-    env->stck = pvec_pop(env->stck, &param2);
-    env->stck = pvec_pop(env->stck, &param1);
+    list = vec_pop(env->stck);
+    param3 = vec_pop(env->stck);
+    param2 = vec_pop(env->stck);
+    param1 = vec_pop(env->stck);
 
     code(env, swap_);
     code(env, rolldownd_);
 
-    size3 = pvec_cnt(env->prog);	/* location of first W, then Z' */
+    size3 = vec_size(env->prog);	/* location of first W, then Z' */
     prime(env, param3);			/* first W, then Z' */
 
-    size2 = pvec_cnt(env->prog);	/* location of first Z, then Y' */
+    size2 = vec_size(env->prog);	/* location of first Z, then Y' */
     prime(env, param2);			/* first Z, then Y' */
 
-    size1 = pvec_cnt(env->prog);	/* location of first Y, then X' */
+    size1 = vec_size(env->prog);	/* location of first Y, then X' */
     prime(env, param1);			/* first Y, then X' */
 
     /*

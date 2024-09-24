@@ -1,7 +1,7 @@
 /*
     module  : fold.c
-    version : 1.6
-    date    : 03/05/24
+    version : 1.7
+    date    : 09/17/24
 */
 #ifndef FOLD_C
 #define FOLD_C

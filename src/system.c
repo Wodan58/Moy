@@ -1,7 +1,7 @@
 /*
     module  : system.c
-    version : 1.10
-    date    : 03/21/24
+    version : 1.12
+    date    : 09/23/24
 */
 #ifndef SYSTEM_C
 #define SYSTEM_C
@@ -14,14 +14,10 @@ When that has finished, the process returns to Joy.
 */
 void system_(pEnv env)
 {
-    int rv;
     Node node;
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);
-    if ((rv = system(node.u.str)) != 0) {
-	fflush(stdout);
-	fprintf(stderr, "system: %d\n", rv);
-    }
+    node = vec_pop(env->stck);
+    (void)system(node.u.str);
 }
 #endif

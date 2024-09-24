@@ -1,7 +1,7 @@
 /*
     module  : srand.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef SRAND_C
 #define SRAND_C
@@ -15,7 +15,7 @@ void srand_(pEnv env)
     Node node;
 
     PARM(1, UNMKTIME);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     srand(node.u.num);
 }
 #endif

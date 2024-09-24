@@ -1,7 +1,7 @@
 /*
     module  : setundeferror.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef SETUNDEFERROR_C
 #define SETUNDEFERROR_C
@@ -16,7 +16,7 @@ void setundeferror_(pEnv env)
     Node node;
 
     PARM(1, PREDSUCC);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     if (!env->undeferror_set)
 	env->undeferror = node.u.num;
 }

@@ -1,7 +1,7 @@
 /*
     module  : cleave.c
-    version : 1.8
-    date    : 03/21/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef CLEAVE_C
 #define CLEAVE_C
@@ -16,8 +16,8 @@ void cleave_(pEnv env)
     Node first, second;
 
     PARM(3, WHILE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     /*
 	swap X1 and X2
     */
@@ -25,7 +25,7 @@ void cleave_(pEnv env)
     /*
 	push the location of X1 onto the code stack
     */
-    size = pvec_cnt(env->prog);
+    size = vec_size(env->prog);
     /*
 	push X1 that was saved at this location in the code
     */

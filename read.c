@@ -1,18 +1,18 @@
 /*
  *  module  : read.c
- *  version : 1.10
- *  date    : 03/21/24
+ *  version : 1.11
+ *  date    : 09/17/24
  */
 #include "globals.h"
 
 /*
-    readfactor - read a factor from srcfile and push it on the stack.
-*/
-int readfactor(pEnv env) /* read a JOY factor */
+ * readfactor - read a factor from srcfile and push it on the stack.
+ */
+int readfactor(pEnv env)	/* read a JOY factor */
 {
     int index;
-    Node node;
     Entry ent;
+    Node node;
     uint64_t set = 0;
 
     switch (env->token) {
@@ -31,7 +31,7 @@ int readfactor(pEnv env) /* read a JOY factor */
 	    node.u.proc = ent.u.proc;
 	    node.op = ANON_FUNCT_;
 	}
-	env->stck = pvec_add(env->stck, node);
+	vec_push(env->stck, node);
 	return 1;
 
     case CHAR_:
@@ -41,7 +41,7 @@ int readfactor(pEnv env) /* read a JOY factor */
     case BIGNUM_:
 	node.u = yylval;
 	node.op = env->token;
-	env->stck = pvec_add(env->stck, node);
+	vec_push(env->stck, node);
 	return 1;
 
     case '{':
@@ -53,11 +53,11 @@ int readfactor(pEnv env) /* read a JOY factor */
 		set |= ((int64_t)1 << yylval.num);
 	node.u.set = set;
 	node.op = SET_;
-	env->stck = pvec_add(env->stck, node);
+	vec_push(env->stck, node);
 	return 1;
 
     case '[':
-	env->token = yylex(env); /* read past [ */
+	env->token = yylex(env);	/* read past [ */
 	readterm(env);
 	return 1;
 
@@ -73,29 +73,21 @@ int readfactor(pEnv env) /* read a JOY factor */
 }
 
 /*
-    readterm - read a term from srcfile and push this on the stack as a list.
-	       The nodes are first collected in a vector and only afterwards
-	       pushed as a NodeList.
-*/
+ * readterm - read a term from srcfile and push this on the stack as a list.
+ */
 void readterm(pEnv env)
 {
-    int i;
-    Node node, temp;
-    vector(Node) *array;
+    Node node;
 
-    vec_init(array);	/* collect nodes in a vector */
-    node.u.lis = 0;	/* initialize the NodeList */
+    vec_init(node.u.lis);
     node.op = LIST_;
     if (env->token != ']') {
 	do {
-	    if (readfactor(env)) {
-		env->stck = pvec_pop(env->stck, &temp);
-		vec_push(array, temp);
-	    }
+	    if (readfactor(env))
+		vec_push(node.u.lis, vec_pop(env->stck));
 	} while ((env->token = yylex(env)) != ']');	/* read past factor */
-	node.u.lis = pvec_init();
-	for (i = vec_size(array) - 1; i >= 0; i--)	/* reverse */
-	    node.u.lis = pvec_add(node.u.lis, vec_at(array, i));
+	vec_push(node.u.lis, node);			/* add dummy node */
+	vec_reverse(node.u.lis);			/* reverse */
     }
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }

@@ -1,13 +1,13 @@
 /*
- *  module  : xerr.c
- *  version : 1.4
- *  date    : 06/22/24
+ *  module  : error.c
+ *  version : 1.2
+ *  date    : 09/18/24
  */
 #include "globals.h"
 
 /*
-    print a runtime error to stderr and abort the execution of current program.
-*/
+ * print a runtime error to stderr and abort the execution of current program.
+ */
 void execerror(char *message, char *op)
 {
     int leng = 0;
@@ -23,5 +23,5 @@ void execerror(char *message, char *op)
 	leng = strlen(ptr);
     fflush(stdout);
     fprintf(stderr, "run time error: %s needed for %.*s\n", message, leng, ptr);
-    abortexecution_(ABORT_ERROR);
+    abortexecution_(ABORT_RETRY);
 }	/* LCOV_EXCL_LINE */

@@ -1,7 +1,7 @@
 /*
     module  : char.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef CHAR_C
 #define CHAR_C
@@ -15,9 +15,9 @@ void char_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     node.u.num = node.op == CHAR_;
     node.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

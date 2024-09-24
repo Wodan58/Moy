@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
@@ -18,19 +18,17 @@ void construct_(pEnv env)
     Node first, second, node;
 
     PARM(2, WHILE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     code(env, unstack_);
-    size2 = pvec_cnt(env->prog);
+    size2 = vec_size(env->prog);
     /*
 	save the old stack; this will become the new stack
     */
-    node.u.lis = pvec_init();
-    pvec_copy(node.u.lis, env->stck);
+    vec_copy_count(node.u.lis, env->stck, vec_size(env->stck));
     node.op = LIST_;
     prime(env, node);
-
-    size1 = pvec_cnt(env->prog);
+    size1 = vec_size(env->prog);
     /*
 	the new stack after the first program needs to be saved
     */
@@ -38,7 +36,7 @@ void construct_(pEnv env)
     /*
 	each of the programs in the construct need to be executed
     */
-    for (i = 0, j = pvec_cnt(second.u.lis); i < j; i++) {
+    for (i = 0, j = vec_size(second.u.lis); i < j; i++) {
 	/*
 	    the new stack is restored
 	*/
@@ -59,7 +57,7 @@ void construct_(pEnv env)
 	    the result on top of the stack is added to the old stack
 	*/
 	code(env, push_);
-	node = pvec_nth(second.u.lis, i);
+        node = vec_at(second.u.lis, i);
 	prog(env, node.u.lis);
     }
     /*

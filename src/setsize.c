@@ -1,7 +1,7 @@
 /*
     module  : setsize.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef SETSIZE_C
 #define SETSIZE_C
@@ -17,6 +17,6 @@ void setsize_(pEnv env)
 
     node.u.num = SETSIZE;
     node.op = INTEGER_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

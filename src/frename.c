@@ -1,7 +1,7 @@
 /*
     module  : frename.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef FRENAME_C
 #define FRENAME_C
@@ -13,13 +13,13 @@ B is a boolean indicating success or failure.
 */
 void frename_(pEnv env)
 {
-    Node node, path;
+    Node path, node;
 
     PARM(2, FOPEN);
-    env->stck = pvec_pop(env->stck, &path);
-    env->stck = pvec_pop(env->stck, &node);
+    path = vec_pop(env->stck);
+    node = vec_pop(env->stck);
     node.u.num = !rename(node.u.str, path.u.str);
     node.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

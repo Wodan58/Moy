@@ -1,7 +1,7 @@
 /*
     module  : mul.c
-    version : 1.11
-    date    : 03/05/24
+    version : 1.12
+    date    : 09/17/24
 */
 #ifndef MUL_C
 #define MUL_C
@@ -17,8 +17,8 @@ void mul_(pEnv env)
     int64_t num, num1, num2;
 
     PARM(2, MUL);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     switch (first.op) {
 #ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
@@ -68,8 +68,7 @@ void mul_(pEnv env)
 	    break;
 #endif
 	case FLOAT_:
-	    second.u.dbl *= first.u.num;
-	    first.u.dbl = second.u.dbl;
+	    first.u.dbl = first.u.num * second.u.dbl;
 	    first.op = FLOAT_;
 	    break;
 
@@ -101,6 +100,6 @@ void mul_(pEnv env)
 	}
 	break;
     }
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

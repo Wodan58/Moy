@@ -1,13 +1,13 @@
 /*
     module  : filter.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.12
+    date    : 09/17/24
 */
 #ifndef FILTER_C
 #define FILTER_C
 
 /**
-Q0  OK  2830  filter  :  DDA  A [B]  ->  A1
+Q1  OK  2830  filter  :  DDA  A [B]  ->  A1
 Uses test B to filter aggregate A producing sametype aggregate A1.
 */
 void filter_(pEnv env)
@@ -17,25 +17,25 @@ void filter_(pEnv env)
     Node list, aggr, node;
 
     PARM(2, STEP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &aggr);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     /*
 	register the location of the result aggregate
     */
-    size = pvec_cnt(env->prog);
+    size = vec_size(env->prog);
     /*
 	build a result aggregate of the correct type
     */
     node.op = aggr.op;
     switch (aggr.op) {
     case LIST_:
-	node.u.lis = pvec_init();
+	vec_init(node.u.lis);
 	prime(env, node);
-	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
+	for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
 	    /*
 		push the element that may be added to the result
 	    */
-	    node = pvec_nth(aggr.u.lis, i);
+	    node = vec_at(aggr.u.lis, i);
 	    prime(env, node);
 	    /*
 		push the location of the result types

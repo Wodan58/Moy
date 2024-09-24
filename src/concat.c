@@ -1,7 +1,7 @@
 /*
     module  : concat.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef CONCAT_C
 #define CONCAT_C
@@ -16,20 +16,16 @@ void concat_(pEnv env)
     Node first, second, result;
 
     PARM(2, CONCAT);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     switch (first.op) {
     case LIST_:
-	if (!pvec_cnt(first.u.lis))
+        if (!vec_size(first.u.lis))
 	    result = second;
-	else if (!pvec_cnt(second.u.lis))
+        else if (!vec_size(second.u.lis))
 	    result = first;
-	else {
-	    result.u.lis = pvec_init();
-	    pvec_copy(result.u.lis, second.u.lis);
-	    for (i = 0, j = pvec_cnt(first.u.lis); i < j; i++)
-		result.u.lis = pvec_add(result.u.lis, pvec_nth(first.u.lis, i));
-	}
+	else
+            vec_concat(result.u.lis, second.u.lis, first.u.lis);
 	break;
 
     case STRING_:
@@ -47,6 +43,6 @@ void concat_(pEnv env)
 	break;
     }
     result.op = first.op;
-    env->stck = pvec_add(env->stck, result);
+    vec_push(env->stck, result);
 }
 #endif

@@ -1,13 +1,13 @@
 #
-#   module  : CMakeLists.txt
-#   version : 1.1
-#   date    : 08/31/24
+#   module  : CmakeLists.txt
+#   version : 1.2
+#   date    : 09/19/24
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test1
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy
-		  COMMAND joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
+		  COMMAND joy -w ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
 endmacro(exe9)
 
 # test most options
@@ -23,7 +23,7 @@ macro(exe7 src)
 add_custom_target(${src}.out ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test1
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy
-		  COMMAND joy -hiwx ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
+		  COMMAND joy -hivx ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
 endmacro(exe7)
 
 # test unknown options
@@ -39,7 +39,7 @@ macro(exe5 src)
 add_custom_target(${src}.out ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test1
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy
-		  COMMAND joy -stp ${CMAKE_SOURCE_DIR}/test1/${src}.joy dummy >${src}.out)
+		  COMMAND joy -st ${CMAKE_SOURCE_DIR}/test1/${src}.joy dummy >${src}.out)
 endmacro(exe5)
 
 #test access to nonexisting file

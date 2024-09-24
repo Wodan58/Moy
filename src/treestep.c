@@ -1,7 +1,7 @@
 /*
     module  : treestep.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef TREESTEP_C
 #define TREESTEP_C
@@ -17,16 +17,16 @@ void treestep_(pEnv env)
     vector(Node) *tree;
 
     PARM(2, DIP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &node);
+    list = vec_pop(env->stck);
+    node = vec_pop(env->stck);
     vec_init(tree);
-    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--)
-	vec_push(tree, pvec_nth(node.u.lis, i));
+    for (i = vec_size(node.u.lis) - 1; i >= 0; i--)
+	vec_push(tree, vec_at(node.u.lis, i));
     while (vec_size(tree)) {
 	node = vec_pop(tree);
 	if (node.op == LIST_)
-	    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--)
-		vec_push(tree, pvec_nth(node.u.lis, i));
+	    for (i = vec_size(node.u.lis) - 1; i >= 0; i--)
+		vec_push(tree, vec_at(node.u.lis, i));
 	else {
 	    prog(env, list.u.lis);
 	    prime(env, node);

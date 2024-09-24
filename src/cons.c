@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef CONS_C
 #define CONS_C
@@ -12,17 +12,15 @@ Aggregate B is A with a new member X (first member for sequences).
 */
 void cons_(pEnv env)
 {
-    Node elem, aggr, node;
+    Node aggr, elem, node;
 
     PARM(2, CONS);
-    env->stck = pvec_pop(env->stck, &aggr);
-    env->stck = pvec_pop(env->stck, &elem);
+    aggr = vec_pop(env->stck);
+    elem = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	node.u.lis = pvec_init();
-	if (pvec_cnt(aggr.u.lis))
-	    pvec_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
-	node.u.lis = pvec_add(node.u.lis, elem);
+	vec_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
+        vec_push(node.u.lis, elem);
 	break;
 
     case STRING_:
@@ -38,6 +36,6 @@ void cons_(pEnv env)
 	break;
     }
     node.op = aggr.op;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : dip.c
-    version : 1.10
-    date    : 03/21/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef DIP_C
 #define DIP_C
@@ -15,8 +15,8 @@ void dip_(pEnv env)
     Node list, node;
 
     PARM(2, DIP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &node);
+    list = vec_pop(env->stck);
+    node = vec_pop(env->stck);
     prime(env, node);
     prog(env, list.u.lis);
 }

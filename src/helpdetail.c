@@ -1,7 +1,7 @@
 /*
     module  : helpdetail.c
-    version : 1.13
-    date    : 04/11/24
+    version : 1.14
+    date    : 09/17/24
 */
 #ifndef HELPDETAIL_C
 #define HELPDETAIL_C
@@ -17,10 +17,10 @@ void helpdetail_(pEnv env)
     Node node, temp;
 
     PARM(1, HELP);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     printf("\n");
-    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--) {
-	temp = pvec_nth(node.u.lis, i);
+    for (i = vec_size(node.u.lis) - 1; i >= 0; i--) {
+	temp = vec_at(node.u.lis, i);
 	switch (op = temp.op) {
 	case USR_:
 	    ent = vec_at(env->symtab, temp.u.ent);

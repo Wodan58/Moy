@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef CASE_C
 #define CASE_C
@@ -18,19 +18,18 @@ void case_(pEnv env)
     Node aggr, node, elem;
 
     PARM(2, CASE);
-    env->stck = pvec_pop(env->stck, &aggr);
-    node = pvec_lst(env->stck);
-    for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
-	elem = pvec_nth(aggr.u.lis, i);
+    aggr = vec_pop(env->stck);
+    node = vec_back(env->stck);
+    for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+        elem = vec_at(aggr.u.lis, i);
 	if (!i) {
 	    node = elem;
 	    break;
 	}
-	if (!Compare(env, node, pvec_lst(elem.u.lis))) {
-	    node.u.lis = pvec_init();
-	    pvec_shallow_copy(node.u.lis, elem.u.lis);
-	    node.u.lis = pvec_del(node.u.lis);
-	    env->stck = pvec_del(env->stck);
+        if (!Compare(env, node, vec_back(elem.u.lis))) {
+            vec_shallow_copy(node.u.lis, elem.u.lis);
+            (void)vec_pop(node.u.lis);
+            (void)vec_pop(env->stck);
 	    break;
 	}
     }

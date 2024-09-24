@@ -1,7 +1,7 @@
 /*
     module  : at.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef AT_C
 #define AT_C
@@ -16,12 +16,12 @@ void at_(pEnv env)
     Node elem, aggr;
 
     PARM(2, AT);
-    env->stck = pvec_pop(env->stck, &elem);
-    env->stck = pvec_pop(env->stck, &aggr);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	i = pvec_cnt(aggr.u.lis) - elem.u.num - 1;
-	elem = pvec_nth(aggr.u.lis, i);
+	i = vec_size(aggr.u.lis) - elem.u.num - 1;
+	elem = vec_at(aggr.u.lis, i);
 	break;
 
     case STRING_:
@@ -43,6 +43,6 @@ void at_(pEnv env)
 	    }
 	break;
     }
-    env->stck = pvec_add(env->stck, elem);
+    vec_push(env->stck, elem);
 }
 #endif

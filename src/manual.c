@@ -1,7 +1,7 @@
 /*
     module  : manual.c
-    version : 1.8
-    date    : 03/21/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef MANUAL_C
 #define MANUAL_C

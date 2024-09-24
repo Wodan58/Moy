@@ -1,7 +1,7 @@
 /*
     module  : div.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef DIV_C
 #define DIV_C
@@ -12,16 +12,17 @@ Integers K and L are the quotient and remainder of dividing I by J.
 */
 void div_(pEnv env)
 {
-    lldiv_t result;
     Node first, second;
+    int64_t quotient, remainder;
 
     PARM(2, DIV);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
-    result = lldiv(first.u.num, second.u.num);
-    first.u.num = result.quot;
-    env->stck = pvec_add(env->stck, first);
-    first.u.num = result.rem;
-    env->stck = pvec_add(env->stck, first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    quotient = first.u.num / second.u.num;
+    remainder = first.u.num % second.u.num;
+    first.u.num = quotient;
+    vec_push(env->stck, first);
+    first.u.num = remainder;
+    vec_push(env->stck, first);
 }
 #endif

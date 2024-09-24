@@ -1,7 +1,7 @@
 /*
     module  : __dump.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/19/24
 */
 #ifndef __DUMP_C
 #define __DUMP_C
@@ -14,8 +14,8 @@ void __dump_(pEnv env)
 {
     Node node;
 
-    node.u.lis = 0;
+    vec_init(node.u.lis);
     node.op = LIST_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

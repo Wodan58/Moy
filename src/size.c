@@ -1,7 +1,7 @@
 /*
     module  : size.c
-    version : 1.11
-    date    : 03/05/24
+    version : 1.12
+    date    : 09/17/24
 */
 #ifndef SIZE_C
 #define SIZE_C
@@ -16,10 +16,10 @@ void size_(pEnv env)
     Node node, temp;
 
     PARM(1, SIZE_);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     switch (node.op) {
     case LIST_:
-	temp.u.num = pvec_cnt(node.u.lis);
+	temp.u.num = vec_size(node.u.lis);
 	break;
     case STRING_:
     case BIGNUM_:
@@ -32,6 +32,6 @@ void size_(pEnv env)
 	break;
     }
     temp.op = INTEGER_;
-    env->stck = pvec_add(env->stck, temp);
+    vec_push(env->stck, temp);
 }
 #endif

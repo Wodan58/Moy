@@ -1,7 +1,7 @@
 /*
     module  : repl.c
-    version : 1.12
-    date    : 05/27/24
+    version : 1.13
+    date    : 09/17/24
 */
 #include "globals.h"
 
@@ -55,7 +55,7 @@ int lookup(pEnv env, char *name)
  * Enteratom enters a symbol in the symbol table, maybe a local symbol. This
  * local symbol is also added to the hash table, but in its classified form.
  */
-void enteratom(pEnv env, char *name, NodeList *list)
+void enteratom(pEnv env, char *name, NodeList list)
 {
     int index;
     Entry ent;
@@ -80,11 +80,14 @@ void enteratom(pEnv env, char *name, NodeList *list)
 /*
  * Allocate and fill a singleton list.
  */
-NodeList *newnode(Operator op, YYSTYPE u)
+NodeList newnode(Operator op, YYSTYPE u)
 {
     Node node;
+    NodeList list;
 
     node.u = u;
     node.op = op;
-    return pvec_add(pvec_init(), node);
+    vec_init(list);
+    vec_push(list, node);
+    return list;
 }

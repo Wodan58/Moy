@@ -1,7 +1,7 @@
 /*
     module  : jump.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef JUMP_C
 #define JUMP_C
@@ -14,7 +14,7 @@ void jump_(pEnv env)
 {
     Node jump;
 
-    env->prog = pvec_pop(env->prog, &jump);
-    env->prog = pvec_cut(env->prog, jump.u.num);
+    jump = vec_pop(env->prog);
+    vec_setsize(env->prog, jump.u.num);
 }
 #endif

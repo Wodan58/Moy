@@ -1,7 +1,7 @@
 /*
     module  : include.c
-    version : 1.10
-    date    : 05/27/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef INCLUDE_C
 #define INCLUDE_C
@@ -16,7 +16,7 @@ void include_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     if (include(env, node.u.str))
 	execerror("valid file name", "include");
 }

@@ -1,7 +1,7 @@
 /*
     module  : fgets.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef FGETS_C
 #define FGETS_C
@@ -17,7 +17,7 @@ void fgets_(pEnv env)
     size_t leng, size = INPLINEMAX;
 
     PARM(1, FGET);
-    node = pvec_lst(env->stck);
+    node = vec_back(env->stck);
     buf = GC_malloc_atomic(size);
     buf[leng = 0] = 0;
     while (fgets(buf + leng, size - leng, node.u.fil)) {
@@ -27,6 +27,6 @@ void fgets_(pEnv env)
     }
     node.u.str = buf;
     node.op = STRING_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

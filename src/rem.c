@@ -1,7 +1,7 @@
 /*
     module  : rem.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef REM_C
 #define REM_C
@@ -15,8 +15,8 @@ void rem_(pEnv env)
     Node first, second;
 
     PARM(2, REM);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     switch (first.op) {
     case FLOAT_:
 	switch (second.op) {
@@ -33,9 +33,9 @@ void rem_(pEnv env)
     default:
 	switch (second.op) {
 	case FLOAT_:
-	    second.u.dbl = fmod(first.u.num, second.u.dbl);
-	    env->stck = pvec_add(env->stck, second);
-	    return;
+	    first.u.dbl = fmod(first.u.num, second.u.dbl);
+	    first.op = FLOAT_;
+	    break;
 
 	default:
 	    first.u.num %= second.u.num;
@@ -43,6 +43,6 @@ void rem_(pEnv env)
 	}
 	break;
     }
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

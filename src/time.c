@@ -1,7 +1,7 @@
 /*
     module  : time.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef TIME_C
 #define TIME_C
@@ -16,6 +16,6 @@ void time_(pEnv env)
 
     node.u.num = time(0);
     node.op = INTEGER_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

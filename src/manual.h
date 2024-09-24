@@ -1,7 +1,7 @@
 /*
     module  : manual.h
-    version : 1.11
-    date    : 07/02/24
+    version : 1.12
+    date    : 09/17/24
 */
 #ifndef MANUAL_H
 #define MANUAL_H

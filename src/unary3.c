@@ -1,7 +1,7 @@
 /*
     module  : unary3.c
-    version : 1.8
-    date    : 03/21/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef UNARY3_C
 #define UNARY3_C
@@ -13,19 +13,19 @@ Executes P three times, with Xi, returns Ri (i = 1..3).
 void unary3_(pEnv env)
 {	/*	X Y Z [P]  unary3  ==>  X' Y' Z'	*/
     unsigned size1, size2;
-    Node param1, param2, list;
+    Node list, param1, param2;
 
     PARM(4, DIP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &param2);
-    env->stck = pvec_pop(env->stck, &param1);
+    list = vec_pop(env->stck);
+    param2 = vec_pop(env->stck);
+    param1 = vec_pop(env->stck);
 
     code(env, rolldown_);
 
-    size2 = pvec_cnt(env->prog);	/* location of first Z, then Y' */
+    size2 = vec_size(env->prog);	/* location of first Z, then Y' */
     prime(env, param2);			/* first Z, then Y' */
 
-    size1 = pvec_cnt(env->prog);	/* location of first Y, then X' */
+    size1 = vec_size(env->prog);	/* location of first Y, then X' */
     prime(env, param1);			/* first Y, then X' */
 
     /*

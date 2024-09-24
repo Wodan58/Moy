@@ -1,7 +1,7 @@
 /*
     module  : putch.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef PUTCH_C
 #define PUTCH_C
@@ -15,7 +15,7 @@ void putch_(pEnv env)
     Node node;
 
     PARM(1, PREDSUCC);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     putchar(node.u.num);
 }
 #endif

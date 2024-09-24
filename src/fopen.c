@@ -1,7 +1,7 @@
 /*
     module  : fopen.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef FOPEN_C
 #define FOPEN_C
@@ -14,13 +14,13 @@ is pushed.
 */
 void fopen_(pEnv env)
 {
-    Node path, mode;
+    Node mode, path;
 
     PARM(2, FOPEN);
-    env->stck = pvec_pop(env->stck, &mode);
-    env->stck = pvec_pop(env->stck, &path);
+    mode = vec_pop(env->stck);
+    path = vec_pop(env->stck);
     path.u.fil = fopen(path.u.str, mode.u.str);
     path.op = FILE_;
-    env->stck = pvec_add(env->stck, path);
+    vec_push(env->stck, path);
 }
 #endif

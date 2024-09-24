@@ -1,7 +1,7 @@
 /*
     module  : fflush.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef FFLUSH_C
 #define FFLUSH_C
@@ -15,7 +15,7 @@ void fflush_(pEnv env)
     Node node;
 
     PARM(1, FGET);
-    node = pvec_lst(env->stck);
+    node = vec_back(env->stck);
     fflush(node.u.fil);
 }
 #endif

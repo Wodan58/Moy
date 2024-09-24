@@ -1,7 +1,7 @@
 /*
     module  : sign.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef SIGN_C
 #define SIGN_C
@@ -16,11 +16,11 @@ void sign_(pEnv env)
     Node node;
 
     PARM(1, UFLOAT);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     if (node.op == FLOAT_)
 	node.u.dbl = node.u.dbl < 0 ? -1 : node.u.dbl > 0;
     else
 	node.u.num = node.u.num < 0 ? -1 : node.u.num > 0;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

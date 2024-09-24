@@ -1,7 +1,7 @@
 /*
     module  : fremove.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef FREMOVE_C
 #define FREMOVE_C
@@ -16,9 +16,9 @@ void fremove_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     node.u.num = !remove(node.u.str);
     node.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

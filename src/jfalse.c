@@ -1,7 +1,7 @@
 /*
     module  : jfalse.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef JFALSE_C
 #define JFALSE_C
@@ -16,10 +16,10 @@ void jfalse_(pEnv env)
     Node test, jump;
 
     PARM(1, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &test);
-    env->prog = pvec_pop(env->prog, &jump);
+    test = vec_pop(env->stck);
+    jump = vec_pop(env->prog);
     if (test.u.num != 1) {
-	env->prog = pvec_cut(env->prog, jump.u.num);
+	vec_setsize(env->prog, jump.u.num);
 	code(env, false_);
     }
 }

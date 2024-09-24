@@ -1,7 +1,7 @@
 /*
     module  : some.c
-    version : 1.12
-    date    : 03/05/24
+    version : 1.13
+    date    : 09/17/24
 */
 #ifndef SOME_C
 #define SOME_C
@@ -14,19 +14,19 @@ void some_(pEnv env)
 {
     int64_t i, j;
     unsigned size;
-    Node aggr, list, node;
+    Node list, aggr, node;
 
     PARM(2, STEP);
-    size = pvec_cnt(env->prog);
+    size = vec_size(env->prog);
     /*
 	if no test passes, the result will be false.
     */
     code(env, false_);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &aggr);
+    list = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	for (i = 0, j = pvec_cnt(aggr.u.lis); i < j; i++) {
+	for (i = 0, j = vec_size(aggr.u.lis); i < j; i++) {
 	    /*
 		push the location of the result type
 	    */
@@ -46,7 +46,7 @@ void some_(pEnv env)
 	    /*
 		push the element to be mapped
 	    */
-	    prime(env, pvec_nth(aggr.u.lis, i));
+	    prime(env, vec_at(aggr.u.lis, i));
 	}
 	break;
 

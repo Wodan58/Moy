@@ -1,7 +1,7 @@
 /*
     module  : undeferror.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef UNDEFERROR_C
 #define UNDEFERROR_C
@@ -16,6 +16,6 @@ void undeferror_(pEnv env)
 
     node.u.num = env->undeferror;
     node.op = INTEGER_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

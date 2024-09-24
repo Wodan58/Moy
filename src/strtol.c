@@ -1,7 +1,7 @@
 /*
     module  : strtol.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef STRTOL_C
 #define STRTOL_C
@@ -17,10 +17,10 @@ void strtol_(pEnv env)
     Node first, second;
 
     PARM(2, STRTOL);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     first.u.num = strtol(first.u.str, 0, second.u.num);
     first.op = INTEGER_;
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

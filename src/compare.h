@@ -1,7 +1,7 @@
 /*
     module  : compare.h
-    version : 1.21
-    date    : 04/11/24
+    version : 1.22
+    date    : 09/17/24
 */
 #ifndef COMPARE_H
 #define COMPARE_H
@@ -26,7 +26,7 @@ int is_null(pEnv env, Node node)
 	return !*node.u.str;
     case LIST_:
     case USR_LIST_:
-	return !pvec_cnt(node.u.lis);
+	return !vec_size(node.u.lis);
     case FLOAT_:
 	return !node.u.dbl;
     case FILE_:

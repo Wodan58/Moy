@@ -1,19 +1,19 @@
 %{
 /*
     module  : pars.y
-    version : 1.18
-    date    : 09/01/24
+    version : 1.19
+    date    : 09/17/24
 */
 #include "globals.h"
 
-static uint64_t list2set(pEnv env, NodeList *list)
+static uint64_t list2set(pEnv env, NodeList list)
 {
     int i;
     Node node;
     uint64_t set = 0;
 
-    for (i = pvec_cnt(list) - 1; i >= 0; i--) {
-	node = pvec_nth(list, i);
+    for (i = vec_size(list) - 1; i >= 0; i--) {
+	node = vec_at(list, i);
 	if (node.op == CHAR_ || node.op == INTEGER_)
 	    if (node.u.num < 0 || node.u.num >= SETSIZE)
 		yyerror(env, "small numeric expected in set");
@@ -59,7 +59,7 @@ static uint64_t list2set(pEnv env, NodeList *list)
     proc_t proc;	/* ANON_FUNCT */
     uint64_t set;	/* SET */
     char *str;		/* STRING */
-    NodeList *lis;	/* LIST */
+    NodeList lis;	/* LIST */
     double dbl;		/* FLOAT */
     FILE *fil;		/* FILE */
     int ent;		/* SYMBOL */
@@ -113,12 +113,12 @@ definition : USR_ EQDEF opt_term { enteratom(env, $1, $3); }
 	   | private opt_public END { exitpriv(); }
 	   | module opt_private opt_public END { exitmod(); } ;
 
-opt_term : term | /* empty */ { $$ = 0; } ;
+opt_term : term | /* empty */ { vec_init($$); } ;
 
 /*
     A term is one or more factors.
 */
-term : term factor { $$ = pvec_concat($1, $2); }
+term : term factor { vec_concat($$, $2, $1); }
      | factor ;
 
 /*
@@ -135,7 +135,7 @@ factor  : USR_      {   int index; Entry ent; Node node;
 				evaluate(env, ent.u.body);
 			    else
 				(*ent.u.proc)(env);
-			    env->stck = pvec_pop(env->stck, &node);
+			    node = vec_pop(env->stck);
 			 } else if (ent.is_user) {
 			    node.u.ent = index;
 			    node.op = USR_;
@@ -143,7 +143,8 @@ factor  : USR_      {   int index; Entry ent; Node node;
 			    node.u.proc = ent.u.proc;
 			    node.op = ANON_FUNCT_;
 			 }
-			 $$ = pvec_add(pvec_init(), node);
+			 vec_init($$);
+			 vec_push($$, node);
 		    }
 	| CHAR_     { YYSTYPE u; u.num = $1; $$ = newnode(CHAR_, u); }
 	| INTEGER_  { YYSTYPE u; u.num = $1; $$ = newnode(INTEGER_, u); }

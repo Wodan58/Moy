@@ -1,7 +1,7 @@
 /*
     module  : cswap.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef CSWAP_C
 #define CSWAP_C
@@ -13,13 +13,13 @@ Swap that element with the top of the data stack.
 */
 void cswap_(pEnv env)
 {
-    Node elem, jump, node;
+    Node node, jump, elem;
 
     PARM(1, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &node);
-    env->prog = pvec_pop(env->prog, &jump);
-    elem = pvec_nth(env->prog, jump.u.num);
-    env->prog = pvec_upd(env->prog, jump.u.num, node);	/* write node */
-    env->stck = pvec_add(env->stck, elem);
+    node = vec_pop(env->stck);
+    jump = vec_pop(env->prog);
+    elem = vec_at(env->prog, jump.u.num);
+    vec_at(env->prog, jump.u.num) = node;	/* write node */
+    vec_push(env->stck, elem);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : binrec.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef BINREC_C
 #define BINREC_C
@@ -18,14 +18,14 @@ void binrec_(pEnv env)
     Node first, second, third, fourth;
 
     PARM(4, LINREC);
-    env->stck = pvec_pop(env->stck, &fourth);
-    env->stck = pvec_pop(env->stck, &third);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    fourth = vec_pop(env->stck);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     /*
 	register the return address
     */
-    size2 = pvec_cnt(env->prog);
+    size2 = vec_size(env->prog);
     /*
 	execute R2 after returning from the recursion
     */
@@ -41,7 +41,7 @@ void binrec_(pEnv env)
     /*
 	save point for the first result
     */
-    size3 = pvec_cnt(env->prog);
+    size3 = vec_size(env->prog);
     code(env, id_);
     /*
 	setup the continuation
@@ -66,7 +66,7 @@ void binrec_(pEnv env)
     /*
 	register the target location for the false branch
     */
-    size1 = pvec_cnt(env->prog);
+    size1 = vec_size(env->prog);
     /*
 	push the jump address onto the program stack
     */

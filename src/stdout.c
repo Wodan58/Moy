@@ -1,7 +1,7 @@
 /*
     module  : stdout.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef STDOUT_C
 #define STDOUT_C
@@ -16,6 +16,6 @@ void stdout_(pEnv env)
 
     node.u.fil = stdout;
     node.op = FILE_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

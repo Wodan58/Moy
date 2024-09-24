@@ -1,7 +1,7 @@
 /*
     module  : pick.c
-    version : 1.14
-    date    : 06/22/24
+    version : 1.15
+    date    : 09/17/24
 */
 #ifndef PICK_C
 #define PICK_C
@@ -16,12 +16,12 @@ void pick_(pEnv env)
     Node node;
 
     PARM(1, UNMKTIME);
-    env->stck = pvec_pop(env->stck, &node);
-    size = pvec_cnt(env->stck);
+    node = vec_pop(env->stck);
+    size = vec_size(env->stck);
     if (node.u.num < size)
-	node = pvec_nth(env->stck, size - node.u.num - 1);
+	node = vec_at(env->stck, size - node.u.num - 1);
     else
-	node = pvec_nth(env->stck, 0);
-    env->stck = pvec_add(env->stck, node);
+	node = vec_at(env->stck, 0);
+    vec_push(env->stck, node);
 }
 #endif

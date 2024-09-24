@@ -1,8 +1,8 @@
 /*
-    module  : module.c
-    version : 1.17
-    date    : 08/29/24
-*/
+ *  module  : module.c
+ *  version : 1.19
+ *  date    : 09/18/24
+ */
 #include "globals.h"
 
 /*
@@ -123,7 +123,7 @@ char *classify(pEnv env, char *name)
      * table should get the hide number as a prefix.
      */
     if (inside_hide) {
-	sprintf(temp, "%d", env->hide_stack[hide_index]);
+	snprintf(temp, MAXNUM, "%d", env->hide_stack[hide_index]);
 	buf = temp;
     }
     /*
@@ -140,7 +140,7 @@ char *classify(pEnv env, char *name)
     if (buf) {
 	leng = strlen(buf) + strlen(name) + 2;
 	str = GC_malloc_atomic(leng);
-	sprintf(str, "%s.%s", buf, name);
+	snprintf(str, leng, "%s.%s", buf, name);
     } else
 	str = name;
     /*
@@ -193,10 +193,10 @@ int qualify(pEnv env, char *name)
 	else
 	    limit = -1;
 	for (index = hide_index; index > limit; index--) {
-	    sprintf(temp, "%d", env->hide_stack[index]);
+	    snprintf(temp, MAXNUM, "%d", env->hide_stack[index]);
 	    leng = strlen(temp) + strlen(name) + 2;
 	    str = GC_malloc_atomic(leng);
-	    sprintf(str, "%s.%s", temp, name);
+	    snprintf(str, leng, "%s.%s", temp, name);
 #ifdef USE_KHASHL
 	    if ((key = symtab_get(env->hash, str)) != kh_end(env->hash))
 #else
@@ -213,7 +213,7 @@ int qualify(pEnv env, char *name)
 	buf = env->module_stack[module_index].name;
 	leng = strlen(buf) + strlen(name) + 2;
 	str = GC_malloc_atomic(leng);
-	sprintf(str, "%s.%s", buf, name);
+	snprintf(str, leng, "%s.%s", buf, name);
 #ifdef USE_KHASHL
 	if ((key = symtab_get(env->hash, str)) != kh_end(env->hash))
 #else

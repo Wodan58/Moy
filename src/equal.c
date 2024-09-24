@@ -1,7 +1,7 @@
 /*
     module  : equal.c
-    version : 1.10
-    date    : 03/21/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef EQUAL_C
 #define EQUAL_C
@@ -84,15 +84,15 @@ int is_equal(pEnv env, Node first, Node second)
 	return 0; /* unequal */
     if (first.op != LIST_)
 	return Compare(env, first, second) == 0;
-    if ((j = pvec_cnt(first.u.lis)) != pvec_cnt(second.u.lis))
+    if ((j = vec_size(first.u.lis)) != vec_size(second.u.lis))
 	return 0; /* unequal */
     if (j) {
 	vec_init(stackf);	/* collect nodes in a vector */
 	vec_init(stacks);
     }
     for (i = 0; i < j; i++) {
-	vec_push(stackf, pvec_nth(first.u.lis, i));
-	vec_push(stacks, pvec_nth(second.u.lis, i));
+	vec_push(stackf, vec_at(first.u.lis, i));
+	vec_push(stacks, vec_at(second.u.lis, i));
     }
     while (vec_size(stackf)) {
 	first = vec_pop(stackf);
@@ -103,11 +103,11 @@ int is_equal(pEnv env, Node first, Node second)
 	    if (Compare(env, first, second))
 		return 0; /* unequal */
 	} else {
-	    if ((j = pvec_cnt(first.u.lis)) != pvec_cnt(second.u.lis))
+	    if ((j = vec_size(first.u.lis)) != vec_size(second.u.lis))
 		return 0; /* unequal */
 	    for (i = 0; i < j; i++) {
-		vec_push(stackf, pvec_nth(first.u.lis, i));
-		vec_push(stacks, pvec_nth(second.u.lis, i));
+		vec_push(stackf, vec_at(first.u.lis, i));
+		vec_push(stacks, vec_at(second.u.lis, i));
 	    }	    
 	}
     }
@@ -119,10 +119,10 @@ void equal_(pEnv env)
     Node first, second;
 
     PARM(2, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     first.u.num = is_equal(env, first, second);
     first.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

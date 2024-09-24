@@ -1,7 +1,7 @@
 /*
     module  : genrecaux.c
-    version : 1.12
-    date    : 03/05/24
+    version : 1.13
+    date    : 09/17/24
 */
 #ifndef GENRECAUX_C
 #define GENRECAUX_C
@@ -15,28 +15,28 @@ void genrecaux_(pEnv env)
 {
     int i, j, size;
     unsigned size1, size2;
-    Node first, second, third, aggr, node;
+    Node aggr, first, second, third, node;
 
     PARM(1, DIP);
-    env->stck = pvec_pop(env->stck, &aggr);	/* item on top of the stack */
-    first = pvec_lst(aggr.u.lis);
-    size = pvec_cnt(aggr.u.lis);
-    second = pvec_nth(aggr.u.lis, size - 2);
-    third = pvec_nth(aggr.u.lis, size - 3);
+    aggr = vec_pop(env->stck);
+    first = vec_back(aggr.u.lis);
+    size = vec_size(aggr.u.lis);
+    second = vec_at(aggr.u.lis, size - 2);
+    third = vec_at(aggr.u.lis, size - 3);
     /*
 	record the jump location after the false branch
     */
-    size2 = pvec_cnt(env->prog);
+    size2 = vec_size(env->prog);
     /*
 	push R2, excluding [B], [T], [R1]
     */
-    for (i = 0, j = pvec_cnt(aggr.u.lis) - 3; i < j; i++)
-	env->prog = pvec_add(env->prog, pvec_nth(aggr.u.lis, i));
+    for (i = 0, j = vec_size(aggr.u.lis) - 3; i < j; i++)
+	vec_push(env->prog, vec_at(aggr.u.lis, i));
 
     code(env, cons_);		/* build [[[B] [T] [R1] R2] genrecaux_] */
     code(env, cons_);		/* build [genrecaux_] */
 
-    node.u.lis = 0;
+    vec_init(node.u.lis);
     node.op = LIST_;
     prime(env, node);
 
@@ -54,7 +54,7 @@ void genrecaux_(pEnv env)
     /*
 	record the jump location before the false branch
     */
-    size1 = pvec_cnt(env->prog);
+    size1 = vec_size(env->prog);
     /*
 	push the jump address onto the program stack
     */

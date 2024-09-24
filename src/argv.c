@@ -1,7 +1,7 @@
 /*
     module  : argv.c
-    version : 1.8
-    date    : 03/21/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef ARGV_C
 #define ARGV_C
@@ -15,13 +15,13 @@ void argv_(pEnv env)
     int i;
     Node node, elem;
 
-    node.u.lis = pvec_init();
+    vec_init(node.u.lis);
     elem.op = STRING_;
     for (i = env->g_argc - 1; i >= 0; i--) {
 	elem.u.str = env->g_argv[i];
-	node.u.lis = pvec_add(node.u.lis, elem);
+        vec_push(node.u.lis, elem);
     }
     node.op = LIST_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

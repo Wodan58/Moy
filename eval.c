@@ -1,7 +1,7 @@
 /*
  *  module  : eval.c
- *  version : 1.22
- *  date    : 04/26/24
+ *  version : 1.23
+ *  date    : 09/17/24
  */
 #include "globals.h"
 
@@ -39,7 +39,7 @@ void trace(pEnv env, FILE *fp)
 /*
  * Evaluate program, as long as it is not empty.
  */
-void evaluate(pEnv env, NodeList *list)
+void evaluate(pEnv env, NodeList list)
 {
     Node node;
     Entry ent;
@@ -50,7 +50,7 @@ void evaluate(pEnv env, NodeList *list)
 #endif
     env->calls++;
     prog(env, list);
-    while (pvec_cnt(env->prog)) {
+    while (vec_size(env->prog)) {
 #if ALARM
 	if (time_out) {
 	    time_out = 0;
@@ -59,7 +59,7 @@ void evaluate(pEnv env, NodeList *list)
 #endif
 	if (env->debugging)
 	    trace(env, stdout);
-	env->prog = pvec_pop(env->prog, &node);
+	node = vec_pop(env->prog);
 	switch (node.op) {
 	case USR_:
 	    ent = vec_at(env->symtab, node.u.ent);
@@ -79,7 +79,7 @@ void evaluate(pEnv env, NodeList *list)
 	    node.op = ANON_FUNCT_;
 	    break;
 	}
-	env->stck = pvec_add(env->stck, node);
+	vec_push(env->stck, node);
     }
     if (env->debugging)
 	trace(env, stdout);	/* final stack */

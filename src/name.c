@@ -1,7 +1,7 @@
 /*
     module  : name.c
-    version : 1.11
-    date    : 04/11/24
+    version : 1.12
+    date    : 09/17/24
 */
 #ifndef NAME_C
 #define NAME_C
@@ -16,7 +16,7 @@ void name_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     if (node.op == USR_)
 	node.u.str = vec_at(env->symtab, node.u.ent).name;
     else if (node.op == ANON_FUNCT_)
@@ -24,6 +24,6 @@ void name_(pEnv env)
     else
 	node.u.str = showname(node.op);
     node.op = STRING_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

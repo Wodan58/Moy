@@ -1,7 +1,7 @@
 /*
     module  : while.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef WHILE_C
 #define WHILE_C
@@ -13,12 +13,12 @@ While executing B yields true executes D.
 void while_(pEnv env)
 {
     int size;
-    Node test, body;
+    Node body, test;
 
     PARM(2, WHILE);
-    env->stck = pvec_pop(env->stck, &body);
-    env->stck = pvec_pop(env->stck, &test);
-    size = pvec_cnt(env->prog);
+    body = vec_pop(env->stck);
+    test = vec_pop(env->stck);
+    size = vec_size(env->prog);
     /*
 	setup the continuation
     */

@@ -1,7 +1,7 @@
 /*
     module  : rollup.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef ROLLUP_C
 #define ROLLUP_C
@@ -15,11 +15,11 @@ void rollup_(pEnv env)
     Node first, second, third;
 
     PARM(3, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &third);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
-    env->stck = pvec_add(env->stck, third);
-    env->stck = pvec_add(env->stck, first);
-    env->stck = pvec_add(env->stck, second);
+    third = vec_pop(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    vec_push(env->stck, third);
+    vec_push(env->stck, first);
+    vec_push(env->stck, second);
 }
 #endif

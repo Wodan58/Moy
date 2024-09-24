@@ -1,7 +1,7 @@
 /*
     module  : max.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef MAX_C
 #define MAX_C
@@ -15,8 +15,8 @@ void max_(pEnv env)
     Node first, second;
 
     PARM(2, MAXMIN);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     switch (first.op) {
     case FLOAT_:
 	switch (second.op) {
@@ -37,7 +37,7 @@ void max_(pEnv env)
 	case FLOAT_:
 	    if (first.u.num > second.u.dbl)
 		second.u.dbl = first.u.num;
-	    env->stck = pvec_add(env->stck, second);
+	    vec_push(env->stck, second);
 	    return;
 
 	default:
@@ -47,6 +47,6 @@ void max_(pEnv env)
 	}
 	break;
     }
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

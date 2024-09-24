@@ -1,7 +1,7 @@
 /*
     module  : decode.h
-    version : 1.6
-    date    : 03/21/24
+    version : 1.7
+    date    : 09/17/24
 */
 #ifndef DECODE_H
 #define DECODE_H
@@ -12,8 +12,8 @@ void decode(Node node, struct tm *t)
     Node temp;
 
     memset(t, 0, sizeof(struct tm));
-    for (i = pvec_cnt(node.u.lis) - 1; i >= 0; i--) {
-	temp = pvec_nth(node.u.lis, i);
+    for (i = vec_size(node.u.lis) - 1; i >= 0; i--) {
+	temp = vec_at(node.u.lis, i);
 	switch (i) {
 	case 8: t->tm_year  = temp.u.num - 1900; break;
 	case 7: t->tm_mon   = temp.u.num - 1; break;

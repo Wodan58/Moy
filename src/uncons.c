@@ -1,7 +1,7 @@
 /*
     module  : uncons.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef UNCONS_C
 #define UNCONS_C
@@ -16,13 +16,12 @@ void uncons_(pEnv env)
     Node aggr, elem, temp;
 
     PARM(1, FIRST);
-    env->stck = pvec_pop(env->stck, &aggr);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	temp.u.lis = pvec_init();
-	pvec_shallow_copy(temp.u.lis, aggr.u.lis);
-	aggr.u.lis = pvec_pop(temp.u.lis, &elem);
-	env->stck = pvec_add(env->stck, elem);	/* push element */
+        vec_shallow_copy(temp.u.lis, aggr.u.lis);
+        elem = vec_pop(temp.u.lis);
+	aggr.u.lis = temp.u.lis;
 	break;
 
     case STRING_:
@@ -30,7 +29,6 @@ void uncons_(pEnv env)
     case USR_STRING_:
 	elem.u.num = *aggr.u.str++;
 	elem.op = CHAR_;
-	env->stck = pvec_add(env->stck, elem);	/* push element */
 	aggr.u.str = GC_strdup(aggr.u.str);
 	break;
 
@@ -39,10 +37,10 @@ void uncons_(pEnv env)
 	    i++;
 	elem.u.num = i;
 	elem.op = INTEGER_;
-	env->stck = pvec_add(env->stck, elem);	/* push element */
 	aggr.u.set &= ~((int64_t)1 << i);
 	break;
     }
-    env->stck = pvec_add(env->stck, aggr);	/* push remainder */
+    vec_push(env->stck, elem);
+    vec_push(env->stck, aggr);
 }
 #endif

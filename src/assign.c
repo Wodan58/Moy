@@ -1,7 +1,7 @@
 /*
     module  : assign.c
-    version : 1.4
-    date    : 06/22/24
+    version : 1.5
+    date    : 09/17/24
 */
 #ifndef ASSIGN_C
 #define ASSIGN_C
@@ -16,15 +16,15 @@ void assign_(pEnv env)
     int index;
     Entry ent;
 
-    PARM(2, ASSIGN);				/* quotation on top */
-    env->stck = pvec_pop(env->stck, &node);	/* singleton list */
-    node = pvec_lst(node.u.lis);		/* first/last element */
-    index = node.u.ent;				/* index user defined name */
-    ent = vec_at(env->symtab, index);		/* symbol table entry */
-    env->stck = pvec_pop(env->stck, &node);	/* value */
-    ent.is_user = 1;				/* ensure again user defined */
-    ent.u.body = pvec_init();			/* (re)initialise body */
-    ent.u.body = pvec_add(ent.u.body, node);	/* insert value in body */
-    vec_at(env->symtab, index) = ent;		/* update symbol table */
+    PARM(2, ASSIGN);			/* quotation on top */
+    node = vec_pop(env->stck);		/* singleton list */
+    node = vec_back(node.u.lis);	/* first/last element */
+    index = node.u.ent;			/* index user defined name */
+    ent = vec_at(env->symtab, index);	/* symbol table entry */
+    node = vec_pop(env->stck);		/* read value */
+    ent.is_user = 1;			/* ensure again user defined */
+    vec_init(ent.u.body);		/* (re)initialise body */
+    vec_push(ent.u.body, node);		/* insert value in body */
+    vec_at(env->symtab, index) = ent;	/* update symbol table */
 }
 #endif

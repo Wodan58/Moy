@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.52
-    date    : 08/30/24
+    version : 1.56
+    date    : 09/24/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -37,7 +37,11 @@
 
 #define USE_KHASHL
 
-#include <gc.h>			/* system installed BDW or local gc.h */
+#ifdef _MSC_VER
+#include "../joy1/gc-8.2.8/include/gc.h"
+#else
+#include <gc.h>			/* system installed BDW */
+#endif
 #include "kvec.h"
 #include "khashl.h"
 #ifdef USE_BIGNUM_ARITHMETIC
@@ -56,7 +60,7 @@
 #define INIAUTOPUT	1
 #define INITRACEGC	1
 #define INIUNDEFERROR	0
-#define INIWARNING	1
+#define INIWARNING	0
 
 /* installation dependent	*/
 #define SETSIZE (int)(CHAR_BIT * sizeof(uint64_t))	/* from limits.h */
@@ -135,20 +139,20 @@ typedef enum {
 } Abort;
 
 /* types			*/
-typedef int Symbol;			/* symbol created by scanner */
+typedef int Symbol;		/* symbol created by scanner */
 
-typedef struct Env *pEnv;		/* pointer to global variables */
+typedef struct Env *pEnv;	/* pointer to global variables */
 
-typedef void (*proc_t)(pEnv);		/* procedure */
+typedef void (*proc_t)(pEnv);	/* procedure */
 
-typedef struct NodeList NodeList;	/* forward */
+typedef vector(struct Node) *NodeList;	/* forward */
 
-typedef unsigned char Operator;		/* opcode / datatype */
+typedef unsigned char Operator;	/* opcode / datatype */
 
 /*
  * Lists are stored in vectors of type Node.
  */
-#include "pars.h"	/* YYSTYPE */
+#include "pars.h"		/* YYSTYPE */
 
 /*
  * Nodes are in consecutive memory locations. No next pointer needed.
@@ -157,8 +161,6 @@ typedef struct Node {
     YYSTYPE u;
     Operator op;
 } Node;
-
-#include "pvec.h"	/* struct NodeList */
 
 #ifdef USE_MULTI_THREADS_JOY
 #include "task.h"
@@ -171,7 +173,7 @@ typedef struct Node {
 typedef struct Entry {
     char *name, is_user, flags;
     union {
-	NodeList *body;
+	NodeList body;
 	proc_t proc;
     } u;
 } Entry;
@@ -205,10 +207,11 @@ typedef struct Env {
 #endif
     symtab_t *hash;		/* hash tables that index the symbol table */
     funtab_t *prim;
-    NodeList *stck, *prog;	/* stack, code, and quotations are vectors */
+    NodeList stck, prog;	/* stack, code, and quotations are vectors */
     clock_t startclock;		/* main */
     char **g_argv;
     char *homedir;		/* HOME or HOMEPATH */
+    char *filename;		/* first include file */
     vector(char *) *pathnames;	/* pathnames to be searched when including */
     int g_argc;
     int token;			/* yylex */
@@ -248,18 +251,14 @@ typedef struct table_t {
 
 /* Public procedures: */
 /* arty.c */
-int arity(pEnv env, NodeList *quot, int num);
-/* comp.c */
-void initcompile(pEnv env);
-void exitcompile(pEnv env);
-void compileprog(pEnv env, NodeList *list);
+int arity(pEnv env, NodeList quot, int num);
 /* eval.c */
 void trace(pEnv env, FILE *fp);
-void evaluate(pEnv env, NodeList *list);
+void evaluate(pEnv env, NodeList list);
 /* exec.c */
-void execute(pEnv env, NodeList *list);
+void execute(pEnv env, NodeList list);
 /* exeterm.c */
-void exeterm(pEnv env, NodeList *list);
+void exeterm(pEnv env, NodeList list);
 /* lexr.l */
 void new_buffer(void);
 void old_buffer(int num);
@@ -288,8 +287,10 @@ int operqcode(int index);
 void inisymboltable(pEnv env);	/* initialise */
 /* parm.c */
 void parm(pEnv env, int num, Params type, char *file);
+/* print.c */
+void print(pEnv env);
 /* prog.c */
-void prog(pEnv env, NodeList *list);
+void prog(pEnv env, NodeList list);
 void code(pEnv env, proc_t proc);
 void push(pEnv env, int64_t num);
 void prime(pEnv env, Node node);
@@ -299,10 +300,10 @@ int readfactor(pEnv env);	/* read a JOY factor */
 void readterm(pEnv env);
 /* repl.c */
 int lookup(pEnv env, char *name);
-void enteratom(pEnv env, char *name, NodeList *list);
-NodeList *newnode(Operator op, YYSTYPE u);
+void enteratom(pEnv env, char *name, NodeList list);
+NodeList newnode(Operator op, YYSTYPE u);
 /* save.c */
-void save(pEnv env, NodeList *list, int num, int remove);
+void save(pEnv env, NodeList list, int num, int remove);
 /* scan.c */
 void inilinebuffer(pEnv env);
 int include(pEnv env, char *str);
@@ -314,22 +315,27 @@ int ChrVal(pEnv env, char *str);
 char *StrVal(pEnv env, char *str);
 /* writ.c */
 void writefactor(pEnv env, Node node, FILE *fp);
-void writeterm(pEnv env, NodeList *list, FILE *fp);
-void writestack(pEnv env, NodeList *list, FILE *fp);
+void writeterm(pEnv env, NodeList list, FILE *fp);
+void writestack(pEnv env, NodeList list, FILE *fp);
 /* xerr.c */
 void execerror(char *message, char *op);
 /* ylex.c */
 int yylex(pEnv env);
 /* byte.c */
 void initbytes(pEnv env);
-void bytecode(pEnv env, NodeList *list);
+void bytecode(pEnv env, NodeList list);
 void exitbytes(pEnv env);
 /* code.c */
-void readbytes(pEnv env, int flag);
+void readbyte(pEnv env, FILE *fp, int flag);
+unsigned char *readfile(FILE *fp);
+/* comp.c */
+void initcompile(pEnv env);
+void exitcompile(pEnv env);
+int compile(pEnv env, NodeList list);
 /* dump.c */
-void dumpbytes(pEnv env);
+void dumpbyte(pEnv env, FILE *fp);
 /* optm.c */
-void rewritebic(pEnv env);
+void optimize(pEnv env, FILE *fp);
 /* kraw.c */
 void SetRaw(pEnv env);
 #endif

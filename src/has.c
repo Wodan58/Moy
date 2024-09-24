@@ -1,7 +1,7 @@
 /*
     module  : has.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef HAS_C
 #define HAS_C
@@ -15,15 +15,15 @@ Tests whether aggregate A has X as a member.
 void has_(pEnv env)
 {
     int i, found = 0;
-    Node aggr, elem, node;
+    Node elem, aggr, node;
 
     PARM(2, HAS);
-    env->stck = pvec_pop(env->stck, &elem);
-    env->stck = pvec_pop(env->stck, &aggr);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	for (i = pvec_cnt(aggr.u.lis) - 1; i >= 0; i--) {
-	    node = pvec_nth(aggr.u.lis, i);
+	for (i = vec_size(aggr.u.lis) - 1; i >= 0; i--) {
+	    node = vec_at(aggr.u.lis, i);
 	    if (!Compare(env, node, elem)) {
 		found = 1;
 		break;
@@ -47,6 +47,6 @@ void has_(pEnv env)
     }
     node.u.num = found;
     node.op = BOOLEAN_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.35
-    date    : 08/31/24
+    version : 1.36
+    date    : 09/23/24
 */
 #include "globals.h"
 
@@ -150,9 +150,7 @@ INLINE[ \t]*	return CONST_;
 {symbol}	{ yylval.str = GC_strdup(yytext); return USR_; }
 {comment}	{ addline('('); addline('*'); BEGIN COMMENT; }
 {linecom}	{ /* default to ECHO */ }
-^\$.*		{ int rv; if (!env->ignore) { rv = system(yytext + 1); if (rv)
-		  { fflush(stdout); fprintf(stderr, "system: %u\n", rv & 0xFF);
-		} } }
+^\$.*		{ if (!env->ignore) (void)system(yytext + 1); }
 [ \b\t\n\v\f\r]	;
 [;[\]{}]	|
 .		return yytext[0];

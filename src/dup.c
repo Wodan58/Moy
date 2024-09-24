@@ -1,7 +1,7 @@
 /*
     module  : dup.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef DUP_C
 #define DUP_C
@@ -15,7 +15,7 @@ void dup_(pEnv env)
     Node node;
 
     PARM(1, ANYTYPE);
-    node = pvec_lst(env->stck);
-    env->stck = pvec_add(env->stck, node);
+    node = vec_back(env->stck);
+    vec_push(env->stck, node);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : minus.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef MINUS_C
 #define MINUS_C
@@ -20,8 +20,8 @@ void minus_(pEnv env)
 #endif
 
     PARM(2, PLUSMINUS);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     switch (first.op) {
 #ifdef USE_BIGNUM_ARITHMETIC
     case BIGNUM_:
@@ -64,9 +64,9 @@ void minus_(pEnv env)
 	    break;
 #endif
 	case FLOAT_:
-	    second.u.dbl = first.u.num - second.u.dbl;
-	    env->stck = pvec_add(env->stck, second);
-	    return;
+	    first.u.dbl = first.u.num - second.u.dbl;
+	    first.op = FLOAT_;
+	    break;
 
 	default:
 #ifdef USE_BIGNUM_ARITHMETIC
@@ -91,6 +91,6 @@ void minus_(pEnv env)
 	}
 	break;
     }
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

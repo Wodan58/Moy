@@ -1,7 +1,7 @@
 /*
     module  : maxint.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef MAXINT_C
 #define MAXINT_C
@@ -16,6 +16,6 @@ void maxint_(pEnv env)
 
     node.u.num = MAXINT_;
     node.op = INTEGER_;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

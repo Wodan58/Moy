@@ -1,7 +1,7 @@
 /*
     module  : unary2.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef UNARY2_C
 #define UNARY2_C
@@ -17,10 +17,10 @@ void unary2_(pEnv env)
     Node list, node;
 
     PARM(3, DIP);
-    env->stck = pvec_pop(env->stck, &list);
-    env->stck = pvec_pop(env->stck, &node);	/* Z */
+    list = vec_pop(env->stck);
+    node = vec_pop(env->stck);	/* Z */
     code(env, swap_);
-    size = pvec_cnt(env->prog);	/* location of first Z, then Y' */
+    size = vec_size(env->prog);	/* location of first Z, then Y' */
     prime(env, node);		/* first Z, then Y' */
     /*
 	save the stack before the condition and restore it afterwards with

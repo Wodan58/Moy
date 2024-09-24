@@ -1,7 +1,7 @@
 /*
     module  : unstack.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef UNSTACK_C
 #define UNSTACK_C
@@ -15,7 +15,7 @@ void unstack_(pEnv env)
     Node node;
 
     PARM(1, HELP);
-    env->stck = pvec_pop(env->stck, &node);
-    pvec_copy(env->stck, node.u.lis);
+    node = vec_pop(env->stck);
+    vec_copy_count(env->stck, node.u.lis, vec_size(node.u.lis));
 }
 #endif

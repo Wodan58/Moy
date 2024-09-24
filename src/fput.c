@@ -1,7 +1,7 @@
 /*
     module  : fput.c
-    version : 1.10
-    date    : 04/27/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef FPUT_C
 #define FPUT_C
@@ -12,11 +12,11 @@ Q0  OK  1940  fput  :  D  S X  ->  S
 */
 void fput_(pEnv env)
 {
-    Node node, elem;
+    Node elem, node;
 
     PARM(2, FPUT);
-    env->stck = pvec_pop(env->stck, &elem);
-    node = pvec_lst(env->stck);
+    elem = vec_pop(env->stck);
+    node = vec_back(env->stck);
     if (elem.op == LIST_) {
 	putc('[', node.u.fil);
 	writeterm(env, elem.u.lis, node.u.fil);

@@ -1,7 +1,7 @@
 /*
     module  : popd.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef POPD_C
 #define POPD_C
@@ -15,8 +15,8 @@ void popd_(pEnv env)
     Node node;
 
     PARM(2, ANYTYPE);
-    env->stck = pvec_pop(env->stck, &node);
-    env->stck = pvec_del(env->stck);
-    env->stck = pvec_add(env->stck, node);
+    node = vec_pop(env->stck);
+    (void)vec_pop(env->stck);
+    vec_push(env->stck, node);
 }
 #endif

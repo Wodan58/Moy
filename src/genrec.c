@@ -1,7 +1,7 @@
 /*
     module  : genrec.c
-    version : 1.9
-    date    : 03/05/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef GENREC_C
 #define GENREC_C

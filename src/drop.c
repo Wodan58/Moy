@@ -1,7 +1,7 @@
 /*
     module  : drop.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef DROP_C
 #define DROP_C
@@ -13,31 +13,29 @@ Aggregate B is the result of deleting the first N elements of A.
 void drop_(pEnv env)
 {
     int64_t i, j;
-    Node aggr, elem, node;
+    Node elem, aggr, node;
 
     PARM(2, TAKE);
-    env->stck = pvec_pop(env->stck, &elem);
-    env->stck = pvec_pop(env->stck, &aggr);
+    elem = vec_pop(env->stck);
+    aggr = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	if ((j = pvec_cnt(aggr.u.lis)) <= elem.u.num)
-	    node.u.lis = 0;
-	else {
-	    node.u.lis = pvec_init();
-	    pvec_shallow_copy(node.u.lis, aggr.u.lis);
-	    node.u.lis = pvec_cut(node.u.lis, j - elem.u.num);
-	}
+        j = vec_size(aggr.u.lis);
+	if (elem.u.num > j)
+	    elem.u.num = j;
+        vec_shallow_copy(node.u.lis, aggr.u.lis);
+        vec_setsize(node.u.lis, j - elem.u.num);
 	break;
 
     case STRING_:
     case BIGNUM_:
     case USR_STRING_:
-	if ((j = strlen(aggr.u.str)) <= elem.u.num)
+	j = strlen(aggr.u.str);
+	if (elem.u.num >= j)
 	    node.u.str = "";
 	else {
 	    node.u.str = GC_malloc_atomic(j - elem.u.num + 1);
 	    strcpy(node.u.str, aggr.u.str + elem.u.num);
-	    node.op = STRING_;
 	}
 	break;
 
@@ -53,6 +51,6 @@ void drop_(pEnv env)
 	break;
     }
     node.op = aggr.op;
-    env->stck = pvec_add(env->stck, node);
+    vec_push(env->stck, node);
 }
 #endif

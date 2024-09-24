@@ -1,7 +1,7 @@
 /*
     module  : ifset.c
-    version : 1.8
-    date    : 03/05/24
+    version : 1.9
+    date    : 09/17/24
 */
 #ifndef IFSET_C
 #define IFSET_C
@@ -15,9 +15,9 @@ void ifset_(pEnv env)
     Node first, second, node;
 
     PARM(3, WHILE);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
-    node = pvec_lst(env->stck);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
+    node = vec_back(env->stck);
     node = node.op == SET_ ? first : second;
     prog(env, node.u.lis);
 }

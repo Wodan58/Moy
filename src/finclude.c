@@ -1,7 +1,7 @@
 /*
     module  : finclude.c
-    version : 1.13
-    date    : 06/22/24
+    version : 1.14
+    date    : 09/17/24
 */
 #ifndef FINCLUDE_C
 #define FINCLUDE_C
@@ -15,7 +15,7 @@ void finclude_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);	/* remove file name */
+    node = vec_pop(env->stck);		/* remove file name */
     if (include(env, node.u.str))	/* test whether file exists */
 	return;
     env->finclude_busy = 1;		/* tell scanner about finclude */

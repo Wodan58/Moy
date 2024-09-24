@@ -1,7 +1,7 @@
 /*
     module  : of.c
-    version : 1.10
-    date    : 03/05/24
+    version : 1.11
+    date    : 09/17/24
 */
 #ifndef OF_C
 #define OF_C
@@ -13,15 +13,15 @@ X (= A[I]) is the I-th member of aggregate A.
 void of_(pEnv env)
 {
     int64_t i, j;
-    Node elem, aggr;
+    Node aggr, elem;
 
     PARM(2, OF);
-    env->stck = pvec_pop(env->stck, &aggr);
-    env->stck = pvec_pop(env->stck, &elem);
+    aggr = vec_pop(env->stck);
+    elem = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	i = pvec_cnt(aggr.u.lis) - elem.u.num - 1;
-	elem = pvec_nth(aggr.u.lis, i);
+	i = vec_size(aggr.u.lis) - elem.u.num - 1;
+	elem = vec_at(aggr.u.lis, i);
 	break;
 
     case STRING_:
@@ -43,6 +43,6 @@ void of_(pEnv env)
 	    }
 	break;
     }
-    env->stck = pvec_add(env->stck, elem);
+    vec_push(env->stck, elem);
 }
 #endif

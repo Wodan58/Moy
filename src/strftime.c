@@ -1,7 +1,7 @@
 /*
     module  : strftime.c
-    version : 1.7
-    date    : 03/05/24
+    version : 1.8
+    date    : 09/17/24
 */
 #ifndef STRFTIME_C
 #define STRFTIME_C
@@ -19,12 +19,12 @@ void strftime_(pEnv env)
     Node first, second;
 
     PARM(2, STRFTIME);
-    env->stck = pvec_pop(env->stck, &second);
-    env->stck = pvec_pop(env->stck, &first);
+    second = vec_pop(env->stck);
+    first = vec_pop(env->stck);
     decode(first, &t);
     first.u.str = GC_malloc_atomic(INPLINEMAX);
     strftime(first.u.str, INPLINEMAX, second.u.str, &t);
     first.op = STRING_;
-    env->stck = pvec_add(env->stck, first);
+    vec_push(env->stck, first);
 }
 #endif

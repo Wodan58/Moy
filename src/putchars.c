@@ -1,7 +1,7 @@
 /*
     module  : putchars.c
-    version : 1.9
-    date    : 03/21/24
+    version : 1.10
+    date    : 09/17/24
 */
 #ifndef PUTCHARS_C
 #define PUTCHARS_C
@@ -15,7 +15,7 @@ void putchars_(pEnv env)
     Node node;
 
     PARM(1, STRTOD);
-    env->stck = pvec_pop(env->stck, &node);
+    node = vec_pop(env->stck);
     printf("%s", node.u.str);
 }
 #endif
