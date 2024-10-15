@@ -1,7 +1,7 @@
 /*
     module  : infra.c
-    version : 1.8
-    date    : 09/17/24
+    version : 1.9
+    date    : 09/26/24
 */
 #ifndef INFRA_C
 #define INFRA_C
@@ -34,6 +34,6 @@ void infra_(pEnv env)
     /*
 	the list parameter is installed as the stack
     */
-    vec_copy_count(env->stck, aggr.u.lis, vec_size(aggr.u.lis));
+    vec_copy_all(env->stck, aggr.u.lis);
 }
 #endif

@@ -1,7 +1,7 @@
 /*
     module  : construct.c
-    version : 1.10
-    date    : 09/17/24
+    version : 1.11
+    date    : 09/26/24
 */
 #ifndef CONSTRUCT_C
 #define CONSTRUCT_C
@@ -25,7 +25,7 @@ void construct_(pEnv env)
     /*
 	save the old stack; this will become the new stack
     */
-    vec_copy_count(node.u.lis, env->stck, vec_size(env->stck));
+    vec_copy_all(node.u.lis, env->stck);
     node.op = LIST_;
     prime(env, node);
     size1 = vec_size(env->prog);

@@ -1,7 +1,7 @@
 /*
     module  : __settracegc.c
-    version : 1.12
-    date    : 09/17/24
+    version : 1.13
+    date    : 10/11/24
 */
 #ifndef __SETTRACEGC_C
 #define __SETTRACEGC_C
@@ -16,13 +16,7 @@ void __settracegc_(pEnv env)
 
     PARM(1, PREDSUCC);
     node = vec_pop(env->stck);
-    if (node.u.num)		/* 0=enable compiling */
-	;
-    else if (env->bytecoding)
-	env->bytecoding = 1;	/* LCOV_EXCL_LINE */
-    else if (env->compiling)
-	env->compiling = 1;	/* LCOV_EXCL_LINE */
-    else
+    if (!node.u.num)
 	env->ignore = 0;	/* disable ignore */
 }
 #endif

@@ -1,7 +1,7 @@
 #
-#   module  : %M%
-#   version : %I%
-#   date    : %G%
+#   module  : CMakeLists.txt
+#   version : 1.6
+#   date    : 09/28/24
 #
 macro(exe9 src)
 add_custom_target(${src}.old ALL
@@ -36,10 +36,3 @@ exe9(jp-church)
 exe9(jp-nestrec)
 exe9(mandel)
 exe9(test)
-
-if(RUN_PACK MATCHES "ON")
-set(JOY_LIB agglib.joy fraclib.joy grmlib.joy inilib.joy lazlib.joy lsplib.joy
-    mthlib.joy mtrlib.joy numlib.joy plglib.joy replib.joy seqlib.joy
-    symlib.joy tutlib.joy typlib.joy)
-install(FILES ${JOY_LIB} DESTINATION LIB)
-endif()

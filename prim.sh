@@ -1,32 +1,32 @@
 #
 #   module  : prim.sh
-#   version : 1.7
-#   date    : 08/31/24
+#   version : 1.8
+#   date    : 10/11/24
 #
-#   Generate prim.c and prim.h
+#   Generate builtin.c and builtin.h
 #   The directory needs to be given as parameter.
 #
-echo checking prim.c and prim.h
+echo checking builtin.c and builtin.h
 todo=0
-ls $1/src/*.c | sed 's/^/#include "/;s/$/"/' >prim.tmp
-if [ ! -f $1/prim.c -o ! -f $1/prim.h ]
+ls $1/src/*.c | sed 's/^/#include "/;s/$/"/' >builtin.tmp
+if [ ! -f $1/builtin.c -o ! -f $1/builtin.h ]
 then
-  echo creating prim.c and prim.h
+  echo creating builtin.c and builtin.h
   todo=1
 else
-  diff $1/prim.c prim.tmp
+  diff $1/builtin.c builtin.tmp
   if [ $? -eq 0 ]
   then
-    echo prim.c and prim.h are up-to-date
-    rm prim.tmp
+    echo builtin.c and builtin.h are up-to-date
+    rm -f builtin.tmp
   else
-    echo updating prim.c and prim.h
+    echo updating builtin.c and builtin.h
     todo=1
   fi
 fi
 if [ $todo -eq 1 ]
 then
-  rm -f $1/prim.c $1/prim.h $1/tabl.c
-  mv prim.tmp $1/prim.c
-  sed 's/.*\//void /;s/\..*/_(pEnv env);/' <$1/prim.c >$1/prim.h
+  rm -f $1/builtin.c $1/builtin.h $1/tabl.c
+  mv builtin.tmp $1/builtin.c
+  sed 's/.*\//void /;s/\..*/_(pEnv env);/' <$1/builtin.c >$1/builtin.h
 fi

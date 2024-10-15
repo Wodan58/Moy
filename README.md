@@ -1,9 +1,9 @@
 Moy
 ===
 
-Build|Linux|Windows|Coverity
----|---|---|---
-status|[![GitHub CI build status](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml/badge.svg)](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml)|[![AppVeyor CI build status](https://ci.appveyor.com/api/projects/status/github/Wodan58/Moy?branch=master&svg=true)](https://ci.appveyor.com/project/Wodan58/Moy)|[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/14635.svg)](https://scan.coverity.com/projects/wodan58-moy)
+Build|Linux|Coverity
+---|---|---
+status|[![GitHub CI build status](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml/badge.svg)](https://github.com/Wodan58/Moy/actions/workflows/cmake.yml)|[![Coverity Scan Build Status](https://img.shields.io/coverity/scan/14635.svg)](https://scan.coverity.com/projects/wodan58-moy)
 
 This repository implements [Joy](https://github.com/Wodan58/Joy) and uses
 [Lex & Yacc](https://sourceforge.net/projects/winflexbison/files/win_flex_bison-latest.zip) and the
@@ -18,17 +18,6 @@ Build instructions
     cd build
     cmake ..
     cmake --build .
-
-Build with MSVC
----------------
-
-Install bdwgc in a bdwgc-subdirectory.
-
-    mkdir build
-    cd build
-    cmake ..
-    cmake --build . --config Release
-    copy Release\joy.exe
 
 Running
 -------

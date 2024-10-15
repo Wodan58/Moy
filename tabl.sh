@@ -1,7 +1,7 @@
 #
 #   module  : tabl.sh
-#   version : 1.8
-#   date    : 08/31/24
+#   version : 1.9
+#   date    : 10/15/24
 #
 #   Generate tabl.c
 #   The directory needs to be given as parameter.
@@ -13,7 +13,7 @@ then
   echo creating tabl.c
   todo=1
 else
-  for i in $1/src/*.c $1/prim.c $1/prim.h
+  for i in $1/src/*.c $1/builtin.c $1/builtin.h
   do
     if [ $i -nt $1/tabl.c ]
     then

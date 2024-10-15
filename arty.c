@@ -1,7 +1,7 @@
 /*
     module  : arty.c
-    version : 1.16
-    date    : 09/17/24
+    version : 1.17
+    date    : 09/26/24
 */
 #include "globals.h"
 
@@ -41,7 +41,7 @@ int arity(pEnv env, NodeList quot, int num)
     int aggr, prog;				/* step combinator */
     Node node, prev, prevprev;
 
-    vec_copy_count(list, quot, vec_size(quot));	/* make a copy */
+    vec_copy_all(list, quot);			/* make a copy */
     prevprev.u.lis = prev.u.lis = 0;
     prevprev.op = prev.op = 0;
     while (vec_size(list)) {

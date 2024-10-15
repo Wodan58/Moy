@@ -1,10 +1,10 @@
 /*
     module  : save.c
-    version : 1.14
-    date    : 09/17/24
+    version : 1.16
+    date    : 10/11/24
 */
 #include "globals.h"
-#include "prim.h"
+#include "builtin.h"
 
 /*
  * Save the stack just before executing a program. Restore it afterwards
@@ -39,9 +39,10 @@ void save(pEnv env, NodeList list, int num, int remove)
     if (status == ARITY_NOT_OK) {
 done:
 	/*
-	    replace the new stack with the old stack
+	    replace the new stack with the old stack;
+	    the result on the new stack is added to the old stack.
 	*/
-	code(env, unstack_);		/* the stack is restored with result */
+	code(env, unstack_);
 	/*
 	    include the test result in the old stack
 	*/
@@ -54,7 +55,7 @@ done:
 	/*
 	    restore the old stack after the test
 	*/
-	vec_copy_count(node.u.lis, env->stck, vec_size(env->stck));
+	vec_copy_all(node.u.lis, env->stck);
 	node.op = LIST_;
 	prime(env, node);
     }

@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.49
- *  date    : 09/19/24
+ *  version : 1.51
+ *  date    : 10/14/24
  */
 #include "globals.h"
 
@@ -56,36 +56,16 @@ static void options(int verbose)
 #endif
     printf("Options:\n");
     printf("  -a : set the autoput flag (0-2)\n");
-#ifdef BYTECODE
-    printf("  -b : compile a joy program to bytecode\n");
-    printf("  -c : compile joy source into C source\n");
-#endif
     printf("  -d : print a trace of stack development\n");
     printf("  -e : set the echoflag (0-3)\n");
-#ifdef BYTECODE
-    printf("  -f : display a byte code file and exit\n");
-#endif
     printf("  -g : set the __tracegc flag (0-6)\n");
     printf("  -h : print this help text and exit\n");
     printf("  -i : ignore impure functions\n");
-#ifdef BYTECODE
-    printf("  -j : filename parameter is binary\n");
-#endif
 #ifdef KEYBOARD
     printf("  -k : allow keyboard input in raw mode\n");
 #endif
     printf("  -l : do not read usrlib.joy at startup\n");
-#if 0
-    printf("  -m : set maximum limit of data stack\n");
-    printf("  -n : limit the number of operations\n");
-#ifdef BYTECODE
-    printf("  -o : optimize bytecode file even more\n");
-#endif
-#endif
     printf("  -p : print debug list of tokens\n");
-#if 0
-    printf("  -q : operate in quiet mode\n");
-#endif
     printf("  -r : print without using recursion\n");
     printf("  -s : dump symbol table after execution\n");
     printf("  -t : print a trace of program execution\n");
@@ -113,17 +93,10 @@ static void my_main(int argc, char **argv)
  * These variables need to be static because of an intervening longjmp.
  */
     static unsigned char psdump = 0, pstats = 0;
-#ifdef BYTECODE
-    static unsigned char joy = 1;	/* assume joy source code */
-#endif
 
     Env env;				/* global variables */
     int i, j, ch, rv;
     char *ptr, *tmp, *exe;
-#ifdef BYTECODE
-    FILE *fp = 0;
-    unsigned char listing = 0;
-#endif
 /*
  * A number of flags can be handled within the main function; no need to pass
  * them to subordinate functions.
@@ -177,47 +150,22 @@ static void my_main(int argc, char **argv)
 			   j += tmp - ptr;
 			   env.autoput_set = 1;		/* disable usrlib.joy */
 			   break;
-#ifdef BYTECODE
-		case 'b' : env.bytecoding = 2; break;	/* prepare & suspend */
-		case 'c' : env.compiling = 2; break;	/* prepare & suspend */
-#endif
 		case 'd' : env.debugging = 1; break;
 		case 'e' : ptr = &argv[i][j + 1];
 			   env.echoflag = strtol(ptr, &tmp, 0);
 			   j += tmp - ptr;
 			   break;
-#ifdef BYTECODE
-		case 'f' : listing = 1; joy = 0; break;
-#endif
 		case 'g' : ptr = &argv[i][j + 1];
 			   env.tracegc = strtol(ptr, &tmp, 0);
 			   j += tmp - ptr;
 			   break;
 		case 'h' : helping = 1; break;
 		case 'i' : env.ignore = 1; break;
-#ifdef BYTECODE
-		case 'j' : joy = 0; break;		/* assume binary file */
-#endif
 #ifdef KEYBOARD
 		case 'k' : raw = 1; break;		/* terminal raw mode */
 #endif
 		case 'l' : mustinclude = 0; break;	/* include usrlib.joy */
-#if 0
-		case 'm' : ptr = &argv[i][j + 1];
-			   env.maximum = strtod(ptr, &tmp);
-			   j += tmp - ptr;
-			   break;
-		case 'n' : ptr = &argv[i][j + 1];
-			   env.operats = strtod(ptr, &tmp);
-			   j += tmp - ptr;
-			   break;
-		case 'o' : filename = &argv[i][j + 1];	/* string payload */
-			   goto next_parm;
-#endif
 		case 'p' : env.printing = 1; break;
-#if 0
-		case 'q' : env.quiet = 1; break;
-#endif
 		case 'r' : env.recurse = 1; break;
 		case 's' : psdump = 1; break;
 		case 't' : env.debugging = 2; break;
@@ -238,9 +186,6 @@ static void my_main(int argc, char **argv)
 		default  : unknown = argv[i][j]; break;
 		} /* end switch */
 	    } /* end for */
-#if 0
-next_parm:
-#endif
 	    /*
 	     * Overwrite the option(s) with subsequent parameters. Index i is
 	     * decreased, because the next parameter is copied to the current
@@ -262,18 +207,6 @@ next_parm:
     for (i = 1; i < argc; i++) {
 	ch = argv[i][0];
 	if (!isdigit(ch)) {
-	    /*
-	     * If the filename parameter has no extension or an extension that
-	     * differs from .joy, it is assumed to be a binary file.
-	     */
-#ifdef BYTECODE
-	    if (!joy) {
-		if ((fp = fopen(env.filename = argv[i], "rb")) == 0) {
-		    fprintf(stderr, "failed to open the file '%s'.\n", argv[i]);
-		    return;
-		}
-	    } else
-#endif
 	    /*
 	     * The first file should also benefit from include logic. But in
 	     * case of !joy, opening should be done with "rb", not "r".
@@ -328,22 +261,6 @@ start:
 	helping ? options(verbose) : unknown_opt(exe, unknown);
 	goto einde;
     }
-#ifdef BYTECODE
-    if (listing) {
-	dumpbyte(&env, fp);	/* display .bic or .bjc file */
-	goto einde;
-    }
-    if (env.bytecoding) {
-	if (joy)
-	    initbytes(&env);	/* create .bic file */
-	else {
-	    optimize(&env, fp);	/* create .bjc file */
-	    goto einde;
-	}
-    }
-    if (env.compiling)
-	initcompile(&env);	/* create .c file */
-#endif
     /*
      * initialize stack before SetRaw.
      */
@@ -373,21 +290,8 @@ start:
      * (re)initialize code. The stack is left as it is.
      */
     vec_init(env.prog);			/* restart with an empty program */
-#ifdef BYTECODE
-    if (!joy) {				/* interprete or compile bytecode */
-	readbyte(&env, fp, env.compiling ? 0 : 1);
-	if (!env.compiling)
-	    execute(&env, 0);
-    } else
-#endif
     yyparse(&env);
 einde:	/* LCOV_EXCL_LINE */
-#ifdef BYTECODE
-    if (env.bytecoding)
-	exitbytes(&env);
-    if (env.compiling)
-	exitcompile(&env);
-#endif
     /*
      * This is the location where statistics and the symbol table can be
      * printed.

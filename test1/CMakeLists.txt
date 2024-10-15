@@ -1,7 +1,7 @@
 #
-#   module  : CmakeLists.txt
-#   version : 1.2
-#   date    : 09/19/24
+#   module  : CMakeLists.txt
+#   version : 1.3
+#   date    : 10/15/24
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -15,7 +15,7 @@ macro(exe8 src)
 add_custom_target(${src}.out ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test1
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy
-		  COMMAND joy -a2de3g1lpru1 ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
+		  COMMAND joy -a2de3g1lpru1v ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
 endmacro(exe8)
 
 # test rest of options

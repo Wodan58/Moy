@@ -1,10 +1,10 @@
 /*
     module  : otab.c
-    version : 1.11
-    date    : 09/17/24
+    version : 1.13
+    date    : 10/11/24
 */
 #include "globals.h"
-#include "prim.h"	/* declarations of functions */
+#include "builtin.h"	/* declarations of functions */
 
 #ifdef _MSC_VER
 #define NOINLINE
@@ -80,7 +80,7 @@ static struct {
 #include "tabl.c"	/* the rest of optable */
 };
 
-#include "prim.c"	/* the primitive functions themselves */
+#include "builtin.c"	/* the primitive functions themselves */
 
 /*
  * nickname - return the name of an operator. If the operator starts with a
@@ -144,25 +144,6 @@ NOINLINE char *operarity(int index)
 }
 
 /*
- * tablesize - return the size of the table, to be used when searching from the
- *	       end of the table to the start.
- */
-#ifdef BYTECODE
-int tablesize(void)
-{
-    return sizeof(optable) / sizeof(optable[0]);
-}
-
-/*
- *  qcode - return the qcode value of an operator or combinator.
- */
-int operqcode(int index)
-{
-    return optable[index].qcode;
-}
-#endif
-
-/*
  * Initialise the symbol table with builtins.
  * The hash tables contain an index into the symbol table.
  */
@@ -176,10 +157,16 @@ void inisymboltable(pEnv env) /* initialise */
     env->prim = funtab_init();
     j = sizeof(optable) / sizeof(optable[0]);
     for (i = 0; i < j; i++) {
+	memset(&ent, 0, sizeof(ent));
 	ent.name = optable[i].name;
-	ent.is_user = 0;
 	ent.flags = optable[i].flags;
 	ent.u.proc = optable[i].proc;
+	/*
+	 * The qcode is copied to the symbol table, telling how many quotations
+	 * are consumed by a combinator. The symbols Q0 .. Q4 are translated to
+	 * numeric values.
+	 */
+	ent.qcode = optable[i].qcode;
 	if (env->ignore)
 	    switch (ent.flags) {
 	    case IGNORE_OK:

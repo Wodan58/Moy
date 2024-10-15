@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.56
-    date    : 09/24/24
+    version : 1.58
+    date    : 10/11/24
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -47,6 +47,8 @@
 #ifdef USE_BIGNUM_ARITHMETIC
 #include "bignum.h"
 #endif
+
+#include "macros.h"
 
 /* configure			*/
 #define INPSTACKMAX	10
@@ -171,7 +173,7 @@ typedef struct Node {
  * The flags are used to distinguish between immediate and normal functions.
  */
 typedef struct Entry {
-    char *name, is_user, flags;
+    char *name, is_user, flags, qcode;
     union {
 	NodeList body;
 	proc_t proc;
@@ -234,8 +236,6 @@ typedef struct Env {
     unsigned char undeferror;
     unsigned char undeferror_set;
     unsigned char alarming;
-    unsigned char bytecoding;
-    unsigned char compiling;
     unsigned char debugging;
     unsigned char ignore;
     unsigned char overwrite;
@@ -283,7 +283,6 @@ char *opername(pEnv env, proc_t proc);
 char *cmpname(pEnv env, proc_t proc);
 char *operarity(int i);
 int tablesize(void);
-int operqcode(int index);
 void inisymboltable(pEnv env);	/* initialise */
 /* parm.c */
 void parm(pEnv env, int num, Params type, char *file);
