@@ -1,7 +1,7 @@
 (*
     module  : parm.joy
-    version : 1.1
-    date    : 03/21/24
+    version : 1.2
+    date    : 11/26/24
 *)
 [] unstack.
 
@@ -607,7 +607,7 @@ feof.
 
 (* assign needs two parameters *)
 [] unstack.
-# [A] assign.
+[A] assign.
 
 (* assign needs quotation on top *)
 [] 1 assign.
@@ -617,3 +617,9 @@ feof.
 
 (* assign needs user defined symbol *)
 1 [pop] assign.
+
+(* trigger no aggregate error *)
+10 10 of.
+
+(* trigger no aggregate error *)
+10 10 at.

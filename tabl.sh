@@ -1,14 +1,14 @@
 #
 #   module  : tabl.sh
-#   version : 1.9
-#   date    : 10/15/24
+#   version : 1.10
+#   date    : 11/15/24
 #
 #   Generate tabl.c
 #   The directory needs to be given as parameter.
 #
 echo checking tabl.c
 todo=0
-if [ ! -f $1/tabl.c ]
+if [ ! -s $1/tabl.c ]
 then
   echo creating tabl.c
   todo=1

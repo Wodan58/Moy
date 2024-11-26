@@ -1,7 +1,7 @@
 /*
     module  : pop.c
-    version : 1.8
-    date    : 09/17/24
+    version : 1.9
+    date    : 11/20/24
 */
 #ifndef POP_C
 #define POP_C
@@ -13,6 +13,6 @@ Removes X from top of the stack.
 void pop_(pEnv env)
 {
     PARM(1, ANYTYPE);
-    (void)vec_pop(env->stck);
+    vec_reduce(env->stck, 1);
 }
 #endif

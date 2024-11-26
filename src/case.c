@@ -1,7 +1,7 @@
 /*
     module  : case.c
-    version : 1.9
-    date    : 09/17/24
+    version : 1.10
+    date    : 11/20/24
 */
 #ifndef CASE_C
 #define CASE_C
@@ -28,8 +28,8 @@ void case_(pEnv env)
 	}
         if (!Compare(env, node, vec_back(elem.u.lis))) {
             vec_shallow_copy(node.u.lis, elem.u.lis);
-            (void)vec_pop(node.u.lis);
-            (void)vec_pop(env->stck);
+	    vec_reduce(node.u.lis, 1);
+	    vec_reduce(env->stck, 1);
 	    break;
 	}
     }

@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.3
-#   date    : 10/15/24
+#   version : 1.4
+#   date    : 11/26/24
 #
 macro(exe9 src)
 add_custom_target(${src}.out ALL
@@ -23,7 +23,7 @@ macro(exe7 src)
 add_custom_target(${src}.out ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test1
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/test1/${src}.joy
-		  COMMAND joy -hivx ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
+		  COMMAND joy -hix ${CMAKE_SOURCE_DIR}/test1/${src}.joy >${src}.out)
 endmacro(exe7)
 
 # test unknown options

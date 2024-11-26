@@ -1,7 +1,7 @@
 /*
     module  : opcase.c
-    version : 1.10
-    date    : 09/17/24
+    version : 1.11
+    date    : 11/20/24
 */
 #ifndef OPCASE_C
 #define OPCASE_C
@@ -31,7 +31,7 @@ void opcase_(pEnv env)
 		    continue;
 	    }
             vec_shallow_copy(node.u.lis, elem.u.lis);
-            (void)vec_pop(node.u.lis);
+	    vec_reduce(node.u.lis, 1);
 	    node.op = LIST_;
 	    break;
 	}

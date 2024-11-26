@@ -1,7 +1,7 @@
 /*
     module  : rest.c
-    version : 1.11
-    date    : 09/17/24
+    version : 1.12
+    date    : 11/20/24
 */
 #ifndef REST_C
 #define REST_C
@@ -20,7 +20,7 @@ void rest_(pEnv env)
     switch (aggr.op) {
     case LIST_:
         vec_shallow_copy(temp.u.lis, aggr.u.lis);
-        (void)vec_pop(temp.u.lis);
+        vec_reduce(temp.u.lis, 1);
 	aggr.u.lis = temp.u.lis;
 	break;
 

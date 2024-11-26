@@ -1,7 +1,7 @@
 /*
     module  : treerecaux.c
-    version : 1.14
-    date    : 09/17/24
+    version : 1.15
+    date    : 11/20/24
 */
 #ifndef TREERECAUX_C
 #define TREERECAUX_C
@@ -20,7 +20,7 @@ void treerecaux_(pEnv env)
     if (node.op == LIST_) {		/* list = [[O] C] */
 
 	prog(env, list.u.lis);		/* C */
-	(void)pop(env);
+	vec_reduce(env->prog, 1);
 
 	code(env, cons_);
 	code(env, cons_);

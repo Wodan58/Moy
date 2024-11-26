@@ -1,8 +1,8 @@
 %{
 /*
     module  : lexr.l
-    version : 1.36
-    date    : 09/23/24
+    version : 1.37
+    date    : 11/20/24
 */
 #include "globals.h"
 
@@ -109,7 +109,7 @@ linecom		#.*
 %%
 
 <<EOF>>		{ abortexecution_(ABORT_QUIT); }
-<COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }
+<COMMENT>"*)"	{ putline(env, "*)", 2, LEAVE_COMM); BEGIN INITIAL; }	/* LCOV_EXCL_LINE */
 <COMMENT>.	{ addline(yytext[0]); }
 <COMMENT>\n	{ putline(env, "\n", 1, WITHIN_COM); }
 

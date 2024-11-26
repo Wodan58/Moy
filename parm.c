@@ -1,7 +1,7 @@
 /*
     module  : parm.c
-    version : 1.24
-    date    : 09/19/24
+    version : 1.25
+    date    : 11/20/24
 */
 #include "globals.h"
 
@@ -591,7 +591,7 @@ void parm(pEnv env, int num, Params type, char *file)
 			      j--;
 			  }
 		      execerror("smaller index", file);
-		      break;
+		      break;	/* LCOV_EXCL_LINE */
 	default     : execerror("aggregate parameter", file); 
 	}
 	break;
@@ -622,7 +622,7 @@ void parm(pEnv env, int num, Params type, char *file)
 			      j--;
 			  }
 		      execerror("smaller index", file);
-		      break;
+		      break;	/* LCOV_EXCL_LINE */
 	default     : execerror("aggregate parameter", file);
 	}
 	break;

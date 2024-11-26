@@ -1,7 +1,7 @@
 /*
  *  module  : read.c
- *  version : 1.11
- *  date    : 09/17/24
+ *  version : 1.12
+ *  date    : 11/20/24
  */
 #include "globals.h"
 
@@ -20,7 +20,7 @@ int readfactor(pEnv env)	/* read a JOY factor */
 	index = lookup(env, yylval.str);
 	if (!index && strchr(yylval.str, '.')) {
 	    yyerror(env, "no such field in module");
-	    break;
+	    break;	/* LCOV_EXCL_LINE */
 	}
 	ent = vec_at(env->symtab, index);
 	/* do not execute immediate functions at compile time */
@@ -63,11 +63,11 @@ int readfactor(pEnv env)	/* read a JOY factor */
 
     case '(':
 	yyerror(env, "'(' not implemented");
-	break;
+	break;	/* LCOV_EXCL_LINE */
 
     default:
 	yyerror(env, "a factor cannot begin with this symbol");
-	break;
+	break;	/* LCOV_EXCL_LINE */
     }
     return 0;
 }

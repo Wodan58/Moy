@@ -1,7 +1,7 @@
 /*
     module  : treegenrecaux.c
-    version : 1.14
-    date    : 09/17/24
+    version : 1.15
+    date    : 11/20/24
 */
 #ifndef TREEGENRECAUX_C
 #define TREEGENRECAUX_C
@@ -21,8 +21,7 @@ void treegenrecaux_(pEnv env)
     node = vec_back(env->stck);		/* 2nd item on the stack */
     if (node.op == LIST_) {		/* list = [[O1] [O2] C] */
 	prog(env, list.u.lis);		/* C */
-	(void)pop(env);
-	(void)pop(env);
+	vec_reduce(env->prog, 2);
 
 	code(env, cons_);
 	code(env, cons_);

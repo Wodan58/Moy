@@ -18,7 +18,7 @@ add_custom_target(tutinp.old ALL
 add_custom_target(lsptst.old ALL
 		  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/lib
 		  DEPENDS joy ${CMAKE_SOURCE_DIR}/lib/lsptst.joy
-		  COMMAND joy <${CMAKE_SOURCE_DIR}/lib/lsptst.joy >tutinp.old)
+		  COMMAND joy <${CMAKE_SOURCE_DIR}/lib/lsptst.joy >lsptst.old)
 
 exe9(jp-joytst)
 exe9(laztst)
