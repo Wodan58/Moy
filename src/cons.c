@@ -1,7 +1,7 @@
 /*
     module  : cons.c
-    version : 1.12
-    date    : 11/20/24
+    version : 1.13
+    date    : 12/13/24
 */
 #ifndef CONS_C
 #define CONS_C
@@ -19,7 +19,7 @@ void cons_(pEnv env)
     elem = vec_pop(env->stck);
     switch (aggr.op) {
     case LIST_:
-	vec_copy(node.u.lis, aggr.u.lis);
+	vec_shallow_copy_take_ownership(node.u.lis, aggr.u.lis);
         vec_push(node.u.lis, elem);
 	break;
 

@@ -1,12 +1,13 @@
 #
 #   module  : makefile
-#   version : 1.13
-#   date    : 10/13/24
+#   version : 1.14
+#   date    : 12/16/24
 #
 .POSIX:
 .SUFFIXES:
 
-CC = gcc # -pg
+# Use CC environment variable
+# CC = gcc -pg
 CF = -O3 -Wall -Wextra -Wpedantic -Werror -Wno-unused-parameter
 LF = -lm -lgc
 CFLAGS = $(CF) -DCOMP="\"$(CF)\"" -DLINK="\"$(LF)\"" -DVERS="\"Release 1.0\""
