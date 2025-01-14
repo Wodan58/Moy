@@ -1,7 +1,7 @@
 /*
  *  module  : main.c
- *  version : 1.51
- *  date    : 10/14/24
+ *  version : 1.52
+ *  date    : 01/14/25
  */
 #include "globals.h"
 
@@ -85,6 +85,21 @@ static void unknown_opt(char *exe, int ch)
 {
     printf("Unknown option argument: \"-%c\"\n", ch);
     printf("More info with: \"%s -h\"\n", exe);
+}
+
+/*
+ * Push an integer on the stack. The stack is communicated through a global
+ * variable that is only used here.
+ */
+static pEnv tmp_env;
+
+void do_push_int(int num)
+{
+    Node node;
+
+    node.u.num = num;
+    node.op = INTEGER_;
+    vec_push(tmp_env->stck, node);
 }
 
 static void my_main(int argc, char **argv)
@@ -272,7 +287,9 @@ start:
     if (raw && env.filename) {		/* raw requires a filename */
 	env.autoput = 0;		/* disable autoput and usrlib.joy */
 	env.autoput_set = 1;		/* prevent enabling autoput */
-	SetRaw(&env);
+	tmp_env = &env;
+	SetRaw();
+	tmp_env = 0;
     } else				/* keep output buffered */
 #endif
 	setbuf(stdout, 0);		/* disable output buffering (pipe) */
@@ -300,6 +317,7 @@ einde:	/* LCOV_EXCL_LINE */
 	stats(&env);
     if (psdump)
 	dump(&env);
+    SetNormal();			/* set the terminal back to normal */
 }
 
 int main(int argc, char **argv)

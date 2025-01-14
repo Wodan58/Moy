@@ -1,7 +1,7 @@
 /*
     module  : globals.h
-    version : 1.58
-    date    : 10/11/24
+    version : 1.59
+    date    : 01/14/25
 */
 #ifndef GLOBALS_H
 #define GLOBALS_H
@@ -335,6 +335,7 @@ int compile(pEnv env, NodeList list);
 void dumpbyte(pEnv env, FILE *fp);
 /* optm.c */
 void optimize(pEnv env, FILE *fp);
-/* kraw.c */
-void SetRaw(pEnv env);
+/* setraw.c */
+void SetRaw();
+void SetNormal();
 #endif

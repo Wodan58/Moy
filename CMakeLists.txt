@@ -1,7 +1,7 @@
 #
 #   module  : CMakeLists.txt
-#   version : 1.32
-#   date    : 11/15/24
+#   version : 1.33
+#   date    : 01/14/25
 #
 cmake_minimum_required(VERSION 3.31)
 project(Joy VERSION 1.0)
@@ -26,7 +26,7 @@ endif()
 ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 add_executable(joy main.c ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS}
 		arty.c eval.c exec.c module.c otab.c parm.c prog.c read.c repl.c
-		save.c scan.c util.c writ.c xerr.c ylex.c print.c kraw.c)
+		save.c scan.c util.c writ.c xerr.c ylex.c print.c setraw.c)
 add_definitions(-DLINK="\\"${CMAKE_EXE_LINKER_FLAGS}\\"")
 add_definitions(-DVERS="${CMAKE_BUILD_TYPE} ${CMAKE_PROJECT_VERSION}")
 #
