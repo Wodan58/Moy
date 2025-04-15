@@ -22,9 +22,9 @@ looks like this:
 
 This program fails in `joy0`, the original version. It also fails in `Joy` and
 `joy1`. The reason is stack overflow. The original has a recursive garbage
-collector that causes the stack overflow. `Joy` had Cheney's algorithm
-implemented, that is not recursive but still fail because `from-to-list` makes
-use of `linrec` and `linrec` recurses.
+collector that causes stack overflow. `Joy` had Cheney's algorithm implemented,
+that is not recursive but `from-to-list` still fails because it makes use of
+`linrec` and `linrec` recurses.
 
 This implementation succeeds where other implementations fail. And that is just
 an experiment. The normal Joy suffers from stack overflow and that can be
