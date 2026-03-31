@@ -41,5 +41,4 @@ Documentation|
 -------------|
 [Legacy Docs](https://wodan58.github.io)
 [User Manual](https://wodan58.github.io/j09imp.html)
-[Comparison (PDF)](https://github.com/Wodan58/HET/blob/master/doc/FIB.pdf)
-[Maintenance Manual (PDF)](https://github.com/Wodan58/G3/blob/master/JOP.pdf)
+[Main Manual](https://codeberg.org/Wodan58/G3-JOY-1/src/branch/master/JOP.pdf)|Comprehensive Joy Manual
